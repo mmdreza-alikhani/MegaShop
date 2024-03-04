@@ -8,7 +8,7 @@
     <div class="info-box p-4 m-2 h-100 w-100 row rounded" style="background-color: rgba(35,41,48,.6)">
         @if($wishlist->isEmpty())
             <div class="alert alert-danger text-center w-100 text-center">
-                شما محصول مورد علاقه ای ندارید!
+                شما محصول مورد علاقه ای ندارید !!
             </div>
         @else
             <table class="table text-center">
