@@ -73,7 +73,7 @@
                     <div class="nk-gap"></div>
                     <!-- START: Reply -->
                     @if(auth()->check())
-                        <h3 class="h4 text-right">!نظر بده</h3>
+                        <h3 class="h4 text-right" id="addComment">!نظر بده</h3>
 
                         <div class="nk-reply text-right" style="direction: rtl">
                             <form action="{{ route('home.news.comments.store', ['news' => $news]) }}" method="post" class="nk-form">
@@ -81,6 +81,7 @@
                                 <div class="nk-gap-1"></div>
                                 @include('home.sections.errors')
                                 <textarea class="form-control required" name="text" rows="5" placeholder="نظر شما *" aria-required="true"></textarea>
+                                <input type="hidden" name="replyOf" id="replyOf" value="0">
                                 <div class="nk-gap-1"></div>
                                 <button class="nk-btn nk-btn-rounded nk-btn-color-dark-3 float-right">ارسال</button>
                             </form>
@@ -150,4 +151,12 @@
         </div>
     </div>
 
+@endsection
+
+@section('scripts')
+    <script>
+        $('.replyBtn').on('click', function (){
+            $('#replyOf').val($(this).data('id'))
+        })
+    </script>
 @endsection

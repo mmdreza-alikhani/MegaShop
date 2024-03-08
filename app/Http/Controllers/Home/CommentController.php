@@ -83,7 +83,8 @@ class CommentController extends Controller
                 Comment::create([
                     'user_id' => auth()->id(),
                     'article_id' => $article->id,
-                    'text' => $request->text
+                    'text' => $request->text,
+                    'reply_of' => $request->replyOf
                 ]);
 
                 DB::commit();
@@ -118,7 +119,8 @@ class CommentController extends Controller
                 Comment::create([
                     'user_id' => auth()->id(),
                     'news_id' => $news->id,
-                    'text' => $request->text
+                    'text' => $request->text,
+                    'reply_of' => $request->replyOf
                 ]);
 
                 DB::commit();

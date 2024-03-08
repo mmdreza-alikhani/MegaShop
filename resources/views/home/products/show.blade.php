@@ -391,6 +391,5 @@
             $('#replyOf').val($(this).data('id'))
         })
 
-
     </script>
 @endsection
