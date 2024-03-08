@@ -10,7 +10,7 @@
                     {{ $comment->user->roles->first()->display_name }}
                 </span>
             @endif
-            <a class="btn nk-btn-color-main-2">
+            <a class="btn nk-btn-color-main-2 replyBtn" data-id="{{ $comment->id }}" href="{{ \Illuminate\Support\Facades\Request::url() . '#addComment' }}">
                 پاسخ
             </a>
             @can('manage-comments')

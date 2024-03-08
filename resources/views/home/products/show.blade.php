@@ -201,7 +201,7 @@
                             <!-- START: Reply -->
 
                             @if(auth()->check())
-                                <h3 class="h4 text-right">نظر بده!</h3>
+                                <h3 class="h4 text-right" id="addComment">نظر بده!</h3>
 
                                 <div class="nk-reply">
                                     <form action="{{ route('home.products.comments.store', ['product' => $product]) }}" method="post" class="nk-form">
@@ -210,6 +210,7 @@
                                         @include('home.sections.errors')
                                         <textarea class="form-control required" name="text" rows="5" placeholder="نظر شما *" aria-required="true"></textarea>
                                         <input type="hidden" name="rate" id="rateInput" value="0">
+                                        <input type="hidden" name="replyOf" id="replyOf" value="0">
                                         <div class="nk-gap-1"></div>
 
                                         <div id="starRating"
@@ -385,5 +386,11 @@
             $('#productQuantity').attr('max' , variation.quantity);
             $('#productQuantity').val(1)
         });
+
+        $('.replyBtn').on('click', function (){
+            $('#replyOf').val($(this).data('id'))
+        })
+
+
     </script>
 @endsection

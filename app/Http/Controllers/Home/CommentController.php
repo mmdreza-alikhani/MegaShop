@@ -34,7 +34,8 @@ class CommentController extends Controller
                     Comment::create([
                         'user_id' => auth()->id(),
                         'product_id' => $product->id,
-                        'text' => $request->text
+                        'text' => $request->text,
+                        'reply_of' => $request->replyOf
                     ]);
 
                     if ($product->rates()->where( 'user_id', auth()->id())->exists()){
