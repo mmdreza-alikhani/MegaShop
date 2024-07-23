@@ -17,7 +17,7 @@
 
                 <div class="input-group mb-3 col-12 col-lg-6">
                     <label for="email">ایمیل شما:</label>
-                    <input type="email" class="form-control" id="email" value="{{ $user->email }}" name="email" disabled>
+                    <input type="email" class="form-control" style="background-color: transparent" id="email" value="{{ $user->email }}" name="email" disabled>
                 </div>
                 <div class="input-group mb-3 col-12 col-lg-6">
                     <p>
