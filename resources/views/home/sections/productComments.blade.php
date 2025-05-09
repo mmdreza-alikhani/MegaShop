@@ -5,11 +5,11 @@
             در تاریخ
             {{ verta($comment->updated_at)->format('%d %B، %Y') }}
             گفته:
-            @if($comment->user->hasPermissionTo('manage-general'))
+            {{-- @if($comment->user->hasPermissionTo('manage-general'))
                 <span class="alert alert-info mx-2">
                     {{ $comment->user->roles->first()->display_name }}
                 </span>
-            @endif
+            @endif --}}
             <a class="btn nk-btn-color-main-2 replyBtn" data-id="{{ $comment->id }}" href="{{ \Illuminate\Support\Facades\Request::url() . '#addComment' }}">
                 پاسخ
             </a>

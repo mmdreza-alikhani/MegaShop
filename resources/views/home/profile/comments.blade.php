@@ -9,7 +9,7 @@
 
     @if($user->comments->isEmpty())
         <div class="alert alert-danger text-center w-100">
-            شما محصول مورد علاقه ندارید!
+            شما نظری ثبت نکرده اید!
         </div>
     @endif
 

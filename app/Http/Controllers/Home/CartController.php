@@ -85,7 +85,7 @@ class CartController extends Controller
     public function checkout(){
         $user = auth()->user();
         if ($user->first_name == null || $user->last_name == null || $user->phone_number == null){
-            toastr()->warning('لطفا مشخصات خود را در حسابن کاربری تکمیل کنید');
+            toastr()->warning('لطفا مشخصات خود را در حساب کاربری تکمیل کنید');
             return redirect()->route('home.profile.info');
         }else{
             if (\Cart::isEmpty()){

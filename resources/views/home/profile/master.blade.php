@@ -64,8 +64,3 @@
 
     <div class="nk-gap-2"></div>
 @endsection
-@section('scripts')
-    <script>
-
-    </script>
-@endsection

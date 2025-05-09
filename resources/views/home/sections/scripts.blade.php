@@ -14,7 +14,7 @@
 <script src="/assets/vendor/jquery-countdown/dist/jquery.countdown.min.js"></script>
 <script src="/assets/vendor/moment/min/moment.min.js"></script>
 <script src="/assets/vendor/moment-timezone/builds/moment-timezone-with-data.min.js"></script>
-<script src="/assets/vendor/hammerjs/hammer.min.js"></script>
+<script src="/assets/vendor/hammerjs/hammer.min.js"></script>zzz
 <script src="/assets/vendor/nanoscroller/bin/javascripts/jquery.nanoscroller.js"></script>
 {{--<script src="/assets/vendor/soundmanager2/script/soundmanager2-nodebug-jsmin.js"></script>--}}
 <script src="/assets/vendor/bootstrap-slider/dist/bootstrap-slider.min.js"></script>
