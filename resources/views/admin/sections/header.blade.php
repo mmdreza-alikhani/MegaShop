@@ -1,56 +1,102 @@
-<nav class="main-header navbar navbar-expand bg-dark navbar-dark border-bottom">
-    <ul class="navbar-nav">
-        <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
-        </li>
-        <li class="nav-item d-sm-inline-block">
-            <a href="{{ route('admin.panel') }}" class="nav-link">خانه</a>
-        </li>
-        <li class="nav-item d-sm-inline-block">
-            <a href="{{ route('home.index') }}" class="nav-link">بازگشت به سایت</a>
-        </li>
-    </ul>
+<style>
+    .custom-dropdown {
+        width: 400px; /* اندازه پیش‌فرض برای دسکتاپ */
+        font-size: 16px; /* اندازه متن برای دسکتاپ */
+    }
 
-    @php
-        $comments = \App\Models\Comment::latest()->where('approved', '0')->take(3)->get();
-    @endphp
+    @media (max-width: 768px) { /* برای حالت گوشی */
+        .custom-dropdown {
+            width: 50%; /* عرض کوچکتر برای موبایل */
+            font-size: 14px; /* اندازه متن برای موبایل */
+            margin: 0 auto; /* محتوای نوتیفیکیشن را وسط‌چین می‌کند */
+        }
+    }
 
-    <ul class="navbar-nav mr-auto">
-        @can('manage-comments')
-        <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
-                <i class="fa fa-comments-o"></i>
-                <span class="badge badge-danger navbar-badge">{{ $comments->count() }}</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left bg-dark">
-                @if($comments->count() == 0)
-                    <p class="text-center my-2">
-                        نظری موجود نیست!
-                    </p>
-                @else
-                @foreach($comments as $comment)
-                    <a href="{{ route('admin.comments.show' , [$comment->id]) }}" class="dropdown-item">
-                        <div class="media">
-                            <img src="{{ Str::contains($comment->user->avatar, 'https://') ? $comment->user->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $comment->user->avatar }}" alt="{{ $comment->user->username }}-image" class="img-size-50 ml-3 img-circle">
-                            <div class="media-body">
-                                <h3 class="dropdown-item-title">
-                                    {{ $comment->user->username }}
-                                </h3>
-                                <p class="text-sm">
-                                    {{ substr(strip_tags($comment->text), 0 , 40) . ' ...' }}
-                                </p>
-                                <p class="text-sm text-muted"><i class="fa fa-clock-o mr-1"></i>
-                                {{ $comment->created_at->diffForHumans() }}
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                @endforeach
-                <a href="{{ route('admin.comments.index') }}" class="dropdown-item dropdown-footer">مشاهده همه نظرات</a>
-                @endif
-            </div>
-        </li>
-        @endcan
-    </ul>
-</nav>
+</style>
+<header class="bmd-layout-header ">
+    <div class="navbar navbar-light bg-faded animate__animated animate__fadeInDown">
+        <button class="navbar-toggler animate__animated animate__wobble animate__delay-2s" type="button"
+                data-toggle="drawer" data-target="#dw-s1">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <ul class="nav navbar-nav p-0">
+            <li class="nav-item">
+                <div class="dropdown">
+                    <button class="btn  dropdown-toggle m-0" type="button" id="dropdownMenu3" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        <i class="far fa-bell fa-lg"></i>
+{{--                        @if($awaitingContracts + $pendingContracts > 0)--}}
+{{--                            <span--}}
+{{--                                class="badge badge-pill badge-warning animate__animated animate__flash animate__repeat-3 animate__slower animate__delay-2s">--}}
+{{--                                {{ $awaitingContracts + $pendingContracts }}--}}
+{{--                            </span>--}}
+{{--                        @endif--}}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right custom-dropdown">
+{{--                        @if($pendingContracts + $awaitingContracts > 0)--}}
+{{--                            <span class="dropdown-item dropdown-header persianumber">در انتظار شما</span>--}}
+{{--                            <div class="dropdown-divider"></div>--}}
+{{--                            @if($pendingContracts)--}}
+{{--                                <a class="dropdown-item" href="{{ route('panel.contracts.index') }}">--}}
+{{--                                    <i class="far fa-envelope c-main mr-2"></i> {{ $pendingContracts }} قرارداد منتظر تایید شما--}}
+{{--                                </a>--}}
+{{--                                <div class="dropdown-divider"></div>--}}
+{{--                            @endif--}}
+{{--                            @if($user->hasPermissionTo('contracts') && $awaitingContracts > 0)--}}
+{{--                                <a class="dropdown-item" href="{{ route('admin.contracts.awaiting') }}">--}}
+{{--                                    <i class="far fa-envelope c-main mr-2"></i> {{ $awaitingContracts }} قرارداد در انتظار انتشار--}}
+{{--                                </a>--}}
+{{--                                <div class="dropdown-divider"></div>--}}
+{{--                            @endif--}}
+{{--                        @else--}}
+{{--                            <p class="text-center">هیچ قراردادی برای شما وجود ندارد.</p>--}}
+{{--                        @endif--}}
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item"><img src="{{ asset('assets/img/user.png') }}" alt="..."
+                                      class="rounded-circle screen-user-profile"></li>
+            <li class="nav-item">
+                <div class="dropdown">
+                    <button class="btn  dropdown-toggle m-0 d-none d-md-block" type="button" id="dropdownMenu4"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ auth()->user()->username . ', خوش اومدی!' }}
+                    </button>
+                    <div class="dropdown-menu  pl-3 dropdown-menu-right dropdown-menu dropdown-menu-right">
+                        {{-- <button onclick="dark()" class="dropdown-item" type="button">
+                            <i class="fas fa-moon fa-sm c-main mr-2"></i>
+                            حالت شب
+                        </button> --}}
+{{--                        <form method="post" action="{{ route('toggleActive') }}">--}}
+{{--                            @csrf--}}
+{{--                            <button class="dropdown-item" type="submit">--}}
+{{--                                <i class="fas fa-sm c-main mr-2 {{ auth()->user()->is_active ? 'fa-check-circle' : 'fa-times-circle' }}"></i>--}}
+{{--                                {{ auth()->user()->is_active ? 'فعال' : 'غیرفعال' }}--}}
+{{--                            </button>--}}
+{{--                        </form>--}}
+{{--                        <form method="post" action="{{ route('logout') }}">--}}
+{{--                            @csrf--}}
+{{--                            <button class="dropdown-item" type="submit">--}}
+{{--                                <i class="fas fa-sign-out-alt c-main fa-sm mr-2"></i>--}}
+{{--                                خروج--}}
+{{--                            </button>--}}
+{{--                        </form>--}}
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</header>
+{{--<script>--}}
+{{--    function toggleButtonText() { --}}
+{{--      const button = document.getElementById('toggleButton'); --}}
+{{--      var icon = document.getElementById('toggleIcon');--}}
+{{--      if (button.textContent.includes('غیرفعال')) { --}}
+{{--        button.innerHTML = '<i id="toggleIcon" class="fas fa-check-circle fa-sm c-main mr-2"></i> فعال';--}}
+{{--      } else { --}}
+{{--        const icon = document.getElementById('toggleIcon');--}}
+{{--        button.innerHTML = '<i id="toggleIcon" class="fas fa-times-circle fa-sm c-main mr-2"></i> غیرفعال';--}}
+{{--       }--}}
+{{--    }--}}
+{{--</script>--}}
+{{-- fe --}}

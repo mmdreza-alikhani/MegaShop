@@ -1,31 +1,28 @@
-<title>Mega Shop | @yield('title')</title>
-<!-- Ionicons -->
-<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-<!-- Theme style -->
-<link rel="stylesheet" href="/admin/dist/css/adminlte.min.css">
-<!-- iCheck -->
-<link rel="stylesheet" href="/admin/plugins/iCheck/flat/blue.css">
-<!-- Morris chart -->
-<link rel="stylesheet" href="/admin/plugins/morris/morris.css">
-<!-- jvectormap -->
-<link rel="stylesheet" href="/admin/plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-<!-- Date Picker -->
-<link rel="stylesheet" href="/admin/plugins/datepicker/datepicker3.css">
-<!-- Daterange picker -->
-<link rel="stylesheet" href="/admin/plugins/daterangepicker/daterangepicker-bs3.css">
-<!-- bootstrap wysihtml5 - text editor -->
-<link rel="stylesheet" href="/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-<!-- Google Font: Source Sans Pro -->
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-<!-- bootstrap rtl -->
-<link rel="stylesheet" href="/admin/dist/css/bootstrap-rtl.min.css">
-<!-- template rtl version -->
-<link rel="stylesheet" href="/admin/dist/css/custom-style.css">
-<!-- Bootstrap Select -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="/admin/dist/css/bootstrap-select.css">
-{{-- Jalali Date Time Picker --}}
-<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
-<link rel="stylesheet" href="/dist/silverBox.min.css" />
-{{-- Summer Note --}}
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+{{--<link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">--}}
+{{--<link rel="stylesheet" href="{{ asset('/admin/css/summernote.min.css') }}">--}}
+<title>پنل مدیریت | @yield('title')</title>
+<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/admin/img/favicon/apple-touch-icon.png') }}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/admin/img/favicon/favicon-32x32.png') }}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/admin/img/favicon/favicon-16x16.png') }}">
+<link rel="manifest" href="{{ asset('/admin/img/favicon/site.webmanifest') }}">
+<link rel="mask-icon" href="{{ asset('/admin/img/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#2b5797">
+<meta name="theme-color" content="#ffffff">
+<script src="{{ asset('/admin/js/jquery-3.2.1.min.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('/admin/css/normalize.css') }}">
+<link href="{{ asset('/admin/css/fontawsome/all.min.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('/admin/css/bootstrap-material-design.min.css') }}">
+<link rel="stylesheet" href="{{ asset('/admin/css/bootstrap.min.css') }}">
+<link href="{{ asset('/admin/css/toastr.min.css') }}" rel="stylesheet" />
+<link rel="stylesheet" href="{{ asset('/admin/css/animate.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('/admin/css/main.css') }}">
+<link rel="stylesheet" href="{{ asset('/admin/css/bootstrap-select.min.css') }}">
+<link rel="stylesheet" href="{{ asset('/admin/css/jalalidatepicker.min.css') }}">
+{{--<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.css">--}}
+{{--<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.css" />--}}
+{{--<script src="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.umd.js"></script>--}}
+{{--<!-- Add if you use premium features. -->--}}
+{{--<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/44.1.0/ckeditor5-premium-features.css" />--}}
+{{--<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/44.1.0/ckeditor5-premium-features.umd.js"></script>--}}
+
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
