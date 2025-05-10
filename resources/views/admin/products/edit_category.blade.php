@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     ویرایش دسته بندی محصول:  {{$product->name}}
 @endsection
@@ -9,7 +9,8 @@
 @section('content')
     <div class="mx-4">
         @include('admin.sections.errors')
-        <form action="{{ route('admin.products.category.update', ['product' => $product]) }}" method="POST" class="row" enctype="multipart/form-data">
+        <form action="{{ route('admin.products.category.update', ['product' => $product]) }}" method="POST" class="row"
+              enctype="multipart/form-data">
             @method('PUT')
             @csrf
             <div class="col-lg-12 col-12">
@@ -22,9 +23,11 @@
                             <div class="form-group col-12 col-lg-4"></div>
                             <div class="form-group col-12 col-lg-4">
                                 <label for="categorySelect">دسته بندی*</label>
-                                <select id="categorySelect" class="form-control" name="category_id" data-live-search="true">
+                                <select id="categorySelect" class="form-control" name="category_id"
+                                        data-live-search="true">
                                     @foreach($categories as $category)
-                                        <option value="{{ $category->id }}" {{ $category->id == $product->category->id ? 'selected' : ''}}>{{ $category->name }}-{{ $category->parent->name }}</option>
+                                        <option value="{{ $category->id }}" {{ $category->id == $product->category->id ? 'selected' : ''}}>{{ $category->name }}
+                                            -{{ $category->parent->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -45,15 +48,18 @@
                                         <div class="row">
                                             <span class="col-12 col-lg-3 my-2">
                                                 <label>نام</label>
-                                                <input type="text" name="variation_values[value][]" class="form-control">
+                                                <input type="text" name="variation_values[value][]"
+                                                       class="form-control">
                                             </span>
                                             <span class="col-12 col-lg-3 my-2">
                                                 <label>قیمت</label>
-                                                <input type="text" name="variation_values[price][]" class="form-control">
+                                                <input type="text" name="variation_values[price][]"
+                                                       class="form-control">
                                             </span>
                                             <span class="col-12 col-lg-3 my-2">
                                                 <label>تعداد</label>
-                                                <input type="text" name="variation_values[quantity][]" class="form-control">
+                                                <input type="text" name="variation_values[quantity][]"
+                                                       class="form-control">
                                             </span>
                                             <span class="col-12 col-lg-3 my-2">
                                                 <label>شناسه عددی</label>
@@ -81,7 +87,8 @@
                                 <button class="btn btn-primary w-100" type="submit" name="submit">ویرایش</button>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('admin.products.index') }}" class="btn btn-danger w-100" type="cancel" name="cancel">بازگشت</a>
+                                <a href="{{ route('admin.products.index') }}" class="btn btn-danger w-100" type="cancel"
+                                   name="cancel">بازگشت</a>
                             </div>
                         </div>
                     </div>
@@ -93,16 +100,16 @@
 @section('scripts')
     <script>
         $('#categorySelect').selectpicker({
-            'title' : 'انتخاب دسته بندی'
+            'title': 'انتخاب دسته بندی'
         });
 
 
         $('#attributeContainer').hide()
-        $('#categorySelect').on('changed.bs.select' , function () {
+        $('#categorySelect').on('changed.bs.select', function () {
             const categoryId = $(this).val();
 
-            $.get(`{{ url('/admin-panel/management/get-category-attribute/${categoryId}') }}`, function(response , status){
-                if(status === 'success'){
+            $.get(`{{ url('/admin-panel/management/get-category-attribute/${categoryId}') }}`, function (response, status) {
+                if (status === 'success') {
                     $('#attributeContainer').fadeIn()
 
                     $('#attributes').find('div').remove();
@@ -110,17 +117,17 @@
 
                     response.attributes.forEach(attribute => {
                         const attributeFormgroup = $('<div/>', {
-                            class : 'form-group col-12 col-lg-4'
+                            class: 'form-group col-12 col-lg-4'
                         });
                         const attributeLable = $('<lable/>', {
-                            for : attribute.name,
-                            text : attribute.name
+                            for: attribute.name,
+                            text: attribute.name
                         });
                         const attributeInput = $('<input/>', {
-                            id : attribute.name,
-                            type : 'text',
-                            class : 'form-control',
-                            name : `attribute_ids[${attribute.id}]`
+                            id: attribute.name,
+                            type: 'text',
+                            class: 'form-control',
+                            name: `attribute_ids[${attribute.id}]`
                         });
 
                         attributeFormgroup.append(attributeLable);
@@ -133,10 +140,10 @@
                         $('#variationName').text(variation.name);
                     })
 
-                }else{
+                } else {
                     alert('مشکلی پیش آمد!')
                 }
-            }).fail(function(){
+            }).fail(function () {
                 alert('مشکلی پیش آمد!')
             })
 

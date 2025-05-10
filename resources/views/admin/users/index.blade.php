@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     لیست کاربران
 @endsection
@@ -13,9 +13,11 @@
     $active_child = 'showusers';
 @endphp
 @section('content')
-    <form id="search" class="form-inline ml-3 mb-3" action="{{ route('admin.users.search') }}" method="GET" style="display: flex;align-items: center;justify-content: center">
+    <form id="search" class="form-inline ml-3 mb-3" action="{{ route('admin.users.search') }}" method="GET"
+          style="display: flex;align-items: center;justify-content: center">
         <div class="input-group input-group-sm">
-            <input class="form-control form-control-navbar" type="text" placeholder="جستجو با نام کاربری کاربر" value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword">
+            <input class="form-control form-control-navbar" type="text" placeholder="جستجو با نام کاربری کاربر"
+                   value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword">
             <div class="input-group-append">
                 <button class="btn btn-navbar" type="submit">
                     <i class="fa fa-search"></i>
@@ -45,7 +47,8 @@
                         {{ $user->username }}
                     </td>
                     <td>
-                        <img src="{{ Str::contains($user->avatar, 'https://') ? $user->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $user->avatar }}" alt="{{ $user->username }}-image" id="output" width="100" height="100" />
+                        <img src="{{ Str::contains($user->avatar, 'https://') ? $user->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $user->avatar }}"
+                             alt="{{ $user->username }}-image" id="output" width="100" height="100"/>
                     </td>
                     <td>
                         {{ $user->email }}

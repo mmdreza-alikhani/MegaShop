@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     سفارش : {{ $transaction->token }}
 @endsection
@@ -125,7 +125,11 @@
                     <div class="col-12 col-lg-12 text-right" style="direction: rtl">
                         <ul class="text-main-1 pl-20 text-right" style="direction: rtl">
                             @foreach($order->items as $item)
-                                <li class="col-12 col-lg-4"><a href="{{ route('home.products.show', ['product' => $item->product->slug]) }}">{{ $item->product->name }}</a> <br> <strong>{{ $item->productVariation->value . ' - ' . $item->quantity . ' عدد' }}</strong></li>
+                                <li class="col-12 col-lg-4"><a
+                                            href="{{ route('home.products.show', ['product' => $item->product->slug]) }}">{{ $item->product->name }}</a>
+                                    <br>
+                                    <strong>{{ $item->productVariation->value . ' - ' . $item->quantity . ' عدد' }}</strong>
+                                </li>
                             @endforeach
                         </ul>
                     </div>

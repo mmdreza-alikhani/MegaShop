@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     کاربر : {{ $user->username }}
 @endsection
@@ -9,69 +9,70 @@
 @section('content')
     <div class="m-sm-2 mx-4 ">
         <div class="col-lg-12 col-12">
-                <div class="card">
-                    <div class="card-header bg-primary">
-                        نمایش
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="form-group col-12 col-lg-6">
-                                <img src="{{ Str::contains($user->avatar, 'https://') ? $user->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $user->avatar }}" alt="{{ $user->username }}-image" id="output" width="100" height="100" />
-                            </div>
-                            <div class="form-group col-12 col-lg-6">
-                                <label>نام کاربری</label>
-                                <input type="text" value="{{ $user->username }}" class="form-control" disabled>
-                            </div>
-                            <div class="form-group col-12 col-lg-6">
-                                <label>نام</label>
-                                <input type="text" value="{{ $user->first_name }}" class="form-control" disabled>
-                            </div>
-                            <div class="form-group col-12 col-lg-6">
-                                <label>نام خانوادگی</label>
-                                <input type="text" value="{{ $user->last_name }}" class="form-control" disabled>
-                            </div>
-                            <div class="form-group col-12 col-lg-6">
-                                <label>شماره تلفن</label>
-                                <input type="text" value="{{ $user->phone_number }}" class="form-control" disabled>
-                            </div>
-                            <div class="form-group col-12 col-lg-6">
-                                <label>ایمیل</label>
-                                <div class="input-group-prepend">
-                                    <input type="text" value="{{ $user->email }}" class="form-control" disabled>
-                                    @if($user->email_verified_at == null)
-                                        <div class="input-group-text">
-                                            <i class="fa fa-times-circle text-danger"></i>
-                                        </div>
-                                    @else
-                                        <div class="input-group-text">
-                                            <i class="fa fa-check-circle text-success"></i>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="form-group col-12 col-lg-6">
-                                <label>طریقه ثبت نام</label>
-                                @if($user->provider_name == 'manual')
-                                    <input type="text" value="دستی توسط ادمین" class="form-control" disabled>
-                                @elseif($user->provider_name == '')
-                                    <input type="text" value="دستی توسط کاربر" class="form-control" disabled>
+            <div class="card">
+                <div class="card-header bg-primary">
+                    نمایش
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-12 col-lg-6">
+                            <img src="{{ Str::contains($user->avatar, 'https://') ? $user->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $user->avatar }}"
+                                 alt="{{ $user->username }}-image" id="output" width="100" height="100"/>
+                        </div>
+                        <div class="form-group col-12 col-lg-6">
+                            <label>نام کاربری</label>
+                            <input type="text" value="{{ $user->username }}" class="form-control" disabled>
+                        </div>
+                        <div class="form-group col-12 col-lg-6">
+                            <label>نام</label>
+                            <input type="text" value="{{ $user->first_name }}" class="form-control" disabled>
+                        </div>
+                        <div class="form-group col-12 col-lg-6">
+                            <label>نام خانوادگی</label>
+                            <input type="text" value="{{ $user->last_name }}" class="form-control" disabled>
+                        </div>
+                        <div class="form-group col-12 col-lg-6">
+                            <label>شماره تلفن</label>
+                            <input type="text" value="{{ $user->phone_number }}" class="form-control" disabled>
+                        </div>
+                        <div class="form-group col-12 col-lg-6">
+                            <label>ایمیل</label>
+                            <div class="input-group-prepend">
+                                <input type="text" value="{{ $user->email }}" class="form-control" disabled>
+                                @if($user->email_verified_at == null)
+                                    <div class="input-group-text">
+                                        <i class="fa fa-times-circle text-danger"></i>
+                                    </div>
                                 @else
-                                    <input type="text" value="{{ $user->provider_name }}" class="form-control" disabled>
+                                    <div class="input-group-text">
+                                        <i class="fa fa-check-circle text-success"></i>
+                                    </div>
                                 @endif
                             </div>
-                            <div class="form-group col-12 col-lg-6">
-                                <label>تاریخ ایجاد</label>
-                                <input type="text" value="{{ verta($user->created_at) }}" class="form-control" disabled>
-                            </div>
-                            <div class="form-group col-12 col-lg-6">
-                                <label>تاریخ آخرین تغییرات</label>
-                                <input type="text" value="{{ verta($user->updated_at) }}" class="form-control" disabled>
-                            </div>
                         </div>
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-danger">بازگشت</a>
+                        <div class="form-group col-12 col-lg-6">
+                            <label>طریقه ثبت نام</label>
+                            @if($user->provider_name == 'manual')
+                                <input type="text" value="دستی توسط ادمین" class="form-control" disabled>
+                            @elseif($user->provider_name == '')
+                                <input type="text" value="دستی توسط کاربر" class="form-control" disabled>
+                            @else
+                                <input type="text" value="{{ $user->provider_name }}" class="form-control" disabled>
+                            @endif
+                        </div>
+                        <div class="form-group col-12 col-lg-6">
+                            <label>تاریخ ایجاد</label>
+                            <input type="text" value="{{ verta($user->created_at) }}" class="form-control" disabled>
+                        </div>
+                        <div class="form-group col-12 col-lg-6">
+                            <label>تاریخ آخرین تغییرات</label>
+                            <input type="text" value="{{ verta($user->updated_at) }}" class="form-control" disabled>
+                        </div>
                     </div>
+                    <a href="{{ route('admin.users.index') }}" class="btn btn-danger">بازگشت</a>
                 </div>
             </div>
+        </div>
         <div class="row mx-1">
             <div class="col-12 col-lg-6">
                 <div class="card">
@@ -117,10 +118,12 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <a href="{{ route('admin.comments.show' , [$comment->id]) }}" class="btn btn-success m-1">
+                                                <a href="{{ route('admin.comments.show' , [$comment->id]) }}"
+                                                   class="btn btn-success m-1">
                                                     نمایش
                                                 </a>
-                                                <form action="{{ route('admin.comments.destroy', ['comment' => $comment]) }}" method="POST">
+                                                <form action="{{ route('admin.comments.destroy', ['comment' => $comment]) }}"
+                                                      method="POST">
                                                     @method('DELETE')
                                                     @csrf
                                                     <button class="btn btn-danger m-1" type="submit">
@@ -204,7 +207,8 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <a href="{{ route('admin.orders.show' , ['order' => $order->id]) }}" class="btn btn-success m-1">
+                                                <a href="{{ route('admin.orders.show' , ['order' => $order->id]) }}"
+                                                   class="btn btn-success m-1">
                                                     نمایش
                                                 </a>
                                             </td>

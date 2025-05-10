@@ -76,7 +76,7 @@
                         <h3 class="h4 text-right" id="addComment">!نظر بده</h3>
 
                         <div class="nk-reply text-right" style="direction: rtl">
-                            <form action="{{ route('home.news.comments.store', ['news' => $news]) }}" method="post" class="nk-form">
+                            <form action="{{ route('home.comments.store', ['model' => 'news', 'id' => $news->id]) }}" method="post" class="nk-form">
                                 @csrf
                                 <div class="nk-gap-1"></div>
                                 @include('home.sections.errors')

@@ -204,7 +204,7 @@
                                 <h3 class="h4 text-right" id="addComment">نظر بده!</h3>
 
                                 <div class="nk-reply">
-                                    <form action="{{ route('home.products.comments.store', ['product' => $product]) }}" method="post" class="nk-form">
+                                    <form action="{{ route('home.comments.store', ['model' => 'product', 'id' => $product->id]) }}" method="post" class="nk-form">
                                         @csrf
                                         <div class="nk-gap-1"></div>
                                         @include('home.sections.errors')

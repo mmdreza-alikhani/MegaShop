@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     پلتفرم : {{ $platform->name }}
 @endsection
@@ -47,7 +47,8 @@
                 <div class="card-body">
                     <div class="form-group col-12 col-lg-12">
                         <label>تصویر</label>
-                        <img class="card-img" src="{{ url(env('CATEGORY_IMAGE_PATH')) . '/' . $platform->image }}" alt="{{ $platform->name }}-image">
+                        <img class="card-img" src="{{ url(env('CATEGORY_IMAGE_PATH')) . '/' . $platform->image }}"
+                             alt="{{ $platform->name }}-image">
                     </div>
                     <a href="{{ route('admin.platforms.index') }}" class="btn btn-danger">بازگشت</a>
                 </div>

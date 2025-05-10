@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     لیست محصولات
 @endsection
@@ -13,9 +13,11 @@
     $active_child = 'showproducts';
 @endphp
 @section('content')
-    <form id="search" class="form-inline ml-3 mb-3" action="{{ route('admin.products.search') }}" method="GET" style="display: flex;align-items: center;justify-content: center">
+    <form id="search" class="form-inline ml-3 mb-3" action="{{ route('admin.products.search') }}" method="GET"
+          style="display: flex;align-items: center;justify-content: center">
         <div class="input-group input-group-sm">
-            <input class="form-control form-control-navbar" type="text" placeholder="جستجو با نام محصول" value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword">
+            <input class="form-control form-control-navbar" type="text" placeholder="جستجو با نام محصول"
+                   value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword">
             <div class="input-group-append">
                 <button class="btn btn-navbar" type="submit">
                     <i class="fa fa-search"></i>
@@ -63,16 +65,24 @@
                     </td>
                     <td>
                         <div class="dropdown m-1">
-                            <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
                                 ویرایش
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('admin.products.edit' , ['product' => $product->slug]) }}">ویرایش محصول</a></li>
-                                <li><a class="dropdown-item" href="{{ route('admin.products.images.edit' , ['product' => $product->slug]) }}">ویرایش تصاویر</a></li>
-                                <li><a class="dropdown-item" href="{{ route('admin.products.category.edit' , ['product' => $product->slug]) }}">ویرایش دسته بندی</a></li>
+                                <li><a class="dropdown-item"
+                                       href="{{ route('admin.products.edit' , ['product' => $product->slug]) }}">ویرایش
+                                        محصول</a></li>
+                                <li><a class="dropdown-item"
+                                       href="{{ route('admin.products.images.edit' , ['product' => $product->slug]) }}">ویرایش
+                                        تصاویر</a></li>
+                                <li><a class="dropdown-item"
+                                       href="{{ route('admin.products.category.edit' , ['product' => $product->slug]) }}">ویرایش
+                                        دسته بندی</a></li>
                             </ul>
                         </div>
-                        <a href="{{ route('admin.products.show' , ['product' => $product->slug]) }}" class="btn btn-success m-1">
+                        <a href="{{ route('admin.products.show' , ['product' => $product->slug]) }}"
+                           class="btn btn-success m-1">
                             نمایش
                         </a>
                     </td>

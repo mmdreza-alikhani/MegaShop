@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title' , 'ایجاد نقش')
 @php
     $active_parent = 'users';
@@ -22,25 +22,31 @@
                             </div>
                             <div class="form-group col-12 col-lg-6">
                                 <label for="displayName">نام نمایشی*</label>
-                                <input type="text" name="displayName" id="displayName" class="form-control" value="{{ old('displayName') }}">
+                                <input type="text" name="displayName" id="displayName" class="form-control"
+                                       value="{{ old('displayName') }}">
                             </div>
                             <div class="form-group col-12 col-lg-12">
                                 <div class="card">
                                     <div class="card-header">
                                         <h2 class="mb-0">
-                                            <button class="btn btn-link btn-block text-right" type="button" data-toggle="collapse" data-target="#permissionsCollapse">
+                                            <button class="btn btn-link btn-block text-right" type="button"
+                                                    data-toggle="collapse" data-target="#permissionsCollapse">
                                                 دسترسی به مجوز ها
                                             </button>
                                         </h2>
                                     </div>
-                                    <div id="permissionsCollapse" class="collapse"  data-parent="#accordionExample">
+                                    <div id="permissionsCollapse" class="collapse" data-parent="#accordionExample">
                                         <div class="card-body row">
                                             @foreach($permissions as $permission)
                                                 <div class="form-check col-md-2">
-                                                    <label class="form-check-label" for="{{ $permission->name . '-check' }}">
+                                                    <label class="form-check-label"
+                                                           for="{{ $permission->name . '-check' }}">
                                                         {{ $permission->display_name }}
                                                     </label>
-                                                    <input class="form-check-input mr-1" type="checkbox" value="{{ $permission->name }}" name="{{ $permission->name }}" id="{{ $permission->name . '-check' }}">
+                                                    <input class="form-check-input mr-1" type="checkbox"
+                                                           value="{{ $permission->name }}"
+                                                           name="{{ $permission->name }}"
+                                                           id="{{ $permission->name . '-check' }}">
                                                 </div>
                                             @endforeach
                                         </div>

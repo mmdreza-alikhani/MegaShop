@@ -1,9 +1,9 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title' , 'یافت نشد!')
 @section('content')
     <div class='w-100 h-100 text-center'>
         <div class=''>
-            <img alt='404 NOT FOUND' src='/admin/dist/img/404.png' />
+            <img alt='404 NOT FOUND' src='/admin/dist/img/404.png'/>
         </div>
 
         <div class=''>

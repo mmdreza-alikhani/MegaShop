@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title' , 'ایجاد مجوز')
 @php
     $active_parent = 'users';
@@ -22,7 +22,8 @@
                             </div>
                             <div class="form-group col-12 col-lg-6">
                                 <label for="displayName">نام نمایشی*</label>
-                                <input type="text" name="displayName" id="displayName" class="form-control" value="{{ old('displayName') }}">
+                                <input type="text" name="displayName" id="displayName" class="form-control"
+                                       value="{{ old('displayName') }}">
                             </div>
                         </div>
                     </div>
@@ -40,7 +41,8 @@
                                 <button class="btn btn-primary w-100" type="submit" name="submit">افزودن</button>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('admin.permissions.index') }}" class="btn btn-danger w-100" type="cancel">بازگشت</a>
+                                <a href="{{ route('admin.permissions.index') }}" class="btn btn-danger w-100"
+                                   type="cancel">بازگشت</a>
                             </div>
                         </div>
                     </div>

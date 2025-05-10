@@ -4,8 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static create(array $array)
+ */
 class Comment extends Model
 {
     use HasFactory, SoftDeletes;
@@ -18,16 +22,9 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function product(){
-        return $this->belongsTo(Product::class);
-    }
-
-    public function article(){
-        return $this->belongsTo(Article::class);
-    }
-
-    public function news(){
-        return $this->belongsTo(News::class);
+    public function commentable(): MorphTo
+    {
+        return $this->morphTo();
     }
 
     public function rates(){

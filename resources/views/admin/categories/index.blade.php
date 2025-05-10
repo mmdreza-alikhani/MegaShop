@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     لیست دسته بندی ها
 @endsection
@@ -27,7 +27,7 @@
             </thead>
             <tbody>
             @foreach($categories as $key => $category)
-                <tr class="@if($category->parent_id==0) {{ 'table-info' }} @endif" >
+                <tr class="@if($category->parent_id==0) {{ 'table-info' }} @endif">
                     <th>
                         {{ $categories->firstItem() + $key }}
                     </th>

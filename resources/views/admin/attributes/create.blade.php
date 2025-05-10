@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title' , 'ایجاد ویژگی')
 @php
     $active_parent = 'attributes';
@@ -12,7 +12,7 @@
             <div class="col-lg-7 col-12">
                 <div class="card">
                     <div class="card-header bg-primary">
-                         افزودن ویژگی
+                        افزودن ویژگی
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -36,7 +36,8 @@
                                 <button class="btn btn-primary w-100" type="submit" name="submit">افزودن</button>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('admin.attributes.index') }}" class="btn btn-danger w-100" type="cancel" name="cancel">بازگشت</a>
+                                <a href="{{ route('admin.attributes.index') }}" class="btn btn-danger w-100"
+                                   type="cancel" name="cancel">بازگشت</a>
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     مقاله : {{ $article->title }}
 @endsection
@@ -33,7 +33,8 @@
                         </div>
                         <div class="form-group col-12 col-lg-12">
                             <label>متن</label>
-                            <textarea type="text" class="form-control" disabled>{{ strip_tags($article->text) }}</textarea>
+                            <textarea type="text" class="form-control"
+                                      disabled>{{ strip_tags($article->text) }}</textarea>
                         </div>
                         <div class="form-group col-12 col-lg-4">
                             <label>وضعیت</label>
@@ -54,7 +55,9 @@
                         <div class="form-group col-12 col-lg-6">
                             <div class="card-body">
                                 <div class="row">
-                                    <img class="card-img" src="{{ url(env('ARTICLE_IMAGE_UPLOAD_PATH')) . '/' . $article->primary_image }}" alt="{{ $article->title }}-image">
+                                    <img class="card-img"
+                                         src="{{ url(env('ARTICLE_IMAGE_UPLOAD_PATH')) . '/' . $article->primary_image }}"
+                                         alt="{{ $article->title }}-image">
                                 </div>
                             </div>
                         </div>

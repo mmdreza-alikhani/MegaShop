@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title' , 'ایجاد برند')
 @php
     $active_parent = 'brands';
@@ -21,7 +21,8 @@
                                 <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}">
                             </div>
                             <div class="form-group col-12 col-lg-6">
-                                <label for="slug" data-bs-toggle="tooltip" data-bs-placement="top" title="اختیاری">نام انگلیسی</label>
+                                <label for="slug" data-bs-toggle="tooltip" data-bs-placement="top" title="اختیاری">نام
+                                    انگلیسی</label>
                                 <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug') }}">
                             </div>
                             <div class="form-group col-12 col-lg-12">
@@ -47,7 +48,8 @@
                                 <button class="btn btn-primary w-100" type="submit" name="submit">افزودن</button>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('admin.brands.index') }}" class="btn btn-danger w-100" type="cancel" name="cancel">بازگشت</a>
+                                <a href="{{ route('admin.brands.index') }}" class="btn btn-danger w-100" type="cancel"
+                                   name="cancel">بازگشت</a>
                             </div>
                         </div>
                     </div>

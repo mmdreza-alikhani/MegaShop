@@ -6,6 +6,7 @@ use Cviebrock\EloquentSluggable\Services\SlugService;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class News extends Model
@@ -39,8 +40,9 @@ class News extends Model
     public function tags(){
         return $this->belongsToMany(Tag::class, 'news_tag');
     }
-    public function comments(){
-        return $this->hasMany(Comment::class)->where('approved', 1);
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable')->where('approved', 1);
     }
     public function author(){
         return $this->belongsTo(User::class, 'user_id');

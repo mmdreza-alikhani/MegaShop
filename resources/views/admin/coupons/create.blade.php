@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title' , 'ایجاد کد تخفیف')
 @php
     $active_parent = 'coupons';
@@ -33,19 +33,23 @@
                             </div>
                             <div class="form-group col-12 col-lg-3">
                                 <label for="amount">مبلغ:*</label>
-                                <input type="text" name="amount" id="amount" class="form-control" value="{{ old('amount') }}">
+                                <input type="text" name="amount" id="amount" class="form-control"
+                                       value="{{ old('amount') }}">
                             </div>
                             <div class="form-group col-12 col-lg-4">
                                 <label for="percentage">درصد:*</label>
-                                <input type="text" name="percentage" id="percentage" class="form-control" value="{{ old('percentage') }}">
+                                <input type="text" name="percentage" id="percentage" class="form-control"
+                                       value="{{ old('percentage') }}">
                             </div>
                             <div class="form-group col-12 col-lg-4">
                                 <label for="max_percentage_amount">حداکثر مبلغ برای نوع درصدی:*</label>
-                                <input type="text" name="max_percentage_amount" id="max_percentage_amount" class="form-control" value="{{ old('max_percentage_amount') }}">
+                                <input type="text" name="max_percentage_amount" id="max_percentage_amount"
+                                       class="form-control" value="{{ old('max_percentage_amount') }}">
                             </div>
                             <div class="form-group col-12 col-lg-4">
                                 <label for="expired_at">تاریخ انقضا:*</label>
-                                <input data-jdp name="expired_at" id="expired_at" class="form-control" value="{{ old('expired_at') }}">
+                                <input data-jdp name="expired_at" id="expired_at" class="form-control"
+                                       value="{{ old('expired_at') }}">
                             </div>
                             <div class="form-group col-12 col-lg-12">
                                 <label for="editor">توضیحات:*</label>
@@ -82,7 +86,7 @@
 @section('scripts')
     <script>
         ClassicEditor
-            .create( document.querySelector( '#editor' ), {
+            .create(document.querySelector('#editor'), {
                 language: {
                     // The UI will be English.
                     ui: 'fa',
@@ -90,14 +94,14 @@
                     // But the content will be edited in Arabic.
                     content: 'fa'
                 }
-            } )
-            .then( editor => {
+            })
+            .then(editor => {
                 window.editor = editor;
-            } )
-            .catch( err => {
-                console.error( err.stack );
-            } );
+            })
+            .catch(err => {
+                console.error(err.stack);
+            });
 
-        jalaliDatepicker.startWatch({ time: true });
+        jalaliDatepicker.startWatch({time: true});
     </script>
 @endsection

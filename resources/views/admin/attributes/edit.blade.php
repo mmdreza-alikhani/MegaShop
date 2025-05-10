@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     ویرایش ویژگی {{$attribute->name}}
 @endsection
@@ -9,7 +9,8 @@
 @section('content')
     <div class="mx-4">
         @include('admin.sections.errors')
-        <form action="{{ route('admin.attributes.update' , ['attribute' => $attribute->id]) }}" method="POST" class="row">
+        <form action="{{ route('admin.attributes.update' , ['attribute' => $attribute->id]) }}" method="POST"
+              class="row">
             @csrf
             @method('put')
             <div class="col-lg-7 col-12">
@@ -21,8 +22,10 @@
                         <div class="row">
                             <div class="form-group col-12 col-lg-6">
                                 <label for="name">عنوان*</label>
-                                <input type="text" name="name" id="name" class="form-control" value="{{ $attribute->name }}">
-                                <input type="hidden" name="id" id="id" class="form-control" value="{{ $attribute->id }}">
+                                <input type="text" name="name" id="name" class="form-control"
+                                       value="{{ $attribute->name }}">
+                                <input type="hidden" name="id" id="id" class="form-control"
+                                       value="{{ $attribute->id }}">
                             </div>
                         </div>
                     </div>
@@ -40,7 +43,8 @@
                                 <button class="btn btn-primary w-100" type="submit" name="submit">ویرایش</button>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('admin.attributes.index') }}" class="btn btn-danger w-100" type="cancel" name="cancel">بازگشت</a>
+                                <a href="{{ route('admin.attributes.index') }}" class="btn btn-danger w-100"
+                                   type="cancel" name="cancel">بازگشت</a>
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     نمایش کد تخفیف: {{$coupon->name}}
 @endsection
@@ -37,7 +37,8 @@
                         </div>
                         <div class="form-group col-12 col-lg-4">
                             <label>حداکثر مبلغ برای نوع درصدی</label>
-                            <input type="text" value="{{ $coupon->max_percentage_amount }}" class="form-control" disabled>
+                            <input type="text" value="{{ $coupon->max_percentage_amount }}" class="form-control"
+                                   disabled>
                         </div>
                         <div class="form-group col-12 col-lg-4">
                             <label>تاریخ انقضا</label>

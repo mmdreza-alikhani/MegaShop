@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     خبر : {{ $news->name }}
 @endsection
@@ -54,7 +54,9 @@
                         <div class="form-group col-12 col-lg-6">
                             <div class="card-body">
                                 <div class="row">
-                                    <img class="card-img" src="{{ url(env('NEWS_IMAGE_UPLOAD_PATH')) . '/' . $news->primary_image }}" alt="{{ $news->name }}-image">
+                                    <img class="card-img"
+                                         src="{{ url(env('NEWS_IMAGE_UPLOAD_PATH')) . '/' . $news->primary_image }}"
+                                         alt="{{ $news->name }}-image">
                                 </div>
                             </div>
                         </div>

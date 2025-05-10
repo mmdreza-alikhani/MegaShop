@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title' , 'ایجاد پلتفرم')
 @php
     $active_parent = 'platforms';
@@ -39,7 +39,8 @@
                     </div>
                     <div class="card-body">
                         <div class="custom-file col-12 m-1">
-                            <input type="file" name="image" id="image" class="form-control custom-control-input" lang="fa">
+                            <input type="file" name="image" id="image" class="form-control custom-control-input"
+                                   lang="fa">
                             <label for="image" class="custom-file-label">تصویر</label>
                         </div>
                     </div>
@@ -57,7 +58,8 @@
                                 <button class="btn btn-primary w-100" type="submit" name="submit">افزودن</button>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('admin.platforms.index') }}" class="btn btn-danger w-100" type="cancel" name="cancel">بازگشت</a>
+                                <a href="{{ route('admin.platforms.index') }}" class="btn btn-danger w-100"
+                                   type="cancel" name="cancel">بازگشت</a>
                             </div>
                         </div>
                     </div>
@@ -69,7 +71,7 @@
 @endsection
 @section('scripts')
     <script>
-        $('#image').change(function() {
+        $('#image').change(function () {
             const filename = $(this).val();
             $(this).next('.custom-file-label').html(filename)
         })

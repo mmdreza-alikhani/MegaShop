@@ -11,7 +11,6 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Home\CouponController as HomeCouponController;
 use App\Http\Controllers\Home\CartController;
 use App\Http\Controllers\Home\CommentController as HomeCommentController;
 use App\Http\Controllers\Admin\NewsController;
@@ -32,11 +31,7 @@ use App\Http\Controllers\Home\AuthController as HomeAuthController;
 use App\Http\Controllers\Home\ProfileController as HomeProfileController;
 use App\Http\Controllers\Home\ProfileAddresses as HomeProfileAddressesController;
 use App\Http\Controllers\Home\WishListController as HomeWishlistController;
-use App\Models\Comment;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use RealRashid\SweetAlert\Facades\Alert;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,7 +44,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 |
 */
 
-Route::prefix('/admin-panel/management/')->name('admin.')->middleware(['permission:manage-general'])->middleware('auth.check')->group(function (){
+Route::prefix('/management/')->name('admin.')->middleware(['auth.check', 'permission:manage-general'])->group(function (){
 
     Route::get('', [AdminHomeController::class , 'mainPage'])->middleware(['permission:manage-general'])->name('panel');
 
@@ -133,20 +128,19 @@ Route::prefix('/')->name('home.')->group(function (){
 
     Route::get('get_province_cities_list', [HomeProfileAddressesController::class , 'get_province_cities_list']);
 
+    Route::post('comments/{model}/{id}', [HomeCommentController::class , 'store'])->name('comments.store');
+
     Route::prefix('articles/')->name('articles.')->group(function (){
         Route::get('',[HomeArticleController::class , 'index'])->name('index');
         Route::get('{article:slug}',[HomeArticleController::class , 'show'])->name('show');
-        Route::post('comment/{article}', [HomeCommentController::class , 'storeInArticles'])->name('comments.store');
     });
 
     Route::prefix('news/')->name('news.')->group(function (){
         Route::get('',[HomeNewsController::class , 'index'])->name('index');
         Route::get('{news:slug}',[HomeNewsController::class , 'show'])->name('show');
-        Route::post('comment/{news}', [HomeCommentController::class , 'storeInNews'])->name('comments.store');
     });
 
     Route::prefix('products/')->name('products.')->group(function (){
-        Route::post('comment/{product}', [HomeCommentController::class , 'storeInProducts'])->name('comments.store');
         Route::prefix('wishlist/')->middleware('auth.check')->name('wishlist.')->group(function (){
             Route::get('add/{product}', [HomeWishlistController::class , 'add'])->name('add');
             Route::get('remove/{product}', [HomeWishlistController::class , 'remove'])->name('remove');

@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     لیست پلتفرم ها
 @endsection
@@ -12,7 +12,8 @@
     $active_parent = 'platforms';
     $active_child = 'showplatform';
 @endphp
-@section('content')ظ
+@section('content')
+    ظ
     <div class="mx-4">
         <table class="table text-center">
             <thead>

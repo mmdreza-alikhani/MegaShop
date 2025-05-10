@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     لیست نظرات
 @endsection
@@ -7,9 +7,11 @@
     $active_child = 'showcomments';
 @endphp
 @section('content')
-    <form id="search" class="form-inline ml-3 mb-3" action="{{ route('admin.comments.search') }}" method="GET" style="display: flex;align-items: center;justify-content: center">
+    <form id="search" class="form-inline ml-3 mb-3" action="{{ route('admin.comments.search') }}" method="GET"
+          style="display: flex;align-items: center;justify-content: center">
         <div class="input-group input-group-sm">
-            <input class="form-control form-control-navbar" type="text" placeholder="جستجو با متن نظر" value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword">
+            <input class="form-control form-control-navbar" type="text" placeholder="جستجو با متن نظر"
+                   value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword">
             <div class="input-group-append">
                 <button class="btn btn-navbar" type="submit">
                     <i class="fa fa-search"></i>

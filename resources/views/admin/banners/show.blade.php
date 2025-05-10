@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     بنر : {{ $banner->title }}
 @endsection
@@ -67,7 +67,8 @@
                 <div class="card-body">
                     <div class="form-group col-12 col-lg-12">
                         <label>تصویر</label>
-                        <img class="card-img" src="{{ url(env('BANNER_IMAGES_UPLOAD_PATH')) . '/' . $banner->image }}" alt="{{ $banner->title }}-image">
+                        <img class="card-img" src="{{ url(env('BANNER_IMAGES_UPLOAD_PATH')) . '/' . $banner->image }}"
+                             alt="{{ $banner->title }}-image">
                     </div>
                     <a href="{{ route('admin.banners.index') }}" class="btn btn-danger">بازگشت</a>
                 </div>

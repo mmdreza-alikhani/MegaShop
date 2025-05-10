@@ -25,7 +25,7 @@ class Product extends Model
         ];
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -171,8 +171,9 @@ class Product extends Model
         return $this->hasMany(ProductRate::class);
     }
 
-    public function comments(){
-        return $this->hasMany(Comment::class)->where('approved', 1);
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable')->where('approved', 1);
     }
 
     public function checkUserWishlist($userId){

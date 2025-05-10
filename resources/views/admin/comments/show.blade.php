@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     نظر : {{ $comment->user->username }}
 @endsection
@@ -38,10 +38,10 @@
                                 {{$comment->approved}}
                             </span>
                         </div>
-{{--                        <div class="form-group col-12 col-lg-6">--}}
-{{--                            <label>در جواب به نظر:</label>--}}
-{{--                            <input type="text" value="{{ $comment->reply_of == 0 ? 'نظر مستقل' : $comment->reply_for->user->username . ' برای محصول ' . $comment->reply_for->product->name }}" class="form-control" disabled>--}}
-{{--                        </div>--}}
+                        {{--                        <div class="form-group col-12 col-lg-6">--}}
+                        {{--                            <label>در جواب به نظر:</label>--}}
+                        {{--                            <input type="text" value="{{ $comment->reply_of == 0 ? 'نظر مستقل' : $comment->reply_for->user->username . ' برای محصول ' . $comment->reply_for->product->name }}" class="form-control" disabled>--}}
+                        {{--                        </div>--}}
                         <div class="form-group col-12 col-lg-12">
                             <label>متن نظر</label>
                             <input type="text" value="{{ $comment->text }}" class="form-control" disabled>
@@ -57,7 +57,9 @@
                         @if($comment->product_id != null)
                             <div class="form-group col-12 col-lg-3">
                                 <label>امتیاز داده شده</label>
-                                <input type="text" value="{{ $comment->user->rates->where('product_id', $comment->product_id)->first()->rate . ' ستاره' }}" class="form-control" disabled>
+                                <input type="text"
+                                       value="{{ $comment->user->rates->where('product_id', $comment->product_id)->first()->rate . ' ستاره' }}"
+                                       class="form-control" disabled>
                             </div>
                         @endif
                     </div>
@@ -73,17 +75,20 @@
                     <div class="row">
                         @if($comment->getRawOriginal('approved') == 1)
                             <div class="col-12">
-                                <a href="{{ route('admin.comments.changeStatus', ['comment' => $comment->id]) }}" class="btn btn-danger w-100">عدم تایید</a>
+                                <a href="{{ route('admin.comments.changeStatus', ['comment' => $comment->id]) }}"
+                                   class="btn btn-danger w-100">عدم تایید</a>
                             </div>
                         @else
                             <div class="col-12">
-                                <a href="{{ route('admin.comments.changeStatus', ['comment' => $comment->id]) }}" class="btn btn-success w-100">تایید</a>
+                                <a href="{{ route('admin.comments.changeStatus', ['comment' => $comment->id]) }}"
+                                   class="btn btn-success w-100">تایید</a>
                             </div>
                         @endif
                         <hr>
-                            <div class="col-12 mt-3">
-                                <a href="{{ route('admin.comments.index') }}" class="btn btn-outline-danger w-100">بازگشت</a>
-                            </div>
+                        <div class="col-12 mt-3">
+                            <a href="{{ route('admin.comments.index') }}"
+                               class="btn btn-outline-danger w-100">بازگشت</a>
+                        </div>
                     </div>
                 </div>
             </div>

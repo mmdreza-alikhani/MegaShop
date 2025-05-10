@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title' , 'ایجاد خبر')
 @php
     $active_parent = 'news';
@@ -18,7 +18,8 @@
                         <div class="row">
                             <div class="form-group col-12 col-lg-4">
                                 <label for="title">عنوان*</label>
-                                <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}">
+                                <input type="text" name="title" id="title" class="form-control"
+                                       value="{{ old('title') }}">
                             </div>
                             <div class="form-group col-12 col-lg-4">
                                 <label for="is_active">وضعیت انتشار:*</label>
@@ -29,7 +30,8 @@
                             </div>
                             <div class="form-group col-12 col-lg-4">
                                 <label for="tagSelect">تگ ها*</label>
-                                <select id="tagSelect" class="form-control" name="tag_ids[]" multiple data-live-search="true">
+                                <select id="tagSelect" class="form-control" name="tag_ids[]" multiple
+                                        data-live-search="true">
                                     @foreach($tags as $tag)
                                         <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                                     @endforeach
@@ -37,7 +39,8 @@
                             </div>
                             <div class="form-group col-12 col-lg-12">
                                 <label for="summernote">متن*</label>
-                                <textarea id="summernote" type="text" name="text" class="form-control">{{ old('text') }}</textarea>
+                                <textarea id="summernote" type="text" name="text"
+                                          class="form-control">{{ old('text') }}</textarea>
                             </div>
 
                         </div>
@@ -53,7 +56,8 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="custom-file">
-                                <input type="file" name="image" id="image" class="form-control custom-control-input" lang="fa">
+                                <input type="file" name="image" id="image" class="form-control custom-control-input"
+                                       lang="fa">
                                 <label for="image" class="custom-file-label">تصویر اصلی</label>
                             </div>
                         </div>
@@ -85,13 +89,13 @@
 @section('scripts')
     <script>
         $('#tagSelect').selectpicker({
-            'title' : 'انتخاب تگ'
+            'title': 'انتخاب تگ'
         });
-        $('#image').change(function() {
+        $('#image').change(function () {
             const filename = $(this).val();
             $(this).next('.custom-file-label').html(filename)
         })
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#summernote').summernote();
         });
     </script>

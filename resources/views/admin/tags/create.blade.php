@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title' , 'ایجاد تگ')
 @php
     $active_parent = 'tags';
@@ -36,7 +36,8 @@
                                 <button class="btn btn-primary w-100" type="submit" name="submit">افزودن</button>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('admin.tags.index') }}" class="btn btn-danger w-100" type="cancel" name="cancel">بازگشت</a>
+                                <a href="{{ route('admin.tags.index') }}" class="btn btn-danger w-100" type="cancel"
+                                   name="cancel">بازگشت</a>
                             </div>
                         </div>
                     </div>

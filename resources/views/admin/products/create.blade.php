@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title' , 'ایجاد محصول')
 @php
     $active_parent = 'products';
@@ -12,7 +12,7 @@
             <div class="col-lg-12 col-12">
                 <div class="card">
                     <div class="card-header bg-primary">
-                         افزودن محصول
+                        افزودن محصول
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -37,7 +37,8 @@
                             </div>
                             <div class="form-group col-12 col-lg-6">
                                 <label for="tagSelect">تگ ها*</label>
-                                <select id="tagSelect" class="form-control" name="tag_ids[]" multiple data-live-search="true">
+                                <select id="tagSelect" class="form-control" name="tag_ids[]" multiple
+                                        data-live-search="true">
                                     @foreach($tags as $tag)
                                         <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                                     @endforeach
@@ -45,7 +46,8 @@
                             </div>
                             <div class="form-group col-12 col-lg-6">
                                 <label for="platformSelect">پلتفرم*</label>
-                                <select id="platformSelect" class="form-control" name="platform_id" data-live-search="true">
+                                <select id="platformSelect" class="form-control" name="platform_id"
+                                        data-live-search="true">
                                     @foreach($platforms as $platform)
                                         <option value="{{ $platform->id }}">{{ $platform->name }}</option>
                                     @endforeach
@@ -53,7 +55,8 @@
                             </div>
                             <div class="form-group col-12 col-lg-12">
                                 <label for="summernote">توضیحات*</label>
-                                <textarea id="summernote" type="text" name="description" class="form-control">{{ old('description') }}</textarea>
+                                <textarea id="summernote" type="text" name="description"
+                                          class="form-control">{{ old('description') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -68,11 +71,13 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="custom-file col-12 m-1">
-                                <input type="file" name="primary_img" id="primary_img" class="form-control custom-control-input" lang="fa">
+                                <input type="file" name="primary_img" id="primary_img"
+                                       class="form-control custom-control-input" lang="fa">
                                 <label for="primary_img" class="custom-file-label">تصویر اصلی</label>
                             </div>
                             <div class="custom-file col-12 m-1">
-                                <input type="file" name="other_imgs[]" id="other_imgs" class="form-control custom-control-input" lang="fa" multiple>
+                                <input type="file" name="other_imgs[]" id="other_imgs"
+                                       class="form-control custom-control-input" lang="fa" multiple>
                                 <label for="other_imgs" class="custom-file-label">دیگر تصاویر</label>
                             </div>
                         </div>
@@ -89,11 +94,13 @@
                         <div class="row">
                             <div class="form-group col-12 col-lg-6">
                                 <label for="delivery_amount">هزینه ارسال(به تومان)</label>
-                                <input type="text" name="delivery_amount" id="delivery_amount" class="form-control" value="{{ old('delivery_amount') }}">
+                                <input type="text" name="delivery_amount" id="delivery_amount" class="form-control"
+                                       value="{{ old('delivery_amount') }}">
                             </div>
                             <div class="form-group col-12 col-lg-6">
                                 <label for="delivery_amount_per_product">هزینه ارسال به ازای هر محصول(به تومان)</label>
-                                <input type="text" name="delivery_amount_per_product" id="delivery_amount_per_product" class="form-control" value="{{ old('delivery_amount_per_product') }}">
+                                <input type="text" name="delivery_amount_per_product" id="delivery_amount_per_product"
+                                       class="form-control" value="{{ old('delivery_amount_per_product') }}">
                             </div>
                         </div>
                     </div>
@@ -110,9 +117,11 @@
                             <div class="form-group col-12 col-lg-4"></div>
                             <div class="form-group col-12 col-lg-4">
                                 <label for="categorySelect">دسته بندی*</label>
-                                <select id="categorySelect" class="form-control" name="category_id" data-live-search="true">
+                                <select id="categorySelect" class="form-control" name="category_id"
+                                        data-live-search="true">
                                     @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}-{{ $category->parent->name }}</option>
+                                        <option value="{{ $category->id }}">{{ $category->name }}
+                                            -{{ $category->parent->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -133,19 +142,23 @@
                                         <div class="row">
                                             <span class="col-12 col-lg-3 my-2">
                                                 <label for="value">نام*</label>
-                                                <input id="value" type="text" name="variation_values[value][]" class="form-control">
+                                                <input id="value" type="text" name="variation_values[value][]"
+                                                       class="form-control">
                                             </span>
                                             <span class="col-12 col-lg-3 my-2">
                                                 <label for="price">قیمت*</label>
-                                                <input id="price" type="text" name="variation_values[price][]" class="form-control">
+                                                <input id="price" type="text" name="variation_values[price][]"
+                                                       class="form-control">
                                             </span>
                                             <span class="col-12 col-lg-3 my-2">
                                                 <label for="quantity">تعداد*</label>
-                                                <input id="quantity" type="text" name="variation_values[quantity][]" class="form-control">
+                                                <input id="quantity" type="text" name="variation_values[quantity][]"
+                                                       class="form-control">
                                             </span>
                                             <span class="col-12 col-lg-3 my-2">
                                                 <label for="sku">شناسه عددی*</label>
-                                                <input id="sku" type="text" name="variation_values[sku][]" class="form-control">
+                                                <input id="sku" type="text" name="variation_values[sku][]"
+                                                       class="form-control">
                                             </span>
                                         </div>
                                     </div>
@@ -169,7 +182,8 @@
                                 <button class="btn btn-primary w-100" type="submit" name="submit">افزودن</button>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('admin.products.index') }}" class="btn btn-danger w-100" type="cancel" name="cancel">بازگشت</a>
+                                <a href="{{ route('admin.products.index') }}" class="btn btn-danger w-100" type="cancel"
+                                   name="cancel">بازگشت</a>
                             </div>
                         </div>
                     </div>
@@ -180,46 +194,46 @@
 @endsection
 @section('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#summernote').summernote();
         });
 
         $('#brandSelect').selectpicker({
-            'title' : 'انتخاب برند'
+            'title': 'انتخاب برند'
         });
 
         $('#platformSelect').selectpicker({
-            'title' : 'انتخاب پلتفرم'
+            'title': 'انتخاب پلتفرم'
         });
 
         $('#tagSelect').selectpicker({
-            'title' : 'انتخاب تگ'
+            'title': 'انتخاب تگ'
         });
 
         $('#genreSelect').selectpicker({
-            'title' : 'انتخاب ژانر'
+            'title': 'انتخاب ژانر'
         });
 
         $('#categorySelect').selectpicker({
-            'title' : 'انتخاب دسته بندی'
+            'title': 'انتخاب دسته بندی'
         });
 
-        $('#primary_img').change(function() {
+        $('#primary_img').change(function () {
             const filename = $(this).val();
             $(this).next('.custom-file-label').html(filename)
         })
 
-        $('#other_imgs').change(function() {
+        $('#other_imgs').change(function () {
             const filename = $(this).val();
             $(this).next('.custom-file-label').html(filename)
         })
 
         $('#attributeContainer').hide()
-        $('#categorySelect').on('changed.bs.select' , function () {
+        $('#categorySelect').on('changed.bs.select', function () {
             const categoryId = $(this).val();
 
-            $.get(`{{ url('/admin-panel/management/get-category-attribute/${categoryId}') }}`, function(response , status){
-                if(status === 'success'){
+            $.get(`{{ url('/admin-panel/management/get-category-attribute/${categoryId}') }}`, function (response, status) {
+                if (status === 'success') {
                     $('#attributeContainer').fadeIn()
 
                     $('#attributes').find('div').remove();
@@ -227,17 +241,17 @@
 
                     response.attributes.forEach(attribute => {
                         const attributeFormgroup = $('<div/>', {
-                            class : 'form-group col-12 col-lg-4'
+                            class: 'form-group col-12 col-lg-4'
                         });
                         const attributeLable = $('<lable/>', {
-                            for : attribute.name,
-                            text : attribute.name
+                            for: attribute.name,
+                            text: attribute.name
                         });
                         const attributeInput = $('<input/>', {
-                            id : attribute.name,
-                            type : 'text',
-                            class : 'form-control',
-                            name : `attribute_ids[${attribute.id}]`
+                            id: attribute.name,
+                            type: 'text',
+                            class: 'form-control',
+                            name: `attribute_ids[${attribute.id}]`
                         });
 
                         attributeFormgroup.append(attributeLable);
@@ -250,10 +264,10 @@
                         $('#variationName').text(variation.name);
                     })
 
-                }else{
+                } else {
                     alert('مشکلی پیش آمد!')
                 }
-            }).fail(function(){
+            }).fail(function () {
                 alert('مشکلی پیش آمد!')
             })
 

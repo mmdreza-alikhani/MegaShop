@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+@extends('admin.layout.master')
 @section('title')
     ویرایش برند {{$brand->name}}
 @endsection
@@ -21,18 +21,23 @@
                         <div class="row">
                             <div class="form-group col-12 col-lg-6">
                                 <label for="name">عنوان*</label>
-                                <input type="text" name="name" id="name" class="form-control" value="{{ $brand->name }}">
+                                <input type="text" name="name" id="name" class="form-control"
+                                       value="{{ $brand->name }}">
                                 <input type="hidden" name="id" id="id" class="form-control" value="{{ $brand->id }}">
                             </div>
                             <div class="form-group col-12 col-lg-6">
                                 <label for="slug">نام انگلیسی</label>
-                                <input type="text" name="slug" id="slug" class="form-control" placeholder="{{$brand->slug}}">
+                                <input type="text" name="slug" id="slug" class="form-control"
+                                       placeholder="{{$brand->slug}}">
                             </div>
                             <div class="form-group col-12 col-lg-12">
                                 <label for="is_active">وضعیت انتشار:*</label>
                                 <select class="form-control" id="is_active" name="is_active">
-                                    <option value="1" {{ $brand->getRawOriginal('is_active') ? 'selected' : '' }}>فعال</option>
-                                    <option value="0" {{ $brand->getRawOriginal('is_active') ? '' : 'selected' }}>غیرفعال</option>
+                                    <option value="1" {{ $brand->getRawOriginal('is_active') ? 'selected' : '' }}>فعال
+                                    </option>
+                                    <option value="0" {{ $brand->getRawOriginal('is_active') ? '' : 'selected' }}>
+                                        غیرفعال
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -51,7 +56,8 @@
                                 <button class="btn btn-primary w-100" type="submit" name="submit">ویرایش</button>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('admin.brands.index') }}" class="btn btn-danger w-100" type="cancel" name="cancel">بازگشت</a>
+                                <a href="{{ route('admin.brands.index') }}" class="btn btn-danger w-100" type="cancel"
+                                   name="cancel">بازگشت</a>
                             </div>
                         </div>
                     </div>
