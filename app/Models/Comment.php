@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -15,10 +17,38 @@ class Comment extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = "comments";
-    protected $guarded = [];
     protected $appends = ['rates'];
 
-    public function user(){
+    protected $fillable = [
+        'user_id',
+        'commentable_id',
+        'commentable_type',
+        'reply_of',
+        'text',
+        'status',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'user_id' => 'integer',
+        'commentable_id' => 'integer',
+        'commentable_type' => 'string',
+        'reply_of' => 'integer',
+        'slug' => 'string',
+        'text' => 'string',
+        'status' => 'integer',
+        'is_active' => 'boolean'
+    ];
+
+    // Default Values
+    protected $attributes = [
+        'reply_of' => '0',
+        'is_active' => 0,
+        'status' => '1'
+    ];
+
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
@@ -27,19 +57,23 @@ class Comment extends Model
         return $this->morphTo();
     }
 
-    public function rates(){
+    public function rates(): BelongsTo
+    {
         return $this->belongsTo(ProductRate::class);
     }
 
-    public function getApprovedAttribute($approved){
-        return $approved ? 'منتشر شده' : 'در حال بررسی';
+    public function getIsActiveAttribute($is_active): string
+    {
+        return $is_active ? 'منتشر شده' : 'رد شده';
     }
 
-    public function reply_for(){
+    public function parent(): BelongsTo
+    {
         return $this->belongsTo(Comment::class, 'reply_of');
     }
 
-    public function child(){
+    public function child(): HasMany
+    {
         return $this->hasMany(Comment::class, 'reply_of');
     }
 

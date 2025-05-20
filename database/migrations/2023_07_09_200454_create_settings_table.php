@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('address');
             $table->string('telephone');
-            $table->string('telephone2')->nullable();
             $table->string('instagram')->nullable();
             $table->string('telegram')->nullable();
             $table->string('github')->nullable();
             $table->string('linkedin')->nullable();
+            $table->integer('delivery_amount');
             $table->timestamps();
         });
     }

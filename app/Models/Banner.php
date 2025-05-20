@@ -11,9 +11,46 @@ class Banner extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = "banners";
-    protected $guarded = [];
 
-    public function getIsActiveAttribute($is_active){
+    protected $fillable = [
+        'image',
+        'title',
+        'text',
+        'priority',
+        'type',
+        'button_text',
+        'button_link',
+        'button_icon',
+        'status',
+        'is_active'
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'image' => 'string',
+        'title' => 'string',
+        'text' => 'string',
+        'priority' => 'integer',
+        'type' => 'string',
+        'button_text' => 'string',
+        'button_link' => 'string',
+        'button_icon' => 'string',
+        'status' => 'integer',
+        'is_active' => 'boolean'
+    ];
+
+    // Default Values
+    protected $attributes = [
+        'is_active' => true,
+        'status' => '1'
+    ];
+
+    public function getIsActiveAttribute($is_active): string
+    {
         return $is_active ? 'فعال' : 'غیرفعال';
     }
 }

@@ -4,12 +4,23 @@ function rtl() {
 }
 
 function dark() {
-  var body = document.body;
-  body.classList.toggle("dark");
+    const body = document.body;
+    body.classList.toggle("dark");
+
+    // Save the theme preference in local storage
+    if (body.classList.contains("dark")) {
+        localStorage.setItem("theme", "dark");
+    } else {
+        localStorage.setItem("theme", "light");
+    }
 }
 
-
-
+// Apply the saved theme when the page loads
+document.addEventListener("DOMContentLoaded", function () {
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+    }
+});
 
 $(document).ready(function () {
   $("ul.a-collapse").click(function () {
@@ -52,7 +63,7 @@ var ctx = new Chart(ctx, {
     }]
 },
   options: {
-      
+
   }
 });
 
@@ -77,7 +88,7 @@ var myChart4 = new Chart(myChart4, {
     }]
 },
   options: {
-     
+
   }
 });
 
@@ -86,7 +97,7 @@ var myChart4 = new Chart(myChart4, {
 var mixChart = document.getElementById('myChart5');
 var mixedChart = new Chart(mixChart, {
   type: 'bar',
-  
+
   data: {
     labels: ['Red', 'Green', 'Yellow', 'Grey', 'Blue','Red', 'Green', 'Yellow', 'Grey', 'Blue'],
       datasets: [{

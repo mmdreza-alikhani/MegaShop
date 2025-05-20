@@ -13,16 +13,10 @@ return new class extends Migration
     {
         Schema::create('product_attributes', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('attribute_id');
-            $table->foreign('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
-
-            $table->foreignId('product_id');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-
+            $table->foreignId('attribute_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('value');
-            $table->boolean('is_active')->default(1);
-
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }

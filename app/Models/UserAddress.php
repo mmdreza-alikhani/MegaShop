@@ -9,5 +9,24 @@ class UserAddress extends Model
 {
     use HasFactory;
     protected $table = "user_addresses";
-    protected $guarded = [];
+
+    protected $fillable = [
+        'title',
+        'address',
+        'postal_code',
+        'phone_number',
+        'user_id',
+        'province_id',
+        'city_id',
+        'longitude',
+        'latitude',
+    ];
+
+    protected $casts = [
+        'user_id' => 'integer',
+        'province_id' => 'integer',
+        'city_id' => 'integer',
+        'longitude' => 'string',
+        'latitude' => 'string',
+    ];
 }

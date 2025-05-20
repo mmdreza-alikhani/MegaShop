@@ -12,18 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attribute_category', function (Blueprint $table) {
-
-            $table->foreignId('attribute_id');
-            $table->foreign('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
-
-            $table->foreignId('category_id');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-
-            $table->boolean('is_filter')->default(0);
-            $table->boolean('is_variation')->default(0);
-
-            $table->primary(['attribute_id' ,'category_id']);
-
+            $table->foreignId('attribute_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->boolean('is_filter')->default(false);
+            $table->boolean('is_variation')->default(false);
+            $table->primary(['attribute_id', 'category_id']);
             $table->timestamps();
         });
     }

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -13,11 +16,19 @@ class HomeController extends Controller
 {
     public function mainPage(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        $orders = \App\Models\Order::where('status', '1')->where('updated_at', '>=', Carbon::now()->subHours(24)->toDateTimeString())->get();
-        $recentUsers = \App\Models\User::where('status', '1')->where('updated_at', '>=', Carbon::now()->subHours(24)->toDateTimeString())->get();
-        $products = \App\Models\Product::where('status', '1')->where('updated_at', '>=', Carbon::now()->subHours(24)->toDateTimeString())->get();
+        $orderCount = Order::where('status', '1')
+            ->where('updated_at', '>=', Carbon::now()->subHours(24))
+            ->count();
+
+        $recentUserCount = User::where('status', '1')
+            ->where('updated_at', '>=', Carbon::now()->subHours(24))
+            ->count();
+
+        $productCount = Product::where('status', '1')
+            ->where('updated_at', '>=', Carbon::now()->subHours(24))
+            ->count();
         $user = Auth::user();
 
-        return view('admin.index', compact('orders','recentUsers', 'user', 'products'));
+        return view('admin.index', compact('orderCount','recentUserCount', 'productCount', 'user'));
     }
 }

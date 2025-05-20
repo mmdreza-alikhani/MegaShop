@@ -15,17 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-
-            $table->foreignId('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('primary_image');
             $table->text('text');
-            $table->integer('status')->default(1);
-            $table->boolean('is_active')->default(1);
-
+            $table->boolean('is_active');
+            $table->integer('status');
+            $table->softDeletes();
             $table->timestamps();
-
         });
     }
 

@@ -6,23 +6,51 @@ use Cviebrock\EloquentSluggable\Services\SlugService;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, sluggable;
 
-    use HasFactory , sluggable;
+    protected $table = "categories";
+
+    protected $fillable = [
+        'title',
+        'slug',
+        'description',
+        'parent_id',
+        'status',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'title' => 'string',
+        'slug' => 'string',
+        'description' => 'string',
+        'parent_id' => 'integer',
+        'status' => 'integer',
+        'is_active' => 'boolean'
+    ];
+
+    // Default Values
+    protected $attributes = [
+        'is_active' => 1,
+        'status' => '1',
+        'parent_id' => '0'
+    ];
 
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'name'
+                'source' => 'title'
             ]
         ];
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -31,28 +59,39 @@ class Category extends Model
         });
     }
 
-    protected $table = "categories";
-    protected $guarded = [];
-
-    public function getIsActiveAttribute($is_active){
+    public function getIsActiveAttribute($is_active): string
+    {
         return $is_active ? 'فعال' : 'غیرفعال';
     }
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class , 'parent_id');
     }
 
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(Category::class , 'parent_id');
     }
 
-    public function attributes(){
+    public function allChildren(): HasMany
+    {
+        return $this->children()->with('allChildren');
+    }
+
+
+    public function attributes(): BelongsToMany
+    {
         return $this->belongsToMany(Attribute::class , 'attribute_category');
     }
 
-    public function products(){
-        return $this->parent_id != 0 ? $this->hasMany(Product::class) : $this->children()->first()->hasMany(Product::class) ;
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function allProducts()
+    {
+        return Product::whereIn('category_id', '=', $this->getAllCategoryIds())->get();
     }
 }

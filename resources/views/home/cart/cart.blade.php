@@ -1,4 +1,4 @@
-@extends('home.layouts.master')
+@extends('home.layout.master')
 
 @section('title')
     سبد خرید
@@ -105,7 +105,7 @@
                             </td>
                         </tr>
                         @if(cartTotalSaleAmount() == 0)
-                            
+
                         @else
                         <tr class="nk-store-cart-totals-shipping">
                             <td>

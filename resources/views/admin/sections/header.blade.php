@@ -63,10 +63,10 @@
                         {{ auth()->user()->username . ', خوش اومدی!' }}
                     </button>
                     <div class="dropdown-menu  pl-3 dropdown-menu-right dropdown-menu dropdown-menu-right">
-                        {{-- <button onclick="dark()" class="dropdown-item" type="button">
+                        <button onclick="dark()" class="dropdown-item" type="button">
                             <i class="fas fa-moon fa-sm c-main mr-2"></i>
                             حالت شب
-                        </button> --}}
+                        </button>
 {{--                        <form method="post" action="{{ route('toggleActive') }}">--}}
 {{--                            @csrf--}}
 {{--                            <button class="dropdown-item" type="submit">--}}

@@ -1,4 +1,4 @@
-@extends('home.layouts.master')
+@extends('home.layout.master')
 
 @section('title')
     تمامی اخبار

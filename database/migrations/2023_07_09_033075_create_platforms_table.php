@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('platforms', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
             $table->string('slug')->unique();
-            $table->boolean('is_active')->default(1);
             $table->string('image')->nullable();
+            $table->integer('status');
+            $table->boolean('is_active');
             $table->softDeletes();
             $table->timestamps();
         });

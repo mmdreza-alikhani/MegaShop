@@ -13,24 +13,16 @@ return new class extends Migration
     {
         Schema::create('product_variations', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('attribute_id');
-            $table->foreign('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
-
-            $table->foreignId('product_id');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-
+            $table->foreignId('attribute_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('value');
-            $table->unsignedInteger('price')->default(0);
-            $table->unsignedInteger('quantity')->default(0);
-            $table->string('sku')->nullable();
-
+            $table->unsignedInteger('price');
+            $table->unsignedInteger('quantity');
+            $table->string('sku')->unique();
             $table->unsignedInteger('sale_price')->nullable();
             $table->timestamp('date_on_sale_from')->nullable();
             $table->timestamp('date_on_sale_to')->nullable();
-
             $table->timestamps();
-
             $table->softDeletes();
         });
     }

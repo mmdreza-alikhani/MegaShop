@@ -4,14 +4,37 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Transaction extends Model
 {
     use HasFactory;
     protected $table = "transactions";
-    protected $guarded = [];
 
-    public function order(){
+    protected $fillable = [
+        'user_id',
+        'order_id',
+        'amount',
+        'ref_id',
+        'token',
+        'description',
+        'gateway_name',
+        'status',
+    ];
+
+    protected $casts = [
+        'user_id' => 'integer',
+        'order_id' => 'integer',
+        'amount' => 'integer',
+        'status' => 'integer',
+    ];
+
+    protected $attributes = [
+        'status' => 0,
+    ];
+
+    public function order(): BelongsTo
+    {
         return $this->belongsTo(Order::class);
     }
 }

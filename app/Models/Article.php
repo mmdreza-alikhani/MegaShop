@@ -6,15 +6,42 @@ use Cviebrock\EloquentSluggable\Services\SlugService;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Article extends Model
 {
-    use HasFactory, sluggable;
+    use HasFactory, sluggable, SoftDeletes;
 
     protected $table = "articles";
-    protected $guarded = [];
+
+    protected $fillable = [
+        'title',
+        'slug',
+        'user_id',
+        'primary_image',
+        'text',
+        'status',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'title' => 'string',
+        'slug' => 'string',
+        'user_id' => 'integer',
+        'primary_image' => 'string',
+        'text' => 'string',
+        'status' => 'integer',
+        'is_active' => 'boolean'
+    ];
+
+    // Default Values
+    protected $attributes = [
+        'is_active' => 1,
+        'status' => '1'
+    ];
 
     public function sluggable(): array
     {
@@ -25,7 +52,7 @@ class Article extends Model
         ];
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -34,17 +61,22 @@ class Article extends Model
         });
     }
 
-    public function getIsActiveAttribute($is_active){
+
+
+    public function getIsActiveAttribute($is_active): string
+    {
         return $is_active ? 'فعال' : 'غیرفعال';
     }
-    public function tags(){
+    public function tags(): BelongsToMany
+    {
         return $this->belongsToMany(Tag::class, 'article_tag');
     }
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable')->where('approved', 1);
     }
-    public function author(){
+    public function author(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
 }

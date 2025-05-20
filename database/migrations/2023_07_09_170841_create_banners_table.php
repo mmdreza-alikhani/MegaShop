@@ -17,14 +17,14 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->string('text')->nullable();
             $table->string('priority')->nullable();
-            $table->string('is_active')->default(1);
             $table->string('type');
             $table->string('button_text')->nullable();
             $table->string('button_link')->nullable();
             $table->string('button_icon')->nullable();
-            $table->timestamps();
-
+            $table->integer('status');
+            $table->boolean('is_active');
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

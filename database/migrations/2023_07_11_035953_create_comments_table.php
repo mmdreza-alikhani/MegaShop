@@ -13,15 +13,13 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-
-            $table->unsignedBigInteger('commentable_id'); // ID of related model
-            $table->string('commentable_type'); // Model type (Product, Article, News)
-
-            $table->unsignedInteger('reply_of')->default(0);
-            $table->boolean('approved')->default(0);
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('commentable_id');
+            $table->string('commentable_type');
+            $table->unsignedInteger('reply_of');
             $table->text('text');
-
+            $table->integer('status');
+            $table->boolean('is_active');
             $table->softDeletes();
             $table->timestamps();
 
