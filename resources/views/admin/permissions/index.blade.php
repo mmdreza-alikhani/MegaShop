@@ -1,4 +1,4 @@
-@extends('layout.master')
+@extends('admin.layout.master')
 
 @section('title')
     دسترسی ها
@@ -22,7 +22,7 @@
                         <div class="col-lg-4">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item">
-                                    <a href="{{ route('home.panel') }}"><i class="fas fa-home"></i></a>
+                                    <a href="{{ route('admin.panel') }}"><i class="fas fa-home"></i></a>
                                 </li>
                                 <li class="breadcrumb-item active">دسترسی ها</li>
                             </ol>
@@ -52,7 +52,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            @include('layout.errors', ['errors' => $errors->createPermission])
+                            @include('admin.layout.errors', ['errors' => $errors->createPermission])
                             <p>نام: *</p>
                             <div class="input-group mb-3 col-md-6 col-12">
                                 <input type="text" class="form-control" name="name" value="{{ old('name') }}" required/>

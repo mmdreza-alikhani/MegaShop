@@ -3,6 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
+use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
@@ -17,127 +25,79 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|Application|Factory
     {
         $users = User::latest()->paginate(10);
-        return view('admin.users.index', compact('users'));
-    }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('admin.users.create');
+        $roles = Role::all();
+        $permissions = Permission::all();
+        return view('admin.users.index', compact('users', 'roles', 'permissions'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request): RedirectResponse
     {
-        $request->validate([
-            'username' => ['required',Rule::unique('users')],
-            'first_name' => 'nullable',
-            'last_name' => 'nullable',
-            'password' => 'required|min:8|max:12',
-            'email' => ['required',Rule::unique('users')],
-            'phone_number' => ['nullable',Rule::unique('users')]
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $user = User::create([
-            'username' => $request->username,
-            'first_name' => $request->first_name ? $request->first_name : '',
-            'last_name' => $request->last_name ? $request->last_name : '',
-            'email' => $request->email,
-            'phone_number' => $request->phone_number ? $request->phone_number : '',
-            'password' => Hash::make($request->password),
-            'provider_name' => 'manual'
-        ]);
+            User::create(Arr::only($request->validated(), [
+                'username', 'first_name', 'last_name', 'email', 'phone_number',
+            ]) + [
+                'password' => Hash::make($request->password),
+                'provider_name' => 'manual'
+            ]);
 
-        toastr()->success('با موفقیت کاربر اضافه شد.');
+            DB::commit();
+        }catch (Exception $ex) {
+            DB::rollBack();
+            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            return redirect()->back();
+        }
+
+        toastr()->success('با موفقیت اضافه شد!');
         return redirect()->back();
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        $comments = $user->comments;
-        $favorites = $user->wishlist;
-        $orders = $user->orders;
-        return view('admin.users.show' , compact('user', 'comments', 'favorites', 'orders'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        $roles = Role::all();
-        $permissions = Permission::all();
-        return view('admin.users.edit' , compact('user', 'roles', 'permissions'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $request->validate([
-            'username' => ['required',Rule::unique('users')->ignore($request->user->id)],
-            'first_name' => 'nullable',
-            'last_name' => 'nullable',
-            'email' => ['required',Rule::unique('users')->ignore($request->user->id)],
-            'phone_number' => ['nullable',Rule::unique('users')->ignore($request->user->id)],
-            'password' => 'nullable|min:8|max:12',
-            'status' => 'required'
-        ]);
-
         try {
-            DB::beginTransaction();
-
-                if($request->email != $user->email){
-                    $user->update([
-                        'email_verified_at' => null
-                    ]);
+            DB::transaction(function () use ($request, $user) {
+                if ($request->email !== $user->email) {
+                    $user->update(['email_verified_at' => null]);
                 }
 
-                $permissions = $request->except('_token', '_method', 'username', 'user_id', 'role', 'first_name', 'last_name', 'phone_number', 'email', 'newPassword', 'status', 'submit');
-                $user->syncPermissions($permissions);
-
+                $user->syncPermissions($request->except([
+                    '_token', '_method', 'username', 'role', 'first_name',
+                    'last_name', 'phone_number', 'email'
+                ]));
                 $user->syncRoles($request->role);
 
-                $user->update([
-                    'username' => $request->username,
-                    'first_name' => $request->first_name ? $request->first_name : $user->first_name,
-                    'last_name' => $request->last_name ? $request->last_name : $user->last_name,
-                    'email' => $request->email,
-                    'phone_number' => $request->phone_number ? $request->phone_number : $user->phone_number,
-                    'password' => Hash::make($request->password),
-                    'status' => $request->status
-                ]);
+                $user->update(array_merge(
+                    $request->only(['username', 'email', 'status']),
+                    [
+                        'first_name' => $request->first_name ?: $user->first_name,
+                        'last_name' => $request->last_name ?: $user->last_name,
+                        'phone_number' => $request->phone_number ?: $user->phone_number,
+                        'password' => Hash::make($request->password),
+                    ]
+                ));
+            });
 
-            DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollBack();
-                    toastr()->error($ex->getMessage() . ' مشکل در ویرایش کردن کاربر');
-                    return redirect()->back();
+            toastr()->success('با موفقیت ویرایش شد!');
+        } catch (Exception $ex) {
+            toastr()->error($ex->getMessage() . ' مشکلی پیش آمد!');
         }
 
-        toastr()->success('با موفقیت کاربر ویرایش شد.');
         return redirect()->back();
     }
 
-    public function search(Request $request)
+    public function search(): View|Application|Factory
     {
-        $keyWord = request()->keyword;
-        if (request()->has('keyword') && trim($keyWord) != ''){
-            $users = User::where('username', 'LIKE', '%'.trim($keyWord).'%')->latest()->paginate(10);
-            return view('admin.users.index' , compact('users'));
-        }else{
-            $users = User::latest()->paginate(10);
-            return view('admin.users.index' , compact('users'));
-        }
+        $users = User::search('username', trim(request()->keyword))->latest()->paginate(10);
+        return view('admin.users.index', compact('users'));
     }
 }

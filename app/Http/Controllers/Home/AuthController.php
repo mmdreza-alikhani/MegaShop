@@ -5,27 +5,39 @@ namespace App\Http\Controllers\Home;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
+use Random\RandomException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class AuthController extends Controller
 {
-    public function login(){
+    public function login(): View|Application|Factory
+    {
         return view('auth.login');
     }
 
-    public function register(){
+    public function register(): View|Application|Factory
+    {
         return view('auth.register');
     }
 
-    public function redirectToProvider($provider){
+    public function redirectToProvider($provider): RedirectResponse
+    {
         return Socialite::driver($provider)->redirect();
     }
 
-    public function handleProviderCallback(Request $request,$provider){
+    /**
+     * @throws RandomException
+     */
+    public function handleProviderCallback(Request $request, $provider): \Illuminate\Http\RedirectResponse
+    {
 
         $socialiteUser = Socialite::driver($provider)->stateless()->user();
 

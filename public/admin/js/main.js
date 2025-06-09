@@ -1,7 +1,11 @@
 function rtl() {
-  var body = document.body;
-  body.classList.toggle("rtl");
+    const body = document.body;
+    body.classList.toggle("rtl");
 }
+
+window.addEventListener("load", function() {
+    document.getElementById("preloader").classList.add("fade-out");
+});
 
 function dark() {
     const body = document.body;

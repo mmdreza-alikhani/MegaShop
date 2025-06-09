@@ -4,13 +4,6 @@
     لیست کاربران
 @endsection
 
-{{--@section('button')--}}
-{{--    <a href="{{ route('admin.users.create') }}" class="btn btn-outline-primary">--}}
-{{--        <i class="fa fa-plus"></i>--}}
-{{--        افزودن کاربر جدید--}}
-{{--    </a>--}}
-{{--@endsection--}}
-
 @section('content')
     <main class="bmd-layout-content">
         <div class="container-fluid">
@@ -59,35 +52,35 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                @include('admin.layout.errors', ['errors' => $errors->createUser])
+                                @include('admin.layout.errors', ['errors' => $errors->store])
                                 <div class="row">
                                     <div class="form-group col-12 col-lg-4">
-                                        <label for="username">نام کاربری*</label>
+                                        <label for="username">نام کاربری:*</label>
                                         <input type="text" name="username" id="username" class="form-control"
                                                value="{{ old('username') }}" required>
                                     </div>
                                     <div class="form-group col-12 col-lg-4">
-                                        <label for="first_name">نام</label>
+                                        <label for="first_name">نام:</label>
                                         <input type="text" name="first_name" id="first_name" class="form-control"
                                                value="{{ old('first_name') }}">
                                     </div>
                                     <div class="form-group col-12 col-lg-4">
-                                        <label for="last_name">نام خانوادگی</label>
+                                        <label for="last_name">نام خانوادگی:</label>
                                         <input type="text" name="last_name" id="last_name" class="form-control"
                                                value="{{ old('last_name') }}">
                                     </div>
                                     <div class="form-group col-12 col-lg-4">
-                                        <label for="email">ایمیل</label>
+                                        <label for="email">ایمیل:</label>
                                         <input type="text" name="email" id="email" class="form-control"
-                                               value="{{ old('email') }}" required>
+                                               value="{{ old('email') }}">
                                     </div>
                                     <div class="form-group col-12 col-lg-4">
-                                        <label for="password">رمز عبور</label>
+                                        <label for="password">رمز عبور:</label>
                                         <input type="password" name="password" id="password" class="form-control"
                                                value="{{ old('password') }}" required>
                                     </div>
                                     <div class="form-group col-12 col-lg-4">
-                                        <label for="phone_number">شماره تلفن</label>
+                                        <label for="phone_number">شماره تلفن:</label>
                                         <div class="input-group-prepend">
                                             <input type="tel" name="phone_number" id="phone_number" minlength="10"
                                                    maxlength="10" class="form-control" value="{{ old('phone_number') }}">
@@ -115,7 +108,7 @@
                                     هیج کاربری وجود ندارد!
                                 </div>
                             @else
-                                <table class="table table-striped table-responsive-lg justify-content-around">
+                                <table class="table table-striped table-responsive-lg">
                                     <thead>
                                     <tr>
                                         <th scope="col">#</th>
@@ -138,7 +131,7 @@
                                             <td>
 {{--                                                <img src="{{ Str::contains($user->avatar, 'https://') ? $user->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $user->avatar }}"--}}
 {{--                                                     alt="{{ $user->username }}-image" id="output" width="100" height="100"/>--}}
-                                                {{ $user->phone_number ?: 'شماره تلفنی وجود ندارد.' }}
+                                                {{ '0' . $user->phone_number ?: 'شماره تلفن ثبت نشده!' }}
                                             </td>
                                             <td>
                                                 {{ $user->email }}
@@ -149,19 +142,19 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <span class="badge {{ $user->getRawOriginal('status') ?  'badge-success' : 'badge-secondary' }}">
-                                                    {{ $user->status }}
+                                                <span class="badge {{ $user->getRawOriginal('is_active') ?  'badge-success' : 'badge-secondary' }}">
+                                                    {{ $user->is_active }}
                                                 </span>
                                             </td>
                                             <td>
                                                 <div class="dropdown base show">
-                                                    <a class="btn outlined o-grey dropdown-toggle text-center" role="button" id="dropdownMenuLink" data-toggle="dropdown">
+                                                    <a class="btn o-grey dropdown-toggle text-center" role="button" id="dropdownMenuLink" data-toggle="dropdown">
                                                         <i class="fa fa-cog"></i>
                                                     </a>
                                                     <div class="dropdown-menu">
-                                                        <a class="dropdown-item" data-target="#showUserModal-{{ $user->id }}" data-toggle="modal">نمایش</a>
-                                                        <a class="dropdown-item" data-target="#editUserModal-{{ $user->id }}" data-toggle="modal">ویرایش</a>
-                                                        <a class="dropdown-item" data-target="#deleteUserModal-{{ $user->id }}" data-toggle="modal">ویرایش</a>
+                                                        <a href="#" class="dropdown-item" data-target="#showUserModal-{{ $user->id }}" data-toggle="modal">نمایش</a>
+                                                        <a href="#" class="dropdown-item" data-target="#editUserModal-{{ $user->id }}" data-toggle="modal">ویرایش</a>
+                                                        <a href="#" class="dropdown-item" data-target="#deleteUserModal-{{ $user->id }}" data-toggle="modal">حذف</a>
                                                     </div>
                                                 </div>
                                                 <div class="modal w-lg fade light rtl" id="showUserModal-{{ $user->id }}" tabindex="-1" role="dialog">
@@ -178,33 +171,60 @@
                                                             <div class="modal-body">
                                                                 <div class="row">
                                                                     <div class="form-group col-12 col-lg-4">
-                                                                        <label for="username">نام کاربری:</label>
-                                                                        <input id="username" type="text" class="form-control" value="{{ $user->username }}" disabled>
+                                                                        <label for="username-{{ $user->id }}-show">نام کاربری:</label>
+                                                                        <input id="username-{{ $user->id }}-show" type="text" class="form-control" value="{{ $user->username }}" disabled>
                                                                     </div>
                                                                     <div class="form-group col-12 col-lg-4">
-                                                                        <label for="first_name">نام:</label>
-                                                                        <input id="first_name" type="text" class="form-control" value="{{ $user->first_name }}" disabled>
+                                                                        <label for="first_name-{{ $user->id }}-show">نام:</label>
+                                                                        <input id="first_name-{{ $user->id }}-show" type="text" class="form-control" value="{{ $user->first_name }}" disabled>
                                                                     </div>
                                                                     <div class="form-group col-12 col-lg-4">
-                                                                        <label for="last_name">نام خانوادگی:</label>
-                                                                        <input id="last_name" type="text" class="form-control" value="{{ $user->last_name }}" disabled>
+                                                                        <label for="last_name-{{ $user->id }}-show">نام خانوادگی:</label>
+                                                                        <input id="last_name-{{ $user->id }}-show" type="text" class="form-control" value="{{ $user->last_name }}" disabled>
                                                                     </div>
                                                                     <div class="form-group col-12 col-lg-4">
-                                                                        <label for="email">ایمیل:
+                                                                        <label for="email-{{ $user->id }}-show">ایمیل:
                                                                             @if($user->email_verified_at == null)
                                                                                 <i class="fa fa-times-circle text-danger"></i>
                                                                             @else
                                                                                 <i class="fa fa-check-circle text-success"></i>
                                                                             @endif
                                                                         </label>
-                                                                        <input id="email" type="email" class="form-control" value="{{ $user->email }}" disabled>
+                                                                        <input id="email-{{ $user->id }}-show" type="email" class="form-control" value="{{ $user->email }}" disabled>
                                                                     </div>
                                                                     <div class="form-group col-12 col-lg-4">
-                                                                        <label for="phone_number">شماره تلفن</label>
+                                                                        <label for="phone_number-{{ $user->id }}-show">شماره تلفن:</label>
                                                                         <div class="input-group">
-                                                                            <input id="phone_number" type="text" class="form-control" value="{{ $user->phone_number }}" disabled>
+                                                                            <input id="phone_number-{{ $user->id }}-show" type="text" class="form-control" value="{{ $user->phone_number }}" disabled>
                                                                             <div class="input-group-append">
                                                                                 <div class="input-group-text">+98</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group col-12 col-lg-4">
+                                                                        <label for="created_at-{{ $user->id }}-show">تاریخ ایجاد حساب:</label>
+                                                                        <input id="created_at-{{ $user->id }}-show" type="text" class="form-control" value="{{ verta($user->created_at) }}" disabled>
+                                                                    </div>
+                                                                    <div class="form-group col-12 col-lg-12">
+                                                                        <button class="btn btn-block text-right border border-info" type="button"
+                                                                                data-toggle="collapse" data-target="#permissionsCollapse">
+                                                                            دسترسی به مجوز ها
+                                                                        </button>
+                                                                        <div id="permissionsCollapse" class="collapse">
+                                                                            <div class="row">
+                                                                                @foreach($permissions as $permission)
+                                                                                    <div class="col-lg-2 col-6 p-2 d-flex align-items-center">
+                                                                                        <input type="checkbox"
+                                                                                               value="{{ $permission->name }}"
+                                                                                               id="{{ $permission->name . '-check' }}"
+                                                                                               class="mr-2"
+                                                                                               disabled
+                                                                                            {{ in_array($permission->id, $user->getAllPermissions()->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                                                                        <label for="{{ $permission->name . '-check' }}">
+                                                                                            {{ $permission->display_name }}
+                                                                                        </label>
+                                                                                    </div>
+                                                                                @endforeach
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -218,63 +238,99 @@
                                                 </div>
                                                 <div class="modal w-lg fade light rtl" id="editUserModal-{{ $user->id }}" tabindex="-1" role="dialog">
                                                     <div class="modal-dialog" role="document">
-                                                        <form method="post" action="{{ route('admin.users.store') }}">
+                                                        <form method="post" action="{{ route('admin.users.update', ['user' => $user->id]) }}">
+                                                            @method('put')
                                                             @csrf
                                                             <div class="modal-content card shade">
                                                                 <div class="modal-header">
                                                                     <h5 class="modal-title" id="exampleModalLabel">
-                                                                        ایجاد کاربر جدید
+                                                                        ویرایش کاربر: {{ $user->username }}
                                                                     </h5>
                                                                     <button type="button" class="close" data-dismiss="modal">
                                                                         <span>&times;</span>
                                                                     </button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    @include('admin.layout.errors', ['errors' => $errors->createUser])
+                                                                    @include('admin.layout.errors', ['errors' => $errors->update])
                                                                     <div class="row">
                                                                         <div class="form-group col-12 col-lg-4">
-                                                                            <label for="username">نام کاربری*</label>
-                                                                            <input type="text" name="username" id="username" class="form-control"
-                                                                                   value="{{ old('username') }}" required>
+                                                                            <label for="username-{{ $user->id }}">نام کاربری:*</label>
+                                                                            <input type="text" name="username" id="username-{{ $user->id }}" class="form-control"
+                                                                                   value="{{ $user->username }}" required>
                                                                         </div>
                                                                         <div class="form-group col-12 col-lg-4">
-                                                                            <label for="first_name">نام</label>
-                                                                            <input type="text" name="first_name" id="first_name" class="form-control"
-                                                                                   value="{{ old('first_name') }}">
+                                                                            <label for="first_name-{{ $user->id }}">نام:</label>
+                                                                            <input type="text" name="first_name" id="first_name-{{ $user->id }}" class="form-control"
+                                                                                   value="{{ $user->first_name }}">
                                                                         </div>
                                                                         <div class="form-group col-12 col-lg-4">
-                                                                            <label for="last_name">نام خانوادگی</label>
-                                                                            <input type="text" name="last_name" id="last_name" class="form-control"
-                                                                                   value="{{ old('last_name') }}">
+                                                                            <label for="last_name-{{ $user->id }}">نام خانوادگی:</label>
+                                                                            <input type="text" name="last_name" id="last_name-{{ $user->id }}" class="form-control"
+                                                                                   value="{{ $user->last_name }}">
                                                                         </div>
                                                                         <div class="form-group col-12 col-lg-4">
-                                                                            <label for="email">ایمیل</label>
-                                                                            <input type="text" name="email" id="email" class="form-control"
-                                                                                   value="{{ old('email') }}" required>
+                                                                            <label for="email-{{ $user->id }}">ایمیل:</label>
+                                                                            <input type="text" name="email" id="email-{{ $user->id }}" class="form-control"
+                                                                                   value="{{ $user->email }}" required>
                                                                         </div>
                                                                         <div class="form-group col-12 col-lg-4">
-                                                                            <label for="password">رمز عبور</label>
-                                                                            <input type="password" name="password" id="password" class="form-control"
-                                                                                   value="{{ old('password') }}" required>
-                                                                        </div>
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="phone_number">شماره تلفن</label>
+                                                                            <label for="phone_number-{{ $user->id }}">شماره تلفن:</label>
                                                                             <div class="input-group-prepend">
-                                                                                <input type="tel" name="phone_number" id="phone_number" minlength="10"
-                                                                                       maxlength="10" class="form-control" value="{{ old('phone_number') }}">
+                                                                                <input type="tel" name="phone_number" id="phone_number-{{ $user->id }}" size="10" class="form-control" value="{{ $user->phone_number }}">
                                                                                 <div class="input-group-text">98+</div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group col-12 col-lg-4">
+                                                                            <label for="role">نقش کاربری:</label>
+                                                                            <select class="form-control" id="role-{{ $user->id }}" name="role">
+                                                                                <option></option>
+                                                                                @foreach($roles as $role)
+                                                                                    <option value="{{ $role->name }}" {{ in_array($role->id, $user->roles->pluck('id')->toArray()) ? 'selected' : '' }}>{{ $role->display_name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group col-12 col-lg-12">
+                                                                            <button class="btn btn-block text-right border border-info" type="button"
+                                                                                    data-toggle="collapse" data-target="#permissionsCollapse">
+                                                                                دسترسی به مجوز ها
+                                                                            </button>
+                                                                            <div id="permissionsCollapse" class="collapse">
+                                                                                <div class="row">
+                                                                                    @foreach($permissions as $permission)
+                                                                                        <div class="col-lg-2 col-6 p-2 d-flex align-items-center">
+                                                                                            <input type="checkbox"
+                                                                                                   value="{{ $permission->name }}"
+                                                                                                   name="{{ $permission->name }}"
+                                                                                                   id="{{ $permission->name . '-check' }}"
+                                                                                                   class="mr-2"
+                                                                                                {{ in_array($permission->id, $user->getAllPermissions()->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                                                                            <label for="{{ $permission->name . '-check' }}">
+                                                                                                {{ $permission->display_name }}
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    @endforeach
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
-                                                                    <button type="submit" class="btn main f-main">ایجاد</button>
+                                                                    <button type="submit" class="btn main f-main">ویرایش</button>
                                                                 </div>
                                                             </div>
                                                         </form>
                                                     </div>
                                                 </div>
+                                                @if(count($errors->update) > 0)
+                                                    <script>
+                                                        $(function() {
+                                                            $('#editUserModal-{{ session()->get('user_id') }}').modal({
+                                                                show: true
+                                                            });
+                                                        });
+                                                    </script>
+                                                @endif
                                                 <div class="modal w-lg fade light rtl" id="deleteUserModal-{{ $user->id }}" tabindex="-1" role="dialog">
                                                     <div class="modal-dialog" role="document">
                                                         <form method="post" action="{{ route('admin.users.store') }}">
@@ -289,42 +345,6 @@
                                                                     </button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    @include('admin.layout.errors', ['errors' => $errors->createUser])
-                                                                    <div class="row">
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="username">نام کاربری*</label>
-                                                                            <input type="text" name="username" id="username" class="form-control"
-                                                                                   value="{{ old('username') }}" required>
-                                                                        </div>
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="first_name">نام</label>
-                                                                            <input type="text" name="first_name" id="first_name" class="form-control"
-                                                                                   value="{{ old('first_name') }}">
-                                                                        </div>
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="last_name">نام خانوادگی</label>
-                                                                            <input type="text" name="last_name" id="last_name" class="form-control"
-                                                                                   value="{{ old('last_name') }}">
-                                                                        </div>
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="email">ایمیل</label>
-                                                                            <input type="text" name="email" id="email" class="form-control"
-                                                                                   value="{{ old('email') }}" required>
-                                                                        </div>
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="password">رمز عبور</label>
-                                                                            <input type="password" name="password" id="password" class="form-control"
-                                                                                   value="{{ old('password') }}" required>
-                                                                        </div>
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="phone_number">شماره تلفن</label>
-                                                                            <div class="input-group-prepend">
-                                                                                <input type="tel" name="phone_number" id="phone_number" minlength="10"
-                                                                                       maxlength="10" class="form-control" value="{{ old('phone_number') }}">
-                                                                                <div class="input-group-text">98+</div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
@@ -351,7 +371,7 @@
 
 @section('scripts')
     <script>
-        @if(count($errors->createUser) > 0)
+        @if(count($errors->store) > 0)
         $(function() {
             $('#createUserModal').modal({
                 show: true

@@ -44,9 +44,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('/management/')->name('admin.')->middleware(['auth.check', 'permission:manage-general'])->group(function (){
+Route::prefix('/management/')->name('admin.')->middleware(['permission:manage-general', 'auth.check'])->group(function (){
 
-    Route::get('', [AdminHomeController::class , 'mainPage'])->middleware(['permission:manage-general'])->name('panel');
+    Route::get('', [AdminHomeController::class , 'mainPage'])->name('panel');
 
     Route::resource('users' , UserController::class)->middleware(['permission:manage-users']);
     Route::get('usersSearch', [UserController::class , 'search'])->middleware(['permission:manage-users'])->name('users.search');

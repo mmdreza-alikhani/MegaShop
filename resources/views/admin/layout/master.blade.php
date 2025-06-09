@@ -12,7 +12,7 @@
 </head>
 
 <body class="rtl persianumber">
-
+@include('admin.sections.preloading')
 <div class="bmd-layout-container bmd-drawer-f-l avam-container animated bmd-drawer-in">
     @include('admin.sections.header')
     @include('admin.sections.sidebar')
@@ -22,5 +22,4 @@
 @include('admin.sections.scripts')
 @yield('scripts')
 </body>
-
 </html>

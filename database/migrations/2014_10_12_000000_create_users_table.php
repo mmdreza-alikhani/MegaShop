@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('provider_name');
+            $table->string('avatar')->nullable();
             $table->integer('status');
             $table->boolean('is_active');
             $table->rememberToken();

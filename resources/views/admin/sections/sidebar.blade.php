@@ -2,7 +2,7 @@
     <div class="container-fluid side-bar-container ">
         <header class="pb-0">
             <a class="navbar-brand ">
-                <object class="side-logo" style="margin: -23px 0" data="{{ asset('assets/svg/logo-white.png') }}">
+                <object class="side-logo" data="{{ asset('/assets/images/logo.png') }}">
                 </object>
             </a>
         </header>

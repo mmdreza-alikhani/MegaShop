@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\SearchableTrait;
 use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 class Product extends Model
 {
-    use HasFactory, sluggable;
+    use HasFactory, sluggable, SearchableTrait;
 
     protected $table = "products";
 

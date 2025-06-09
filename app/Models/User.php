@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\SearchableTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,14 +12,19 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @method static latest()
+ * @method static create(array $array)
+ * @method static search(string $string, mixed $keyword)
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SearchableTrait;
 
     protected $fillable = [
         'username',
-        'firstname',
-        'lastname',
+        'first_name',
+        'last_name',
         'phone_number',
         'email',
         'email_verified_at',
@@ -34,21 +40,16 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     protected $casts = [
-        'username' => 'string',
-        'firstname' => 'string',
-        'lastname' => 'string',
-        'phone_number' => 'string',
-        'email' => 'string',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'provider_name' => 'string',
         'status' => 'integer',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     // Default Values
     protected $attributes = [
         'avatar' => 'avatar.png',
+        'is_active' => true,
         'status' => '1'
     ];
 

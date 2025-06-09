@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </li>
-            <li class="nav-item"><img src="{{ asset('assets/img/user.png') }}" alt="..."
+            <li class="nav-item"><img src="{{ asset('/upload/files/avatars/' . auth()->user()->avatar) }}" alt="..."
                                       class="rounded-circle screen-user-profile"></li>
             <li class="nav-item">
                 <div class="dropdown">
