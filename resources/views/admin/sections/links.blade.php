@@ -16,6 +16,4 @@
 <link rel="stylesheet" href="{{ asset('/admin/css/bootstrap-select.min.css') }}">
 <link rel="stylesheet" href="{{ asset('/admin/css/jalalidatepicker.min.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
-
-<script src="{{ asset('/admin/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('/admin/js/jquery-3.2.1.min.js') }}"></script>

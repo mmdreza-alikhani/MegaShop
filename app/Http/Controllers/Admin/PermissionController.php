@@ -3,74 +3,43 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Role\StoreRoleRequest;
+use App\Http\Requests\Admin\Role\UpdateRoleRequest;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class PermissionController extends Controller
 {
-    public function index()
+    public function index(): View|Application|Factory
     {
         $permissions = Permission::latest()->paginate(10);
         return view('admin.permissions.index' , compact('permissions'));
     }
 
-    public function create()
+    public function store(StoreRoleRequest $request): RedirectResponse
     {
-        return view('admin.permissions.create');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|min:3|max:20|unique:App\Models\Permission,name',
-            'displayName' => 'required|min:3|max:20|unique:App\Models\Permission,display_name'
-        ]);
-
         Permission::create([
-            'name' => $request->name,
-            'display_name' => $request->displayName,
+            'name' => $request->input('name'),
+            'display_name' => $request->input('display_name'),
             'guard_name' => 'web',
         ]);
 
-        toastr()->success($request->name . '' . ' با موفقیت به مجوز اضافه شد');
-        return redirect()->route('admin.permissions.index');
+        toastr()->success('با موفقیت اضافه شد!');
+        return redirect()->back();
     }
 
-    public function show(Permission $permission)
+    public function update(UpdateRoleRequest $request, Permission $permission): RedirectResponse
     {
-        return view('admin.permissions.show' , compact('permission'));
-    }
-
-    public function edit(Permission $permission)
-    {
-        return view('admin.permissions.edit' , compact('permission'));
-    }
-
-    public function update(Request $request, Permission $permission)
-    {
-        $id = $request->all()['id'];
-        $request->validate([
-            'name' => ['required','min:3','max:20',Rule::unique('permissions')->ignore($id)],
-            'displayName' => 'required|min:3|max:20'
-        ]);
-
         $permission->update([
-            'name' => $request->name,
-            'display_name' => $request->displayName,
+            'name' => $request->input('name'),
+            'display_name' => $request->display_name,
         ]);
 
-        toastr()->success('با موفقیت مجوز ویرایش شد');
-        return redirect()->route('admin.permissions.index');
-    }
-
-    public function destroy(Request $request)
-    {
-//        Permission::destroy($request->permission);
-//
-//        toastr()->success('مجوز مورد نظر با موفقیت حذف شد!');
-//        return redirect()->back();
+        toastr()->success('با موفقیت ویرایش شد!');
+        return redirect()->back();
     }
 
 }

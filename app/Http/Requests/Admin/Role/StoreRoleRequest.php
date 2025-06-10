@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Admin\Role;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreUserRequest extends FormRequest
+class StoreRoleRequest extends FormRequest
 {
     protected $errorBag = 'store';
     /**
@@ -24,12 +24,8 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|string|unique:users,phone_number',
-            'first_name' => 'nullable|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'password' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email',
-            'phone_number' => 'nullable|integer|size:10|regex:/^9\d{0,11}$/|unique:users,phone_number',
+            'name' => 'required|string|max:255|unique:roles,name',
+            'display_name' => 'required|string|max:255|unique:roles,display_name',
         ];
     }
 }

@@ -3,6 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Role\StoreRoleRequest;
+use App\Http\Requests\Admin\Role\UpdateRoleRequest;
+use Exception;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -11,92 +18,67 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(): View|Application|Factory
     {
         $roles = Role::latest()->paginate(10);
-        return view('admin.roles.index' , compact('roles'));
-    }
-
-    public function create()
-    {
         $permissions = Permission::latest()->get();
-        return view('admin.roles.create', compact('permissions'));
+        return view('admin.roles.index' , compact('roles', 'permissions'));
     }
 
-    public function store(Request $request)
+    public function store(StoreRoleRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|min:3|max:20|unique:App\Models\Role,name',
-            'displayName' => 'required|min:3|max:20|unique:App\Models\Role,display_name'
-        ]);
-
         try {
             DB::beginTransaction();
 
             $role = Role::create([
                 'name' => $request->name,
-                'display_name' => $request->displayName,
+                'display_name' => $request->display_name,
                 'guard_name' => 'web',
             ]);
-            $permissions = $request->except('_token', 'name', 'displayName');
+
+            $permissions = $request->except('_token', 'name', 'display_name');
             $role->givePermissionTo($permissions);
 
             DB::commit();
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . ' مشکل در اضافه کردن محصول');
+            toastr()->error($ex->getMessage() . ' مشکل به وجود آمد!');
             return redirect()->back();
         }
 
-        toastr()->success($request->name . '' . ' با موفقیت به مجوز اضافه شد');
-        return redirect()->route('admin.roles.index');
+        toastr()->success('با موفقیت اضافه شد!');
+        return redirect()->back();
     }
 
-    public function show(Role $role)
+    public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
-        return view('admin.Roles.show' , compact('role'));
-    }
-
-    public function edit(Role $role)
-    {
-        $permissions = Permission::latest()->get();
-        return view('admin.Roles.edit' , compact('role', 'permissions'));
-    }
-
-    public function update(Request $request, Role $role)
-    {
-        $id = $request->all()['id'];
-        $request->validate([
-            'name' => ['required','min:3','max:20',Rule::unique('roles')->ignore($id)],
-            'displayName' => ['required','min:3','max:20']
-        ]);
         try {
             DB::beginTransaction();
 
             $role->update([
                 'name' => $request->name,
-                'display_name' => $request->displayName,
+                'display_name' => $request->display_name,
             ]);
 
-            $permissions = $request->except( 'id','_token', 'name', 'displayName', '_method');
+            $permissions = $request->except( 'id','_token', 'name', 'display_name', '_method');
             $role->syncPermissions($permissions);
 
             DB::commit();
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . ' مشکل در ویرایش کردن نقش');
+            toastr()->error($ex->getMessage() . ' مشکل به وجود آمد!');
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت نقش ویرایش شد');
-        return redirect()->route('admin.roles.index');
+        toastr()->success('با موفقیت ویرایش شد!');
+        return redirect()->back();
     }
 
-    public function destroy(Request $request)
+    public function destroy(Role $role): RedirectResponse
     {
-        Role::destroy($request->role);
+        $role->delete();
 
-        toastr()->success('نقش مورد نظر با موفقیت حذف شد!');
+        toastr()->success('با موفقیت حذف شد!');
         return redirect()->back();
     }
 }

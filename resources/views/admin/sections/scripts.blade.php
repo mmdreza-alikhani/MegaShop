@@ -1,5 +1,4 @@
 <script src="{{ asset('/admin/js/modernizr.js') }}"></script>
-<script src="{{ asset('/admin/js/popper.js') }}"></script>
 <script src="{{ asset('/admin/js/toastr.min.js') }}"></script>
 <script src="{{ asset('/admin/js/bootstrap-material-design.js') }}"></script>
 <script src="{{ asset('/admin/js/persianumber.min.js') }}"></script>
@@ -21,3 +20,5 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
 {{--<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>--}}
 <script src="{{ asset('/admin/js/ckeditor.js') }}"></script>
+<script src="{{ asset('/admin/js/popper.js') }}"></script>
+<script src="{{ asset('/admin/js/bootstrap.min.js') }}"></script>

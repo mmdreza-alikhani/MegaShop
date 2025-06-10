@@ -32,8 +32,8 @@
             </div>
         </div>
         <div class="d-flex row m-1 justify-content-between">
-            <div class="c-grey text-center  my-auto">
-                <button data-target="#createPermissionModal" data-toggle="modal" type="button" class="btn shade f-primary btn-block fnt-xxs text-center">
+            <div class="c-grey text-center my-auto">
+                <button data-target="#createPermissionModal" data-toggle="modal" type="button" class="btn f-primary btn-block fnt-xxs text-center">
                     ایجاد دسترسی
                 </button>
             </div>
@@ -52,14 +52,18 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            @include('admin.layout.errors', ['errors' => $errors->createPermission])
-                            <p>نام: *</p>
-                            <div class="input-group mb-3 col-md-6 col-12">
-                                <input type="text" class="form-control" name="name" value="{{ old('name') }}" required/>
-                            </div>
-                            <p>نام نمایشی: *</p>
-                            <div class="input-group mb-3 col-md-6 col-12">
-                                <input type="text" class="form-control" name="display_name" value="{{ old('display_name') }}" required/>
+                            @include('admin.layout.errors', ['errors' => $errors->store])
+                            <div class="row">
+                                <div class="form-group col-12 col-lg-6">
+                                    <label for="name">نام:*</label>
+                                    <input type="text" name="name" id="name" class="form-control"
+                                           value="{{ old('name') }}" required>
+                                </div>
+                                <div class="form-group col-12 col-lg-6">
+                                    <label for="display_name">نام نمایشی:*</label>
+                                    <input type="text" name="display_name" id="display_name" class="form-control"
+                                           value="{{ old('display_name') }}" required>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -101,11 +105,60 @@
                                             {{ $permission->name }}
                                         </td>
                                         <td class="row">
-                                            <div class="c-grey text-center mx-2">
-                                                <a href="{{ route('admin.permissions.edit', ['permission' => $permission]) }}" class="btn main f-main btn-block fnt-xxs">
-                                                    ویرایش
+                                            <div class="dropdown base show">
+                                                <a class="btn o-grey dropdown-toggle text-center" role="button" id="dropdownMenuLink" data-toggle="dropdown">
+                                                    <i class="fa fa-cog"></i>
                                                 </a>
+                                                <div class="dropdown-menu">
+                                                    <a href="#" class="dropdown-item" data-target="#editPermissionModal-{{ $permission->id }}" data-toggle="modal">ویرایش</a>
+                                                </div>
                                             </div>
+                                            <div class="modal w-lg fade light rtl" id="editPermissionModal-{{ $permission->id }}" tabindex="-1" role="dialog">
+                                                <div class="modal-dialog" role="document">
+                                                    <form method="post" action="{{ route('admin.permissions.update', ['permission' => $permission->id]) }}">
+                                                        @method('put')
+                                                        @csrf
+                                                        <div class="modal-content card shade">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">
+                                                                    ویرایش دسترسی: {{ $permission->name }}
+                                                                </h5>
+                                                                <button type="button" class="close" data-dismiss="modal">
+                                                                    <span>&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                @include('admin.layout.errors', ['errors' => $errors->update])
+                                                                <div class="row">
+                                                                    <div class="form-group col-12 col-lg-4">
+                                                                        <label for="name-{{ $permission->id }}">نام:</label>
+                                                                        <input type="text" name="name" id="name-{{ $permission->id }}" class="form-control"
+                                                                               value="{{ $permission->name }}">
+                                                                    </div>
+                                                                    <div class="form-group col-12 col-lg-4">
+                                                                        <label for="display_name-{{ $permission->id }}">نام نمایشی:</label>
+                                                                        <input type="text" name="display_name" id="display_name-{{ $permission->id }}" class="form-control"
+                                                                               value="{{ $permission->display_name }}">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                                                                <button type="submit" class="btn main f-main">ویرایش</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            @if(count($errors->update) > 0)
+                                                <script>
+                                                    $(function() {
+                                                        $('#editPermissionModal-{{ session()->get('permission_id') }}').modal({
+                                                            show: true
+                                                        });
+                                                    });
+                                                </script>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -122,7 +175,7 @@
 @endsection
 @section('scripts')
     <script>
-        @if(count($errors->createPermission) > 0)
+        @if(count($errors->store) > 0)
         $(function() {
             $('#createPermissionModal').modal({
                 show: true
