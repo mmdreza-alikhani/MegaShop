@@ -11,6 +11,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @method static latest()
+ * @method static where(string $string, string $string1, int $int)
+ * @method static create(array $array)
+ */
 class Category extends Model
 {
     use HasFactory, sluggable, SearchableTrait;

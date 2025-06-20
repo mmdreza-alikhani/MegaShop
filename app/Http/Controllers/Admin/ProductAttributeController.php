@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 
 class ProductAttributeController extends Controller
 {
-    public function store($attribute_ids , $product_id){
+    public function store($attribute_ids , $product_id): void
+    {
         foreach($attribute_ids as $key => $value){
             ProductAttribute::create([
                 'product_id' => $product_id,
@@ -19,7 +20,8 @@ class ProductAttributeController extends Controller
         }
     }
 
-    public function update($attribute_values){
+    public function update($attribute_values): void
+    {
         foreach ($attribute_values as $key => $value){
             $productAttribute = ProductAttribute::findOrFail($key);
             $productAttribute->update([
@@ -28,7 +30,7 @@ class ProductAttributeController extends Controller
         }
     }
 
-    public function change($attribute_ids , $product_id)
+    public function change($attribute_ids , $product_id): void
     {
         ProductAttribute::where('product_id' , $product_id)->delete();
         foreach($attribute_ids as $key => $value){

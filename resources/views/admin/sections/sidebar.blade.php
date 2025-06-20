@@ -11,9 +11,7 @@
                 <i class="fas fa-tachometer-alt mr-1"></i>صفحه اصلی
             </a>
         </li>
-{{--        @can('admin')--}}
             <p class="side-comment fnt-mxs">پنل مدیریت</p>
-{{--            @can('users')--}}
             <ul class="side a-collapse {{ request()->is('management/users') || request()->is('management/roles') || request()->is('management/permissions') ? '' : 'short' }}">
                 <a class="ul-text fnt-mxs"><i class="fas fa-user-friends mr-1"></i> کاربران
                     <i class="fas fa-chevron-up arrow"></i>
@@ -36,22 +34,24 @@
                     </li>
                 </div>
             </ul>
-{{--            @endcan--}}
-{{--            @can('Attributes')--}}
-{{--            <ul class="side a-collapse {{ $active_parent == 'attributes' ? '' : 'short' }}">--}}
-{{--                <a class="ul-text fnt-mxs"><i class="fas fa-list-alt mr-1"></i> ویژگی ها--}}
-{{--                    <i class="fas fa-chevron-up arrow"></i>--}}
-{{--                </a>--}}
-{{--                <div class="side-item-container {{ $active_parent == 'attributes' ? '' : 'hide animated' }}">--}}
-{{--                    <li class="side-item {{ $active_child == 'showAttributes' ? 'selected' : '' }}">--}}
-{{--                        <a href="{{ route('admin.attributes.index') }}" class="fnt-mxs">--}}
-{{--                            <i class="fas fa-angle-right mr-2"></i>لیست ویژگی ها--}}
-{{--                        </a>--}}
-{{--                    </li>--}}
-{{--                </div>--}}
-{{--            </ul>--}}
-{{--            @endcan--}}
-{{--            @can('articles')--}}
+            <p class="side-comment fnt-mxs">محصولات</p>
+            <ul class="side a-collapse {{ request()->is('management/products') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fas fa-shopping-cart mr-1"></i> محصولات
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/products') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/products') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.products.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست محصولات
+                        </a>
+                    </li>
+                    <li class="side-item {{ request()->is('management/products/create') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.products.create') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>ایجاد محصول جدید
+                        </a>
+                    </li>
+                </div>
+            </ul>
 {{--            <ul class="side a-collapse {{ $active_parent == 'articles' ? '' : 'short' }}">--}}
 {{--                <a class="ul-text fnt-mxs"><i class="fas fa-grip-lines mr-1"></i> ماده ها--}}
 {{--                    <i class="fas fa-chevron-up arrow"></i>--}}
@@ -64,8 +64,6 @@
 {{--                    </li>--}}
 {{--                </div>--}}
 {{--            </ul>--}}
-{{--            @endcan--}}
-{{--            @can('contracts')--}}
 {{--            <ul class="side a-collapse {{ $active_parent == 'contracts' ? '' : 'short' }}">--}}
 {{--                <a class="ul-text fnt-mxs">--}}
 {{--                    <i class="fas fa-file-contract mr-1"></i>--}}
@@ -99,10 +97,6 @@
 {{--                    </li>--}}
 {{--                </div>--}}
 {{--            </ul>--}}
-{{--            @endcan--}}
-{{--        @endcan--}}
-
-{{--        @can('user')--}}
 {{--        <p class="side-comment fnt-mxs">کارتابل</p>--}}
 {{--        <ul class="side a-collapse {{ $active_parent == 'panelContracts' ? '' : 'short' }}">--}}
 {{--            <a class="ul-text fnt-mxs">--}}
@@ -130,6 +124,5 @@
 {{--                </li>--}}
 {{--            </div>--}}
 {{--        </ul>--}}
-{{--        @endcan--}}
     </div>
 </div>

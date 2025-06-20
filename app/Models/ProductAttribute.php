@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @method static create(array $array)
+ * @method static findOrFail(int|string $key)
+ * @method static where(string $string, $product_id)
+ */
 class ProductAttribute extends Model
 {
     use HasFactory;

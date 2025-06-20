@@ -16,6 +16,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static latest()
  * @method static create(array $array)
  * @method static search(string $string, mixed $keyword)
+ * @method static where(string $string, string $string1)
  */
 class User extends Authenticatable implements MustVerifyEmail
 {

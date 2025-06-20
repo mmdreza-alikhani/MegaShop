@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -11,21 +15,14 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|Application|Factory
     {
         $comments = Comment::latest()->paginate(10);
         return view('admin.comments.index' , compact('comments'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Comment $comment)
+    public function changeStatus(Comment $comment): RedirectResponse
     {
-        return view('admin.comments.show' , compact('comment'));
-    }
-
-    public function changeStatus(Comment $comment){
         if ($comment->getRawOriginal('approved') == 1){
             $comment->update([
                 'approved' => 0
@@ -36,30 +33,24 @@ class CommentController extends Controller
             ]);
         }
 
-        toastr()->success('وضعیت نظر با موفقیت تغییر کرد');
+        toastr()->success('وضعیت نظر با موفقیت تغییر کرد!');
         return redirect()->back();
     }
 
-    public function search(Request $request)
+    public function search(): View|Application|Factory
     {
-        $keyWord = request()->keyword;
-        if (request()->has('keyword') && trim($keyWord) != ''){
-            $comments = Comment::where('text', 'LIKE', '%'.trim($keyWord).'%')->latest()->paginate(10);
-            return view('admin.comments.index' , compact('comments'));
-        }else{
-            $comments = Comment::latest()->paginate(10);
-            return view('admin.comments.index' , compact('comments'));
-        }
+        $comments = Comment::search('title', trim(request()->keyword))->latest()->paginate(10);
+        return view('admin.comments.index', compact('comments'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Comment $comment): RedirectResponse
     {
-        Comment::destroy($request->comment);
+        $comment->delete();
 
-        toastr()->success('نظر مورد نظر با موفقیت حذف شد!');
+        toastr()->success('با موفقیت حذف شد!');
         return redirect()->back();
     }
 }

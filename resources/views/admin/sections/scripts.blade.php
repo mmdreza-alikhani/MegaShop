@@ -1,6 +1,5 @@
 <script src="{{ asset('/admin/js/modernizr.js') }}"></script>
 <script src="{{ asset('/admin/js/toastr.min.js') }}"></script>
-<script src="{{ asset('/admin/js/bootstrap-material-design.js') }}"></script>
 <script src="{{ asset('/admin/js/persianumber.min.js') }}"></script>
 <script src="{{ asset('/admin/js/main.js') }}"></script>
 <script>
@@ -22,3 +21,4 @@
 <script src="{{ asset('/admin/js/ckeditor.js') }}"></script>
 <script src="{{ asset('/admin/js/popper.js') }}"></script>
 <script src="{{ asset('/admin/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('/admin/js/bootstrap-material-design.js') }}"></script>

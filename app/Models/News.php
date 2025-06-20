@@ -12,6 +12,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static create(array $array)
+ * @method static search(string $string, string $trim)
+ */
 class News extends Model
 {
     use HasFactory, sluggable, SoftDeletes, SearchableTrait;

@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static latest()
+ * @method static create(array $array)
+ */
 class Platform extends Model
 {
     use HasFactory, sluggable, SoftDeletes, SearchableTrait;

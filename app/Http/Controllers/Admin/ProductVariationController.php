@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 
 class ProductVariationController extends Controller
 {
-    public function store($variations,  $attributeId, $product){
+    public function store($variations,  $attributeId, $product): void
+    {
         $counter = count($variations['value']);
         for ($i = 0; $i < $counter; $i++) {
             ProductVariation::create([
@@ -23,7 +24,8 @@ class ProductVariationController extends Controller
         }
     }
 
-    public function update($variation_values){
+    public function update($variation_values): void
+    {
         foreach ($variation_values as $key => $value){
             $productVariation = ProductVariation::findOrFail($key);
 
@@ -38,7 +40,7 @@ class ProductVariationController extends Controller
         }
     }
 
-    public function change($variations,  $attributeId, $product)
+    public function change($variations,  $attributeId, $product): void
     {
         ProductVariation::where('product_id' , $product->id)->delete();
         $counter = count($variations['value']);

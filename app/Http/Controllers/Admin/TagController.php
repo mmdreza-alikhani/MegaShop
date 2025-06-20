@@ -3,8 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Tag\StoreTagRequest;
+use App\Http\Requests\Admin\Tag\UpdateTagRequest;
 use App\Models\Tag;
+use App\Models\User;
+use Exception;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class TagController extends Controller
@@ -12,91 +23,69 @@ class TagController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|Application|Factory
     {
         $tags = Tag::latest()->paginate(10);
         return view('admin.tags.index' , compact('tags'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('admin.tags.create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreTagRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|min:3|max:20|unique:App\Models\Tag,name'
-        ]);
+        try {
+            DB::beginTransaction();
 
-        Tag::create([
-            'name' => $request->name
-        ]);
+            Tag::create([
+                'title' => $request->title
+            ]);
 
-        toastr()->success($request->name . ' ' . 'با موفقیت به تگ ها اضافه شد');
-        return redirect()->route('admin.tags.create');
-    }
+            DB::commit();
+        }catch (Exception $ex) {
+            DB::rollBack();
+            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            return redirect()->back();
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Tag $tag)
-    {
-        return view('admin.tags.show' , compact('tag'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Tag $tag)
-    {
-        return view('admin.tags.edit' , compact('tag'));
+        toastr()->success('با موفقیت اضافه شد!');
+        return redirect()->back();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tag $tag)
+    public function update(UpdateTagRequest $request, Tag $tag): RedirectResponse
     {
-        $id = $request->all()['id'];
-        $request->validate([
-            'name' => ['required','min:3','max:20',Rule::unique('tags')->ignore($id)]
-        ]);
+        try {
+            DB::transaction(function () use ($request, $tag) {
+                $tag->update([
+                    'title' => $request->title
+                ]);
+            });
 
-        $tag->update([
-            'name' => $request->name
-        ]);
+            toastr()->success('با موفقیت ویرایش شد!');
+        } catch (Exception $ex) {
+            toastr()->error($ex->getMessage() . ' مشکلی پیش آمد!');
+        }
 
-        toastr()->success('با موفقیت تگ ویرایش شد');
-        return redirect()->route('admin.tags.index');
+        return redirect()->back();
     }
 
-    public function search(Request $request)
+    public function search(): View|\Illuminate\Contracts\Foundation\Application|Factory
     {
-        $keyWord = request()->keyword;
-        if (request()->has('keyword') && trim($keyWord) != ''){
-            $tags = Tag::where('name', 'LIKE', '%'.trim($keyWord).'%')->latest()->paginate(10);
-            return view('admin.tags.index' , compact('tags'));
-        }else{
-            $tags = Tag::latest()->paginate(10);
-            return view('admin.tags.index' , compact('tags'));
-        }
+        $tags = Tag::search('title', trim(request()->keyword))->latest()->paginate(10);
+        return view('admin.tags.index', compact('tags'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Tag $tag): RedirectResponse
     {
-        Tag::destroy($request->tag);
+        $tag->delete();
 
-        toastr()->success('تگ مورد نظر با موفقیت حذف شد!');
+        toastr()->success('موفقیت حذف شد!');
         return redirect()->back();
     }
 }

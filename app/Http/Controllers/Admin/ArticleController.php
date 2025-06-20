@@ -3,9 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Article\StoreArticleRequest;
+use App\Http\Requests\Admin\Article\UpdateArticleRequest;
 use App\Models\Article;
 use App\Models\Tag;
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 
 class ArticleController extends Controller
@@ -13,7 +19,7 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|Application|Factory
     {
         $articles = Article::latest()->paginate(10);
         return view('admin.articles.index' , compact('articles'));
@@ -22,7 +28,7 @@ class ArticleController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View|Application|Factory
     {
         $tags = Tag::all();
         return view('admin.articles.create', compact('tags'));
@@ -31,26 +37,19 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreArticleRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required',
-            'is_active' => 'required',
-            'tag_ids' => 'required',
-            'text' => 'required',
-            'image' => 'required|mimes:jpg,jpeg,png,svg'
-        ]);
-
         try {
             DB::beginTransaction();
 
+            // check
             $articleImageController = new ArticleImageController();
-            $imgsFileName = $articleImageController->upload($request->image);
+            $imagesTitle = $articleImageController->upload($request->image);
 
             $article = Article::create([
-                'title' => $request->title,
+                'title' => $request->input('title'),
                 'is_active' => $request->is_active,
-                'primary_image' => $imgsFileName['image'],
+                'primary_image' => $imagesTitle['image'],
                 'text' => $request->text,
                 'user_id' => auth()->id()
             ]);
@@ -58,20 +57,20 @@ class ArticleController extends Controller
             $article->tags()->attach($request->tag_ids);
 
             DB::commit();
-        }catch (\Exception $ex) {
+        }catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
-            return redirect()->route('admin.articles.create');
+            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            return redirect()->back();
         }
 
-        toastr()->success('با موفقیت مقاله اضافه شد.');
-        return redirect()->route('admin.articles.create');
+        toastr()->success('با موفقیت اضافه شد!');
+        return redirect()->back();
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Article $article)
+    public function show(Article $article): View|Application|Factory
     {
         return view('admin.articles.show' , compact('article'));
     }
@@ -79,7 +78,7 @@ class ArticleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Article $article)
+    public function edit(Article $article): View|Application|Factory
     {
         $tags = Tag::all();
         return view('admin.articles.edit' , compact('article', 'tags'));
@@ -88,28 +87,20 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Article $article)
+    public function update(UpdateArticleRequest $request, Article $article): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required',
-            'is_active' => 'required',
-            'tag_ids' => 'required',
-            'text' => 'required',
-            'image' => 'nullable|mimes:jpg,jpeg,png,svg'
-        ]);
-
         try {
             DB::beginTransaction();
 
             if ($request->has('image')) {
                 $articleImageController = new ArticleImageController();
-                $imgsFileName = $articleImageController->upload($request->image);
+                $imagesFileName = $articleImageController->upload($request->image);
             }
 
             $article->update([
                 'title' => $request->title,
                 'is_active' => $request->is_active,
-                'primary_image' => $request->image ? $imgsFileName['image'] : $article->primary_image,
+                'primary_image' => $request->has('image') ? $imagesFileName['image'] : $article->primary_image,
                 'text' => $request->text,
                 'user_id' => auth()->id()
             ]);
@@ -123,30 +114,24 @@ class ArticleController extends Controller
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت مقاله ویرایش شد.');
+        toastr()->success('با موفقیت ویرایش شد.');
         return redirect()->back();
     }
 
-    public function search(Request $request)
+    public function search(): View|Application|Factory
     {
-        $keyWord = request()->keyword;
-        if (request()->has('keyword') && trim($keyWord) != ''){
-            $articles = Article::where('title', 'LIKE', '%'.trim($keyWord).'%')->latest()->paginate(10);
-            return view('admin.articles.index' , compact('articles'));
-        }else{
-            $articles = Article::latest()->paginate(10);
-            return view('admin.articles.index' , compact('articles'));
-        }
+        $articles = Article::search('title', trim(request()->keyword))->latest()->paginate(10);
+        return view('admin.articles.index', compact('articles'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Article $article): RedirectResponse
     {
-//        Article::destroy($request->article);
-//
-//        toastr()->success('مقاله مورد نظر با موفقیت حذف شد!');
-//        return redirect()->back();
+        $article->delete();
+
+        toastr()->success('موفقیت حذف شد!');
+        return redirect()->back();
     }
 }

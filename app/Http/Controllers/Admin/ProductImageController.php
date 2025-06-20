@@ -5,39 +5,43 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductImage;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 class ProductImageController extends Controller
 {
-    public function upload($primaryImg , $otherImgs)
+    public function upload($primaryImg , $otherImages): array
     {
         $primaryImgFileName = generateFileName($primaryImg->getClientOriginalName());
         $primaryImg->move(public_path(env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH')) , $primaryImgFileName);
 
-        $otherImgsFileNames = [];
-        foreach ($otherImgs as $otherImg){
-            $otherImgFileName = generateFileName($otherImg->getClientOriginalName());
-            $otherImg->move(public_path(env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH')) , $otherImgFileName);
-            array_push($otherImgsFileNames , $otherImgFileName);
+        $otherImagesFileNames = [];
+        foreach ($otherImages as $otherImage){
+            $otherImageFileName = generateFileName($otherImage->getClientOriginalName());
+            $otherImage->move(public_path(env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH')) , $otherImageFileName);
+            $otherImagesFileNames[] = $otherImageFileName;
         }
 
-        return ['primaryImg' => $primaryImgFileName , 'otherImgs' => $otherImgsFileNames];
+        return ['primaryImg' => $primaryImgFileName , '$otherImages' => $otherImagesFileNames];
     }
 
-    public function edit(Product $product)
+    public function edit(Product $product): View|Application|Factory
     {
         return view('admin.products.edit_images', compact('product'));
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request): RedirectResponse
     {
         $request->validate([
            'image_id' => 'required',
         ]);
 
-        ProductImage::destroy($request->image_id);
+        ProductImage::destroy($request->input('image_id'));
 
         File::delete(public_path('/upload/files/products/images/primary_images/'. $request->image_name));
 
@@ -45,7 +49,7 @@ class ProductImageController extends Controller
         return redirect()->back();
     }
 
-    public function set_primary(Request $request, Product $product)
+    public function set_primary(Request $request, Product $product): RedirectResponse
     {
 
         $request->validate([
@@ -87,11 +91,11 @@ class ProductImageController extends Controller
 
             if ($request->has("other_imgs")) {
 
-                foreach ($request->other_imgs as $otherImg) {
-                    $otherImgFileName = generateFileName($otherImg->getClientOriginalName());
-                    $otherImg->move(public_path(env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH')), $otherImgFileName);
+                foreach ($request->other_imgs as $otherImage) {
+                    $otherImageFileName = generateFileName($otherImage->getClientOriginalName());
+                    $otherImage->move(public_path(env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH')), $otherImageFileName);
                     ProductImage::create([
-                        'image' => $otherImgFileName,
+                        'image' => $otherImageFileName,
                         'product_id' => $product->id
                     ]);
                 }

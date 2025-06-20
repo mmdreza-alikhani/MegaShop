@@ -41,7 +41,7 @@ class UserController extends Controller
             User::create(Arr::only($request->validated(), [
                 'username', 'first_name', 'last_name', 'email', 'phone_number',
             ]) + [
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($request->input('password')),
                 'provider_name' => 'manual'
             ]);
 
@@ -63,7 +63,7 @@ class UserController extends Controller
     {
         try {
             DB::transaction(function () use ($request, $user) {
-                if ($request->email !== $user->email) {
+                if ($request->input('email') !== $user->email) {
                     $user->update(['email_verified_at' => null]);
                 }
 

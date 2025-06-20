@@ -3,9 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\News\StoreNewsRequest;
+use App\Http\Requests\Admin\News\UpdateNewsRequest;
 use App\Models\News;
 use App\Models\Tag;
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 
 class NewsController extends Controller
@@ -13,7 +19,7 @@ class NewsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|Application|Factory
     {
         $news = News::latest()->paginate(10);
         return view('admin.news.index' , compact('news'));
@@ -22,7 +28,7 @@ class NewsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View|Application|Factory
     {
         $tags = Tag::all();
         return view('admin.news.create', compact('tags'));
@@ -31,47 +37,40 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreNewsRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required',
-            'is_active' => 'required',
-            'tag_ids' => 'required',
-            'text' => 'required',
-            'image' => 'required|mimes:jpg,jpeg,png,svg'
-        ]);
-
         try {
             DB::beginTransaction();
 
+            // check
             $newsImageController = new NewsImageController();
-            $imgsFileName = $newsImageController->upload($request->image);
+            $imagesTitle = $newsImageController->upload($request->image);
 
-            $article = News::create([
-                'title' => $request->title,
+            $news = News::create([
+                'title' => $request->input('title'),
                 'is_active' => $request->is_active,
-                'primary_image' => $imgsFileName['image'],
+                'primary_image' => $imagesTitle['image'],
                 'text' => $request->text,
                 'user_id' => auth()->id()
             ]);
 
-            $article->tags()->attach($request->tag_ids);
+            $news->tags()->attach($request->tag_ids);
 
             DB::commit();
-        }catch (\Exception $ex) {
+        }catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
-            return redirect()->route('admin.news.create');
+            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            return redirect()->back();
         }
 
-        toastr()->success('با موفقیت مقاله اضافه شد.');
+        toastr()->success('با موفقیت اضافه شد!');
         return redirect()->back();
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(News $news)
+    public function show(News $news): View|Application|Factory
     {
         return view('admin.news.show' , compact('news'));
     }
@@ -79,7 +78,7 @@ class NewsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(News $news)
+    public function edit(News $news): View|Application|Factory
     {
         $tags = Tag::all();
         return view('admin.news.edit' , compact('news', 'tags'));
@@ -88,28 +87,20 @@ class NewsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, News $news)
+    public function update(UpdateNewsRequest $request, News $news): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required',
-            'is_active' => 'required',
-            'tag_ids' => 'required',
-            'text' => 'required',
-            'image' => 'nullable|mimes:jpg,jpeg,png,svg'
-        ]);
-
         try {
             DB::beginTransaction();
 
             if ($request->has('image')) {
                 $newsImageController = new NewsImageController();
-                $imgsFileName = $newsImageController->upload($request->image);
+                $imagesFileName = $newsImageController->upload($request->image);
             }
 
             $news->update([
                 'title' => $request->title,
                 'is_active' => $request->is_active,
-                'primary_image' => $request->image ? $imgsFileName['image'] : $news->primary_image,
+                'primary_image' => $request->has('image') ? $imagesFileName['image'] : $news->primary_image,
                 'text' => $request->text,
                 'user_id' => auth()->id()
             ]);
@@ -117,36 +108,30 @@ class NewsController extends Controller
             $news->tags()->sync($request->tag_ids);
 
             DB::commit();
-        }catch (\Exception $ex) {
+        }catch (Exception $ex) {
             DB::rollBack();
             toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت خبر ویرایش شد.');
+        toastr()->success('با موفقیت ویرایش شد.');
         return redirect()->back();
     }
 
-    public function search(Request $request)
+    public function search(): View|Application|Factory
     {
-        $keyWord = request()->keyword;
-        if (request()->has('keyword') && trim($keyWord) != ''){
-            $news = News::where('title', 'LIKE', '%'.trim($keyWord).'%')->latest()->paginate(10);
-            return view('admin.news.index' , compact('news'));
-        }else{
-            $news = News::latest()->paginate(10);
-            return view('admin.news.index' , compact('news'));
-        }
+        $news = News::search('title', trim(request()->keyword))->latest()->paginate(10);
+        return view('admin.news.index', compact('news'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(News $news): RedirectResponse
     {
-//        News::destroy($request->news);
-//
-//        toastr()->success('خبر مورد نظر با موفقیت حذف شد!');
-//        return redirect()->back();
+        $news->delete();
+
+        toastr()->success('موفقیت حذف شد!');
+        return redirect()->back();
     }
 }

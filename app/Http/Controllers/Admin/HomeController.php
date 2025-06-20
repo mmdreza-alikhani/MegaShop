@@ -10,7 +10,6 @@ use Carbon\Carbon;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -27,7 +26,7 @@ class HomeController extends Controller
         $productCount = Product::where('status', '1')
             ->where('updated_at', '>=', Carbon::now()->subHours(24))
             ->count();
-        $user = Auth::user();
+        $user = auth()->user();
 
         return view('admin.index', compact('orderCount','recentUserCount', 'productCount', 'user'));
     }

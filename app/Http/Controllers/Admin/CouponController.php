@@ -3,8 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Coupon\StoreCouponRequest;
+use App\Http\Requests\Admin\Coupon\UpdateCouponRequest;
 use App\Models\Coupon;
+use Exception;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class CouponController extends Controller
@@ -12,115 +20,86 @@ class CouponController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|Application|Factory
     {
         $coupons = Coupon::latest()->paginate(10);
         return view('admin.coupons.index', compact('coupons'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('admin.coupons.create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCouponRequest $request): RedirectResponse
     {
-        $request->validate([
-           'name' => 'required',
-           'code' => 'required|unique:coupons,code',
-           'type' => 'required',
-           'amount' => 'required_if:type,=,amount',
-           'percentage' => 'required_if:type,=,percentage',
-           'max_percentage_amount' => 'required_if:type,=,percentage',
-           'expired_at' => 'required|date',
-        ]);
+        try {
+            DB::beginTransaction();
 
-        Coupon::create([
-            'name' => $request->name,
-            'code' => $request->code,
-            'type' => $request->type,
-            'amount' => $request->amount,
-            'percentage' => $request->percentage,
-            'max_percentage_amount' => $request->max_percentage_amount,
-            'expired_at' => convertToGregorianDate($request->expired_at),
-            'description' => $request->description,
-        ]);
-        toastr()->success($request->name . ' ' . 'با موفقیت به کد های تخفیف اضافه شد');
+            Coupon::create([
+                'title' => $request->input('title'),
+                'code' => $request->input('code'),
+                'type' => $request->input('type'),
+                'amount' => $request->input('amount'),
+                'percentage' => $request->input('percentage'),
+                'max_percentage_amount' => $request->input('max_percentage_amount'),
+                'expired_at' => convertToGregorianDate($request->input('expired_at')),
+                'description' => $request->input('description'),
+            ]);
+
+            DB::commit();
+        }catch (Exception $ex) {
+            DB::rollBack();
+            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            return redirect()->back();
+        }
+
+        toastr()->success('با موفقیت اضافه شد!');
         return redirect()->back();
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Coupon $coupon)
-    {
-        return view('admin.coupons.show' , compact('coupon'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Coupon $coupon)
-    {
-        return view('admin.coupons.edit' , compact('coupon'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Coupon $coupon)
+    public function update(UpdateCouponRequest $request, Coupon $coupon): RedirectResponse
     {
-        $id = $request->all()['id'];
-        $request->validate([
-            'name' => ['required', Rule::unique('coupons')->ignore($id)],
-            'code' => ['required', Rule::unique('coupons')->ignore($id)],
-            'type' => 'required',
-            'amount' => 'required_if:type,=,amount',
-            'percentage' => 'required_if:type,=,percentage',
-            'max_percentage_amount' => 'required_if:type,=,percentage',
-            'expired_at' => 'required|date',
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $coupon->update([
-            'name' => $request->name,
-            'code' => $request->code,
-            'type' => $request->type,
-            'amount' => $request->amount,
-            'percentage' => $request->percentage,
-            'max_percentage_amount' => $request->max_percentage_amount,
-            'expired_at' => convertToGregorianDate($request->expired_at),
-            'description' => $request->description,
-        ]);
-        toastr()->success($request->name . ' ' . 'با موفقیت ویرایش شد');
+            $coupon->update([
+                'title' => $request->input('title'),
+                'code' => $request->input('code'),
+                'type' => $request->input('type'),
+                'amount' => $request->input('amount'),
+                'percentage' => $request->input('percentage'),
+                'max_percentage_amount' => $request->input('max_percentage_amount'),
+                'expired_at' => convertToGregorianDate($request->input('expired_at')),
+                'description' => $request->input('description'),
+            ]);
+
+            DB::commit();
+        }catch (Exception $ex) {
+            DB::rollBack();
+            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
+            return redirect()->back();
+        }
+
+        toastr()->success('با موفقیت ویرایش شد.');
         return redirect()->back();
     }
 
-    public function search(Request $request)
+    public function search(): View|Application|Factory
     {
-        $keyWord = request()->keyword;
-        if (request()->has('keyword') && trim($keyWord) != ''){
-            $coupons = Coupon::where('name', 'LIKE', '%'.trim($keyWord).'%')->latest()->paginate(10);
-            return view('admin.coupons.index' , compact('coupons'));
-        }else{
-            $coupons = Coupon::latest()->paginate(10);
-            return view('admin.coupons.index' , compact('coupons'));
-        }
+        $coupons = Coupon::search('title', trim(request()->keyword))->latest()->paginate(10);
+        return view('admin.coupons.index', compact('coupons'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Coupon $coupon): RedirectResponse
     {
-//        Coupon::destroy($request->coupon);
-//
-//        toastr()->success('کد تخفیف مورد نظر با موفقیت حذف شد!');
-//        return redirect()->back();
+        $coupon->delete();
+
+        toastr()->success('با موفقیت حذف شد!');
+        return redirect()->back();
     }
 }

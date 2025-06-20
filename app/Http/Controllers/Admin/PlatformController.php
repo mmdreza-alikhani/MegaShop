@@ -3,7 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Platform\StorePlatformRequest;
+use App\Http\Requests\Admin\Platform\UpdatePlatformRequest;
 use App\Models\Platform;
+use Exception;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -13,30 +20,17 @@ class PlatformController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|Application|Factory
     {
         $platforms = Platform::latest()->paginate(10);
         return view('admin.platforms.index' , compact('platforms'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('admin.platforms.create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePlatformRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|min:3|max:20|unique:App\Models\Brand,name',
-            'image' => 'nullable|mimes:jpg,jpeg,png,svg',
-        ]);
-
         try {
             DB::beginTransaction();
 
@@ -48,49 +42,27 @@ class PlatformController extends Controller
             }
 
             Platform::create([
-                'name' => $request->name,
-                'is_active' => $request->is_active,
+                'title' => $request->input('title'),
+                'is_active' => $request->input('is_active'),
                 'image' => $imageFileName
             ]);
 
-            toastr()->success($request->name . '' . ' با موفقیت به پلتفرم ها اضافه شد');
-            return redirect()->route('admin.platforms.create');
-
             DB::commit();
-        }catch (\Exception $ex) {
+        }catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
-            return redirect()->route('admin.products.create');
+            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            return redirect()->back();
         }
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Platform $platform)
-    {
-        return view('admin.platforms.show' , compact('platform'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Platform $platform)
-    {
-        return view('admin.platforms.edit' , compact('platform'));
+        toastr()->success('با موفقیت اضافه شد!');
+        return redirect()->back();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Platform $platform)
+    public function update(UpdatePlatformRequest $request, Platform $platform): RedirectResponse
     {
-        $id = $request->all()['id'];
-        $request->validate([
-            'name' => ['required','min:3','max:20',Rule::unique('platforms')->ignore($id)],
-            'image' => 'nullable|mimes:jpg,jpeg,png,svg'
-        ]);
-
         try {
             DB::beginTransaction();
 
@@ -106,24 +78,24 @@ class PlatformController extends Controller
             ]);
 
             DB::commit();
-        }catch (\Exception $ex) {
+        }catch (Exception $ex) {
             DB::rollBack();
             toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
             return redirect()->back();
         }
 
-            toastr()->success('با موفقیت پلتفرم ویرایش شد');
-            return redirect()->route('admin.platforms.index');
+        toastr()->success('با موفقیت ویرایش شد.');
+        return redirect()->back();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Platform $platform): RedirectResponse
     {
-        Platform::destroy($request->platform);
+        $platform->delete();
 
-        toastr()->success('پلتفرم مورد نظر با موفقیت حذف شد!');
+        toastr()->success('با موفقیت حذف شد!');
         return redirect()->back();
     }
 }

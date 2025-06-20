@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @method static create(array $array)
+ * @method static latest()
+ * @method static search(string $string, string $trim)
  */
 class Comment extends Model
 {

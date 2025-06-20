@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static latest()
+ * @method static create(array $array)
+ * @method static search(string $string, string $trim)
+ */
 class Brand extends Model
 {
     use HasFactory, sluggable, SoftDeletes, SearchableTrait;
@@ -50,7 +55,7 @@ class Brand extends Model
         parent::boot();
 
         static::updating(function ($brand) {
-            $brand->slug = SlugService::createSlug($brand, 'slug', $brand->name);
+            $brand->slug = SlugService::createSlug($brand, 'slug', $brand->title);
         });
     }
 

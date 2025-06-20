@@ -35,7 +35,7 @@ class PermissionController extends Controller
     {
         $permission->update([
             'name' => $request->input('name'),
-            'display_name' => $request->display_name,
+            'display_name' => $request->input('display_name'),
         ]);
 
         toastr()->success('با موفقیت ویرایش شد!');

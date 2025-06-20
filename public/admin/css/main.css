@@ -887,10 +887,10 @@ body.modal-open main {
 }
 
 .input-group .input-group-append .btn {
-  border: 1px solid #c2c2c2b3;
-  box-shadow: 0 0 0px 2px #e7e9ec;
-  margin-top: 2px;
-  height: calc(1.6em + 0.75rem + 2px);
+  border: 3px solid #ced4da5c;
+    border-right: 0;
+  box-shadow: 0 0 0px 0px;
+  height: calc(1.6em + 0.75rem + 7px);
 }
 
 .custom-file-control:read-only,

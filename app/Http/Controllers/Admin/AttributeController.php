@@ -3,100 +3,65 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Attribute\StoreAttributeRequest;
+use App\Http\Requests\Admin\Attribute\UpdateAttributeRequest;
 use App\Models\Attribute;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 
 class AttributeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View|Application|Factory
     {
         $attributes = Attribute::latest()->paginate(10);
         return view('admin.attributes.index' , compact('attributes'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('admin.attributes.create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreAttributeRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|min:3|max:20|unique:App\Models\Attribute,name'
-        ]);
-
         Attribute::create([
-            'name' => $request->name
+            'title' => $request->input('title')
         ]);
 
-        toastr()->success($request->name . '' . ' با موفقیت به ویژگی ها اضافه شد');
-        return redirect()->route('admin.attributes.create');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Attribute $attribute)
-    {
-        return view('admin.attributes.show' , compact('attribute'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Attribute $attribute)
-    {
-        return view('admin.attributes.edit' , compact('attribute'));
+        toastr()->success('با موفقیت اضافه شد!');
+        return redirect()->back();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Attribute $attribute)
+    public function update(UpdateAttributeRequest $request, Attribute $attribute): RedirectResponse
     {
-        $id = $request->all()['id'];
-        $request->validate([
-            'name' => ['required','min:3','max:20',Rule::unique('attributes')->ignore($id)],
-        ]);
-
         $attribute->update([
-            'name' => $request->name,
+            'title' => $request->input('title'),
         ]);
 
-        toastr()->success('با موفقیت ویژگی ویرایش شد');
-        return redirect()->route('admin.attributes.index');
+        toastr()->success('با موفقیت ویرایش شد!');
+        return redirect()->back();
     }
 
-    public function search(Request $request)
+    public function search(): View|\Illuminate\Contracts\Foundation\Application|Factory
     {
-        $keyWord = request()->keyword;
-        if (request()->has('keyword') && trim($keyWord) != ''){
-            $attributes = Attribute::where('name', 'LIKE', '%'.trim($keyWord).'%')->latest()->paginate(10);
-            return view('admin.attributes.index' , compact('attributes'));
-        }else{
-            $attributes = Attribute::latest()->paginate(10);
-            return view('admin.attributes.index' , compact('attributes'));
-        }
+        $attributes = Attribute::search('title', trim(request()->keyword))->latest()->paginate(10);
+        return view('admin.attributes.index', compact('attributes'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Attribute $attribute): RedirectResponse
     {
-        Attribute::destroy($request->attribute);
+        $attribute->delete();
 
-        toastr()->success('ویژگی مورد نظر با موفقیت حذف شد!');
+        toastr()->success('موفقیت حذف شد!');
         return redirect()->back();
     }
 }

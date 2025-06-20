@@ -11,6 +11,8 @@ use function PHPUnit\Framework\returnArgument;
 
 /**
  * @method static select(string $string)
+ * @method static findOrFail(int|string $key)
+ * @method static where(string $string, $id)
  */
 class ProductVariation extends Model
 {

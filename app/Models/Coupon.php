@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static latest()
+ * @method static create(array $array)
+ * @method static search(string $string, string $trim)
+ */
 class Coupon extends Model
 {
     use HasFactory, SoftDeletes, SearchableTrait;

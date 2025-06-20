@@ -31,8 +31,8 @@ class RoleController extends Controller
             DB::beginTransaction();
 
             $role = Role::create([
-                'name' => $request->name,
-                'display_name' => $request->display_name,
+                'name' => $request->input('name'),
+                'display_name' => $request->input('display_name'),
                 'guard_name' => 'web',
             ]);
 
@@ -56,8 +56,8 @@ class RoleController extends Controller
             DB::beginTransaction();
 
             $role->update([
-                'name' => $request->name,
-                'display_name' => $request->display_name,
+                'name' => $request->input('name'),
+                'display_name' => $request->input('display_name'),
             ]);
 
             $permissions = $request->except( 'id','_token', 'name', 'display_name', '_method');

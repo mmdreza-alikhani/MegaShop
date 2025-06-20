@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @method static where(string $string, string $string1)
+ * @method static latest()
+ * @method static search(string $string, string $trim)
+ */
 class Order extends Model
 {
     use HasFactory, SearchableTrait;
