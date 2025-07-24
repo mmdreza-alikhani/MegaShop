@@ -15,7 +15,7 @@ class UpdateBrandRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->can('manage-brands');
+        return auth()->user()->can('manage-products');
     }
 
     /**

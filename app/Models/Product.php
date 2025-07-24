@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static whereIn(string $string, string $string1, $getAllCategoryIds)
  * @method static where(string $string, string $string1)
  * @method static latest()
+ * @method static search(string $string, string $trim)
+ * @method static create(array $array)
  */
 class Product extends Model
 {

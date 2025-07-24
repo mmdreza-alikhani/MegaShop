@@ -9,7 +9,7 @@
                 </button>
 
                 <div class="nk-gap-1"></div>
-                <form id="generalSearch" action="{{ route('home.generalSearch') }}" method="GET" class="nk-form nk-form-style-1">
+                <form id="generalSearch" action="{{ route('home.global-search') }}" method="GET" class="nk-form nk-form-style-1">
                     <input type="text" value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword" class="form-control" placeholder="...اینجا بنویسید" autofocus>
                 </form>
             </div>

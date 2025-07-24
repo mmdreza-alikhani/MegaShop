@@ -95,6 +95,8 @@ class UserController extends Controller
     public function search(): View|Application|Factory
     {
         $users = User::search('username', trim(request()->keyword))->latest()->paginate(10);
-        return view('admin.users.index', compact('users'));
+        $roles = Role::all();
+        $permissions = Permission::all();
+        return view('admin.users.index', compact('users', 'roles', 'permissions'));
     }
 }

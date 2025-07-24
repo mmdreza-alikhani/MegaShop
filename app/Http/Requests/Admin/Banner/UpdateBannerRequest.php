@@ -27,8 +27,7 @@ class UpdateBannerRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255|unique:banners,title,' . $this->route('article')->id,
-            'is_active' => 'required|boolean',
-            'tag_ids' => 'required|array|exists:tags,id',
+            'is_active' => 'required',
             'text' => 'required|string',
             'image' => 'required|max:2048|mimes:jpg,jpeg,png,svg',
             'type' => 'required',

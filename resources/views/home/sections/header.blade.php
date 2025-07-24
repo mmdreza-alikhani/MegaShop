@@ -134,7 +134,7 @@
                     </li>
 
                     <li>
-                        <a href="{{ route('home.articles.index') }}">
+                        <a href="{{ route('home.posts.index') }}">
                             مقالات
                         </a>
                     </li>

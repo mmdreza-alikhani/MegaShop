@@ -13,12 +13,13 @@ use function PHPUnit\Framework\returnArgument;
  * @method static select(string $string)
  * @method static findOrFail(int|string $key)
  * @method static where(string $string, $id)
+ * @method static create(array $array)
  */
 class ProductVariation extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = "product_variations";
+    protected $table = "product_variation";
 
     protected $fillable = [
         'attribute_id',
@@ -57,5 +58,10 @@ class ProductVariation extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function attribute(): BelongsTo
+    {
+        return $this->belongsTo(Attribute::class);
     }
 }

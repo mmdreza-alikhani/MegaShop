@@ -5,7 +5,7 @@ use App\Models\Order;
 use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 
-function generateFileName($name)
+function generateFileName($name): string
 {
     $year = Carbon::now()->year;
     $month = Carbon::now()->month;
@@ -17,7 +17,8 @@ function generateFileName($name)
     return $year .'_'. $month .'_'. $day .'_'. $hour .'_'. $minute .'_'. $second .'_'. $microsecond .'_'. strtolower($name);
 }
 
-function convertToGregorianDate($date){
+function convertToGregorianDate($date): ?string
+{
     if ($date == null){
         return null;
     }
@@ -36,14 +37,15 @@ function removeTimeFromDate($date){
     return $splitedSolarDate[0];
 }
 
-function convertPersianNumbersToEnglish($input)
+function convertPersianNumbersToEnglish($input): array|string
 {
     $persian = ['۰', '۱', '۲', '۳', '۴', '٤', '۵', '٥', '٦', '۶', '۷', '۸', '۹'];
     $english = [ 0 ,  1 ,  2 ,  3 ,  4 ,  4 ,  5 ,  5 ,  6 ,  6 ,  7 ,  8 ,  9 ];
     return str_replace($english, $persian, $input);
 }
 
-function cartTotalSaleAmount() {
+function cartTotalSaleAmount(): float|int
+{
     $cartTotalSaleAmount = 0;
     foreach (\Cart::getContent() as $item){
         if ($item->attributes->is_sale){
@@ -61,7 +63,8 @@ function cartTotalDeliveryAmount() {
     return $cartTotalDeliveryAmount;
 }
 
-function checkCoupon($code){
+function checkCoupon($code): array
+{
     $coupon = Coupon::where('code', $code)->where('expired_at', '>', Carbon::now())->first();
     if ($coupon == null){
         session()->forget('coupon');

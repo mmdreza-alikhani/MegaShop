@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
-use App\Models\Article;
+use App\Http\Requests\Home\Comment\StoreCommentRequest;
+use App\Models\Post;
 use App\Models\Comment;
 use App\Models\News;
 use App\Models\Product;
@@ -18,21 +19,11 @@ use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
-
-    public function store(Request $request, $model, $modelId): RedirectResponse
+    public function store(StoreCommentRequest $request, $model, $modelId): RedirectResponse
     {
-        $validator = Validator::make($request->all(), [
-            "text" => "required|min:3",
-            "rate" => "sometimes|required|digits_between:1,5"
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->to(url()->previous() . '#reviews')->withErrors($validator);
-        }
-
         $classMap = [
             'product' => Product::class,
-            'article' => Article::class,
+            'article' => Post::class,
             'news' => News::class,
         ];
 

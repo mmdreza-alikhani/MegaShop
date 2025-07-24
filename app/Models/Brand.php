@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static latest()
  * @method static create(array $array)
  * @method static search(string $string, string $trim)
+ * @method static active()
  */
 class Brand extends Model
 {
@@ -41,6 +42,7 @@ class Brand extends Model
         'status' => '1'
     ];
 
+
     public function sluggable(): array
     {
         return [
@@ -48,6 +50,11 @@ class Brand extends Model
                 'source' => 'title'
             ]
         ];
+    }
+
+    public function scopeActive($query): void
+    {
+        $query->where('is_active', 1);
     }
 
     protected static function boot(): void

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Genre;
@@ -14,6 +15,11 @@ use App\Models\ProductImage;
 use App\Models\ProductVariation;
 use App\Models\Tag;
 use Carbon\Carbon;
+use Exception;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Expr\New_;
@@ -23,7 +29,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Factory|Application|View
     {
         $products = Product::latest()->paginate(10);
         return view('admin.products.index' , compact('products'));
@@ -32,77 +38,59 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View|Application|Factory
     {
-        $brands = Brand::where('is_active' , 1)->get();
-        $platforms = Platform::where('is_active' , 1)->get();
-        $tags = Tag::all();
-        $categories = Category::where([['is_active' , 1],['parent_id', '!=', '0']])->get();
+        $brands = Brand::active()->pluck('title', 'id');
+        $platforms = Platform::active()->pluck('title', 'id');
+        $tags = Tag::pluck('title', 'id');
+        $categories = Category::active()->parents()->pluck('title', 'id');
         return view('admin.products.create' , compact('brands','tags', 'categories', 'platforms'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-            'brand_id' => 'required',
-            'is_active' => 'required',
-            'tag_ids' => 'required',
-            'platform_id' => 'nullable',
-            'description' => 'required',
-            'primary_img' => 'required|mimes:jpg,jpeg,png,svg',
-            'other_imgs' => 'required',
-            'other_imgs.*' => 'mimes:jpg,jpeg,png,svg',
-            'category_id' => 'required',
-            'attribute_ids' => 'required',
-            'attribute_ids.*' => 'required',
-            'variation_values' => 'required',
-            'variation_values.*.*' => 'required',
-            'variation_values.quantity.*' => 'integer',
-            'variation_values.price.*' => 'integer',
-            'variation_values.sku.*' => 'integer',
-            'delivery_amount' => 'required|integer',
-            'delivery_amount_per_product' => 'nullable|integer',
-        ]);
         try {
             DB::beginTransaction();
 
             $productImageController = new ProductImageController();
-            $imgsFileName = $productImageController->upload($request->primary_img , $request->other_imgs);
+            $imagesFileName = $productImageController->upload($request->primary_image , $request->other_images);
 
             $product = Product::create([
-                'name' => $request->name,
-                'brand_id' => $request->brand_id,
-                'platform_id' => $request->platform_id,
-                'is_active' => $request->is_active,
-                'category_id' => $request->category_id,
-                'primary_image' => $imgsFileName['primaryImg'],
-                'description' => $request->description,
-                'delivery_amount' => $request->delivery_amount,
-                'delivery_amount_per_product' => $request->delivery_amount_per_product,
+                'title' => $request->input('title'),
+                'is_active' => $request->input('is_active'),
+                'brand_id' => $request->input('brand_id'),
+                'platform_id' => $request->input('platform_id'),
+                'description' => $request->input('description'),
+                'delivery_amount' => $request->input('delivery_amount'),
+                'delivery_amount_per_product' => $request->input('delivery_amount_per_product'),
+                'category_id' => $request->input('category_id'),
+                'primary_image' => $imagesFileName['primaryImage'],
             ]);
 
-            foreach($imgsFileName['otherImgs'] as $imgFileName){
+            foreach($imagesFileName['otherImages'] as $imgFileName){
                 ProductImage::create([
-                    'image' => $imgFileName,
-                    'product_id' => $product->id
+                    'product_id' => $product->id,
+                    'image' => $imgFileName
                 ]);
             }
 
+            // Store Filters
             $ProductAttributeController = new ProductAttributeController();
-            $ProductAttributeController->store($request->attribute_ids , $product->id);
+            $ProductAttributeController->store($request->input('filters_value') , $product->id);
 
-            $category = Category::find($request->category_id);
+
+            // Store Variation
+            $attributeId = Category::findOrFail($request->input('category_id'))->variation()->pluck('id')->first();
             $ProductVariationController = new ProductVariationController();
-            $ProductVariationController->store($request->variation_values, $category->attributes()->wherePivot('is_variation' , 1)->first()->id,$product);
+            $ProductVariationController->store($request->input('variation_values'), $attributeId, $product->id);
 
-            $product->tags()->attach($request->tag_ids);
+            $product->tags()->attach($request->input('tag_ids'));
 
             DB::commit();
-        }catch (\Exception $ex) {
+        }catch (Exception $ex) {
             DB::rollBack();
             toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
             return redirect()->route('admin.products.create');
@@ -115,11 +103,33 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Product $product): Factory|Application|View
     {
-        $productAttributes = $product->attributes()->with('attribute')->get();
-        $productVariations = $product->variations;
-        return view('admin.products.show' , compact('product', 'productAttributes', 'productVariations'));
+        $filters = $product->attributes()
+            ->with('attribute')
+            ->get()
+            ->map(function ($attr) {
+                return [
+                    'value' => $attr->value,
+                    'title' => $attr->attribute->title,
+                ];
+            });
+        $variations = $product->variations()
+            ->with('attribute')
+            ->get()
+            ->map(function ($attr) {
+                return [
+                    'title' => $attr->attribute->title,
+                    'value' => $attr->value,
+                    'price' => $attr->price,
+                    'quantity' => $attr->quantity,
+                    'sku' => $attr->sku,
+                    'sale_price' => $attr->sale_price,
+                    'date_on_sale_from' => $attr->date_on_sale_from,
+                    'date_on_sale_to' => $attr->date_on_sale_to,
+                ];
+            });
+        return view('admin.products.show' , compact('product', 'filters', 'variations'));
     }
 
     /**
@@ -127,12 +137,13 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $brands = Brand::where('is_active' , 1)->get();
-        $platforms = Platform::where('is_active' , 1)->get();
-        $tags = Tag::all();
+        $brands = Brand::active()->pluck('title', 'id');
+        $platforms = Platform::active()->pluck('title', 'id');
+        $tags = Tag::pluck('title', 'id');
+        $categories = Category::active()->parents()->pluck('title', 'id');
         $productAttributes = $product->attributes()->with('attribute')->get();
         $productVariations = $product->variations;
-        return view('admin.products.edit', compact('product', 'brands', 'tags', 'productAttributes', 'productVariations', 'platforms'));
+        return view('admin.products.edit', compact('product', 'brands', 'tags', 'categories', 'productVariations', 'platforms'));
     }
 
     /**
@@ -182,7 +193,7 @@ class ProductController extends Controller
             $ProductVariationController->update($request->variation_values);
 
             DB::commit();
-        }catch (\Exception $ex) {
+        }catch (Exception $ex) {
             DB::rollBack();
             toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
             return redirect()->back();
@@ -245,7 +256,7 @@ class ProductController extends Controller
             $ProductVariationController->change($request->variation_values, $category->attributes()->wherePivot('is_variation' , 1)->first()->id,$product);
 
             DB::commit();
-        }catch (\Exception $ex) {
+        }catch (Exception $ex) {
             DB::rollBack();
             toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
             return redirect()->back();

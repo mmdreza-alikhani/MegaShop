@@ -9,9 +9,9 @@ use Illuminate\Http\Request;
 
 class ProductAttributeController extends Controller
 {
-    public function store($attribute_ids , $product_id): void
+    public function store($filter_values , $product_id): void
     {
-        foreach($attribute_ids as $key => $value){
+        foreach($filter_values as $key => $value){
             ProductAttribute::create([
                 'product_id' => $product_id,
                 'attribute_id' => $key,

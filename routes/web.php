@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BannersController;
 use App\Http\Controllers\Admin\BrandController;
@@ -29,7 +29,7 @@ use App\Http\Controllers\Home\ArticleController as HomeArticleController;
 use App\Http\Controllers\Home\NewsController as HomeNewsController;
 use App\Http\Controllers\Home\AuthController as HomeAuthController;
 use App\Http\Controllers\Home\ProfileController as HomeProfileController;
-use App\Http\Controllers\Home\ProfileAddresses as HomeProfileAddressesController;
+use App\Http\Controllers\Home\ProfileAddressesController as HomeProfileAddressesController;
 use App\Http\Controllers\Home\WishListController as HomeWishlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -58,15 +58,15 @@ Route::prefix('/management/')->name('admin.')->middleware(['permission:manage-ge
     Route::resource('attributes' , AttributeController::class)->middleware(['permission:manage-products']);
     Route::get('attributesSearch', [AttributeController::class , 'search'])->middleware(['permission:manage-products'])->name('attributes.search');
     Route::resource('categories' , CategoryController::class)->middleware(['permission:manage-products']);
+    Route::get('categoriesSearch', [CategoryController::class , 'search'])->middleware(['permission:manage-products'])->name('categories.search');
     Route::resource('tags' , TagController::class)->middleware(['permission:manage-products']);
     Route::get('tagsSearch', [TagController::class , 'search'])->middleware(['permission:manage-products'])->name('tags.search');
     Route::resource('products' , ProductController::class)->middleware(['permission:manage-products']);
     Route::get('productsSearch', [ProductController::class , 'search'])->middleware(['permission:manage-products'])->name('products.search');
     Route::resource('banners' , BannersController::class)->middleware(['permission:manage-general']);
-    Route::resource('articles' , ArticleController::class)->middleware(['permission:manage-articles']);
-    Route::get('articlesSearch', [ArticleController::class , 'search'])->middleware(['permission:manage-articles'])->name('articles.search');
-    Route::resource('news' , NewsController::class)->middleware(['permission:manage-news']);
-    Route::get('newsSearch', [NewsController::class , 'search'])->middleware(['permission:manage-news'])->name('news.search');
+    Route::get('bannersSearch', [BannersController::class , 'search'])->middleware(['permission:manage-general'])->name('banners.search');
+    Route::resource('posts' , PostController::class)->middleware(['permission:manage-products']);
+    Route::get('postsSearch', [PostController::class , 'search'])->middleware(['permission:manage-products'])->name('posts.search');
     Route::resource('comments' , CommentController::class)->middleware(['permission:manage-comments']);
     Route::get('commentsSearch', [CommentController::class , 'search'])->middleware(['permission:manage-comments'])->name('comments.search');
     Route::resource('coupons' , CouponController::class)->middleware(['permission:manage-orders']);
@@ -99,7 +99,7 @@ Route::get('/reset-password/{token}', function (string $token) {
 Route::prefix('/')->name('home.')->group(function (){
 
     Route::get('', [HomeController::class , 'index'])->name('index');
-    Route::get('search', [HomeController::class , 'generalSearch'])->name('generalSearch');
+    Route::get('search', [HomeController::class , 'globalSearch'])->name('global-search');
     Route::get('aboutus', [HomeController::class , 'aboutUs'])->name('aboutus');
     Route::get('aboutus#contact', [HomeController::class , 'aboutUs'])->name('aboutus.contact');
     Route::post('contactForm',[HomeController::class , 'contactForm'])->name('contactForm');
@@ -130,7 +130,7 @@ Route::prefix('/')->name('home.')->group(function (){
 
     Route::post('comments/{model}/{id}', [HomeCommentController::class , 'store'])->name('comments.store');
 
-    Route::prefix('articles/')->name('articles.')->group(function (){
+    Route::prefix('posts/')->name('posts.')->group(function (){
         Route::get('',[HomeArticleController::class , 'index'])->name('index');
         Route::get('{article:slug}',[HomeArticleController::class , 'show'])->name('show');
     });

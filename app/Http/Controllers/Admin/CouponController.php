@@ -68,9 +68,9 @@ class CouponController extends Controller
                 'title' => $request->input('title'),
                 'code' => $request->input('code'),
                 'type' => $request->input('type'),
-                'amount' => $request->input('amount'),
-                'percentage' => $request->input('percentage'),
-                'max_percentage_amount' => $request->input('max_percentage_amount'),
+                'amount' => $request->has('amount') ? $request->input('amount') : null,
+                'percentage' => $request->has('percentage') ? $request->input('percentage') : null,
+                'max_percentage_amount' => $request->has('max_percentage_amount') ? $request->input('max_percentage_amount') : null,
                 'expired_at' => convertToGregorianDate($request->input('expired_at')),
                 'description' => $request->input('description'),
             ]);

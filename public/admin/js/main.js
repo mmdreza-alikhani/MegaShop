@@ -45,10 +45,6 @@ $(document).ready(function () {
 });
 
 
-
-
-
-
 var ctx = document.getElementById('myChart2');
 var ctx = new Chart(ctx, {
   type: 'polarArea',

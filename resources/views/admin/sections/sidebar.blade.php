@@ -35,6 +35,64 @@
                 </div>
             </ul>
             <p class="side-comment fnt-mxs">محصولات</p>
+            <ul class="side a-collapse {{ request()->is('management/brands') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fas fa-tags mr-1"></i> برند ها
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/brands') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/brands') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.brands.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست  برند ها
+                        </a>
+                    </li>
+                    <li class="side-item {{ request()->is('management/brands/create') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.brands.create') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>ایجاد  برند جدید
+                        </a>
+                    </li>
+                </div>
+            </ul>
+            <ul class="side a-collapse {{ request()->is('management/platforms') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fas fa-playstation mr-1"></i> پلتفرم ها
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/platforms') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/platforms') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.platforms.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست  پلتفرم ها
+                        </a>
+                    </li>
+                </div>
+            </ul>
+            <ul class="side a-collapse {{ request()->is('management/categories') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fas fa-catfew mr-1"></i> دسته بندی ها
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/categories') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/categories') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.categories.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست  دسته بندی ها
+                        </a>
+                    </li>
+                    <li class="side-item {{ request()->is('management/categories/create') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.categories.create') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>ایجاد دسته بندی جدید
+                        </a>
+                    </li>
+                </div>
+            </ul>
+            <ul class="side a-collapse {{ request()->is('management/attributes') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fas fa-playstation mr-1"></i> ویژگی ها
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/categories') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/attributes') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.attributes.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست  ویژگی ها
+                        </a>
+                    </li>
+                </div>
+            </ul>
             <ul class="side a-collapse {{ request()->is('management/products') ? '' : 'short' }}">
                 <a class="ul-text fnt-mxs"><i class="fas fa-shopping-cart mr-1"></i> محصولات
                     <i class="fas fa-chevron-up arrow"></i>
@@ -52,13 +110,13 @@
                     </li>
                 </div>
             </ul>
-{{--            <ul class="side a-collapse {{ $active_parent == 'articles' ? '' : 'short' }}">--}}
+{{--            <ul class="side a-collapse {{ $active_parent == 'posts' ? '' : 'short' }}">--}}
 {{--                <a class="ul-text fnt-mxs"><i class="fas fa-grip-lines mr-1"></i> ماده ها--}}
 {{--                    <i class="fas fa-chevron-up arrow"></i>--}}
 {{--                </a>--}}
-{{--                <div class="side-item-container {{ $active_parent == 'articles' ? '' : 'hide animated' }}">--}}
+{{--                <div class="side-item-container {{ $active_parent == 'posts' ? '' : 'hide animated' }}">--}}
 {{--                    <li class="side-item {{ $active_child == 'showArticles' ? 'selected' : '' }}">--}}
-{{--                        <a href="{{ route('admin.articles.index') }}" class="fnt-mxs">--}}
+{{--                        <a href="{{ route('admin.posts.index') }}" class="fnt-mxs">--}}
 {{--                            <i class="fas fa-angle-right mr-2"></i>لیست ماده ها--}}
 {{--                        </a>--}}
 {{--                    </li>--}}

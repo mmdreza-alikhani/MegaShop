@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Category\StoreCategoryRequest;
 use App\Http\Requests\Admin\Category\UpdateCategoryRequest;
 use App\Models\Attribute;
+use App\Models\AttributeCategory;
 use App\Models\Category;
 use Exception;
 use Illuminate\Contracts\View\Factory;
@@ -23,10 +24,16 @@ class CategoryController extends Controller
      */
     public function index(): View|Application|Factory
     {
-        $categories = Category::latest()->paginate(10);
-        $parentCategories = Category::where('parent_id', '=', 0)->get();
-        $attributes = Attribute::all();
-        return view('admin.categories.index' , compact('categories', 'parentCategories', 'attributes'));
+        $categories = Category::latest()->with('parent', 'filters', 'variation')->paginate(10);
+        return view('admin.categories.index' , compact('categories'));
+    }
+
+    public function create(): View|Application|Factory
+    {
+        $parentCategories = Category::parents()->pluck('title', 'id');
+        $attributes = Attribute::pluck('title', 'id');
+
+        return view('admin.categories.create' , compact('parentCategories' , 'attributes'));
     }
 
     /**
@@ -45,11 +52,17 @@ class CategoryController extends Controller
                 'icon' => $request->input('icon'),
             ]);
 
-            foreach ($request->input('attribute_ids') as $attribute_id){
-                $attribute = Attribute::findOrFail($attribute_id);
-                $attribute->categories()->attach($category->id , [
-                    'is_filter' => in_array($attribute_id , $request->attribute_is_filter_ids) ? 1 : 0,
-                    'is_variation' => $request->attribute_is_variation_id == $attribute_id ? 1 : 0
+            AttributeCategory::create([
+                'category_id' => $category->id,
+                'attribute_id' => $request->input('variation_attribute_id'),
+                'type' => 'variation'
+            ]);
+
+            foreach ($request->input('filter_attribute_ids') as $attribute_id){
+                AttributeCategory::create([
+                    'category_id' => $category->id,
+                    'attribute_id' => $attribute_id,
+                    'type' => 'filter'
                 ]);
             }
 
@@ -65,6 +78,17 @@ class CategoryController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Category $category): View|Application|Factory
+    {
+        $relatedAttributes = $this->getCategoryAttribute($category);
+        $parentCategories = Category::parents()->pluck('title', 'id');
+        $attributes = Attribute::pluck('title', 'id');
+        return view('admin.categories.edit' , compact('category', 'parentCategories', 'attributes', 'relatedAttributes'));
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateCategoryRequest $request, Category $category): RedirectResponse
@@ -73,21 +97,26 @@ class CategoryController extends Controller
             DB::beginTransaction();
 
             $category->update([
-                'name' => $request->name,
-                'slug' => $request->slug,
-                'parent_id' => $request->parent_id,
-                'is_active' => $request->is_active,
-                'description' => $request->description,
-                'icon' => $request->icon,
+                'title' => $request->input('title'),
+                'parent_id' => $request->input('parent_id'),
+                'is_active' => $request->input('is_active'),
+                'description' => $request->input('description'),
+                'icon' => $request->input('icon'),
             ]);
 
             $category->attributes()->detach();
 
-            foreach ($request->attribute_ids as $attribute_id){
-                $attribute = Attribute::findOrFail($attribute_id);
-                $attribute->categories()->attach($category->id , [
-                    'is_filter' => in_array($attribute_id , $request->attribute_is_filter_ids) ? 1 : 0,
-                    'is_variation' => $request->attribute_is_variation_id == $attribute_id ? 1 : 0
+            AttributeCategory::create([
+                'category_id' => $category->id,
+                'attribute_id' => $request->input('variation_attribute_id'),
+                'type' => 'variation'
+            ]);
+
+            foreach ($request->input('filter_attribute_ids') as $attribute_id){
+                AttributeCategory::create([
+                    'category_id' => $category->id,
+                    'attribute_id' => $attribute_id,
+                    'type' => 'filter'
                 ]);
             }
 
@@ -115,8 +144,14 @@ class CategoryController extends Controller
 
     public function getCategoryAttribute(Category $category): array
     {
-        $attributes = $category->attributes()->wherePivot('is_variation', 0)->get();
-        $variation = $category->attributes()->wherePivot('is_variation', 1)->get();
-        return ['attributes' => $attributes , 'variation' => $variation];
+        $filters = $category->attributes()->filter()->pluck('title', 'id');
+        $variation = $category->attributes()->variation()->take(1)->pluck('title', 'id');
+        return ['filters' => $filters , 'variation' => $variation];
+    }
+
+    public function search(): View|Application|Factory
+    {
+        $categories = Category::search('title', trim(request()->keyword))->latest()->paginate(10);
+        return view('admin.categories.index', compact('categories'));
     }
 }

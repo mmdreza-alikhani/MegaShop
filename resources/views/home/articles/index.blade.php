@@ -31,14 +31,14 @@
         <!-- START: Post -->
         @foreach($articles as $article)
             <div class="nk-blog-post">
-                <a href="{{ route('home.articles.show', ['article' => $article->slug]) }}" class="nk-post-img">
+                <a href="{{ route('home.posts.show', ['article' => $article->slug]) }}" class="nk-post-img">
                     <img src="{{ env('ARTICLE_IMAGE_UPLOAD_PATH') . '/' . $article->primary_image }}" alt="{{ $article->name }}-image">
                     <span class="nk-post-comments-count">4</span>
                 </a>
                 <div class="nk-gap-2"></div>
                 <div class="row vertical-gap" style="direction: rtl">
                     <div class="col-md-8 col-lg-9">
-                        <h2 class="nk-post-title h4 text-right"><a href="{{ route('home.articles.show', ['article' => $article->slug]) }}">{{ $article->title }}</a></h2>
+                        <h2 class="nk-post-title h4 text-right"><a href="{{ route('home.posts.show', ['article' => $article->slug]) }}">{{ $article->title }}</a></h2>
                         <div class="nk-gap"></div>
                         <div class="nk-post-text text-right">
                             <p style="direction: rtl">{{ substr(strip_tags($article->text), 0 , 500) . '...' }}</p>
@@ -54,7 +54,7 @@
                         </div>
                         <div class="nk-gap-3"></div>
                         <div class="text-right">
-                            <a href="{{ route('home.articles.show', ['article' => $article->slug]) }}" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 nk-btn-hover-color-main-1 w-100">ادامه مطلب</a>
+                            <a href="{{ route('home.posts.show', ['article' => $article->slug]) }}" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 nk-btn-hover-color-main-1 w-100">ادامه مطلب</a>
                         </div>
                     </div>
                 </div>

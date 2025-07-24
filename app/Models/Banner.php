@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @method static latest()
  * @method static create(array $array)
+ * @method static where(string $string, int $int)
+ * @method static search(string $string, string $trim)
  */
 class Banner extends Model
 {

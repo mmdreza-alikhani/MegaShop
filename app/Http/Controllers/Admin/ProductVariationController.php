@@ -9,17 +9,16 @@ use Illuminate\Http\Request;
 
 class ProductVariationController extends Controller
 {
-    public function store($variations,  $attributeId, $product): void
+    public function store($variations, $attributeId, $productId): void
     {
-        $counter = count($variations['value']);
-        for ($i = 0; $i < $counter; $i++) {
+        foreach ($variations as $variation) {
             ProductVariation::create([
                 'attribute_id' => $attributeId,
-                'product_id' => $product->id,
-                'value' => $variations['value'][$i],
-                'price' => $variations['price'][$i],
-                'quantity' => $variations['quantity'][$i],
-                'sku' => $variations['sku'][$i],
+                'product_id' => $productId,
+                'value' => $variation['value'],
+                'price' => $variation['price'],
+                'quantity' => $variation['quantity'],
+                'sku' => $variation['sku'],
             ]);
         }
     }

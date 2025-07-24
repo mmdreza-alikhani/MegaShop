@@ -24,7 +24,7 @@
                         <a href="{{ route('home.products.show', ['product' => $comment->product->slug]) }}"><span style="color: #dd163b">{{ $comment->product->name }}</span></a>
                     @elseif($comment->article_id != null)
                         برای مقاله
-                        <a href="{{ route('home.articles.show', ['article' => $comment->article->slug]) }}"><span style="color: #dd163b">{{ $comment->article->title }}</span></a>
+                        <a href="{{ route('home.posts.show', ['article' => $comment->article->slug]) }}"><span style="color: #dd163b">{{ $comment->article->title }}</span></a>
                     @else
                         برای خبر
                         <a href="{{ route('home.news.show', ['news' => $comment->news->slug]) }}"><span style="color: #dd163b">{{ $comment->news->title }}</span></a>

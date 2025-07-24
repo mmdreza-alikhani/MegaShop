@@ -36,7 +36,7 @@ class PlatformController extends Controller
 
             $imageFileName = null;
 
-            if ($request->image){
+            if ($request->has('image')){
                 $imageFileName = generateFileName($request->image->getClientOriginalName());
                 $request->image->move(public_path(env('CATEGORY_IMAGE_PATH')) , $imageFileName);
             }
@@ -66,15 +66,17 @@ class PlatformController extends Controller
         try {
             DB::beginTransaction();
 
-            if ($request->image){
+            if ($request->has('image')){
                 $imageFileName = generateFileName($request->image->getClientOriginalName());
-                $request->image->move(public_path(env('CATEGORY_IMAGE_PATH')) , $imageFileName);
+                $request->input('image')->move(public_path(env('CATEGORY_IMAGE_PATH')) , $imageFileName);
+                $platform->update([
+                    'image' => $imageFileName
+                ]);
             }
 
             $platform->update([
-                'name' => $request->name,
+                'title' => $request->title,
                 'is_active' => $request->is_active,
-                'image' => $request->image ? $imageFileName : $platform->image
             ]);
 
             DB::commit();

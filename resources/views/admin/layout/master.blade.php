@@ -8,7 +8,7 @@
     <meta name=”robots” content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @include('admin.sections.links')
-    @yield('links')
+    @yield('styles')
 </head>
 
 <body class="rtl persianumber">

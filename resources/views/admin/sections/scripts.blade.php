@@ -11,6 +11,7 @@
     });
 </script>
 <script src="{{ asset('/admin/js/bootstrap-select.min.js') }}"></script>
+<script src="{{ asset('/admin/js/jquery.czMore-latest.js') }}"></script>
 <script src="{{ asset('/admin/js/jalalidatepicker.min.js') }}"></script>
 {{--<script src="{{ asset('/admin/js/ckeditor.js') }}"></script>--}}
 {{--<script src="{{ asset('/admin/js/summernote.min.js') }}"></script>--}}

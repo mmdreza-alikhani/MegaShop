@@ -1,20 +1,43 @@
 @extends('admin.layout.master')
-@section('title')
-    سفارش : {{ $transaction->token }}
-@endsection
+
 @php
-    $active_parent = 'orders';
-    $active_child = ''
+    $title = 'نمایش سفارش'
 @endphp
+
+@section('title', $title)
+
 @section('content')
-    <div class="m-sm-2 mx-4 row">
-        <div class="col-lg-12 col-12">
-            <div class="card">
-                <div class="card-header bg-primary">
-                    مشخصات سفارش
+    <main class="bmd-layout-content">
+        <div class="container-fluid">
+            <div class="row m-1 pb-4 mb-3">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
+                    <div class="page-header breadcrumb-header">
+                        <div class="row align-items-end">
+                            <div class="col-lg-8">
+                                <div class="page-header-title text-left-rtl">
+                                    <div class="d-inline">
+                                        <h3 class="lite-text">پنل مدیریت</h3>
+                                        <span class="lite-text">{{ $title }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('admin.panel') }}"><i class="fas fa-home"></i></a>
+                                    </li>
+                                    <li class="breadcrumb-item active">{{ $title }}</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="row">
+            </div>
+
+            <div class="row mx-1">
+                <div class="card shade c-grey w-100">
+                    <h5 class="card-header c-primary">{{ $title }}</h5>
+                    <div class="card-body row">
                         <div class="form-group col-12 col-lg-3">
                             <label>سفارش دهنده:</label>
                             <br>
@@ -112,30 +135,28 @@
                                 </textarea>
                             @endif
                         </div>
+                        <div class="form-group card shade c-grey col-12 col-lg-12">
+                            <h5 class="card-header c-primary">دکمه</h5>
+                            <div class="card-body">
+                                <div class="row col-lg-12 text-right" style="direction: rtl">
+                                    <ul class="text-main-1 pl-20">
+                                        @foreach($order->items as $item)
+                                            <li class="col-12 col-lg-4"><a
+                                                    href="{{ route('home.products.show', ['product' => $item->product->slug]) }}">{{ $item->product->name }}</a>
+                                                <br>
+                                                <strong>{{ $item->productVariation->value . ' - ' . $item->quantity . ' عدد' }}</strong>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-5 col-12">
-            <div class="card">
-                <div class="card-header bg-primary">
-                    محصولات سفارش:
-                </div>
-                <div class="card-body">
-                    <div class="col-12 col-lg-12 text-right" style="direction: rtl">
-                        <ul class="text-main-1 pl-20 text-right" style="direction: rtl">
-                            @foreach($order->items as $item)
-                                <li class="col-12 col-lg-4"><a
-                                            href="{{ route('home.products.show', ['product' => $item->product->slug]) }}">{{ $item->product->name }}</a>
-                                    <br>
-                                    <strong>{{ $item->productVariation->value . ' - ' . $item->quantity . ' عدد' }}</strong>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <a href="{{ route('admin.orders.index') }}" class="btn btn-danger mb-2 h-25">بازگشت</a>
-    </div>
+    </main>
 @endsection

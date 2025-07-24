@@ -44,7 +44,7 @@ class BrandController extends Controller
     public function update(UpdateBrandRequest $request, Brand $brand): RedirectResponse
     {
         $brand->update([
-            'name' => $request->input('name'),
+            'title' => $request->input('title'),
             'is_active' => $request->input('is_active'),
         ]);
 

@@ -9,11 +9,8 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
-use Random\RandomException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class AuthController extends Controller
@@ -38,7 +35,6 @@ class AuthController extends Controller
      */
     public function handleProviderCallback(Request $request, $provider): \Illuminate\Http\RedirectResponse
     {
-
         $socialiteUser = Socialite::driver($provider)->stateless()->user();
 
         $user = User::where('email', $socialiteUser->getEmail())->first();

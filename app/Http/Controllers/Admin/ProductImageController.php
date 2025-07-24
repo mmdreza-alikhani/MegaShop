@@ -27,7 +27,7 @@ class ProductImageController extends Controller
             $otherImagesFileNames[] = $otherImageFileName;
         }
 
-        return ['primaryImg' => $primaryImgFileName , '$otherImages' => $otherImagesFileNames];
+        return ['primaryImage' => $primaryImgFileName , 'otherImages' => $otherImagesFileNames];
     }
 
     public function edit(Product $product): View|Application|Factory

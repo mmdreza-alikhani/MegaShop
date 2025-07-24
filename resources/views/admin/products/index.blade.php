@@ -37,14 +37,15 @@
                         ایجاد محصول
                     </a>
                 </div>
-                <div class="input-group" style="max-width: 300px;">
-                    <input type="text" class="form-control" placeholder="جستجو با نام محصول"
-                           value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword">
+                <div class="input-group">
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary c-primary" type="button">
                             <i class="fab fas fa-search"></i>
                         </button>
                     </div>
+                    <input type="text" class="form-control" placeholder="جستجو با نام محصول"
+                           style="width: 300px"
+                           value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword">
                 </div>
             </div>
 
@@ -100,32 +101,33 @@
                                                         <i class="fa fa-cog"></i>
                                                     </a>
                                                     <div class="dropdown-menu">
-                                                        <a href="#" class="dropdown-item">نمایش</a>
-                                                        <a href="#" class="dropdown-item">ویرایش</a>
-                                                        <a href="#" class="dropdown-item">حذف</a>
+                                                        <a href="{{ route('admin.products.show', ['product' => $product]) }}" class="dropdown-item">نمایش</a>
+                                                        <a href="{{ route('admin.products.edit', ['product' => $product]) }}" class="dropdown-item">ویرایش</a>
+                                                        <button data-target="#deleteProductModal-{{ $product->id }}" data-toggle="modal" type="button" class="dropdown-item">حذف</button>
                                                     </div>
                                                 </div>
-                                                <div class="modal w-lg fade light rtl" id="deleteUserModal-{{ $product->id }}" tabindex="-1" role="dialog">
+                                                <div class="modal w-lg fade justify rtl" id="deleteProductModal-{{ $product->id }}" tabindex="-1" role="dialog">
                                                     <div class="modal-dialog" role="document">
-                                                        <form method="post" action="{{ route('admin.products.store') }}">
-                                                            @csrf
-                                                            <div class="modal-content card shade">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="exampleModalLabel">
-                                                                        ایجاد محصول جدید
-                                                                    </h5>
-                                                                    <button type="button" class="close" data-dismiss="modal">
-                                                                        <span>&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
-                                                                    <button type="submit" class="btn main f-main">ایجاد</button>
-                                                                </div>
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">حذف محصول: {{ $product->title }}</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
                                                             </div>
-                                                        </form>
+                                                            <div class="modal-body">
+                                                                آیا از این عملیات مطمئن هستید؟
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn outlined o-danger c-danger"
+                                                                        data-dismiss="modal">بستن</button>
+                                                                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" style="display: inline;">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn f-main">حذف</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </td>

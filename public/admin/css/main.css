@@ -888,7 +888,7 @@ body.modal-open main {
 
 .input-group .input-group-append .btn {
   border: 3px solid #ced4da5c;
-    border-right: 0;
+    border-left: 0;
   box-shadow: 0 0 0px 0px;
   height: calc(1.6em + 0.75rem + 7px);
 }

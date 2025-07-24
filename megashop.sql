@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `articles`
+-- Table structure for table `posts`
 --
 
 CREATE TABLE `articles` (
@@ -41,7 +41,7 @@ CREATE TABLE `articles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `articles`
+-- Dumping data for table `posts`
 --
 
 INSERT INTO `articles` (`id`, `title`, `slug`, `user_id`, `primary_image`, `text`, `status`, `is_active`, `created_at`, `updated_at`) VALUES
@@ -1814,7 +1814,7 @@ CREATE TABLE `permissions` (
 --
 
 INSERT INTO `permissions` (`id`, `name`, `display_name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(10, 'manage-articles', 'مدیریت مقالات', 'web', '2024-01-24 20:13:38', '2024-01-24 20:13:38'),
+(10, 'manage-posts', 'مدیریت مقالات', 'web', '2024-01-24 20:13:38', '2024-01-24 20:13:38'),
 (11, 'manage-products', 'مدیریت محصولات', 'web', '2024-01-24 20:14:08', '2024-01-24 20:14:08'),
 (12, 'manage-news', 'مدیریت اخبار', 'web', '2024-01-24 20:14:31', '2024-02-07 20:27:42'),
 (13, 'manage-orders', 'مدیریت سفارشات', 'web', '2024-02-05 21:18:34', '2024-02-05 21:18:34'),
@@ -2164,7 +2164,7 @@ CREATE TABLE `roles` (
 INSERT INTO `roles` (`id`, `name`, `display_name`, `guard_name`, `created_at`, `updated_at`) VALUES
 (3, 'admin-products', 'ادمین محصولات', 'web', '2024-01-24 20:15:41', '2024-01-24 20:15:41'),
 (4, 'admin-news', 'ادمین اخبار', 'web', '2024-01-24 20:16:15', '2024-01-24 20:16:15'),
-(5, 'admin-articles', 'مدیریت مقالات', 'web', '2024-02-05 21:21:36', '2024-02-05 21:21:36'),
+(5, 'admin-posts', 'مدیریت مقالات', 'web', '2024-02-05 21:21:36', '2024-02-05 21:21:36'),
 (6, 'admin-orders', 'ادمین سفارشات', 'web', '2024-02-05 21:22:24', '2024-02-05 21:22:24'),
 (7, 'admin-general', 'مدیر عمومی', 'web', '2024-02-05 21:23:59', '2024-02-05 21:23:59'),
 (8, 'admin-full', 'فول ادمین', 'web', '2024-02-05 21:25:09', '2024-02-05 21:25:09');
@@ -2390,7 +2390,7 @@ INSERT INTO `wishlist` (`user_id`, `product_id`, `created_at`, `updated_at`) VAL
 --
 
 --
--- Indexes for table `articles`
+-- Indexes for table `posts`
 --
 ALTER TABLE `articles`
   ADD PRIMARY KEY (`id`),
@@ -2679,7 +2679,7 @@ ALTER TABLE `wishlist`
 --
 
 --
--- AUTO_INCREMENT for table `articles`
+-- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `articles`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
@@ -2863,7 +2863,7 @@ ALTER TABLE `user_coupons`
 --
 
 --
--- Constraints for table `articles`
+-- Constraints for table `posts`
 --
 ALTER TABLE `articles`
   ADD CONSTRAINT `articles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;

@@ -1,165 +1,191 @@
 @extends('admin.layout.master')
-@section('title')
-    ویرایش دسته بندی: {{$category->name}}
-@endsection
+
 @php
-    $active_parent = 'categories';
-    $active_child = ''
+    $title = 'ویرایش دسته بندی';
 @endphp
+
+@section('title', $title)
+
+@section('styles')
+    <style>
+        .disabled-option{
+            color: #999;
+            background-color: #f9f9f9;
+        }
+    </style>
+@endsection
+
 @section('content')
-    <div class="mx-4">
-        @include('admin.sections.errors')
-        <form action="{{ route('admin.categories.update' , ['category' => $category->id]) }}" method="POST" class="row">
-            @csrf
-            @method('put')
-            <div class="col-lg-12 col-12">
-                <div class="card">
-                    <div class="card-header bg-primary">
-                        ویرایش
+    <main class="bmd-layout-content">
+        <div class="container-fluid">
+            <div class="row m-1 pb-4 mb-3">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
+                    <div class="page-header breadcrumb-header">
+                        <div class="row align-items-end">
+                            <div class="col-lg-8">
+                                <div class="page-header-title text-left-rtl">
+                                    <div class="d-inline">
+                                        <h3 class="lite-text">پنل مدیریت</h3>
+                                        <span class="lite-text">{{ $title }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('admin.panel') }}"><i class="fas fa-home"></i></a>
+                                    </li>
+                                    <li class="breadcrumb-item active">{{ $title }}</li>
+                                </ol>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="row mx-1">
+                <div class="card shade c-grey w-100">
+                    <h5 class="card-header c-primary">{{ $title }}</h5>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="name">عنوان*</label>
-                                <input type="text" name="name" id="name" class="form-control"
-                                       value="{{ $category->name }}">
-                                <input type="hidden" name="id" id="id" class="form-control" value="{{ $category->id }}">
+                        @include('admin.layout.errors', ['errors' => $errors->update])
+                        <form action="{{ route('admin.categories.update' , ['category' => $category->id]) }}" method="POST" class="row p-3">
+                            @method('put')
+                            @csrf
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="title">عنوان:*</label>
+                                <input type="text" name="title" id="title" class="form-control" value="{{ $category->title }}" required>
                             </div>
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="slug" data-bs-toggle="tooltip" data-bs-placement="top" title="اختیاری">نام
-                                    انگلیسی*</label>
-                                <input type="text" name="slug" id="slug" class="form-control"
-                                       value="{{ $category->slug }}">
-                            </div>
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="parent_id">والد*</label>
-                                <select class="form-control" id="parent_id" name="parent_id">
-                                    <option value="0" {{ $category->parent_id == 0 ? 'selected' : '' }} >بدون والد
-                                    </option>
-                                    @foreach($parentCategories as $parentCategory)
-                                        <option value="{{ $parentCategory->id }}" {{ $category->parent_id == $parentCategory->id ? 'selected' : '' }} >
-                                            {{ $parentCategory->name }}
-                                        </option>
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="parent_id">والد: *</label>
+                                <select class="form-control" id="parent_id" name="parent_id" required>
+                                    <option value="0">بدون والد</option>
+                                    @foreach($parentCategories as $key => $value)
+                                        <option value="{{ $key }}" {{ $category->parent_id == $key ? 'selected' : '' }}>{{ $value }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="is_active">وضعیت*</label>
-                                <select class="form-control" id="is_active" name="is_active">
-                                    <option value="1" {{ $category->getRawOriginal('is_active') ? 'selected' : '' }} >
-                                        فعال
-                                    </option>
-                                    <option value="0" {{ $category->getRawOriginal('is_active') ? '' : 'selected' }} >
-                                        غیرفعال
-                                    </option>
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="is_active">وضعیت: *</label>
+                                <select class="form-control" id="is_active" name="is_active" required>
+                                    <option value="1" {{ $category->is_active == 1 ? 'selected' : '' }}>فعال</option>
+                                    <option value="0" {{ $category->is_active == 0 ? 'selected' : '' }}>غیرفعال</option>
                                 </select>
                             </div>
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="attributeSelect">ویژگی ها*</label>
-                                <select id="attributeSelect" class="form-control" name="attribute_ids[]" multiple
-                                        data-live-search="true">
-                                    @foreach($attributes as $attribute)
-                                        <option value="{{ $attribute->id }}"
-                                                {{ in_array($attribute->id , $category->attributes()->pluck('id')->toArray() ) ? 'selected' : '' }}
-                                        >{{ $attribute->name }}</option>
-                                    @endforeach
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="attributeIsFilter">ویژگی های قابل فیلتر: *</label>
+                                <select id="attributeIsFilter" class="form-control" name="filter_attribute_ids[]" data-live-search="true" required multiple>
                                 </select>
                             </div>
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="attributeIsFilter">ویژگی های قابل فیلتر*</label>
-                                <select id="attributeIsFilter" class="form-control" name="attribute_is_filter_ids[]"
-                                        multiple data-live-search="true">
-                                    @foreach($category->attributes()->wherePivot('is_filter' , 1)->get() as $attribute)
-                                        <option value="{{ $attribute->id }}" selected>{{ $attribute->name }}</option>
-                                    @endforeach
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="attributeIsVariation">ویژگی متغیر: *</label>
+                                <select id="attributeIsVariation" class="form-control" name="variation_attribute_id" data-live-search="true" required>
                                 </select>
                             </div>
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="attributeIsVariation">ویژگی متغیر*</label>
-                                <select id="attributeIsVariation" class="form-control" name="attribute_is_variation_id"
-                                        data-live-search="true">
-                                    <option value="{{ $category->attributes()->wherePivot('is_variation' , 1)->first()->id }}"
-                                            selected>{{ $category->attributes()->wherePivot('is_variation' , 1)->first()->name }}</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="icon">آیکون</label>
-                                <input type="text" name="icon" id="icon" class="form-control"
-                                       value="{{ $category->icon }}">
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="icon">آیکون:</label>
+                                <input type="text" name="icon" id="icon" class="form-control" value="{{ $category->icon }}">
                             </div>
                             <div class="form-group col-12 col-lg-12">
-                                <label for="description">توضیحات</label>
+                                <label for="description">توضیحات:</label>
                                 <textarea type="text" name="description" id="description"
                                           class="form-control">{{ $category->description }}</textarea>
                             </div>
-                        </div>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
+                                <button type="submit" class="btn f-primary">ادامه</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-3 col-12">
-                <div class="card">
-                    <div class="card-header bg-primary">
-                        انتشار
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <button class="btn btn-primary w-100" type="submit" name="submit">ویرایش</button>
-                            </div>
-                            <div class="col-6">
-                                <a href="{{ route('admin.categories.index') }}" class="btn btn-danger w-100"
-                                   type="cancel" name="cancel">بازگشت</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
+        </div>
+    </main>
 @endsection
 @section('scripts')
     <script>
-        $('#attributeSelect').selectpicker({
-            'title': 'انتخاب ویژگی'
-        });
-        $('#attributeIsFilter').selectpicker({
-            'title': 'انتخاب ویژگی قابل فیلتر'
-        });
-        $('#attributeIsVariation').selectpicker({
-            'title': 'انتخاب ویژگی قابل متغیر'
-        });
-        $('#attributeSelect').on('changed.bs.select', function () {
-            const selectedAttributes = $(this).val();
-            const attributes = @json($attributes);
-            const attributeForFilter = [];
+        const attributes = @json($attributes);
+        const relatedAttributes = @json($relatedAttributes);
+        console.log(relatedAttributes)
 
-            attributes.map((attribute) => {
-                $.each(selectedAttributes, function (i, element) {
-                    if (attribute.id == element) {
-                        attributeForFilter.push(attribute);
+        const attributeSelects = {
+            '#attributeIsFilter': 'ویژگی‌های قابل فیلتر',
+            '#attributeIsVariation': 'ویژگی متغیر'
+        };
+
+        Object.entries(attributeSelects).forEach(([selector, title]) => {
+            $(selector).selectpicker({ title });
+        });
+
+        $(document).ready(function () {
+            const attributes = @json($attributes); // Laravel-passed data
+
+            const $filterSelect = $('#attributeIsFilter');
+            const $variationSelect = $('#attributeIsVariation');
+
+            // Populate both selects
+            function populateSelects(data) {
+                const selectedFilters = relatedAttributes.filters ? Object.keys(relatedAttributes.filters) : [];
+                const selectedVariation = relatedAttributes.variation ? Object.keys(relatedAttributes.variation)[0] : null;
+
+                $.each(data, function (key, value) {
+                    const filterOption = new Option(value, key);
+                    const variationOption = new Option(value, key);
+
+                    // Mark default selections
+                    if (selectedFilters.includes(key.toString())) {
+                        filterOption.selected = true;
+                    }
+                    if (selectedVariation && key.toString() === selectedVariation.toString()) {
+                        variationOption.selected = true;
+                    }
+
+                    $filterSelect.append(filterOption);
+                    $variationSelect.append(variationOption);
+                });
+
+                // Refresh UI
+                $filterSelect.selectpicker('refresh');
+                $variationSelect.selectpicker('refresh');
+            }
+
+
+            function syncOptions() {
+                const selectedFilters = $filterSelect.val() || [];
+                const selectedVariation = $variationSelect.val();
+
+                // Filter → Variation
+                $variationSelect.find('option').each(function () {
+                    const val = $(this).val();
+                    if (selectedFilters.includes(val)) {
+                        $(this).prop('disabled', true).prop('selected', false).addClass('disabled-option');
+                    } else {
+                        $(this).prop('disabled', false).removeClass('disabled-option');
                     }
                 });
-            })
 
-            $("#attributeIsFilter").find("option").remove();
-            $("#attributeIsVariation").find("option").remove();
-            attributeForFilter.forEach((element) => {
-                let attributeForFilterOption = $("<option/>", {
-                    value: element.id,
-                    text: element.name,
+                // Variation → Filter
+                $filterSelect.find('option').each(function () {
+                    const val = $(this).val();
+                    if (val === selectedVariation) {
+                        $(this).prop('disabled', true).prop('selected', false).addClass('disabled-option');
+                    } else {
+                        $(this).prop('disabled', false).removeClass('disabled-option');
+                    }
                 });
 
-                let attributeForVariationOption = $("<option/>", {
-                    value: element.id,
-                    text: element.name,
-                });
-                $("#attributeIsFilter").append(attributeForFilterOption);
-                $('#attributeIsFilter').selectpicker('refresh');
+                // One refresh per field
+                $filterSelect.selectpicker('refresh');
+                $variationSelect.selectpicker('refresh');
+            }
 
-                $("#attributeIsVariation").append(attributeForVariationOption);
-                $('#attributeIsVariation').selectpicker('refresh');
-            })
-        })
+
+            // Initial populate
+            populateSelects(attributes);
+            syncOptions();
+
+            // Re-sync on change
+            $filterSelect.on('change', syncOptions);
+            $variationSelect.on('change', syncOptions);
+        });
     </script>
 @endsection

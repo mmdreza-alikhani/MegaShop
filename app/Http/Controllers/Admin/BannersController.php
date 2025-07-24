@@ -40,9 +40,9 @@ class BannersController extends Controller
         try {
             DB::beginTransaction();
 
-            $imageName = generateFileName($request->input('image')->getClientOriginalName());
+            $imageName = generateFileName($request->image->getClientOriginalName());
 
-            $request->input('image')->move(public_path(env('BANNER_IMAGES_UPLOAD_PATH')), $imageName);
+            $request->image->move(public_path(env('BANNER_IMAGES_UPLOAD_PATH')), $imageName);
 
             Banner::create([
                 'title' => $request->input('title'),
@@ -94,6 +94,9 @@ class BannersController extends Controller
             if ($request->has('image')) {
                 $imageName = generateFileName($request->image->getClientOriginalName());
                 $request->image->move(public_path(env('BANNER_IMAGES_UPLOAD_PATH')), $imageName);
+                $banner->update([
+                    'image' => $imageName,
+                ]);
             }
 
             $banner->update([
@@ -105,11 +108,10 @@ class BannersController extends Controller
                 'button_link' => $request->button_link,
                 'button_icon' => $request->button_icon,
                 'priority' => $request->priority,
-                'image' => $request->image ? $imageName : $banner->image,
             ]);
 
             DB::commit();
-        }catch (\Exception $ex) {
+        }catch (Exception $ex) {
             DB::rollBack();
             toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
             return redirect()->back();
@@ -117,6 +119,12 @@ class BannersController extends Controller
 
         toastr()->success('با موفقیت مقاله ویرایش شد.');
         return redirect()->back();
+    }
+
+    public function search(): View|Application|Factory
+    {
+        $banners = Banner::search('title', trim(request()->keyword))->latest()->paginate(10);
+        return view('admin.banners.index', compact('banners'));
     }
 
     /**

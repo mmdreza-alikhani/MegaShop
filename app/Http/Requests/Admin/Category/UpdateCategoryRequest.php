@@ -15,7 +15,7 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->can('manage-categories');
+        return auth()->user()->can('manage-general');
     }
 
     /**
@@ -28,12 +28,11 @@ class UpdateCategoryRequest extends FormRequest
         return [
             'title' => 'required|string|max:255|unique:categories,title,' . $this->route('category')->id,
             'is_active' => 'required|boolean',
-            'parent_id' => 'required|integer|exists:categories,id',
-            'attribute_ids' => 'required|array|exists:attributes,id',
-            'attributes_ids.*' => 'required|integer|exists:attributes,id|distinct',
-            'attribute_is_variation_id' => 'required|integer|exists:attributes,id|distinct',
-            'attribute_is_filter_ids' => 'required|array|exists:attributes,id|distinct',
-            'attribute_is_filter_ids.*' => 'required|integer|exists:attributes,id|distinct',
+            'parent_id' => 'required',
+            'icon' => 'nullable|string|max:255',
+            'filter_attribute_ids' => 'required|array',
+            'filter_attribute_ids.*' => 'required|exists:attributes,id|distinct',
+            'variation_attribute_id' => 'required|exists:attributes,id',
         ];
     }
 

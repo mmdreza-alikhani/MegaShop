@@ -15,6 +15,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static latest()
  * @method static where(string $string, string $string1, int $int)
  * @method static create(array $array)
+ * @method static active()
+ * @method static parents()
+ * @method static search(string $string, string $trim)
+ * @method static findOrFail(mixed $category_id)
+ * @property mixed $parent_id
  */
 class Category extends Model
 {
@@ -65,6 +70,16 @@ class Category extends Model
         });
     }
 
+    public function scopeActive($query): void
+    {
+        $query->where('is_active', 1);
+    }
+
+    public function scopeParents($query): void
+    {
+        $query->where('parent_id', 0);
+    }
+
     public function getIsActiveAttribute($is_active): string
     {
         return $is_active ? 'فعال' : 'غیرفعال';
@@ -73,6 +88,11 @@ class Category extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class , 'parent_id');
+    }
+
+    public function isParent(): bool
+    {
+        return $this->parent_id == 0;
     }
 
     public function children(): HasMany
@@ -85,10 +105,19 @@ class Category extends Model
         return $this->children()->with('allChildren');
     }
 
-
     public function attributes(): BelongsToMany
     {
         return $this->belongsToMany(Attribute::class , 'attribute_category');
+    }
+
+    public function filters(): BelongsToMany
+    {
+        return $this->belongsToMany(Attribute::class , 'attribute_category')->where('type', 'filter');
+    }
+
+    public function variation(): BelongsToMany
+    {
+        return $this->belongsToMany(Attribute::class , 'attribute_category')->where('type', 'variation');
     }
 
     public function products(): HasMany
