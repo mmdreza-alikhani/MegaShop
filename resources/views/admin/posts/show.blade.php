@@ -57,7 +57,7 @@
                             </select>
                         </div>
                         <div class="form-group col-12 col-lg-6">
-                            <label>تگ ها</label>
+                            <label>برچسب ها</label>
                             <div class="form-control">
                                 @foreach($post->tags as $tag)
                                     {{ $tag->title }}{{ $loop->last ? '' : ',' }}

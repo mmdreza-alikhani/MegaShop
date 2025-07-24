@@ -1,7 +1,7 @@
 @extends('admin.layout.master')
 
 @php
-    $title = 'تگ ها';
+    $title = 'برچسب ها';
 @endphp
 
 @section('title', $title)
@@ -36,7 +36,7 @@
             <div class="d-flex m-1 align-items-center justify-content-between">
                 <div class="c-grey text-center">
                     <button data-target="#createTagModal" data-toggle="modal" type="button" class="btn f-primary fnt-xxs text-center">
-                        ایجاد تگ
+                        ایجاد برچسب
                     </button>
                 </div>
                 <div class="modal w-lg fade light rtl" id="createTagModal" tabindex="-1" role="dialog">
@@ -46,7 +46,7 @@
                             <div class="modal-content card shade">
                                 <div class="modal-header">
                                     <h5 class="modal-title">
-                                        ایجاد تگ جدید
+                                        ایجاد برچسب جدید
                                     </h5>
                                     <button type="button" class="close" data-dismiss="modal">
                                         <span>&times;</span>
@@ -92,7 +92,7 @@
                             <hr/>
                             @if($tags->isEmpty())
                                 <div class="alert text-dir-rtl text-right alert-third alert-shade alert-dismissible fade show" role="alert">
-                                    هیج تگ وجود ندارد!
+                                    هیج برچسب وجود ندارد!
                                 </div>
                             @else
                                 <table class="table table-striped table-responsive-lg">
@@ -129,7 +129,7 @@
                                                                 <div class="modal-content card shade">
                                                                     <div class="modal-header">
                                                                         <h5 class="modal-title" id="exampleModalLabel">
-                                                                            ویرایش تگ: {{ $tag->title }}
+                                                                            ویرایش برچسب: {{ $tag->title }}
                                                                         </h5>
                                                                         <button type="button" class="close" data-dismiss="modal">
                                                                             <span>&times;</span>
@@ -166,7 +166,7 @@
                                                         <div class="modal-dialog" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title">حذف تگ: {{ $tag->title }}</h5>
+                                                                    <h5 class="modal-title">حذف برچسب: {{ $tag->title }}</h5>
                                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                         <span aria-hidden="true">&times;</span>
                                                                     </button>

@@ -79,11 +79,11 @@
                                 </select>
                             </div>
                             <div class="form-group col-12 col-lg-6">
-                                <label for="tagSelect">تگ ها:*</label>
+                                <label for="tagSelect">برچسب ها:*</label>
                                 <select id="tagSelect" class="form-control" name="tag_ids[]" multiple
                                         data-live-search="true" required>
                                     @foreach($tags as $key => $value)
-                                        <option value="{{ $key }}" {{ in_array($key , old('tag_ids')->toArray() ) ? 'selected' : '' }}>{{ $value }}</option>
+                                        <option value="{{ $key }}" {{ old('tag_ids') ? (in_array($key , old('tag_ids')->toArray() ) ? 'selected' : '') : '' }}>{{ $value }}</option>
                                     @endforeach
                                 </select>
                             </div>

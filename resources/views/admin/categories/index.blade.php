@@ -35,7 +35,7 @@
             </div>
             <div class="d-flex m-1 align-items-center justify-content-between">
                 <div class="c-grey text-center">
-                    <a href="{{ route('admin.categories.index') }}" class="btn f-primary fnt-xxs text-center">
+                    <a href="{{ route('admin.categories.create') }}" class="btn f-primary fnt-xxs text-center">
                         ایجاد دسته بندی
                     </a>
                 </div>

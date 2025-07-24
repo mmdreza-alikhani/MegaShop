@@ -79,7 +79,7 @@
                                        class="form-control" value="{{ $product->delivery_amount_per_product }}" required>
                             </div>
                             <div class="form-group col-12 col-lg-3">
-                                <label for="tagSelect">تگ ها:*</label>
+                                <label for="tagSelect">برچسب ها:*</label>
                                 <select id="tagSelect" name="tag_ids[]" class="form-control" multiple required>
                                     @foreach($tags as $key => $value)
                                         <option value="{{ $key }}" {{ in_array($key , $product->tags()->pluck('id')->toArray() ) ? 'selected' : '' }}>{{ $value }}</option>

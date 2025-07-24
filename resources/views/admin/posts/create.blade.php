@@ -78,7 +78,7 @@
                                 </select>
                             </div>
                             <div class="form-group col-12 col-lg-6">
-                                <label for="tagSelect">تگ ها:*</label>
+                                <label for="tagSelect">برچسب ها:*</label>
                                 <select id="tagSelect" class="form-control" name="tag_ids[]" multiple data-live-search="true">
                                     @foreach($tags as $key => $value)
                                         <option value="{{ $key }}" {{ old('tag_ids') && in_array($key , old('tag_ids')) ? 'selected' : '' }}>{{ $value }}</option>
@@ -123,7 +123,7 @@
         //     $('#text').summernote();
         // });
         $('#tagSelect').selectpicker({
-            'title': 'انتخاب تگ'
+            'title': 'انتخاب برچسب'
         });
         $('#image').on('change', function () {
             const fileName = this.files[0]?.name || 'هیچ فایلی انتخاب نشده';
