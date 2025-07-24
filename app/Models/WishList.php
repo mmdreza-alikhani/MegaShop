@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class WishList extends Model
 {
     use HasFactory;
-    protected $table = "wishlist";
+    protected $table = "wishlists";
 
     protected $fillable = [
         'user_id',

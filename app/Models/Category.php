@@ -107,17 +107,17 @@ class Category extends Model
 
     public function attributes(): BelongsToMany
     {
-        return $this->belongsToMany(Attribute::class , 'attribute_category');
+        return $this->belongsToMany(Attribute::class , 'category_attributes');
     }
 
     public function filters(): BelongsToMany
     {
-        return $this->belongsToMany(Attribute::class , 'attribute_category')->where('type', 'filter');
+        return $this->belongsToMany(Attribute::class , 'category_attributes')->where('type', 'filter');
     }
 
     public function variation(): BelongsToMany
     {
-        return $this->belongsToMany(Attribute::class , 'attribute_category')->where('type', 'variation');
+        return $this->belongsToMany(Attribute::class , 'category_attributes')->where('type', 'variation');
     }
 
     public function products(): HasMany

@@ -10,7 +10,7 @@ use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Platform;
 use App\Models\Product;
-use App\Models\ProductAttribute;
+use App\Models\ProductFilter;
 use App\Models\ProductImage;
 use App\Models\ProductVariation;
 use App\Models\Tag;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\ProductAttribute;
+use App\Models\ProductFilter;
 use Illuminate\Http\Request;
 
 class ProductAttributeController extends Controller
@@ -12,7 +12,7 @@ class ProductAttributeController extends Controller
     public function store($filter_values , $product_id): void
     {
         foreach($filter_values as $key => $value){
-            ProductAttribute::create([
+            ProductFilter::create([
                 'product_id' => $product_id,
                 'attribute_id' => $key,
                 'value' => $value,
@@ -23,7 +23,7 @@ class ProductAttributeController extends Controller
     public function update($attribute_values): void
     {
         foreach ($attribute_values as $key => $value){
-            $productAttribute = ProductAttribute::findOrFail($key);
+            $productAttribute = ProductFilter::findOrFail($key);
             $productAttribute->update([
                 'value' => $value
             ]);
@@ -32,9 +32,9 @@ class ProductAttributeController extends Controller
 
     public function change($attribute_ids , $product_id): void
     {
-        ProductAttribute::where('product_id' , $product_id)->delete();
+        ProductFilter::where('product_id' , $product_id)->delete();
         foreach($attribute_ids as $key => $value){
-            ProductAttribute::create([
+            ProductFilter::create([
                 'product_id' => $product_id,
                 'attribute_id' => $key,
                 'value' => $value,

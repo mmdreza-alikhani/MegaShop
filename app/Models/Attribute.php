@@ -41,11 +41,11 @@ class Attribute extends Model
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class , 'attribute_category');
+        return $this->belongsToMany(Category::class , 'category_attributes');
     }
 
     public function values(): HasMany
     {
-        return $this->hasMany(ProductAttribute::class)->select('attribute_id' , 'value')->distinct();
+        return $this->hasMany(ProductFilter::class)->select('attribute_id' , 'value')->distinct();
     }
 }

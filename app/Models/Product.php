@@ -204,7 +204,7 @@ class Product extends Model
 
     public function attributes(): HasMany
     {
-        return $this->hasMany(ProductAttribute::class);
+        return $this->hasMany(ProductFilter::class);
     }
 
     public function variations(): HasMany

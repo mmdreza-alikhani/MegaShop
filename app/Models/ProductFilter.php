@@ -11,41 +11,36 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static findOrFail(int|string $key)
  * @method static where(string $string, $product_id)
  */
-class AttributeCategory extends Model
+class ProductFilter extends Model
 {
     use HasFactory;
 
-    protected $table = "attribute_category";
+    protected $table = "product_filters";
 
     protected $fillable = [
         'attribute_id',
-        'category_id',
-        'type',
+        'product_id',
+        'value',
+        'is_active',
     ];
 
     protected $casts = [
         'attribute_id' => 'integer',
-        'category_id' => 'integer',
-        'type' => 'string',
+        'product_id' => 'integer',
+        'is_active' => 'boolean',
     ];
 
-    public function scopeFilter($query): void
-    {
-        $query->where('type', 'filter');
-    }
-
-    public function scopeVariation($query): void
-    {
-        $query->where('type', 'variation');
-    }
+    protected $attributes = [
+        'is_active' => 1
+    ];
 
     public function attribute(): BelongsTo
     {
         return $this->belongsTo(Attribute::class);
     }
 
-    public function category(): BelongsTo
+    public function product(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Product::class);
     }
 }

@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attribute_category', function (Blueprint $table) {
+        Schema::create('product_filters', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('attribute_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-            $table->enum('type', ['variation', 'filter']);
-            $table->primary(['attribute_id', 'category_id']);
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->string('value');
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attribute_category');
+        Schema::dropIfExists('product_filters');
     }
 };

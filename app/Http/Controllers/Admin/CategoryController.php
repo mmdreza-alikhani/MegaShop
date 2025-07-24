@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Category\StoreCategoryRequest;
 use App\Http\Requests\Admin\Category\UpdateCategoryRequest;
 use App\Models\Attribute;
-use App\Models\AttributeCategory;
+use App\Models\CategoryAttribute;
 use App\Models\Category;
 use Exception;
 use Illuminate\Contracts\View\Factory;
@@ -52,14 +52,14 @@ class CategoryController extends Controller
                 'icon' => $request->input('icon'),
             ]);
 
-            AttributeCategory::create([
+            CategoryAttribute::create([
                 'category_id' => $category->id,
                 'attribute_id' => $request->input('variation_attribute_id'),
                 'type' => 'variation'
             ]);
 
             foreach ($request->input('filter_attribute_ids') as $attribute_id){
-                AttributeCategory::create([
+                CategoryAttribute::create([
                     'category_id' => $category->id,
                     'attribute_id' => $attribute_id,
                     'type' => 'filter'
@@ -106,14 +106,14 @@ class CategoryController extends Controller
 
             $category->attributes()->detach();
 
-            AttributeCategory::create([
+            CategoryAttribute::create([
                 'category_id' => $category->id,
                 'attribute_id' => $request->input('variation_attribute_id'),
                 'type' => 'variation'
             ]);
 
             foreach ($request->input('filter_attribute_ids') as $attribute_id){
-                AttributeCategory::create([
+                CategoryAttribute::create([
                     'category_id' => $category->id,
                     'attribute_id' => $attribute_id,
                     'type' => 'filter'
