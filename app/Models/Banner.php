@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static create(array $array)
  * @method static where(string $string, int $int)
  * @method static search(string $string, string $trim)
+ * @method static active()
  */
 class Banner extends Model
 {
@@ -59,5 +60,10 @@ class Banner extends Model
     public function getIsActiveAttribute($is_active): string
     {
         return $is_active ? 'فعال' : 'غیرفعال';
+    }
+
+    public function scopeActive($query): void
+    {
+        $query->where('is_active', 1);
     }
 }

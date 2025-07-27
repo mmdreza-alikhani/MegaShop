@@ -22,7 +22,7 @@
         <div class="nk-gap-2"></div>
 
         <!-- START: Latest Posts -->
-        @include('home.sections.latest-blogs')
+        @include('home.sections.latest-articles')
         <!-- END: Latest Posts -->
 
         <!-- START: Best Selling -->

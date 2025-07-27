@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static search(string $string, string $trim)
  * @method static where(string $string, int $int)
  * @method static whereHas(string $string, \Closure $param)
+ * @method static active()
  */
 class Post extends Model
 {
@@ -69,6 +70,21 @@ class Post extends Model
         });
     }
 
+    public function scopeActive($query): void
+    {
+        $query->where('is_active', 1);
+    }
+
+    public function scopeArticle($query): void
+    {
+        $query->where('type', 'article');
+    }
+
+    public function scopeNews($query): void
+    {
+        $query->where('type', 'news');
+    }
+
     public function getIsActiveAttribute($is_active): string
     {
         return $is_active ? 'فعال' : 'غیرفعال';
@@ -79,7 +95,7 @@ class Post extends Model
     }
     public function comments(): MorphMany
     {
-        return $this->morphMany(Comment::class, 'commentable')->where('approved', 1);
+        return $this->morphMany(Comment::class, 'commentable')->where('is_active', 1);
     }
     public function author(): BelongsTo
     {

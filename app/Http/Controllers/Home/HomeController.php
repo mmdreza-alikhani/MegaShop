@@ -22,19 +22,18 @@ class HomeController extends Controller
 {
     public function index(): View|Application|Factory
     {
-        $banners = Banner::where('is_active' , 1)->where('type' , 'index/top-slider')->limit(4)->get();
-        $allNews = News::where('is_active' , 1)->limit(6)->get();
-        $articles = Post::where('is_active' , 1)->limit(6)->get();
+        $banners = Banner::active()->where('type' , 'index/top-slider')->limit(4)->get();
+        $articles = Post::active()->article()->take(3)->get();
+        $news = Post::active()->news()->take(3)->get();
         $products = Product::where('is_active', 1)->whereHas('variations', function ($query){$query->where('quantity', '>', '0');})->limit(10)->get();
-        $platforms = Platform::where('is_active', 1)->where('id', '!=' , '0')->get();
+        $platforms = Platform::active()->get();
 
-        return view('home.index' , compact('banners', 'allNews', 'articles', 'products', 'platforms'));
+        return view('home.index' , compact('banners', 'news', 'articles', 'products', 'platforms'));
     }
 
     public function globalSearch(): View|Application|Factory
     {
         $products = Product::search('title', trim(request()->keyword))->get();
-        $news = News::search('title', trim(request()->keyword))->get();
         $articles = Post::search('title', trim(request()->keyword))->get();
         return view('home.search.index', compact('products', 'allNews', 'articles', 'keyWord'));
     }

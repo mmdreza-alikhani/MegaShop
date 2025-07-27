@@ -32,21 +32,21 @@
                         <li>
                         <span class="nk-cart-toggle">
                             <span class="fa fa-lg fa-shopping-cart"></span>
-                            @if(!\Cart::isEmpty())
-                                @if(\Cart::getContent()->count() > 9)
+                            @if(!Cart::isEmpty())
+                                @if(Cart::getContent()->count() > 9)
                                     <span class="nk-badge">+9</span>
                                 @endif
-                                    <span class="nk-badge">{{\Cart::getContent()->count()}}</span>
+                                    <span class="nk-badge">{{Cart::getContent()->count()}}</span>
                             @endif
                         </span>
                             <div class="nk-cart-dropdown">
 
-                                @if(\Cart::isEmpty())
+                                @if(Cart::isEmpty())
                                    <div class="alert text-center">
                                        سبد خرید شما خالی است!
                                    </div>
                                 @else
-                                    @foreach(\Cart::getContent() as $product)
+                                    @foreach(Cart::getContent() as $product)
                                         <div class="nk-widget-post">
                                             <a href="{{ route('home.products.show', ['product' => $product->associatedModel->slug]) }}" class="nk-post-image">
                                                 <img src="{{ env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH') . '/' . $product->associatedModel->primary_image }}" alt="">
@@ -68,7 +68,7 @@
                                     <div class="nk-gap-2"></div>
                                 @endif
 
-                                @if(!\Cart::isEmpty())
+                                @if(!Cart::isEmpty())
                                     <div class="text-center">
                                         <a href="{{ route('home.cart.index') }}" class="nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-hover-color-white">ادامه خرید</a>
                                     </div>
@@ -126,12 +126,6 @@
                             </a>
                         </li>
                     @endcan
-
-                    <li>
-                        <a href="{{ route('home.news.index') }}">
-                            اخبار
-                        </a>
-                    </li>
 
                     <li>
                         <a href="{{ route('home.posts.index') }}">

@@ -27,24 +27,24 @@
     <div class="nk-news-box-list">
         <div class="nano">
             <div class="nano-content">
-                @foreach($allNews as $news)
+                @foreach($news as $item)
                     <div class="nk-news-box-item nk-news-box-item-active">
                         <div class="nk-news-box-item-img">
-                            <img src="{{ env('NEWS_IMAGE_UPLOAD_PATH') . '/' . $news->primary_image }}" alt="{{ $news->name }}-image">
+                            <img src="{{ env('NEWS_IMAGE_UPLOAD_PATH') . '/' . $item->image }}" alt="{{ $item->title }}-image">
                         </div>
-                        <img src="{{ env('NEWS_IMAGE_UPLOAD_PATH') . '/' . $news->primary_image }}" alt="{{ $news->name }}-image" class="nk-news-box-item-full-img">
-                        <h3 class="nk-news-box-item-title text-right">{{ $news->name }}</h3>
+                        <img src="{{ env('NEWS_IMAGE_UPLOAD_PATH') . '/' . $item->image }}" alt="{{ $item->title }}-image" class="nk-news-box-item-full-img">
+                        <h3 class="nk-news-box-item-title text-right">{{ $item->title }}</h3>
 
                         <span class="nk-news-box-item-categories">
-                            <span class="bg-main-4">{{ $news->author->username }}  :نویسنده </span>
+                            <span class="bg-main-4">{{ $item->author->username }}  :نویسنده </span>
                         </span>
 
                         <div class="nk-news-box-item-text text-right">
-                            <p style="direction: rtl">{{ substr(strip_tags($news->text), 0 , 250) . '...' }}</p>
+                            <p style="direction: rtl">{{ substr(strip_tags($item->text), 0 , 250) . '...' }}</p>
                         </div>
 
-                        <a href="{{ route('home.news.show', ['news' => $news->slug]) }}" class="nk-news-box-item-url">ادامه مطلب</a>
-                        <div class="nk-news-box-item-date" style="direction: rtl">{{ $news->updated_at->diffForHumans() }}<span class="fa fa-calendar mx-2"></span></div>
+                        <a href="{{ route('home.news.show', ['news' => $item->slug]) }}" class="nk-news-box-item-url">ادامه مطلب</a>
+                        <div class="nk-news-box-item-date" style="direction: rtl">{{ $item->updated_at->diffForHumans() }}<span class="fa fa-calendar mx-2"></span></div>
                     </div>
                 @endforeach
             </div>

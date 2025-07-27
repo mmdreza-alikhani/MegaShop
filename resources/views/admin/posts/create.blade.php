@@ -119,9 +119,6 @@
 @endsection
 @section('scripts')
     <script>
-        // $(document).ready(function () {
-        //     $('#text').summernote();
-        // });
         $('#tagSelect').selectpicker({
             'title': 'انتخاب برچسب'
         });
@@ -129,6 +126,5 @@
             const fileName = this.files[0]?.name || 'هیچ فایلی انتخاب نشده';
             $('#image-file-name').text(fileName);
         });
-
     </script>
 @endsection

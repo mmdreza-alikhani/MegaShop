@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Post\StoreProductRequest;
-use App\Http\Requests\Admin\Post\UpdateProductRequest;
+use App\Http\Requests\Admin\Post\StorePostRequest;
+use App\Http\Requests\Admin\Post\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Tag;
 use Exception;
@@ -37,7 +37,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request): RedirectResponse
+    public function store(StorePostRequest $request): RedirectResponse
     {
         try {
             DB::beginTransaction();
@@ -88,7 +88,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Post $post): RedirectResponse
+    public function update(UpdatePostRequest $request, Post $post): RedirectResponse
     {
         try {
             DB::beginTransaction();

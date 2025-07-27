@@ -12,6 +12,11 @@
     @include('home.sections.links')
 </head>
 <body>
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js');
+    }
+</script>
 
 @include('home.sections.loading')
 

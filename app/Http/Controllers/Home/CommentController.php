@@ -23,8 +23,7 @@ class CommentController extends Controller
     {
         $classMap = [
             'product' => Product::class,
-            'article' => Post::class,
-            'news' => News::class,
+            'post' => Post::class,
         ];
 
         if (!array_key_exists($model, $classMap)) {

@@ -13,7 +13,6 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Home\CartController;
 use App\Http\Controllers\Home\CommentController as HomeCommentController;
-use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\PlatformController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
@@ -25,13 +24,13 @@ use App\Http\Controllers\Home\PlatformController as HomePlatformController;
 use App\Http\Controllers\Home\BrandController as HomeBrandController;
 use App\Http\Controllers\Home\PaymentController;
 use App\Http\Controllers\Home\ProductController as HomeProductController;
-use App\Http\Controllers\Home\ArticleController as HomeArticleController;
-use App\Http\Controllers\Home\NewsController as HomeNewsController;
+use App\Http\Controllers\Home\PostController as HomePostController;
 use App\Http\Controllers\Home\AuthController as HomeAuthController;
 use App\Http\Controllers\Home\ProfileController as HomeProfileController;
 use App\Http\Controllers\Home\ProfileAddressesController as HomeProfileAddressesController;
 use App\Http\Controllers\Home\WishListController as HomeWishlistController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -131,13 +130,8 @@ Route::prefix('/')->name('home.')->group(function (){
     Route::post('comments/{model}/{id}', [HomeCommentController::class , 'store'])->name('comments.store');
 
     Route::prefix('posts/')->name('posts.')->group(function (){
-        Route::get('',[HomeArticleController::class , 'index'])->name('index');
-        Route::get('{article:slug}',[HomeArticleController::class , 'show'])->name('show');
-    });
-
-    Route::prefix('news/')->name('news.')->group(function (){
-        Route::get('',[HomeNewsController::class , 'index'])->name('index');
-        Route::get('{news:slug}',[HomeNewsController::class , 'show'])->name('show');
+        Route::get('',[HomePostController::class , 'index'])->name('index');
+        Route::get('{post:slug}',[HomePostController::class , 'show'])->name('show');
     });
 
     Route::prefix('products/')->name('products.')->group(function (){

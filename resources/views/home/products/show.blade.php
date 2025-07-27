@@ -1,7 +1,7 @@
 @extends('home.layout.master')
 
 @section('title')
-    {{ $product->name }}
+    {{ $product->title }}
 @endsection
 
 @section('content')
@@ -18,7 +18,7 @@
 
         <li><span class="fa fa-angle-left"></span></li>
 
-        <li><span>{{ $product->name }}</span></li>
+        <li><span>{{ $product->title }}</span></li>
     </ul>
 </div>
 <div class="nk-gap-1"></div>
@@ -141,11 +141,11 @@
                         <!-- START: Meta -->
                         <div class="nk-product-meta text-right" style="direction: rtl">
                             <div><strong>شناسه محصول:</strong> <span id="ProductSku">{{ $product->variations->first()->sku }}</span></div>
-                            <div><strong>برند</strong>: <a href="{{ route('home.brands.products.show', ['brand' => $product->brand->slug]) }}">{{ $product->brand->name }}</a></div>
-                            <div><strong>دسته بندی</strong>: <a href="{{ route('home.categories.show', ['category' => $product->category->slug]) }}">{{ $product->category->name }}</a> </div>
+                            <div><strong>برند</strong>: <a href="{{ route('home.brands.products.show', ['brand' => $product->brand->slug]) }}">{{ $product->brand->title }}</a></div>
+                            <div><strong>دسته بندی</strong>: <a href="{{ route('home.categories.show', ['category' => $product->category->slug]) }}">{{ $product->category->title }}</a> </div>
                             <div><strong>برچسب ها</strong>:
                                 @foreach($product->tags as $tag)
-                                    <a href="#">{{ $tag->name }}</a>{{ $loop->last ? '' : ',' }}
+                                    <a href="#">{{ $tag->title }}</a>{{ $loop->last ? '' : ',' }}
                                 @endforeach
                             </div>
                         </div>
@@ -186,7 +186,7 @@
                                 <div><h3><span style="color: #dd163b">ویژگی</span> ها:</h3>
                                     @foreach($productAttributes as $productAttribute)
                                         <div class="row mx-2">
-                                            <h4 style="color: #dd163b"> {{ $productAttribute->attribute->name }}:</h4>
+                                            <h4 style="color: #dd163b"> {{ $productAttribute->attribute->title }}:</h4>
                                             <p style="font-size: 18px"> {{ $productAttribute->value }} </p>
                                         </div>
                                     @endforeach
@@ -259,7 +259,7 @@
                 <div class="col-md-6">
                     <div class="nk-product-cat">
                         <div class="nk-product-cont col-8">
-                            <h3 class="nk-product-title h5 text-right" style="direction: rtl"><a href="{{ route('home.products.show', ['product' => $relatedProduct->slug]) }}">{{ $relatedProduct->name }}</a></h3>
+                            <h3 class="nk-product-title h5 text-right" style="direction: rtl"><a href="{{ route('home.products.show', ['product' => $relatedProduct->slug]) }}">{{ $relatedProduct->title }}</a></h3>
                             <div class="nk-gap-1"></div>
 
                             <div id="ratingStars"
