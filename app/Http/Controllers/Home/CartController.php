@@ -14,6 +14,7 @@ class CartController extends Controller
 
     public function add(Request $request)
     {
+        dd($request->all());
         $request->validate([
             'productId' => 'required',
             'quantity' => 'required'

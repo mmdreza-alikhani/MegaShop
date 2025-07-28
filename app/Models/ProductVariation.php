@@ -64,4 +64,9 @@ class ProductVariation extends Model
     {
         return $this->belongsTo(Attribute::class);
     }
+
+    public function scopeAvailable($query, $q = 0): void
+    {
+        $query->where('quantity', '>=', $q);
+    }
 }

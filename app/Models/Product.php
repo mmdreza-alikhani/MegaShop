@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static latest()
  * @method static search(string $string, string $trim)
  * @method static create(array $array)
+ * @method static active()
  */
 class Product extends Model
 {
@@ -99,6 +100,16 @@ class Product extends Model
     public function getIsActiveAttribute($is_active): string
     {
         return $is_active ? 'فعال' : 'غیرفعال';
+    }
+
+    public function scopeActive($query): void
+    {
+        $query->where('is_active', 1);
+    }
+
+    public function scopeCategory($query, $category_id): void
+    {
+        $query->where('category_id', $category_id);
     }
 
     public function scopeFilter($query){
@@ -224,7 +235,7 @@ class Product extends Model
 
     public function comments(): MorphMany
     {
-        return $this->morphMany(Comment::class, 'commentable')->where('approved', 1);
+        return $this->morphMany(Comment::class, 'commentable')->where('is_active', 1);
     }
 
     public function checkUserWishlist($userId): bool

@@ -89,14 +89,17 @@ class Post extends Model
     {
         return $is_active ? 'فعال' : 'غیرفعال';
     }
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'post_tag');
     }
+
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable')->where('is_active', 1);
     }
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

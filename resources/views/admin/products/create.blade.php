@@ -222,7 +222,6 @@
             const selects = ['#brandSelect', '#platformSelect', '#tagSelect', '#genreSelect', '#categorySelect'];
             selects.forEach(sel => $(sel).selectpicker({ title: $(sel).attr('title') || 'انتخاب گزینه' }));
 
-            $('#summernote').summernote();
             $('#attributeContainer').hide();
             $('#czContainer').czMore();
 
