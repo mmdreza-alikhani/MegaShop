@@ -30,7 +30,6 @@ use App\Http\Controllers\Home\ProfileController as HomeProfileController;
 use App\Http\Controllers\Home\ProfileAddressesController as HomeProfileAddressesController;
 use App\Http\Controllers\Home\WishListController as HomeWishlistController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +65,7 @@ Route::prefix('/management/')->name('admin.')->middleware(['permission:manage-ge
     Route::get('bannersSearch', [BannersController::class , 'search'])->middleware(['permission:manage-general'])->name('banners.search');
     Route::resource('posts' , PostController::class)->middleware(['permission:manage-products']);
     Route::get('postsSearch', [PostController::class , 'search'])->middleware(['permission:manage-products'])->name('posts.search');
+    Route::get('comments/toggle', [CommentController::class , 'toggle'])->middleware(['permission:manage-comments'])->name('comments.toggle');
     Route::resource('comments' , CommentController::class)->middleware(['permission:manage-comments']);
     Route::get('commentsSearch', [CommentController::class , 'search'])->middleware(['permission:manage-comments'])->name('comments.search');
     Route::resource('coupons' , CouponController::class)->middleware(['permission:manage-orders']);

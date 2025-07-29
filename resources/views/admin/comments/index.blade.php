@@ -79,14 +79,14 @@
                                                 {{ $comment->user->username }}
                                             </td>
                                             <td>
-                                                {{ $comment->commentable }}
+                                                {{ $comment->getCommentableLabel() }}
                                             </td>
                                             <td>
-                                                {{ $comment->commentable }}برسسی
+                                                {{ $comment->commentable->title }}
                                             </td>
                                             <td>
-                                                <span class="badge {{ $comment->getRawOriginal('approved') ?  'badge-success' : 'badge-secondary' }}">
-                                                    {{ $comment->approved }}
+                                                <span class="badge {{ $comment->getRawOriginal('is_active') ?  'badge-success' : 'badge-secondary' }}">
+                                                    {{ $comment->statusCondition($comment->status) }}
                                                 </span>
                                             </td>
                                             <td>
@@ -99,13 +99,13 @@
                                                     </div>
                                                     <div class="modal w-lg fade light rtl" id="reviewCommentModal-{{ $comment->id }}" tabindex="-1" role="dialog">
                                                         <div class="modal-dialog" role="document">
-                                                            <form method="post" action="{{ route('admin.comments.update', ['comment' => $comment->id]) }}">
+                                                            <form method="post" action="{{ route('admin.comments.toggle', ['comment' => $comment->id]) }}">
                                                                 @method('put')
                                                                 @csrf
                                                                 <div class="modal-content card shade">
                                                                     <div class="modal-header">
                                                                         <h5 class="modal-title" id="exampleModalLabel">
-                                                                            ویرایش برند: {{ $comment->title }}
+                                                                            بررسی نظر: {{ $comment->user->username }}
                                                                         </h5>
                                                                         <button type="button" class="close" data-dismiss="modal">
                                                                             <span>&times;</span>
@@ -115,16 +115,22 @@
                                                                         @include('admin.layout.errors', ['errors' => $errors->update])
                                                                         <div class="row">
                                                                             <div class="form-group col-12 col-lg-6">
-                                                                                <label for="title-{{ $comment->id }}">عنوان:*</label>
-                                                                                <input type="text" name="title" id="title-{{ $comment->id }}" class="form-control"
-                                                                                       value="{{ $comment->title }}" required>
+                                                                                <label>کاربر:*</label>
+                                                                                <input type="text" class="form-control" value="{{ $comment->user->username }}" disabled>
                                                                             </div>
                                                                             <div class="form-group col-12 col-lg-6">
-                                                                                <label for="is_active-{{ $comment->id }}">وضعیت:*</label>
-                                                                                <select class="form-control" id="is_active-{{ $comment->id }}" name="is_active" required>
-                                                                                    <option value="1" {{ $comment->getRawOriginal('is_active') == '1' ? 'selected' : '' }}>فعال</option>
-                                                                                    <option value="0" {{ $comment->getRawOriginal('is_active') == '0' ? 'selected' : '' }}>غیرفعال</option>
-                                                                                </select>
+                                                                                <label>وضعیت:*</label>
+                                                                                <input type="text" class="form-control" value="{{ $comment->statusCondition($comment->status) }}" disabled>
+                                                                            </div>
+                                                                            @if($comment->reply_of != '0')
+                                                                                <div class="form-group col-12">
+                                                                                    <label>متن نظر والد:*</label>
+                                                                                    <textarea class="form-control" disabled>{{ $comment->parent->text }}</textarea>
+                                                                                </div>
+                                                                            @endif
+                                                                            <div class="form-group col-12">
+                                                                                <label>متن:*</label>
+                                                                                <textarea class="form-control" disabled>{{ $comment->text }}</textarea>
                                                                             </div>
                                                                         </div>
                                                                     </div>

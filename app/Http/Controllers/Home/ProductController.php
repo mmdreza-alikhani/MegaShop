@@ -43,10 +43,18 @@ class ProductController extends Controller
             ->get();
 
         $mapped = $variationsRaw->map(function ($attr) {
-            $saleValid = $attr->sale_price !== null &&
-                now()->between($attr->date_on_sale_from, $attr->date_on_sale_to);
+            $now = now();
 
-            $effectivePrice = $saleValid ? $attr->sale_price : $attr->price;
+            $hasSalePrice   = $attr->sale_price !== null;
+            $hasStartDate   = $attr->date_on_sale_from !== null;
+            $hasEndDate     = $attr->date_on_sale_to !== null;
+
+            $isWithinRange  = $hasStartDate && $hasEndDate &&
+                $now->between($attr->date_on_sale_from, $attr->date_on_sale_to);
+
+            $isExpired = !$hasSalePrice || !$hasStartDate || !$hasEndDate || !$isWithinRange;
+
+            $effectivePrice = !$isExpired ? $attr->sale_price : $attr->price;
 
             return [
                 'id' => $attr->id,
@@ -58,18 +66,21 @@ class ProductController extends Controller
                 'sale_price' => $attr->sale_price,
                 'date_on_sale_from' => $attr->date_on_sale_from,
                 'date_on_sale_to' => $attr->date_on_sale_to,
+                'is_expired' => $isExpired,
                 'effective_price' => $effectivePrice,
-                'has_valid_price' => $effectivePrice !== null,
             ];
         });
 
-        $lowestEffective = $mapped
-            ->where('has_valid_price', true)
-            ->min('effective_price');
+        $lowestEffective = $mapped->min('effective_price');
 
-        $variations = $mapped->map(function ($v) use ($lowestEffective) {
-            $v['is_cheapest'] = $v['effective_price'] === $lowestEffective;
-            unset($v['has_valid_price']);
+        $cheapest = $mapped
+            ->filter(fn($v) => $v['effective_price'] === $lowestEffective)
+            ->sortByDesc('has_active_sale') // Sale gets priority
+            ->first();
+
+        $variations = $mapped->map(function ($v) use ($cheapest) {
+            $v['is_cheapest'] = $v['id'] === $cheapest['id'];
+            unset($v['effective_price'], $v['has_active_sale']);
             return $v;
         });
 

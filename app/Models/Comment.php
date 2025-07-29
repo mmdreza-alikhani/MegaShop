@@ -50,6 +50,16 @@ class Comment extends Model
         'status' => '1'
     ];
 
+    public function statusCondition($status): string
+    {
+        return match ($status) {
+            1 => 'در دست بررسی',
+            2 => 'رد شده',
+            3 => 'منتشر شده',
+            default => 'نامشخص',
+        };
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -79,5 +89,15 @@ class Comment extends Model
     {
         return $this->hasMany(Comment::class, 'reply_of');
     }
+
+    public function getCommentableLabel(): string
+    {
+        return match(get_class($this->commentable)) {
+            Post::class => 'پست',
+            Product::class => 'محصول',
+            default => 'نامشخص',
+        };
+    }
+
 
 }

@@ -6,16 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Home\Comment\StoreCommentRequest;
 use App\Models\Post;
 use App\Models\Comment;
-use App\Models\News;
 use App\Models\Product;
 use App\Models\ProductRate;
 use Exception;
-use Illuminate\Auth\Events\Validated;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
@@ -37,8 +32,8 @@ class CommentController extends Controller
 
             Comment::create([
                 'user_id' => auth()->id(),
-                'text' => $request->text,
-                'reply_of' => $request->replyOf,
+                'text' => $request->input('text'),
+                'reply_of' => $request->input('replyOf'),
                 'commentable_id' => $modelInstance->id,
                 'commentable_type' => get_class($modelInstance)
             ]);
@@ -47,12 +42,12 @@ class CommentController extends Controller
                 $existingRate = $modelInstance->rates()->where('user_id', auth()->id())->first();
 
                 if ($existingRate) {
-                    $existingRate->update(['rate' => $request->rate]);
+                    $existingRate->update(['rate' => $request->input('rate')]);
                 } else {
                     ProductRate::create([
                         'user_id' => auth()->id(),
                         'product_id' => $modelInstance->id, // Using the actual instance
-                        'rate' => $request->rate,
+                        'rate' => $request->input('rate'),
                     ]);
                 }
             }

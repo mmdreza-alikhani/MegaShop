@@ -21,17 +21,12 @@ class CommentController extends Controller
         return view('admin.comments.index' , compact('comments'));
     }
 
-    public function changeStatus(Comment $comment): RedirectResponse
+    public function toggle(Comment $comment): RedirectResponse
     {
-        if ($comment->getRawOriginal('approved') == 1){
-            $comment->update([
-                'approved' => 0
-            ]);
-        }else{
-            $comment->update([
-                'approved' => 1
-            ]);
-        }
+        $comment->update([
+            'status' => $comment->status == 1 ? 0 : 1
+        ]);
+
 
         toastr()->success('وضعیت نظر با موفقیت تغییر کرد!');
         return redirect()->back();

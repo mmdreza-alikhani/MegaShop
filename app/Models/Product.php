@@ -57,7 +57,7 @@ class Product extends Model
         'delivery_amount' => '0',
     ];
 
-    protected $appends = ['quantity_check' , 'sale_price' , 'min_price'];
+    protected $appends = ['best_selling_price'];
 
     public function sluggable(): array
     {
@@ -196,16 +196,21 @@ class Product extends Model
         return $query;
     }
 
-    public function getQuantityCheckAttribute(){
-        return $this->variations()->where('quantity', '>', '0')->first() ?? null;
-    }
+//    public function getQuantityCheckAttribute(){
+//        return $this->variations()->where('quantity', '>', '0')->first() ?? null;
+//    }
+//
+//    public function getSalePriceAttribute(){
+//        return $this->variations()->where('quantity', '>', '0')->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? null;
+//    }
+//
+//    public function getMinPriceAttribute(){
+//        return $this->variations()->where('quantity', '>', '0')->orderBy('price')->first() ?? null;
+//    }
 
-    public function getSalePriceAttribute(){
-        return $this->variations()->where('quantity', '>', '0')->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? null;
-    }
-
-    public function getMinPriceAttribute(){
-        return $this->variations()->where('quantity', '>', '0')->orderBy('price')->first() ?? null;
+    public function getBestSellingPriceAttribute()
+    {
+        return $this->variations()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? $this->variations()->orderBy('price')->first();
     }
 
     public function getRouteKeyName(): string

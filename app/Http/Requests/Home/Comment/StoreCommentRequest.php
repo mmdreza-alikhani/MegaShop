@@ -26,8 +26,9 @@ class StoreCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'text' => 'required|string|min:3',
-            'rate' => 'sometimes|required|numeric|digits_between:1,5'
+            'text' => 'required|string|min:4|max:1000|not_regex:/<[a-z][\s\S]*>/i',
+            'rate' => 'sometimes|required|numeric|digits_between:1,5',
+            'replyOf' => 'required|numeric|max:255',
         ];
     }
 
