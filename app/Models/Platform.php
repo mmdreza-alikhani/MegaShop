@@ -18,16 +18,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Platform extends Model
 {
-    use HasFactory, sluggable, SoftDeletes, SearchableTrait;
+    use HasFactory, SearchableTrait, sluggable, SoftDeletes;
 
-    protected $table = "platforms";
+    protected $table = 'platforms';
 
     protected $fillable = [
         'title',
         'slug',
         'image',
         'status',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
@@ -35,19 +35,19 @@ class Platform extends Model
         'slug' => 'string',
         'image' => 'string',
         'status' => 'integer',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     // Default Values
     protected $attributes = [
         'is_active' => 1,
-        'status' => '1'
+        'status' => '1',
     ];
 
-//    public function getRouteKeyName(): string
-//    {
-//        return 'slug';
-//    }
+    //    public function getRouteKeyName(): string
+    //    {
+    //        return 'slug';
+    //    }
 
     public function scopeActive($query): void
     {
@@ -58,8 +58,8 @@ class Platform extends Model
     {
         return [
             'slug' => [
-                'source' => 'title'
-            ]
+                'source' => 'title',
+            ],
         ];
     }
 

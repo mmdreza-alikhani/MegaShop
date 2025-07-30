@@ -8,7 +8,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
@@ -18,23 +17,25 @@ class CommentController extends Controller
     public function index(): View|Application|Factory
     {
         $comments = Comment::latest()->paginate(10);
-        return view('admin.comments.index' , compact('comments'));
+
+        return view('admin.comments.index', compact('comments'));
     }
 
     public function toggle(Comment $comment): RedirectResponse
     {
         $comment->update([
-            'status' => $comment->status == 1 ? 0 : 1
+            'status' => $comment->status == 1 ? 0 : 1,
         ]);
 
-
         toastr()->success('وضعیت نظر با موفقیت تغییر کرد!');
+
         return redirect()->back();
     }
 
     public function search(): View|Application|Factory
     {
         $comments = Comment::search('title', trim(request()->keyword))->latest()->paginate(10);
+
         return view('admin.comments.index', compact('comments'));
     }
 
@@ -46,6 +47,7 @@ class CommentController extends Controller
         $comment->delete();
 
         toastr()->success('با موفقیت حذف شد!');
+
         return redirect()->back();
     }
 }

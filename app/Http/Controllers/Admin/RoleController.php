@@ -10,9 +10,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -22,7 +20,8 @@ class RoleController extends Controller
     {
         $roles = Role::latest()->paginate(10);
         $permissions = Permission::latest()->get();
-        return view('admin.roles.index' , compact('roles', 'permissions'));
+
+        return view('admin.roles.index', compact('roles', 'permissions'));
     }
 
     public function store(StoreRoleRequest $request): RedirectResponse
@@ -42,11 +41,13 @@ class RoleController extends Controller
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . ' مشکل به وجود آمد!');
+            toastr()->error($ex->getMessage().' مشکل به وجود آمد!');
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -60,17 +61,19 @@ class RoleController extends Controller
                 'display_name' => $request->input('display_name'),
             ]);
 
-            $permissions = $request->except( 'id','_token', 'name', 'display_name', '_method');
+            $permissions = $request->except('id', '_token', 'name', 'display_name', '_method');
             $role->syncPermissions($permissions);
 
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . ' مشکل به وجود آمد!');
+            toastr()->error($ex->getMessage().' مشکل به وجود آمد!');
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت ویرایش شد!');
+
         return redirect()->back();
     }
 
@@ -79,6 +82,7 @@ class RoleController extends Controller
         $role->delete();
 
         toastr()->success('با موفقیت حذف شد!');
+
         return redirect()->back();
     }
 }

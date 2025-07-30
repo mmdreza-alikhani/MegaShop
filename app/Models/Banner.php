@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Banner extends Model
 {
-    use HasFactory, SoftDeletes, SearchableTrait;
+    use HasFactory, SearchableTrait, SoftDeletes;
 
-    protected $table = "banners";
+    protected $table = 'banners';
 
     protected $fillable = [
         'image',
@@ -30,7 +30,7 @@ class Banner extends Model
         'button_link',
         'button_icon',
         'status',
-        'is_active'
+        'is_active',
     ];
 
     protected $hidden = [
@@ -48,13 +48,13 @@ class Banner extends Model
         'button_link' => 'string',
         'button_icon' => 'string',
         'status' => 'integer',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     // Default Values
     protected $attributes = [
         'is_active' => true,
-        'status' => '1'
+        'status' => '1',
     ];
 
     public function getIsActiveAttribute($is_active): string

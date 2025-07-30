@@ -6,17 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Tag\StoreTagRequest;
 use App\Http\Requests\Admin\Tag\UpdateTagRequest;
 use App\Models\Tag;
-use App\Models\User;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
 class TagController extends Controller
 {
@@ -26,7 +21,8 @@ class TagController extends Controller
     public function index(): View|Application|Factory
     {
         $tags = Tag::latest()->paginate(10);
-        return view('admin.tags.index' , compact('tags'));
+
+        return view('admin.tags.index', compact('tags'));
     }
 
     /**
@@ -38,17 +34,19 @@ class TagController extends Controller
             DB::beginTransaction();
 
             Tag::create([
-                'title' => $request->title
+                'title' => $request->title,
             ]);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -60,13 +58,13 @@ class TagController extends Controller
         try {
             DB::transaction(function () use ($request, $tag) {
                 $tag->update([
-                    'title' => $request->title
+                    'title' => $request->title,
                 ]);
             });
 
             toastr()->success('با موفقیت ویرایش شد!');
         } catch (Exception $ex) {
-            toastr()->error($ex->getMessage() . ' مشکلی پیش آمد!');
+            toastr()->error($ex->getMessage().' مشکلی پیش آمد!');
         }
 
         return redirect()->back();
@@ -75,6 +73,7 @@ class TagController extends Controller
     public function search(): View|\Illuminate\Contracts\Foundation\Application|Factory
     {
         $tags = Tag::search('title', trim(request()->keyword))->latest()->paginate(10);
+
         return view('admin.tags.index', compact('tags'));
     }
 
@@ -86,6 +85,7 @@ class TagController extends Controller
         $tag->delete();
 
         toastr()->success('موفقیت حذف شد!');
+
         return redirect()->back();
     }
 }

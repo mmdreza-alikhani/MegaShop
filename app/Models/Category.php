@@ -19,13 +19,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static parents()
  * @method static search(string $string, string $trim)
  * @method static findOrFail(mixed $category_id)
+ *
  * @property mixed $parent_id
  */
 class Category extends Model
 {
-    use HasFactory, sluggable, SearchableTrait;
+    use HasFactory, SearchableTrait, sluggable;
 
-    protected $table = "categories";
+    protected $table = 'categories';
 
     protected $fillable = [
         'title',
@@ -33,7 +34,7 @@ class Category extends Model
         'description',
         'parent_id',
         'status',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
@@ -42,22 +43,22 @@ class Category extends Model
         'description' => 'string',
         'parent_id' => 'integer',
         'status' => 'integer',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     // Default Values
     protected $attributes = [
         'is_active' => 1,
         'status' => '1',
-        'parent_id' => '0'
+        'parent_id' => '0',
     ];
 
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'title'
-            ]
+                'source' => 'title',
+            ],
         ];
     }
 
@@ -87,7 +88,7 @@ class Category extends Model
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Category::class , 'parent_id');
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
     public function isParent(): bool
@@ -97,7 +98,7 @@ class Category extends Model
 
     public function children(): HasMany
     {
-        return $this->hasMany(Category::class , 'parent_id');
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
     public function allChildren(): HasMany
@@ -107,17 +108,17 @@ class Category extends Model
 
     public function attributes(): BelongsToMany
     {
-        return $this->belongsToMany(Attribute::class , 'category_attributes');
+        return $this->belongsToMany(Attribute::class, 'category_attributes');
     }
 
     public function filters(): BelongsToMany
     {
-        return $this->belongsToMany(Attribute::class , 'category_attributes')->where('type', 'filter');
+        return $this->belongsToMany(Attribute::class, 'category_attributes')->where('type', 'filter');
     }
 
     public function variation(): BelongsToMany
     {
-        return $this->belongsToMany(Attribute::class , 'category_attributes')->where('type', 'variation');
+        return $this->belongsToMany(Attribute::class, 'category_attributes')->where('type', 'variation');
     }
 
     public function products(): HasMany

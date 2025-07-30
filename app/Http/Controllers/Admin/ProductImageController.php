@@ -15,19 +15,19 @@ use Illuminate\Support\Facades\File;
 
 class ProductImageController extends Controller
 {
-    public function upload($primaryImg , $otherImages): array
+    public function upload($primaryImg, $otherImages): array
     {
         $primaryImgFileName = generateFileName($primaryImg->getClientOriginalName());
-        $primaryImg->move(public_path(env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH')) , $primaryImgFileName);
+        $primaryImg->move(public_path(env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH')), $primaryImgFileName);
 
         $otherImagesFileNames = [];
-        foreach ($otherImages as $otherImage){
+        foreach ($otherImages as $otherImage) {
             $otherImageFileName = generateFileName($otherImage->getClientOriginalName());
-            $otherImage->move(public_path(env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH')) , $otherImageFileName);
+            $otherImage->move(public_path(env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH')), $otherImageFileName);
             $otherImagesFileNames[] = $otherImageFileName;
         }
 
-        return ['primaryImage' => $primaryImgFileName , 'otherImages' => $otherImagesFileNames];
+        return ['primaryImage' => $primaryImgFileName, 'otherImages' => $otherImagesFileNames];
     }
 
     public function edit(Product $product): View|Application|Factory
@@ -38,14 +38,15 @@ class ProductImageController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         $request->validate([
-           'image_id' => 'required',
+            'image_id' => 'required',
         ]);
 
         ProductImage::destroy($request->input('image_id'));
 
-        File::delete(public_path('/upload/files/products/images/primary_images/'. $request->image_name));
+        File::delete(public_path('/upload/files/products/images/primary_images/'.$request->image_name));
 
         toastr()->success('تصویر مورد نظر با موفقیت حذف شد!');
+
         return redirect()->back();
     }
 
@@ -59,10 +60,11 @@ class ProductImageController extends Controller
         $product_image = ProductImage::findOrFail($request->image_id);
 
         $product->update([
-           'primary_image' => $product_image->image
+            'primary_image' => $product_image->image,
         ]);
 
         toastr()->success('تصویر مورد نظر با موفقیت ویرایش شد!');
+
         return redirect()->back();
 
     }
@@ -74,43 +76,43 @@ class ProductImageController extends Controller
             'other_imgs.*' => 'nullable|mimes:jpg,jpeg,png,svg',
         ]);
 
-        if ($request->primary_img == null && $request->other_imgs == null){
-            return redirect()->back()->withErrors(['msg' => 'تصویر یا تصاویر محصول الزامی است' ]);
+        if ($request->primary_img == null && $request->other_imgs == null) {
+            return redirect()->back()->withErrors(['msg' => 'تصویر یا تصاویر محصول الزامی است']);
         }
         try {
             DB::beginTransaction();
 
-            if ($request->has("primary_img")) {
+            if ($request->has('primary_img')) {
                 $primaryImgFileName = generateFileName($request->primary_img->getClientOriginalName());
                 $request->primary_img->move(public_path(env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH')), $primaryImgFileName);
 
                 $product->update([
-                    'primary_image' => $primaryImgFileName
+                    'primary_image' => $primaryImgFileName,
                 ]);
             }
 
-            if ($request->has("other_imgs")) {
+            if ($request->has('other_imgs')) {
 
                 foreach ($request->other_imgs as $otherImage) {
                     $otherImageFileName = generateFileName($otherImage->getClientOriginalName());
                     $otherImage->move(public_path(env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH')), $otherImageFileName);
                     ProductImage::create([
                         'image' => $otherImageFileName,
-                        'product_id' => $product->id
+                        'product_id' => $product->id,
                     ]);
                 }
 
             }
 
             DB::commit();
-        } catch (\Exception $ex){
+        } catch (\Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
+            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+
             return redirect()->back();
         }
         toastr()->success('تصویر یا تصاویر مورد نظر با موفقیت ویرایش شد!');
+
         return redirect()->back();
     }
 }
-
-

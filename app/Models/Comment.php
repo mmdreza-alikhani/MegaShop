@@ -17,9 +17,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Comment extends Model
 {
-    use HasFactory, SoftDeletes, SearchableTrait;
+    use HasFactory, SearchableTrait, SoftDeletes;
 
-    protected $table = "comments";
+    protected $table = 'comments';
+
     protected $appends = ['rates'];
 
     protected $fillable = [
@@ -29,7 +30,7 @@ class Comment extends Model
         'reply_of',
         'text',
         'status',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
@@ -40,14 +41,14 @@ class Comment extends Model
         'slug' => 'string',
         'text' => 'string',
         'status' => 'integer',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     // Default Values
     protected $attributes = [
         'reply_of' => '0',
         'is_active' => 0,
-        'status' => '1'
+        'status' => '1',
     ];
 
     public function statusCondition($status): string
@@ -90,14 +91,17 @@ class Comment extends Model
         return $this->hasMany(Comment::class, 'reply_of');
     }
 
+    public function getAwaitingReviewAttribute($query): void
+    {
+        $query->where('status', '1');
+    }
+
     public function getCommentableLabel(): string
     {
-        return match(get_class($this->commentable)) {
+        return match (get_class($this->commentable)) {
             Post::class => 'پست',
             Product::class => 'محصول',
             default => 'نامشخص',
         };
     }
-
-
 }

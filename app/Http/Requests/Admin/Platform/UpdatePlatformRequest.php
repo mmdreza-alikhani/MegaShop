@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdatePlatformRequest extends FormRequest
 {
     protected $errorBag = 'update';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,7 +27,7 @@ class UpdatePlatformRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|max:255|unique:platforms,title,' . $this->route('platforms')->id,
+            'title' => 'required|max:255|unique:platforms,title,'.$this->route('platforms')->id,
             'is_active' => 'required|boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
@@ -38,5 +39,4 @@ class UpdatePlatformRequest extends FormRequest
 
         throw new HttpResponseException(back()->withErrors($validator, $this->errorBag));
     }
-
 }

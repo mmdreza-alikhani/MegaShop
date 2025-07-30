@@ -19,7 +19,8 @@ class AttributeController extends Controller
     public function index(): View|Application|Factory
     {
         $attributes = Attribute::latest()->paginate(10);
-        return view('admin.attributes.index' , compact('attributes'));
+
+        return view('admin.attributes.index', compact('attributes'));
     }
 
     /**
@@ -28,10 +29,11 @@ class AttributeController extends Controller
     public function store(StoreAttributeRequest $request): RedirectResponse
     {
         Attribute::create([
-            'title' => $request->input('title')
+            'title' => $request->input('title'),
         ]);
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -45,12 +47,14 @@ class AttributeController extends Controller
         ]);
 
         toastr()->success('با موفقیت ویرایش شد!');
+
         return redirect()->back();
     }
 
     public function search(): View|\Illuminate\Contracts\Foundation\Application|Factory
     {
         $attributes = Attribute::search('title', trim(request()->keyword))->latest()->paginate(10);
+
         return view('admin.attributes.index', compact('attributes'));
     }
 
@@ -62,6 +66,7 @@ class AttributeController extends Controller
         $attribute->delete();
 
         toastr()->success('موفقیت حذف شد!');
+
         return redirect()->back();
     }
 }

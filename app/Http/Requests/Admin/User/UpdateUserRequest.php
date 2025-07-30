@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateUserRequest extends FormRequest
 {
     protected $errorBag = 'update';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,11 +27,11 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|string|max:255|unique:users,phone_number,' . auth()->id(),
+            'username' => 'required|string|max:255|unique:users,phone_number,'.auth()->id(),
             'first_name' => 'nullable|string|max:255',
             'last_name' => 'nullable|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
-            'phone_number' => 'nullable|size:10|regex:/^9\d{0,11}$/|unique:users,phone_number,' . auth()->id(),
+            'email' => 'required|email|max:255|unique:users,email,'.auth()->id(),
+            'phone_number' => 'nullable|size:10|regex:/^9\d{0,11}$/|unique:users,phone_number,'.auth()->id(),
         ];
     }
 
@@ -40,5 +41,4 @@ class UpdateUserRequest extends FormRequest
 
         throw new HttpResponseException(back()->withErrors($validator, $this->errorBag));
     }
-
 }

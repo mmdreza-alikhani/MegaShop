@@ -16,7 +16,8 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Validate and create a newly registered user.
      *
-     * @param array<string, string> $input
+     * @param  array<string, string>  $input
+     *
      * @throws ValidationException
      */
     public function create(array $input): User
@@ -34,7 +35,7 @@ class CreateNewUser implements CreatesNewUsers
             'password_confirmation' => 'required|same:registerPassword',
         ])->validate();
 
-        session()->flash('welcome',  '! ' . $input['username'] .' خوش اومدی');
+        session()->flash('welcome', '! '.$input['username'].' خوش اومدی');
 
         toastr()->success('ثبت نام با موفقیت انجام شد!');
 

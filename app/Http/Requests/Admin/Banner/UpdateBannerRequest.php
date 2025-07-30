@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateBannerRequest extends FormRequest
 {
     protected $errorBag = 'update';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,7 +27,7 @@ class UpdateBannerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|unique:banners,title,' . $this->route('article')->id,
+            'title' => 'required|string|max:255|unique:banners,title,'.$this->route('article')->id,
             'is_active' => 'required',
             'text' => 'required|string',
             'image' => 'required|max:2048|mimes:jpg,jpeg,png,svg',
@@ -44,5 +45,4 @@ class UpdateBannerRequest extends FormRequest
 
         throw new HttpResponseException(back()->withErrors($validator, $this->errorBag));
     }
-
 }

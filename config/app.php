@@ -168,8 +168,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\FortifyServiceProvider::Class,
-        Darryldecode\Cart\CartServiceProvider::class
+        App\Providers\FortifyServiceProvider::class,
+        Darryldecode\Cart\CartServiceProvider::class,
     ])->toArray(),
 
     /*

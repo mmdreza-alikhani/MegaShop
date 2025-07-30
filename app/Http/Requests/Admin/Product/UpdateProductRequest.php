@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateProductRequest extends FormRequest
 {
     protected $errorBag = 'update';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,7 +27,7 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|unique:posts,title,' . $this->route('post')->id,
+            'title' => 'required|string|max:255|unique:posts,title,'.$this->route('post')->id,
             'is_active' => 'required|boolean',
             'tag_ids' => 'required|array|exists:tags,id',
             'text' => 'required|string',
@@ -40,5 +41,4 @@ class UpdateProductRequest extends FormRequest
 
         throw new HttpResponseException(back()->withErrors($validator, $this->errorBag));
     }
-
 }

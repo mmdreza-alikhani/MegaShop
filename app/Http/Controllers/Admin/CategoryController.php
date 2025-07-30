@@ -6,16 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Category\StoreCategoryRequest;
 use App\Http\Requests\Admin\Category\UpdateCategoryRequest;
 use App\Models\Attribute;
-use App\Models\CategoryAttribute;
 use App\Models\Category;
+use App\Models\CategoryAttribute;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -25,7 +23,8 @@ class CategoryController extends Controller
     public function index(): View|Application|Factory
     {
         $categories = Category::latest()->with('parent', 'filters', 'variation')->paginate(10);
-        return view('admin.categories.index' , compact('categories'));
+
+        return view('admin.categories.index', compact('categories'));
     }
 
     public function create(): View|Application|Factory
@@ -33,7 +32,7 @@ class CategoryController extends Controller
         $parentCategories = Category::parents()->pluck('title', 'id');
         $attributes = Attribute::pluck('title', 'id');
 
-        return view('admin.categories.create' , compact('parentCategories' , 'attributes'));
+        return view('admin.categories.create', compact('parentCategories', 'attributes'));
     }
 
     /**
@@ -55,25 +54,27 @@ class CategoryController extends Controller
             CategoryAttribute::create([
                 'category_id' => $category->id,
                 'attribute_id' => $request->input('variation_attribute_id'),
-                'type' => 'variation'
+                'type' => 'variation',
             ]);
 
-            foreach ($request->input('filter_attribute_ids') as $attribute_id){
+            foreach ($request->input('filter_attribute_ids') as $attribute_id) {
                 CategoryAttribute::create([
                     'category_id' => $category->id,
                     'attribute_id' => $attribute_id,
-                    'type' => 'filter'
+                    'type' => 'filter',
                 ]);
             }
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -85,7 +86,8 @@ class CategoryController extends Controller
         $relatedAttributes = $this->getCategoryAttribute($category);
         $parentCategories = Category::parents()->pluck('title', 'id');
         $attributes = Attribute::pluck('title', 'id');
-        return view('admin.categories.edit' , compact('category', 'parentCategories', 'attributes', 'relatedAttributes'));
+
+        return view('admin.categories.edit', compact('category', 'parentCategories', 'attributes', 'relatedAttributes'));
     }
 
     /**
@@ -109,25 +111,27 @@ class CategoryController extends Controller
             CategoryAttribute::create([
                 'category_id' => $category->id,
                 'attribute_id' => $request->input('variation_attribute_id'),
-                'type' => 'variation'
+                'type' => 'variation',
             ]);
 
-            foreach ($request->input('filter_attribute_ids') as $attribute_id){
+            foreach ($request->input('filter_attribute_ids') as $attribute_id) {
                 CategoryAttribute::create([
                     'category_id' => $category->id,
                     'attribute_id' => $attribute_id,
-                    'type' => 'filter'
+                    'type' => 'filter',
                 ]);
             }
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
+            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت ویرایش شد.');
+
         return redirect()->back();
     }
 
@@ -139,6 +143,7 @@ class CategoryController extends Controller
         $category->delete();
 
         toastr()->success('با موفقیت حذف شد!');
+
         return redirect()->back();
     }
 
@@ -146,12 +151,14 @@ class CategoryController extends Controller
     {
         $filters = $category->attributes()->filter()->pluck('title', 'id');
         $variation = $category->attributes()->variation()->take(1)->pluck('title', 'id');
-        return ['filters' => $filters , 'variation' => $variation];
+
+        return ['filters' => $filters, 'variation' => $variation];
     }
 
     public function search(): View|Application|Factory
     {
         $categories = Category::search('title', trim(request()->keyword))->latest()->paginate(10);
+
         return view('admin.categories.index', compact('categories'));
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdatePermissionRequest extends FormRequest
 {
     protected $errorBag = 'update';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,8 +27,8 @@ class UpdatePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:permissions,name,' . $this->route('permission')->id,
-            'display_name' => 'required|string|max:255|unique:permissions,display_name,' . $this->route('permission')->id,
+            'name' => 'required|string|max:255|unique:permissions,name,'.$this->route('permission')->id,
+            'display_name' => 'required|string|max:255|unique:permissions,display_name,'.$this->route('permission')->id,
         ];
     }
 
@@ -37,5 +38,4 @@ class UpdatePermissionRequest extends FormRequest
 
         throw new HttpResponseException(back()->withErrors($validator, $this->errorBag));
     }
-
 }

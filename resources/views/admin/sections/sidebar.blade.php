@@ -1,3 +1,4 @@
+@php use App\Models\Comment; @endphp
 <div id="dw-s1" class="bmd-layout-drawer bg-faded">
     <div class="container-fluid side-bar-container">
         <header class="pb-0">
@@ -7,7 +8,8 @@
             </a>
         </header>
         <li class="side a-collapse short m-2 pr-1 pl-1">
-            <a href="{{ route('admin.panel') }}" class="side-item {{ request()->routeIs('management') ? 'selected' : '' }}">
+            <a href="{{ route('admin.panel') }}"
+               class="side-item {{ request()->routeIs('management') ? 'selected' : '' }}">
                 <i class="fas fa-tachometer-alt mr-1"></i>صفحه اصلی
             </a>
         </li>
@@ -16,7 +18,8 @@
             <a class="ul-text fnt-mxs"><i class="fas fa-user-friends mr-1"></i> کاربران
                 <i class="fas fa-chevron-up arrow"></i>
             </a>
-            <div class="side-item-container {{ request()->is('management/users*') || request()->is('management/roles*') || request()->is('management/permissions*') ? '' : 'hide animated' }}">
+            <div
+                class="side-item-container {{ request()->is('management/users*') || request()->is('management/roles*') || request()->is('management/permissions*') ? '' : 'hide animated' }}">
                 <li class="side-item {{ request()->is('management/users') ? 'selected' : '' }}">
                     <a href="{{ route('admin.users.index') }}" class="fnt-mxs">
                         <i class="fas fa-angle-right mr-2"></i>لیست کاربران
@@ -24,7 +27,7 @@
                 </li>
                 <li class="side-item {{ request()->is('management/roles') ? 'selected' : '' }}">
                     <a href="{{ route('admin.roles.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>گروه های  کاربری
+                        <i class="fas fa-angle-right mr-2"></i>گروه های کاربری
                     </a>
                 </li>
                 <li class="side-item {{ request()->is('management/permissions') ? 'selected' : '' }}">
@@ -42,7 +45,7 @@
             <div class="side-item-container {{ request()->is('management/attributes*') ? '' : 'hide animated' }}">
                 <li class="side-item {{ request()->is('management/attributes') ? 'selected' : '' }}">
                     <a href="{{ route('admin.attributes.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست  ویژگی ها
+                        <i class="fas fa-angle-right mr-2"></i>لیست ویژگی ها
                     </a>
                 </li>
             </div>
@@ -54,7 +57,7 @@
             <div class="side-item-container {{ request()->is('management/categories*') ? '' : 'hide animated' }}">
                 <li class="side-item {{ request()->is('management/categories') ? 'selected' : '' }}">
                     <a href="{{ route('admin.categories.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست  دسته بندی ها
+                        <i class="fas fa-angle-right mr-2"></i>لیست دسته بندی ها
                     </a>
                 </li>
                 <li class="side-item {{ request()->is('management/categories/create') ? 'selected' : '' }}">
@@ -71,40 +74,40 @@
             <div class="side-item-container {{ request()->is('management/brands*') ? '' : 'hide animated' }}">
                 <li class="side-item {{ request()->is('management/brands') ? 'selected' : '' }}">
                     <a href="{{ route('admin.brands.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست  برند ها
+                        <i class="fas fa-angle-right mr-2"></i>لیست برند ها
                     </a>
                 </li>
             </div>
         </ul>
         <ul class="side a-collapse {{ request()->is('management/platforms*') ? '' : 'short' }}">
-        <a class="ul-text fnt-mxs"><i class="fas fa-gamepad mr-1"></i> پلتفرم ها
-            <i class="fas fa-chevron-up arrow"></i>
-        </a>
-        <div class="side-item-container {{ request()->is('management/platforms*') ? '' : 'hide animated' }}">
-            <li class="side-item {{ request()->is('management/platforms') ? 'selected' : '' }}">
-                <a href="{{ route('admin.platforms.index') }}" class="fnt-mxs">
-                    <i class="fas fa-angle-right mr-2"></i>لیست  پلتفرم ها
-                </a>
-            </li>
-        </div>
-    </ul>
+            <a class="ul-text fnt-mxs"><i class="fas fa-gamepad mr-1"></i> پلتفرم ها
+                <i class="fas fa-chevron-up arrow"></i>
+            </a>
+            <div class="side-item-container {{ request()->is('management/platforms*') ? '' : 'hide animated' }}">
+                <li class="side-item {{ request()->is('management/platforms') ? 'selected' : '' }}">
+                    <a href="{{ route('admin.platforms.index') }}" class="fnt-mxs">
+                        <i class="fas fa-angle-right mr-2"></i>لیست پلتفرم ها
+                    </a>
+                </li>
+            </div>
+        </ul>
         <ul class="side a-collapse {{ request()->is('management/products*') ? '' : 'short' }}">
-                <a class="ul-text fnt-mxs"><i class="fa fa-box mr-1"></i> محصولات
-                    <i class="fas fa-chevron-up arrow"></i>
-                </a>
-                <div class="side-item-container {{ request()->is('management/products*') ? '' : 'hide animated' }}">
-                    <li class="side-item {{ request()->is('management/products') ? 'selected' : '' }}">
-                        <a href="{{ route('admin.products.index') }}" class="fnt-mxs">
-                            <i class="fas fa-angle-right mr-2"></i>لیست محصولات
-                        </a>
-                    </li>
-                    <li class="side-item {{ request()->is('management/products/create') ? 'selected' : '' }}">
-                        <a href="{{ route('admin.products.create') }}" class="fnt-mxs">
-                            <i class="fas fa-angle-right mr-2"></i>ایجاد محصول جدید
-                        </a>
-                    </li>
-                </div>
-            </ul>
+            <a class="ul-text fnt-mxs"><i class="fa fa-box mr-1"></i> محصولات
+                <i class="fas fa-chevron-up arrow"></i>
+            </a>
+            <div class="side-item-container {{ request()->is('management/products*') ? '' : 'hide animated' }}">
+                <li class="side-item {{ request()->is('management/products') ? 'selected' : '' }}">
+                    <a href="{{ route('admin.products.index') }}" class="fnt-mxs">
+                        <i class="fas fa-angle-right mr-2"></i>لیست محصولات
+                    </a>
+                </li>
+                <li class="side-item {{ request()->is('management/products/create') ? 'selected' : '' }}">
+                    <a href="{{ route('admin.products.create') }}" class="fnt-mxs">
+                        <i class="fas fa-angle-right mr-2"></i>ایجاد محصول جدید
+                    </a>
+                </li>
+            </div>
+        </ul>
         <p class="side-comment fnt-mxs">سفارشات</p>
         <ul class="side a-collapse {{ request()->is('management/coupons*') ? '' : 'short' }}">
             <a class="ul-text fnt-mxs"><i class="fa fa-ticket-alt mr-1"></i> کد های تخفیف
@@ -176,12 +179,12 @@
         <ul class="side a-collapse {{ request()->is('management/comments*') ? '' : 'short' }}">
             <a class="ul-text fnt-mxs"><i class="fa fa-comments mr-1"></i>نظرات
                 <i class="fas fa-chevron-up arrow"></i>
+                <span class="badge badge-danger">{{ Comment::where('status' ,'1')->count() }}</span>
             </a>
             <div class="side-item-container {{ request()->is('management/comments*') ? '' : 'hide animated' }}">
                 <li class="side-item {{ request()->is('management/comments') ? 'selected' : '' }}">
                     <a href="{{ route('admin.comments.index') }}" class="fnt-mxs">
                         <i class="fas fa-angle-right mr-2"></i>لیست نظرات
-{{--                        <span class="badge badge-danger">9</span>--}}
                     </a>
                 </li>
             </div>

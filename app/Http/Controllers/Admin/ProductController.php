@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\Genre;
 use App\Models\Platform;
 use App\Models\Product;
-use App\Models\ProductFilter;
 use App\Models\ProductImage;
-use App\Models\ProductVariation;
 use App\Models\Tag;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -22,7 +17,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\New_;
 
 class ProductController extends Controller
 {
@@ -32,7 +26,8 @@ class ProductController extends Controller
     public function index(): Factory|Application|View
     {
         $products = Product::latest()->paginate(10);
-        return view('admin.products.index' , compact('products'));
+
+        return view('admin.products.index', compact('products'));
     }
 
     /**
@@ -44,7 +39,8 @@ class ProductController extends Controller
         $platforms = Platform::active()->pluck('title', 'id');
         $tags = Tag::pluck('title', 'id');
         $categories = Category::active()->parents()->pluck('title', 'id');
-        return view('admin.products.create' , compact('brands','tags', 'categories', 'platforms'));
+
+        return view('admin.products.create', compact('brands', 'tags', 'categories', 'platforms'));
     }
 
     /**
@@ -55,8 +51,8 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
-            $productImageController = new ProductImageController();
-            $imagesFileName = $productImageController->upload($request->primary_image , $request->other_images);
+            $productImageController = new ProductImageController;
+            $imagesFileName = $productImageController->upload($request->primary_image, $request->other_images);
 
             $product = Product::create([
                 'title' => $request->input('title'),
@@ -70,33 +66,34 @@ class ProductController extends Controller
                 'primary_image' => $imagesFileName['primaryImage'],
             ]);
 
-            foreach($imagesFileName['otherImages'] as $imgFileName){
+            foreach ($imagesFileName['otherImages'] as $imgFileName) {
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image' => $imgFileName
+                    'image' => $imgFileName,
                 ]);
             }
 
             // Store Filters
-            $ProductAttributeController = new ProductAttributeController();
-            $ProductAttributeController->store($request->input('filters_value') , $product->id);
-
+            $ProductAttributeController = new ProductAttributeController;
+            $ProductAttributeController->store($request->input('filters_value'), $product->id);
 
             // Store Variation
             $attributeId = Category::findOrFail($request->input('category_id'))->variation()->pluck('id')->first();
-            $ProductVariationController = new ProductVariationController();
+            $ProductVariationController = new ProductVariationController;
             $ProductVariationController->store($request->input('variation_values'), $attributeId, $product->id);
 
             $product->tags()->attach($request->input('tag_ids'));
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
+            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+
             return redirect()->route('admin.products.create');
         }
 
         toastr()->success('با موفقیت محصول اضافه شد.');
+
         return redirect()->back();
     }
 
@@ -129,7 +126,8 @@ class ProductController extends Controller
                     'date_on_sale_to' => $attr->date_on_sale_to,
                 ];
             });
-        return view('admin.products.show' , compact('product', 'filters', 'variations'));
+
+        return view('admin.products.show', compact('product', 'filters', 'variations'));
     }
 
     /**
@@ -143,6 +141,7 @@ class ProductController extends Controller
         $categories = Category::active()->parents()->pluck('title', 'id');
         $productAttributes = $product->attributes()->with('attribute')->get();
         $productVariations = $product->variations;
+
         return view('admin.products.edit', compact('product', 'brands', 'tags', 'categories', 'productVariations', 'platforms'));
     }
 
@@ -151,7 +150,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-//        dd($request->all());
+        //        dd($request->all());
         $request->validate([
             'name' => 'required',
             'brand_id' => 'required',
@@ -186,32 +185,36 @@ class ProductController extends Controller
 
             $product->tags()->sync($request->tag_ids);
 
-            $ProductAttributeController = new ProductAttributeController();
+            $ProductAttributeController = new ProductAttributeController;
             $ProductAttributeController->update($request->attribute_values);
 
-            $ProductVariationController = new ProductVariationController();
+            $ProductVariationController = new ProductVariationController;
             $ProductVariationController->update($request->variation_values);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
+            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت محصول ویرایش شد.');
+
         return redirect()->back();
     }
 
     public function search(Request $request)
     {
         $keyWord = request()->keyword;
-        if (request()->has('keyword') && trim($keyWord) != ''){
+        if (request()->has('keyword') && trim($keyWord) != '') {
             $products = Product::where('name', 'LIKE', '%'.trim($keyWord).'%')->latest()->paginate(10);
-            return view('admin.products.index' , compact('products'));
-        }else{
+
+            return view('admin.products.index', compact('products'));
+        } else {
             $products = Product::latest()->paginate(10);
-            return view('admin.products.index' , compact('products'));
+
+            return view('admin.products.index', compact('products'));
         }
     }
 
@@ -225,7 +228,8 @@ class ProductController extends Controller
 
     public function edit_category(Request $request, Product $product)
     {
-        $categories = Category::where([['is_active' , 1],['parent_id', '!=', '0']])->get();
+        $categories = Category::where([['is_active', 1], ['parent_id', '!=', '0']])->get();
+
         return view('admin.products.edit_category', compact('product', 'categories'));
     }
 
@@ -245,24 +249,26 @@ class ProductController extends Controller
             DB::beginTransaction();
 
             $product->update([
-                'category_id' => $request->category_id
+                'category_id' => $request->category_id,
             ]);
 
-            $ProductAttributeController = new ProductAttributeController();
-            $ProductAttributeController->change($request->attribute_ids , $product->id);
+            $ProductAttributeController = new ProductAttributeController;
+            $ProductAttributeController->change($request->attribute_ids, $product->id);
 
             $category = Category::find($request->category_id);
-            $ProductVariationController = new ProductVariationController();
-            $ProductVariationController->change($request->variation_values, $category->attributes()->wherePivot('is_variation' , 1)->first()->id,$product);
+            $ProductVariationController = new ProductVariationController;
+            $ProductVariationController->change($request->variation_values, $category->attributes()->wherePivot('is_variation', 1)->first()->id, $product);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
+            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت دسته بندی محصول ویرایش شد.');
+
         return redirect()->back();
     }
 }

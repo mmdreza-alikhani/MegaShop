@@ -28,6 +28,6 @@ class HomeController extends Controller
             ->count();
         $user = auth()->user();
 
-        return view('admin.index', compact('orderCount','recentUserCount', 'productCount', 'user'));
+        return view('admin.index', compact('orderCount', 'recentUserCount', 'productCount', 'user'));
     }
 }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Home\Comment\StoreCommentRequest;
-use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Post;
 use App\Models\Product;
 use App\Models\ProductRate;
 use Exception;
@@ -21,7 +21,7 @@ class CommentController extends Controller
             'post' => Post::class,
         ];
 
-        if (!array_key_exists($model, $classMap)) {
+        if (! array_key_exists($model, $classMap)) {
             return redirect()->back()->withErrors(['error' => 'Invalid model type']);
         }
 
@@ -35,7 +35,7 @@ class CommentController extends Controller
                 'text' => $request->input('text'),
                 'reply_of' => $request->input('replyOf'),
                 'commentable_id' => $modelInstance->id,
-                'commentable_type' => get_class($modelInstance)
+                'commentable_type' => get_class($modelInstance),
             ]);
 
             if ($request->has('rate') && $model === 'product') {
@@ -53,14 +53,14 @@ class CommentController extends Controller
             }
             DB::commit();
             toastr()->success('نظر شما با موفقیت ثبت و در انتظار تایید است!');
+
             return redirect()->back();
         } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->warning($ex->getMessage() . 'مشکلی پیش آمد!');
+            toastr()->warning($ex->getMessage().'مشکلی پیش آمد!');
+
             return redirect()->back();
         }
 
     }
-
-
 }

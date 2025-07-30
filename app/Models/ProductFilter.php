@@ -15,7 +15,7 @@ class ProductFilter extends Model
 {
     use HasFactory;
 
-    protected $table = "product_filters";
+    protected $table = 'product_filters';
 
     protected $fillable = [
         'attribute_id',
@@ -31,7 +31,7 @@ class ProductFilter extends Model
     ];
 
     protected $attributes = [
-        'is_active' => 1
+        'is_active' => 1,
     ];
 
     public function attribute(): BelongsTo

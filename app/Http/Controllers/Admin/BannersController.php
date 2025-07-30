@@ -21,6 +21,7 @@ class BannersController extends Controller
     public function index(): View|Application|Factory
     {
         $banners = Banner::latest()->paginate(10);
+
         return view('admin.banners.index', compact('banners'));
     }
 
@@ -57,13 +58,15 @@ class BannersController extends Controller
             ]);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -72,7 +75,7 @@ class BannersController extends Controller
      */
     public function show(Banner $banner): View|Application|Factory
     {
-        return view('admin.banners.show' , compact('banner'));
+        return view('admin.banners.show', compact('banner'));
     }
 
     /**
@@ -80,7 +83,7 @@ class BannersController extends Controller
      */
     public function edit(Banner $banner): View|Application|Factory
     {
-        return view('admin.banners.edit' , compact('banner'));
+        return view('admin.banners.edit', compact('banner'));
     }
 
     /**
@@ -111,19 +114,22 @@ class BannersController extends Controller
             ]);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
+            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت مقاله ویرایش شد.');
+
         return redirect()->back();
     }
 
     public function search(): View|Application|Factory
     {
         $banners = Banner::search('title', trim(request()->keyword))->latest()->paginate(10);
+
         return view('admin.banners.index', compact('banners'));
     }
 
@@ -135,6 +141,7 @@ class BannersController extends Controller
         $banner->delete();
 
         toastr()->success('با موفقیت حذف شد!');
+
         return redirect()->back();
     }
 }

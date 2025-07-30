@@ -16,7 +16,8 @@ class PermissionController extends Controller
     public function index(): View|Application|Factory
     {
         $permissions = Permission::latest()->paginate(10);
-        return view('admin.permissions.index' , compact('permissions'));
+
+        return view('admin.permissions.index', compact('permissions'));
     }
 
     public function store(StoreRoleRequest $request): RedirectResponse
@@ -28,6 +29,7 @@ class PermissionController extends Controller
         ]);
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -39,7 +41,7 @@ class PermissionController extends Controller
         ]);
 
         toastr()->success('با موفقیت ویرایش شد!');
+
         return redirect()->back();
     }
-
 }

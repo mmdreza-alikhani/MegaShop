@@ -22,9 +22,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Post extends Model
 {
-    use HasFactory, sluggable, SoftDeletes, SearchableTrait;
+    use HasFactory, SearchableTrait, sluggable, SoftDeletes;
 
-    protected $table = "posts";
+    protected $table = 'posts';
 
     protected $fillable = [
         'title',
@@ -33,7 +33,7 @@ class Post extends Model
         'image',
         'text',
         'status',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
@@ -43,21 +43,21 @@ class Post extends Model
         'image' => 'string',
         'text' => 'string',
         'status' => 'integer',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     // Default Values
     protected $attributes = [
         'is_active' => 1,
-        'status' => '1'
+        'status' => '1',
     ];
 
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'title'
-            ]
+                'source' => 'title',
+            ],
         ];
     }
 

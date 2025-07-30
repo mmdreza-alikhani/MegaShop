@@ -16,10 +16,12 @@ class CheckUserAuthentication
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()){
+        if (! Auth::check()) {
             toastr()->warning('لطفا وارد حساب خود شوید!');
+
             return redirect()->back();
         }
+
         return $next($request);
     }
 }

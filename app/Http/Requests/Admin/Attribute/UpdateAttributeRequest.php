@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateAttributeRequest extends FormRequest
 {
     protected $errorBag = 'update';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,7 +27,7 @@ class UpdateAttributeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|unique:attributes,title,' . $this->route('attribute')->id,
+            'title' => 'required|string|max:255|unique:attributes,title,'.$this->route('attribute')->id,
         ];
     }
 
@@ -36,5 +37,4 @@ class UpdateAttributeRequest extends FormRequest
 
         throw new HttpResponseException(back()->withErrors($validator, $this->errorBag));
     }
-
 }

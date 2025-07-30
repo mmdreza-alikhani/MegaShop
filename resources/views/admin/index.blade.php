@@ -4,6 +4,14 @@
     داشبورد
 @endsection
 
+@php
+    use Illuminate\Support\Facades\DB;
+    $usersCount = DB::table('users')->count();
+    $ordersCount = DB::table('orders')->count();
+    $productsCount = DB::table('products')->count();
+    $postsCount = DB::table('posts')->count();
+@endphp
+
 @section('content')
     <main class="bmd-layout-content">
         <div class="container-fluid">
@@ -30,38 +38,39 @@
                 </div>
             </div>
             <div class="row m-1 mb-2">
-                <div class="col-xl-6 col-md-4 col-sm-6 p-2">
-                    <div class="box-card text-right mini animate__animated animate__flipInY">
-                        <i class="fab far fa-chart-bar b-first" aria-hidden="true"></i>
-                        <span class="mb-1 c-first">قرارداد های فعال</span>
-{{--                        <span>{{ $activatedContracts }}</span>--}}
+                <div class="col-xl-3 col-md-6 col-sm-6 p-2">
+                    <div class="box-card text-right mini animate__animated animate__flipInY"><i class="fab far fa-chart-bar b-first" aria-hidden="true"></i>
+                        <span class="mb-1 c-first">تعداد کاربران</span>
+                        <span>{{ $usersCount }} کاربر </span>
+                        <p class="mt-3 mb-1 text-right"><i class="far fas fa-wallet mr-1 c-first"></i> در حال
+                            پیشرفت</p>
                     </div>
                 </div>
-                <div class="col-xl-6 col-md-4 col-sm-6 p-2">
-                    <div class="box-card text-right mini animate__animated animate__flipInY">
-                        <i class="fab far fa-chart-bar b-first" aria-hidden="true"></i>
-                        <span class="mb-1 c-first">الحاقیه های فعال</span>
-{{--                        <span>{{ $activatedAppendices }}</span>--}}
-                    </div>
-                </div>
-                <div class="col-xl-6 col-md-4 col-sm-6 p-2">
+                <div class="col-xl-3 col-md-6 col-sm-6 p-2">
                     <div class="box-card text-right mini animate__animated animate__flipInY"><i class="fab far fa-clock b-second" aria-hidden="true"></i>
-                        <span class="mb-1 c-second">قرارداد های منتظر تایید شما</span>
-
+                        <span class="mb-1 c-second">تعداد سفارشات</span>
+                        <span>{{ $ordersCount }} سفارش </span>
+                        <p class="mt-3 mb-1 text-right"><i class="far fas fa-wifi mr-1 c-second"></i>در حال پیشرفت
+                        </p>
                     </div>
                 </div>
-                <div class="col-xl-6 col-md-4 col-sm-6 p-2">
-                    <div class="box-card text-right mini animate__animated animate__flipInY"><i class="fab far fa-clock b-second" aria-hidden="true"></i>
-                        <span class="mb-1 c-second">الحاقیه های منتظر تایید شما</span>
-{{--                        <span>{{ $pendingAppendices }}</span>--}}
-{{--                    </div>--}}
+                <div class="col-xl-3 col-md-6 col-sm-6 p-2">
+                    <div class="box-card text-right mini animate__animated animate__flipInY"><i class="fab far fa-comments b-third" aria-hidden="true"></i>
+                        <span class="mb-1 c-third">تعداد محصولات</span>
+                        <span>{{ $productsCount }} محصول </span>
+                        <p class="mt-3 mb-1 text-right"><i class="fab fa-whatsapp mr-1 c-third"></i>در حال پیشرفت
+                        </p>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 col-sm-6 p-2">
+                    <div class="box-card text-right mini animate__animated animate__flipInY   "><i class="fab far fa-gem b-forth" aria-hidden="true"></i>
+                        <span class="mb-1 c-forth">تعداد مقالات</span>
+                        <span>{{ $postsCount }} مقاله </span>
+                        <p class="mt-3 mb-1 text-right"><i class="fab fa-bluetooth mr-1 c-forth"></i>در حال پیشرفت
+                        </p>
+                    </div>
                 </div>
             </div>
-            @if(!auth()->user()->hasanyrole(['user', 'admin']))
-                <div class="alert alert-warning">
-                    شما هیچ دسترسی ندارید!
-                </div>
-            @endif
         </div>
     </main>
 @endsection

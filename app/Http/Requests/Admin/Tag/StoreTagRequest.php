@@ -8,6 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreTagRequest extends FormRequest
 {
     protected $errorBag = 'store';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -24,7 +25,7 @@ class StoreTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|unique:tags,title'
+            'title' => 'required|string|max:255|unique:tags,title',
         ];
     }
 }

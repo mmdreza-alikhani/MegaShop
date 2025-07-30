@@ -13,7 +13,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     /**
      * Validate and update the given user's profile information.
      *
-     * @param array<string, string> $input
+     * @param  array<string, string>  $input
+     *
      * @throws ValidationException
      */
     public function update(User $user, array $input): void
@@ -31,7 +32,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         ])->validateWithBag('updateProfileInformation');
 
         if ($input['email'] !== $user->email
-//            && $user instanceof MustVerifyEmail
+            //            && $user instanceof MustVerifyEmail
         ) {
             $this->updateVerifiedUser($user, $input);
         } else {

@@ -14,7 +14,7 @@ class Transaction extends Model
 {
     use HasFactory, SearchableTrait;
 
-    protected $table = "transactions";
+    protected $table = 'transactions';
 
     protected $fillable = [
         'user_id',

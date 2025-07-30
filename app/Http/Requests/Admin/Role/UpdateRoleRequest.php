@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateRoleRequest extends FormRequest
 {
     protected $errorBag = 'update';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,8 +27,8 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:roles,name,' . $this->route('role')->id,
-            'display_name' => 'required|string|max:255|unique:roles,display_name,' . $this->route('role')->id,
+            'name' => 'required|string|max:255|unique:roles,name,'.$this->route('role')->id,
+            'display_name' => 'required|string|max:255|unique:roles,display_name,'.$this->route('role')->id,
         ];
     }
 
@@ -37,5 +38,4 @@ class UpdateRoleRequest extends FormRequest
 
         throw new HttpResponseException(back()->withErrors($validator, $this->errorBag));
     }
-
 }

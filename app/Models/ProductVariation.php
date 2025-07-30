@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use function PHPUnit\Framework\returnArgument;
 
 /**
  * @method static select(string $string)
@@ -19,7 +18,7 @@ class ProductVariation extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = "product_variations";
+    protected $table = 'product_variations';
 
     protected $fillable = [
         'attribute_id',
@@ -43,11 +42,11 @@ class ProductVariation extends Model
         'date_on_sale_to' => 'datetime',
     ];
 
-    protected $appends = ['is_sale','sale_percent'];
+    protected $appends = ['is_sale', 'sale_percent'];
 
     public function getIsSaleAttribute(): bool
     {
-        return $this->sale_price =! null && $this->date_on_sale_from < Carbon::now() && $this->date_on_sale_to > Carbon::now();
+        return $this->sale_price = ! null && $this->date_on_sale_from < Carbon::now() && $this->date_on_sale_to > Carbon::now();
     }
 
     public function getSalePercentAttribute(): ?float

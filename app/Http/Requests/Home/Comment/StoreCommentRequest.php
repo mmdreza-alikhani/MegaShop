@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class StoreCommentRequest extends FormRequest
 {
     protected $errorBag = 'store';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -34,7 +35,6 @@ class StoreCommentRequest extends FormRequest
 
     public function failedValidation(Validator $validator): void
     {
-        throw new HttpResponseException(redirect()->to(url()->previous() . '#reviews')->withErrors($validator, $this->errorBag));
+        throw new HttpResponseException(redirect()->to(url()->previous().'#reviews')->withErrors($validator, $this->errorBag));
     }
-
 }

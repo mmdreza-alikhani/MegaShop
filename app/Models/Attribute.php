@@ -19,14 +19,14 @@ class Attribute extends Model
 {
     use HasFactory, SearchableTrait;
 
-    protected $table = "attributes";
+    protected $table = 'attributes';
 
     protected $fillable = [
-        'title'
+        'title',
     ];
 
     protected $casts = [
-        'title' => 'string'
+        'title' => 'string',
     ];
 
     public function scopeFilter($query): void
@@ -41,11 +41,11 @@ class Attribute extends Model
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class , 'category_attributes');
+        return $this->belongsToMany(Category::class, 'category_attributes');
     }
 
     public function values(): HasMany
     {
-        return $this->hasMany(ProductFilter::class)->select('attribute_id' , 'value')->distinct();
+        return $this->hasMany(ProductFilter::class)->select('attribute_id', 'value')->distinct();
     }
 }

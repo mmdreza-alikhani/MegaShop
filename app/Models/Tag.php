@@ -16,8 +16,9 @@ class Tag extends Model
 {
     use HasFactory, SearchableTrait;
 
-    protected $table = "tags";
+    protected $table = 'tags';
+
     protected $fillable = [
-        "title"
+        'title',
     ];
 }

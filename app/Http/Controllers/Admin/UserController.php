@@ -27,6 +27,7 @@ class UserController extends Controller
         $users = User::latest()->paginate(10);
         $roles = Role::all();
         $permissions = Permission::all();
+
         return view('admin.users.index', compact('users', 'roles', 'permissions'));
     }
 
@@ -42,17 +43,19 @@ class UserController extends Controller
                 'username', 'first_name', 'last_name', 'email', 'phone_number',
             ]) + [
                 'password' => Hash::make($request->input('password')),
-                'provider_name' => 'manual'
+                'provider_name' => 'manual',
             ]);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -69,7 +72,7 @@ class UserController extends Controller
 
                 $user->syncPermissions($request->except([
                     '_token', '_method', 'username', 'role', 'first_name',
-                    'last_name', 'phone_number', 'email'
+                    'last_name', 'phone_number', 'email',
                 ]));
                 $user->syncRoles($request->role);
 
@@ -86,7 +89,7 @@ class UserController extends Controller
 
             toastr()->success('با موفقیت ویرایش شد!');
         } catch (Exception $ex) {
-            toastr()->error($ex->getMessage() . ' مشکلی پیش آمد!');
+            toastr()->error($ex->getMessage().' مشکلی پیش آمد!');
         }
 
         return redirect()->back();
@@ -97,6 +100,7 @@ class UserController extends Controller
         $users = User::search('username', trim(request()->keyword))->latest()->paginate(10);
         $roles = Role::all();
         $permissions = Permission::all();
+
         return view('admin.users.index', compact('users', 'roles', 'permissions'));
     }
 }

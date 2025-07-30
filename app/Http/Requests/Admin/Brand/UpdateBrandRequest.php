@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateBrandRequest extends FormRequest
 {
     protected $errorBag = 'update';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,7 +27,7 @@ class UpdateBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|unique:brands,title,' . $this->route('brand')->id,
+            'title' => 'required|string|max:255|unique:brands,title,'.$this->route('brand')->id,
             'is_active' => 'required|boolean',
         ];
     }
@@ -37,5 +38,4 @@ class UpdateBrandRequest extends FormRequest
 
         throw new HttpResponseException(back()->withErrors($validator, $this->errorBag));
     }
-
 }

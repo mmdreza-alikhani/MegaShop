@@ -15,7 +15,7 @@ class CategoryAttribute extends Model
 {
     use HasFactory;
 
-    protected $table = "category_attributes";
+    protected $table = 'category_attributes';
 
     protected $fillable = [
         'attribute_id',

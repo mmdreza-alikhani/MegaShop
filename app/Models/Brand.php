@@ -18,37 +18,36 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Brand extends Model
 {
-    use HasFactory, sluggable, SoftDeletes, SearchableTrait;
+    use HasFactory, SearchableTrait, sluggable, SoftDeletes;
 
-    protected $table = "brands";
+    protected $table = 'brands';
 
     protected $fillable = [
         'title',
         'slug',
         'status',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
         'title' => 'string',
         'slug' => 'string',
         'status' => 'integer',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     // Default Values
     protected $attributes = [
         'is_active' => 1,
-        'status' => '1'
+        'status' => '1',
     ];
-
 
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'title'
-            ]
+                'source' => 'title',
+            ],
         ];
     }
 

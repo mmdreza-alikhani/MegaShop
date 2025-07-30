@@ -18,7 +18,7 @@ class Order extends Model
 {
     use HasFactory, SearchableTrait;
 
-    protected $table = "orders";
+    protected $table = 'orders';
 
     protected $fillable = [
         'user_id',
@@ -47,7 +47,7 @@ class Order extends Model
         'coupon_amount' => '0',
         'delivery_amount' => '0',
         'status' => '0',
-        'payment_status' => '0'
+        'payment_status' => '0',
     ];
 
     public function address(): BelongsTo
@@ -80,24 +80,26 @@ class Order extends Model
         return $payment_status ? 'پرداخت شده' : 'پرداخت نشده';
     }
 
-    public function getPaymentTypeAttribute($payment_type){
-        switch ($payment_type){
-            case 'online' :
+    public function getPaymentTypeAttribute($payment_type)
+    {
+        switch ($payment_type) {
+            case 'online':
                 $payment_type = 'انلاین';
                 break;
-            case 'pos' :
+            case 'pos':
                 $payment_type = 'پز';
                 break;
-            case 'cash' :
+            case 'cash':
                 $payment_type = 'نقد';
                 break;
-            case 'shabaNumber' :
+            case 'shabaNumber':
                 $payment_type = 'شبا';
                 break;
-            case 'cardToCard' :
+            case 'cardToCard':
                 $payment_type = 'کارت به کارت';
                 break;
         }
+
         return $payment_type;
     }
 }

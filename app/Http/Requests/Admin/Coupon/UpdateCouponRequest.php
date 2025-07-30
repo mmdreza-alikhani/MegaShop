@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateCouponRequest extends FormRequest
 {
     protected $errorBag = 'update';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,8 +27,8 @@ class UpdateCouponRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|unique:coupons,title,' . $this->route('coupon')->id,
-            'code' => 'required|string|max:255|unique:coupons,code,' . $this->route('coupon')->id,
+            'title' => 'required|string|max:255|unique:coupons,title,'.$this->route('coupon')->id,
+            'code' => 'required|string|max:255|unique:coupons,code,'.$this->route('coupon')->id,
             'type' => 'required|string|in:amount,percentage',
             'amount' => 'required_if:type,=,amount|numeric|min:0',
             'percentage' => 'required_if:type,=,percentage|numeric|min:0|max:100',
@@ -42,5 +43,4 @@ class UpdateCouponRequest extends FormRequest
 
         throw new HttpResponseException(back()->withErrors($validator, $this->errorBag));
     }
-
 }

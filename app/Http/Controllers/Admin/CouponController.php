@@ -11,9 +11,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class CouponController extends Controller
 {
@@ -23,6 +21,7 @@ class CouponController extends Controller
     public function index(): View|Application|Factory
     {
         $coupons = Coupon::latest()->paginate(10);
+
         return view('admin.coupons.index', compact('coupons'));
     }
 
@@ -46,13 +45,15 @@ class CouponController extends Controller
             ]);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -76,19 +77,22 @@ class CouponController extends Controller
             ]);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
+            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت ویرایش شد.');
+
         return redirect()->back();
     }
 
     public function search(): View|Application|Factory
     {
         $coupons = Coupon::search('title', trim(request()->keyword))->latest()->paginate(10);
+
         return view('admin.coupons.index', compact('coupons'));
     }
 
@@ -100,6 +104,7 @@ class CouponController extends Controller
         $coupon->delete();
 
         toastr()->success('با موفقیت حذف شد!');
+
         return redirect()->back();
     }
 }

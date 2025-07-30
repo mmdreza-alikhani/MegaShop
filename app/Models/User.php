@@ -20,7 +20,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SearchableTrait;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, SearchableTrait;
 
     protected $fillable = [
         'username',
@@ -32,7 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'provider_name',
         'status',
-        'is_active'
+        'is_active',
     ];
 
     protected $hidden = [
@@ -51,10 +51,11 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $attributes = [
         'avatar' => 'avatar.png',
         'is_active' => true,
-        'status' => '1'
+        'status' => '1',
     ];
 
-    public function scopeActive($query) {
+    public function scopeActive($query)
+    {
         return $query->where('is_active', 1);
     }
 

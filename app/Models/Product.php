@@ -23,9 +23,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 class Product extends Model
 {
-    use HasFactory, sluggable, SearchableTrait;
+    use HasFactory, SearchableTrait, sluggable;
 
-    protected $table = "products";
+    protected $table = 'products';
 
     protected $fillable = [
         'title',
@@ -63,8 +63,8 @@ class Product extends Model
     {
         return [
             'slug' => [
-                'source' => 'title'
-            ]
+                'source' => 'title',
+            ],
         ];
     }
 
@@ -112,15 +112,16 @@ class Product extends Model
         $query->where('category_id', $category_id);
     }
 
-    public function scopeFilter($query){
+    public function scopeFilter($query)
+    {
 
-        if(request()->has('attribute')){
-            foreach (request()->attribute as $attribute){
-                $query->whereHas('attributes', function ($query) use ($attribute){
-                    foreach (explode('-', $attribute) as $index => $item){
-                        if ($index == 0){
+        if (request()->has('attribute')) {
+            foreach (request()->attribute as $attribute) {
+                $query->whereHas('attributes', function ($query) use ($attribute) {
+                    foreach (explode('-', $attribute) as $index => $item) {
+                        if ($index == 0) {
                             $query->where('value', $item);
-                        }else{
+                        } else {
                             $query->orWhere('value', $item);
                         }
                     }
@@ -128,33 +129,33 @@ class Product extends Model
             }
         }
 
-        if(request()->has('variation')){
-            $query->whereHas('variations', function ($query){
-                foreach (explode('-', request()->variation) as $index => $variation){
-                    if ($index == 0){
+        if (request()->has('variation')) {
+            $query->whereHas('variations', function ($query) {
+                foreach (explode('-', request()->variation) as $index => $variation) {
+                    if ($index == 0) {
                         $query->where('value', $variation);
-                    }else{
+                    } else {
                         $query->orWhere('value', $variation);
                     }
                 }
             });
         }
 
-        if(request()->has('platform')){
-            $query->whereHas('platform', function ($query){
-                foreach (explode('-', request()->platform) as $index => $platform){
-                    if ($index == 0){
+        if (request()->has('platform')) {
+            $query->whereHas('platform', function ($query) {
+                foreach (explode('-', request()->platform) as $index => $platform) {
+                    if ($index == 0) {
                         $query->where('title', $platform);
-                    }else{
+                    } else {
                         $query->orWhere('title', $platform);
                     }
                 }
             });
         }
 
-        if(request()->has('sortBy')){
+        if (request()->has('sortBy')) {
             $sortBy = request()->sortBy;
-            switch ($sortBy){
+            switch ($sortBy) {
                 case 'highest':
                     $query->orderByDesc(
                         ProductVariation::select('price')->whereColumn('product_variations.product_id', 'products.id')->orderBy('price', 'desc')->take(1)
@@ -179,34 +180,42 @@ class Product extends Model
         return $query;
     }
 
-    public function scopeSearch($query){
+    public function scopeSearch($query)
+    {
         $keyWord = request()->search;
-        if (request()->has('search') && trim($keyWord) != ''){
+        if (request()->has('search') && trim($keyWord) != '') {
             $query->where('title', 'LIKE', '%'.trim($keyWord).'%');
         }
 
         return $query;
     }
 
-    public function scopeDiscount($query){
-        if (request()->has('discount') || request()->discount === true){
-            $query->whereHas('variations', function ($query){$query->where('quantity', '>', '0');})->whereHas('variations', function ($query){$query->where('date_on_sale_from', '<', Carbon::now());})->whereHas('variations', function ($query){$query->where('date_on_sale_to', '>', Carbon::now());});
+    public function scopeDiscount($query)
+    {
+        if (request()->has('discount') || request()->discount === true) {
+            $query->whereHas('variations', function ($query) {
+                $query->where('quantity', '>', '0');
+            })->whereHas('variations', function ($query) {
+                $query->where('date_on_sale_from', '<', Carbon::now());
+            })->whereHas('variations', function ($query) {
+                $query->where('date_on_sale_to', '>', Carbon::now());
+            });
         }
 
         return $query;
     }
 
-//    public function getQuantityCheckAttribute(){
-//        return $this->variations()->where('quantity', '>', '0')->first() ?? null;
-//    }
-//
-//    public function getSalePriceAttribute(){
-//        return $this->variations()->where('quantity', '>', '0')->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? null;
-//    }
-//
-//    public function getMinPriceAttribute(){
-//        return $this->variations()->where('quantity', '>', '0')->orderBy('price')->first() ?? null;
-//    }
+    //    public function getQuantityCheckAttribute(){
+    //        return $this->variations()->where('quantity', '>', '0')->first() ?? null;
+    //    }
+    //
+    //    public function getSalePriceAttribute(){
+    //        return $this->variations()->where('quantity', '>', '0')->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? null;
+    //    }
+    //
+    //    public function getMinPriceAttribute(){
+    //        return $this->variations()->where('quantity', '>', '0')->orderBy('price')->first() ?? null;
+    //    }
 
     public function getBestSellingPriceAttribute()
     {

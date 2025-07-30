@@ -9,6 +9,8 @@ use Spatie\Permission\Traits\HasRoles;
 class Permission extends Model
 {
     use HasFactory, HasRoles;
-    protected $table = "permissions";
+
+    protected $table = 'permissions';
+
     protected $guarded = [];
 }

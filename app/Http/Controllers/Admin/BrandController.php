@@ -10,8 +10,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class BrandController extends Controller
 {
@@ -21,7 +19,8 @@ class BrandController extends Controller
     public function index(): View|Application|Factory
     {
         $brands = Brand::latest()->paginate(10);
-        return view('admin.brands.index' , compact('brands'));
+
+        return view('admin.brands.index', compact('brands'));
     }
 
     /**
@@ -35,6 +34,7 @@ class BrandController extends Controller
         ]);
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -49,12 +49,14 @@ class BrandController extends Controller
         ]);
 
         toastr()->success('با موفقیت ویرایش شد.');
+
         return redirect()->back();
     }
 
     public function search(): View|Application|Factory
     {
         $brands = Brand::search('title', trim(request()->keyword))->latest()->paginate(10);
+
         return view('admin.brands.index', compact('brands'));
     }
 
@@ -66,6 +68,7 @@ class BrandController extends Controller
         $brand->delete();
 
         toastr()->success('با موفقیت حذف شد!');
+
         return redirect()->back();
     }
 }

@@ -3,38 +3,36 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
-use App\Models\Post;
-use App\Models\Attribute;
 use App\Models\Banner;
-use App\Models\Category;
-use App\Models\News;
 use App\Models\Platform;
+use App\Models\Post;
 use App\Models\Product;
-use Artesaos\SEOTools\Facades\SEOTools;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use TimeHunter\LaravelGoogleReCaptchaV3\Validations\GoogleReCaptchaV3ValidationRule;
 
 class HomeController extends Controller
 {
     public function index(): View|Application|Factory
     {
-        $banners = Banner::active()->where('type' , 'index/top-slider')->limit(4)->get();
+        $banners = Banner::active()->where('type', 'index/top-slider')->limit(4)->get();
         $articles = Post::active()->article()->take(3)->get();
         $news = Post::active()->news()->take(3)->get();
-        $products = Product::where('is_active', 1)->whereHas('variations', function ($query){$query->where('quantity', '>', '0');})->limit(10)->get();
+        $products = Product::where('is_active', 1)->whereHas('variations', function ($query) {
+            $query->where('quantity', '>', '0');
+        })->limit(10)->get();
         $platforms = Platform::active()->get();
 
-        return view('home.index' , compact('banners', 'news', 'articles', 'products', 'platforms'));
+        return view('home.index', compact('banners', 'news', 'articles', 'products', 'platforms'));
     }
 
     public function globalSearch(): View|Application|Factory
     {
         $products = Product::search('title', trim(request()->keyword))->get();
         $articles = Post::search('title', trim(request()->keyword))->get();
+
         return view('home.search.index', compact('products', 'allNews', 'articles', 'keyWord'));
     }
 
@@ -49,12 +47,12 @@ class HomeController extends Controller
             'name' => 'required|string|min:3|max:40',
             'email' => 'required|email',
             'message' => 'required|string|min:3|max:2500',
-            'g-recaptcha-response' => [new GoogleReCaptchaV3ValidationRule('contact_us')]
+            'g-recaptcha-response' => [new GoogleReCaptchaV3ValidationRule('contact_us')],
         ]);
     }
 
-
-    public function test(){
+    public function test()
+    {
         dd(session()->has('coupon') ? session()->get('coupon.id') : null);
     }
 }

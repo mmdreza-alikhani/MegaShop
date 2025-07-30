@@ -22,7 +22,8 @@ class PostController extends Controller
     public function index(): View|Application|Factory
     {
         $posts = Post::latest()->with('author')->paginate(10);
-        return view('admin.posts.index' , compact('posts'));
+
+        return view('admin.posts.index', compact('posts'));
     }
 
     /**
@@ -30,7 +31,8 @@ class PostController extends Controller
      */
     public function create(): View|Application|Factory
     {
-        $tags = Tag::pluck('title' , 'id');
+        $tags = Tag::pluck('title', 'id');
+
         return view('admin.posts.create', compact('tags'));
     }
 
@@ -43,7 +45,7 @@ class PostController extends Controller
             DB::beginTransaction();
 
             // check
-            $postImageController = new PostImageController();
+            $postImageController = new PostImageController;
             $imagesTitle = $postImageController->upload($request->image);
 
             $post = Post::create([
@@ -58,13 +60,15 @@ class PostController extends Controller
             $post->tags()->attach($request->tag_ids);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -73,7 +77,7 @@ class PostController extends Controller
      */
     public function show(Post $post): View|Application|Factory
     {
-        return view('admin.posts.show' , compact('post'));
+        return view('admin.posts.show', compact('post'));
     }
 
     /**
@@ -81,8 +85,9 @@ class PostController extends Controller
      */
     public function edit(Post $post): View|Application|Factory
     {
-        $tags = Tag::pluck('title' , 'id');
-        return view('admin.posts.edit' , compact('post', 'tags'));
+        $tags = Tag::pluck('title', 'id');
+
+        return view('admin.posts.edit', compact('post', 'tags'));
     }
 
     /**
@@ -94,7 +99,7 @@ class PostController extends Controller
             DB::beginTransaction();
 
             if ($request->has('image')) {
-                $postImageController = new PostImageController();
+                $postImageController = new PostImageController;
                 $imagesFileName = $postImageController->upload($request->image);
                 $post->update([
                     'image' => $imagesFileName,
@@ -112,19 +117,22 @@ class PostController extends Controller
             $post->tags()->sync($request->tag_ids);
 
             DB::commit();
-        }catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
+            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت ویرایش شد.');
+
         return redirect()->back();
     }
 
     public function search(): View|Application|Factory
     {
         $posts = Post::search('title', trim(request()->keyword))->latest()->paginate(10);
+
         return view('admin.posts.index', compact('posts'));
     }
 
@@ -136,6 +144,7 @@ class PostController extends Controller
         $post->delete();
 
         toastr()->success('موفقیت حذف شد!');
+
         return redirect()->back();
     }
 }

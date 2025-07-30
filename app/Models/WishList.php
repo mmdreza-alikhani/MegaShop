@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class WishList extends Model
 {
     use HasFactory;
-    protected $table = "wishlists";
+
+    protected $table = 'wishlists';
 
     protected $fillable = [
         'user_id',
@@ -22,6 +23,7 @@ class WishList extends Model
     ];
 
     public $incrementing = false; // Since we use a composite key
+
     protected $primaryKey = ['user_id', 'product_id']; // Composite primary key
 
     public function product(): BelongsTo

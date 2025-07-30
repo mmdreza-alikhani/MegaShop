@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
 use App\Models\Order;
 use App\Models\Transaction;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -19,7 +17,8 @@ class OrderController extends Controller
     public function index(): View|Application|Factory
     {
         $orders = Order::latest()->paginate(10);
-        return view('admin.orders.index' , compact('orders'));
+
+        return view('admin.orders.index', compact('orders'));
     }
 
     /**
@@ -28,12 +27,14 @@ class OrderController extends Controller
     public function show(Order $order): View|Application|Factory
     {
         $transaction = Transaction::where('order_id', $order->id)->first();
-        return view('admin.orders.show' , compact('order', 'transaction'));
+
+        return view('admin.orders.show', compact('order', 'transaction'));
     }
 
     public function search(): View|Application|Factory
     {
         $orders = Order::search('id', trim(request()->keyword))->latest()->paginate(10);
+
         return view('admin.orders.index', compact('orders'));
     }
 }

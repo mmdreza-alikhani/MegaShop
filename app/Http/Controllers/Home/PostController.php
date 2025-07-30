@@ -7,13 +7,13 @@ use App\Models\Post;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     public function index(): View|Application|Factory
     {
         $posts = Post::active()->latest()->paginate(10);
+
         return view('home.posts.index', compact('posts'));
     }
 

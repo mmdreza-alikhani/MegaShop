@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateCategoryRequest extends FormRequest
 {
     protected $errorBag = 'update';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,7 +27,7 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|unique:categories,title,' . $this->route('category')->id,
+            'title' => 'required|string|max:255|unique:categories,title,'.$this->route('category')->id,
             'is_active' => 'required|boolean',
             'parent_id' => 'required',
             'icon' => 'nullable|string|max:255',
@@ -42,5 +43,4 @@ class UpdateCategoryRequest extends FormRequest
 
         throw new HttpResponseException(back()->withErrors($validator, $this->errorBag));
     }
-
 }

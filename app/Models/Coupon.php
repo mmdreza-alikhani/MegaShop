@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Coupon extends Model
 {
-    use HasFactory, SoftDeletes, SearchableTrait;
+    use HasFactory, SearchableTrait, SoftDeletes;
 
-    protected $table = "coupons";
+    protected $table = 'coupons';
 
     protected $fillable = [
         'title',
@@ -45,11 +45,11 @@ class Coupon extends Model
 
     protected $attributes = [
         'is_active' => 1,
-        'status' => '1'
+        'status' => '1',
     ];
 
-    public function getTypeAttribute($type){
+    public function getTypeAttribute($type)
+    {
         return $type == 'amount' ? 'مبلغی' : 'درصدی';
     }
-
 }

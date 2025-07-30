@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProductVariation;
-use Hekmatinasser\Verta\Verta;
-use Illuminate\Http\Request;
 
 class ProductVariationController extends Controller
 {
@@ -25,7 +23,7 @@ class ProductVariationController extends Controller
 
     public function update($variation_values): void
     {
-        foreach ($variation_values as $key => $value){
+        foreach ($variation_values as $key => $value) {
             $productVariation = ProductVariation::findOrFail($key);
 
             $productVariation->update([
@@ -39,9 +37,9 @@ class ProductVariationController extends Controller
         }
     }
 
-    public function change($variations,  $attributeId, $product): void
+    public function change($variations, $attributeId, $product): void
     {
-        ProductVariation::where('product_id' , $product->id)->delete();
+        ProductVariation::where('product_id', $product->id)->delete();
         $counter = count($variations['value']);
         for ($i = 0; $i < $counter; $i++) {
             ProductVariation::create([
@@ -55,4 +53,3 @@ class ProductVariationController extends Controller
         }
     }
 }
-?>

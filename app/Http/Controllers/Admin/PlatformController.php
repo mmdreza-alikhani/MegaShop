@@ -11,9 +11,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class PlatformController extends Controller
 {
@@ -23,7 +21,8 @@ class PlatformController extends Controller
     public function index(): View|Application|Factory
     {
         $platforms = Platform::latest()->paginate(10);
-        return view('admin.platforms.index' , compact('platforms'));
+
+        return view('admin.platforms.index', compact('platforms'));
     }
 
     /**
@@ -36,25 +35,27 @@ class PlatformController extends Controller
 
             $imageFileName = null;
 
-            if ($request->has('image')){
+            if ($request->has('image')) {
                 $imageFileName = generateFileName($request->image->getClientOriginalName());
-                $request->image->move(public_path(env('CATEGORY_IMAGE_PATH')) , $imageFileName);
+                $request->image->move(public_path(env('CATEGORY_IMAGE_PATH')), $imageFileName);
             }
 
             Platform::create([
                 'title' => $request->input('title'),
                 'is_active' => $request->input('is_active'),
-                'image' => $imageFileName
+                'image' => $imageFileName,
             ]);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error($ex->getMessage() . 'مشکلی پیش آمد!');
+            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت اضافه شد!');
+
         return redirect()->back();
     }
 
@@ -66,11 +67,11 @@ class PlatformController extends Controller
         try {
             DB::beginTransaction();
 
-            if ($request->has('image')){
+            if ($request->has('image')) {
                 $imageFileName = generateFileName($request->image->getClientOriginalName());
-                $request->input('image')->move(public_path(env('CATEGORY_IMAGE_PATH')) , $imageFileName);
+                $request->input('image')->move(public_path(env('CATEGORY_IMAGE_PATH')), $imageFileName);
                 $platform->update([
-                    'image' => $imageFileName
+                    'image' => $imageFileName,
                 ]);
             }
 
@@ -80,13 +81,15 @@ class PlatformController extends Controller
             ]);
 
             DB::commit();
-        }catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!',$ex->getMessage());
+            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+
             return redirect()->back();
         }
 
         toastr()->success('با موفقیت ویرایش شد.');
+
         return redirect()->back();
     }
 
@@ -98,6 +101,7 @@ class PlatformController extends Controller
         $platform->delete();
 
         toastr()->success('با موفقیت حذف شد!');
+
         return redirect()->back();
     }
 }
