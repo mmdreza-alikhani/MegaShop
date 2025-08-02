@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
+use App\Actions\Fortify\LoginHandler;
+use App\Actions\Fortify\RegisterHandler;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
@@ -33,6 +35,10 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
+        Fortify::authenticateUsing(new LoginHandler());
+//        Fortify::registerUserUsing(new RegisterHandler());
+
+
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
@@ -43,13 +49,8 @@ class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
 
-        Fortify::loginView(function () {
-            return view('auth.login');
-        });
-
-        Fortify::registerView(function () {
-            return view('auth.register');
-        });
+        Fortify::loginView(fn () => abort(404));
+        Fortify::registerView(fn () => abort(404));
 
         Fortify::verifyEmailView(function () {
             return view('home.profile.resetPassword');

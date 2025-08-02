@@ -10,7 +10,8 @@
                 <div class="nk-gap-1"></div>
 
                 <div class="nk-gap-1"></div>
-                <form method="POST" action="{{ route('home.login') }}" class="nk-form text-white" style="direction: rtl">
+                <form method="POST" action="{{ route('login.store') }}" class="nk-form text-white" style="direction: rtl">
+                    @include('home.sections.errors', ['errors' => $errors->login])
                     @csrf
                     <div class="row vertical-gap">
                         <div class="col-md-6">
@@ -41,7 +42,7 @@
 
                     <div class="row vertical-gap">
                         <div class="col-md-6">
-                            <button href="#" class="nk-btn nk-btn-rounded nk-btn-color-white nk-btn-block" type="submit">
+                            <button class="nk-btn nk-btn-rounded nk-btn-color-white nk-btn-block" type="submit">
                                     ورود
                             </button>
                         </div>
@@ -64,7 +65,8 @@
 
                 <h4 class="mb-0 text-right"><span class="text-main-1"> ثبت</span> نام</h4>
                 <div class="nk-gap-1"></div>
-                <form action="{{ route('home.register') }}" method="post" class="nk-form text-white" style="direction: rtl">
+                <form action="{{ route('register.store') }}" method="post" class="nk-form text-white" style="direction: rtl">
+                    @include('home.sections.errors', ['errors' => $errors->register])
                     @csrf
                     <div class="row vertical-gap">
                         <div class="col-md-12">
@@ -72,38 +74,13 @@
                             <p class="text-right">مشخصات خود را وارد کنید:</p>
 
                             <input type="text" value="{{ old('username') }}" name="username" class="form-control" placeholder="نام کاربری">
-                            @error('username')
-                            <div class="alert alert-danger text-center">
-                                {{ $message }}
-                            </div>
-                            @enderror
-
                             <div class="nk-gap"></div>
-                            <input type="email" value="{{ old('registerEmail') }}" name="registerEmail" class="form-control" placeholder="ایمیل">
-                            @error('registerEmail')
-                                <div class="alert alert-danger text-center">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-
+                            <input type="email" value="{{ old('email') }}" name="email" class="form-control" placeholder="ایمیل">
                             <div class="nk-gap"></div>
-                            <input type="password" value="{{ old('registerPassword') }}" name="registerPassword" class="form-control" placeholder="رمز عبور">
-                            @error('registerPassword')
-                            <div class="alert alert-danger text-center">
-                                {{ $message }}
-                            </div>
-                            @enderror
-
+                            <input type="password" value="{{ old('password') }}" name="password" class="form-control" placeholder="رمز عبور">
                             <div class="nk-gap"></div>
                             <input type="password" value="{{ old('password_confirmation') }}" name="password_confirmation" class="form-control" placeholder="تکرار رمز عبور">
-                            @error('password_confirmation')
-                            <div class="alert alert-danger text-center">
-                                {{ $message }}
-                            </div>
-                            @enderror
-
                             <div class="nk-gap"></div>
-
                         </div>
                     </div>
 
@@ -168,7 +145,7 @@
 </div>
 
 @section('scripts')
-    @if($errors->has('email') || $errors->has('password'))
+    @if($errors->hasBag('login'))
         <script>
             $(function() {
                 $('#modalLogin').modal({
@@ -177,7 +154,7 @@
             });
         </script>
     @endif
-    @if($errors->has('username') || $errors->has('registerEmail') || $errors->has('registerPassword') || $errors->has('password_confirmation'))
+    @if($errors->hasBag('register'))
         <script>
             $(function() {
                 $('#modalLogin').modal({
