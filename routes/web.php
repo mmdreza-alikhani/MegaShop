@@ -148,8 +148,8 @@ Route::prefix('/')->name('home.')->group(function () {
 
     Route::get('brands/{brand:slug}', [HomeBrandController::class, 'show_products'])->name('brands.products.show');
 
-    Route::get('register', [HomeAuthController::class, 'register'])->name('register');
-    Route::get('login', [HomeAuthController::class, 'login'])->name('login');
+//    Route::get('register', [HomeAuthController::class, 'register'])->name('register');
+//    Route::get('login', [HomeAuthController::class, 'login'])->name('login');
     Route::get('login/{provider}', [HomeAuthController::class, 'redirectToProvider'])->name('redirectToProvider');
     Route::get('login/{provider}/callback', [HomeAuthController::class, 'handleProviderCallback']);
 

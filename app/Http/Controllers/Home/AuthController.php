@@ -15,15 +15,15 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class AuthController extends Controller
 {
-    public function login(): View|Application|Factory
-    {
-        return view('auth.login');
-    }
-
-    public function register(): View|Application|Factory
-    {
-        return view('auth.register');
-    }
+//    public function login(): View|Application|Factory
+//    {
+//        return view('auth.login');
+//    }
+//
+//    public function register(): View|Application|Factory
+//    {
+//        return view('auth.register');
+//    }
 
     public function redirectToProvider($provider): RedirectResponse
     {

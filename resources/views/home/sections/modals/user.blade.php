@@ -30,11 +30,6 @@
                             <a href="{{ route('home.redirectToProvider', ['provider' => 'google']) }}" class="btn btn-info btn-block">Google | <i class="fa fa-google-plus-circle"></i></a>
 
                             <div class="nk-gap-2"></div>
-                            @error('email')
-                            <div class="alert alert-danger text-center mt-1">
-                                {{ $message }}
-                            </div>
-                            @enderror
                         </div>
                     </div>
 

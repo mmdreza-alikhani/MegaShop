@@ -40,7 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
+//        'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'status' => 'integer',
         'is_active' => 'boolean',
@@ -48,9 +48,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     // Default Values
     protected $attributes = [
+        'email_verified_at' => NULL,
         'avatar' => 'avatar.png',
         'is_active' => true,
-        'status' => '1',
+        'status' => 1,
+        'provider_name' => 'web',
     ];
 
     public function scopeActive($query)

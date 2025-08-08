@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (request()->is('admin-panel/')) {
+        if (request()->is('management/')) {
             Paginator::useBootstrap();
         } else {
             Paginator::defaultView('vendor.pagination.bootstrap-5');

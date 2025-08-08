@@ -2,6 +2,8 @@
 
 namespace App\Actions\Fortify;
 
+use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -12,7 +14,7 @@ class LoginHandler
     /**
      * @throws ValidationException
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): ?Authenticatable
     {
         $credentials = $request->only('email', 'password');
 
@@ -24,6 +26,10 @@ class LoginHandler
 
         $request->session()->regenerate();
 
-        return app(LoginResponse::class)->toResponse($request);
+        $user = User::where('email', $request->email)->first();
+
+        session()->flash('welcome', '! '.$user->username.' خوش اومدی');
+
+        return Auth::user();
     }
 }
