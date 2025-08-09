@@ -1,7 +1,7 @@
 <div class="nk-image-slider" data-autoplay="6000">
     @foreach($banners as $banner)
         <div class="nk-image-slider-item">
-            <img src="{{ env('BANNER_IMAGES_UPLOAD_PATH') . '/' . $banner->image }}" alt="" class="nk-image-slider-img" data-thumb="{{ env('BANNER_IMAGES_UPLOAD_PATH') . '/' . $banner->image }}">
+            <img src="{{ Storage::url('files/banners/images') . '/' . $banner->image }}" alt="" class="nk-image-slider-img" data-thumb="{{ Storage::url('files/banners/images') . '/' . $banner->image }}">
             <div class="nk-image-slider-content">
                 <h3 class="h4 text-center">{{ $banner->title }}</h3>
                 <span class="text-right">

@@ -36,8 +36,8 @@ class PlatformController extends Controller
             $imageFileName = null;
 
             if ($request->has('image')) {
-                $imageFileName = generateFileName($request->image->getClientOriginalName());
-                $request->image->move(public_path(env('CATEGORY_IMAGE_PATH')), $imageFileName);
+                $imageName = generateFileName($request->image->getClientOriginalName());
+                $request->file('image')->storeAs(env('CATEGORY_IMAGE_PATH'), $imageName, 'public');
             }
 
             Platform::create([
@@ -68,10 +68,10 @@ class PlatformController extends Controller
             DB::beginTransaction();
 
             if ($request->has('image')) {
-                $imageFileName = generateFileName($request->image->getClientOriginalName());
-                $request->input('image')->move(public_path(env('CATEGORY_IMAGE_PATH')), $imageFileName);
+                $imageName = generateFileName($request->image->getClientOriginalName());
+                $request->file('image')->storeAs(env('CATEGORY_IMAGE_PATH'), $imageName, 'public');
                 $platform->update([
-                    'image' => $imageFileName,
+                    'image' => $imageName,
                 ]);
             }
 

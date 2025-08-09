@@ -17,7 +17,7 @@ class HomeController extends Controller
 {
     public function index(): View|Application|Factory
     {
-        $banners = Banner::active()->where('type', 'index/top-slider')->limit(4)->get();
+        $banners = Banner::active()->where('type', 'main/top-slider')->limit(4)->get();
         $articles = Post::active()->article()->take(3)->get();
         $news = Post::active()->news()->take(3)->get();
         $products = Product::where('is_active', 1)->whereHas('variations', function ($query) {

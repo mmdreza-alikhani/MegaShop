@@ -41,9 +41,8 @@ class BannersController extends Controller
         try {
             DB::beginTransaction();
 
-
             $imageName = generateFileName($request->image->getClientOriginalName());
-            $request->image->move(storage_path(env('BANNER_IMAGE_UPLOAD_PATH')), $imageName);
+            $request->file('image')->storeAs(env('BANNER_IMAGE_UPLOAD_PATH'), $imageName, 'public');
 
             Banner::create([
                 'title' => $request->input('title'),
@@ -96,7 +95,7 @@ class BannersController extends Controller
 
             if ($request->has('image')) {
                 $imageName = generateFileName($request->image->getClientOriginalName());
-                $request->image->move(storage_path(env('BANNER_IMAGES_UPLOAD_PATH')), $imageName);
+                $request->file('image')->storeAs(env('BANNER_IMAGE_UPLOAD_PATH'), $imageName, 'public');
                 $banner->update([
                     'image' => $imageName,
                 ]);

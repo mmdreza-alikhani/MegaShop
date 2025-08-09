@@ -8,9 +8,9 @@ class PostImageController extends Controller
 {
     public function upload($image): array
     {
-        $imageFileName = generateFileName($image->getClientOriginalName());
-        $image->move(public_path(env('POST_IMAGE_UPLOAD_PATH')), $imageFileName);
+        $imageName = generateFileName($image->getClientOriginalName());
+        $image->storeAs(env('POST_IMAGE_UPLOAD_PATH'), $imageName, 'public');
 
-        return ['image' => $imageFileName];
+        return ['image' => $imageName];
     }
 }

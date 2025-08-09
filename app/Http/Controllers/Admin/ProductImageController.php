@@ -17,17 +17,17 @@ class ProductImageController extends Controller
 {
     public function upload($primaryImg, $otherImages): array
     {
-        $primaryImgFileName = generateFileName($primaryImg->getClientOriginalName());
-        $primaryImg->move(public_path(env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH')), $primaryImgFileName);
+        $primaryImageName = generateFileName($primaryImg->getClientOriginalName());
+        $primaryImg->storeAs(env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH'), $primaryImageName, 'public');
 
         $otherImagesFileNames = [];
         foreach ($otherImages as $otherImage) {
             $otherImageFileName = generateFileName($otherImage->getClientOriginalName());
-            $otherImage->move(public_path(env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH')), $otherImageFileName);
+            $otherImage->storeAs(env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH'), $otherImageFileName, 'public');
             $otherImagesFileNames[] = $otherImageFileName;
         }
 
-        return ['primaryImage' => $primaryImgFileName, 'otherImages' => $otherImagesFileNames];
+        return ['primaryImage' => $primaryImageName, 'otherImages' => $otherImagesFileNames];
     }
 
     public function edit(Product $product): View|Application|Factory
