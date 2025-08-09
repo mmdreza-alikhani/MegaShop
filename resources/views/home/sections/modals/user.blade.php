@@ -82,11 +82,11 @@
                     <div class="nk-gap-1"></div>
 
                     <div class="row vertical-gap">
+                        <div class="col-md-6 text-right" style="direction: rtl">
+                            <button class="back_to_login nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-block" type="button">بازگشت</button>
+                        </div>
                         <div class="col-md-6">
                             <button class="nk-btn nk-btn-rounded nk-btn-color-white nk-btn-block" type="submit">ثبت نام</button>
-                        </div>
-                        <div class="col-md-6 text-right" style="direction: rtl">
-                            <a href="#" class="back_to_login nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-block">بازگشت</a>
                         </div>
                     </div>
                 </form>
@@ -105,32 +105,31 @@
                     <div class="row vertical-gap">
                         <div class="col-md-12">
                             @if(session('status'))
-                                <p class="text-success mb-3">{{ session('status')}}</p>
+                                <div class="alert alert-secondary text-center">
+                                    {{ session('status') }}
+                                </div>
                             @endif
 
                             <p class="text-right">ایمیل خود را وارد کنید:</p>
 
                             <input type="email" name="email" class="form-control" placeholder="ایمیل خود را وارد کنید..">
-                            <div class="nk-gap-2"></div>
+                            <div class="nk-gap"></div>
                             @error('email')
                                 <div class="alert alert-danger text-center">
                                     {{ $message }}
                                 </div>
                             @enderror
-
-                            <div class="nk-gap"></div>
-
                         </div>
                     </div>
 
                     <div class="nk-gap-1"></div>
 
                     <div class="row vertical-gap">
+                        <div class="col-md-6 text-right" style="direction: rtl">
+                            <button class="back_to_login nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-block" type="button">بازگشت</button>
+                        </div>
                         <div class="col-md-6">
                             <button class="nk-btn nk-btn-rounded nk-btn-color-white nk-btn-block" type="submit">ادامه</button>
-                        </div>
-                        <div class="col-md-6 text-right" style="direction: rtl">
-                            <a href="#" class="back_to_login nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-block">بازگشت</a>
                         </div>
                     </div>
                 </form>
@@ -164,7 +163,7 @@
     @endif
     @if(session('status'))
         @php
-            toastr()->success(session('status'));
+            flash()->flash("success", session('status'), [], 'موفقیت آمیز');
         @endphp
     @endif
 @endsection

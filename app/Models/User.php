@@ -17,7 +17,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static search(string $string, mixed $keyword)
  * @method static where(string $string, string $string1)
  */
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasFactory, HasRoles, Notifiable, SearchableTrait;
 
@@ -40,7 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     protected $casts = [
-//        'email_verified_at' => 'datetime',
+        'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'status' => 'integer',
         'is_active' => 'boolean',

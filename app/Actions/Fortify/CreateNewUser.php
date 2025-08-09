@@ -35,8 +35,7 @@ class CreateNewUser implements CreatesNewUsers
             'username' => $input['username'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
-            'provider_name' => 'manual',
-            'email_verified_at' => now(),
+            'provider_name' => 'manual'
         ]);
 
         session()->flash('welcome', '! '.$user->username.' خوش اومدی');
