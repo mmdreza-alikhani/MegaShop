@@ -41,9 +41,9 @@ class BannersController extends Controller
         try {
             DB::beginTransaction();
 
-            $imageName = generateFileName($request->image->getClientOriginalName());
 
-            $request->image->move(public_path(env('BANNER_IMAGES_UPLOAD_PATH')), $imageName);
+            $imageName = generateFileName($request->image->getClientOriginalName());
+            $request->image->move(storage_path(env('BANNER_IMAGE_UPLOAD_PATH')), $imageName);
 
             Banner::create([
                 'title' => $request->input('title'),
@@ -96,7 +96,7 @@ class BannersController extends Controller
 
             if ($request->has('image')) {
                 $imageName = generateFileName($request->image->getClientOriginalName());
-                $request->image->move(public_path(env('BANNER_IMAGES_UPLOAD_PATH')), $imageName);
+                $request->image->move(storage_path(env('BANNER_IMAGES_UPLOAD_PATH')), $imageName);
                 $banner->update([
                     'image' => $imageName,
                 ]);
@@ -116,7 +116,7 @@ class BannersController extends Controller
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+            toastr()->error('مشکلی پیش آمد!', (array)$ex->getMessage());
 
             return redirect()->back();
         }
