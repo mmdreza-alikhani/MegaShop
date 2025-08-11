@@ -42,9 +42,9 @@ class StoreProductRequest extends FormRequest
             'variation_values.*.price' => 'required|numeric|min:0',
             'variation_values.*.quantity' => 'required|integer|min:0',
             'variation_values.*.sku' => 'required|string|max:255',
-            'primary_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'primary_image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'other_images' => 'array',
-            'other_images.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'other_images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
     }
 }

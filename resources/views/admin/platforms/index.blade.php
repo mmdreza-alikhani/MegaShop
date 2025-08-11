@@ -66,7 +66,7 @@
                             <div class="modal-content card shade">
                                 <div class="modal-header">
                                     <h5 class="modal-title">
-                                        ایجاد برند جدید
+                                        ایجاد پلتفرم جدید
                                     </h5>
                                     <button type="button" class="close" data-dismiss="modal">
                                         <span>&times;</span>
@@ -118,7 +118,7 @@
                             <hr/>
                             @if($platforms->isEmpty())
                                 <div class="alert text-dir-rtl text-right alert-third alert-shade alert-dismissible fade show" role="alert">
-                                    هیج برندی وجود ندارد!
+                                    هیج پلتفرمی وجود ندارد!
                                 </div>
                             @else
                                 <table class="table table-striped table-responsive-lg">
@@ -161,7 +161,7 @@
                                                                 <div class="modal-content card shade">
                                                                     <div class="modal-header">
                                                                         <h5 class="modal-title" id="exampleModalLabel">
-                                                                            ویرایش برند: {{ $platform->title }}
+                                                                            ویرایش پلتفرم: {{ $platform->title }}
                                                                         </h5>
                                                                         <button type="button" class="close" data-dismiss="modal">
                                                                             <span>&times;</span>
@@ -232,7 +232,7 @@
                                                         <div class="modal-dialog" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title">حذف برند: {{ $platform->title }}</h5>
+                                                                    <h5 class="modal-title">حذف پلتفرم: {{ $platform->title }}</h5>
                                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                         <span aria-hidden="true">&times;</span>
                                                                     </button>

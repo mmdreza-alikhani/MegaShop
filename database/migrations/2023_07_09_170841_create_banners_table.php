@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('type');
             $table->string('button_text')->nullable();
             $table->string('button_link')->nullable();
-            $table->string('button_icon')->nullable();
             $table->integer('status');
             $table->boolean('is_active');
             $table->softDeletes();

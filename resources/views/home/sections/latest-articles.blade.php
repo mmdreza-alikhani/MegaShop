@@ -7,7 +7,7 @@
                 <!-- START: Post -->
                 <div class="nk-blog-post">
                     <a href="{{ route('home.posts.show', ['post' => $article->slug]) }}" class="nk-post-img">
-                        <img style="height: 350px" src="{{ env('POST_IMAGE_UPLOAD_PATH') . '/' . $article->image }}" alt="{{ $article->title }}-image">
+                        <img style="height: 350px" src="{{ Storage::url('posts/images/') . $article->image }}" alt="{{ $article->title }}-image">
                         <span class="nk-post-comments-count">{{ $article->comments->count() }}</span>
                     </a>
                     <div class="nk-gap"></div>
@@ -18,7 +18,7 @@
                             {{ '(' . $article->updated_at->diffForHumans() . ')' }}
                         </span>
                         <a href="#">{{ $article->author->username }}</a>
-                        <img src="{{ Str::contains($article->author->avatar, 'https://') ? $article->author->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $article->author->avatar }}" alt="{{ $article->author->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
+                        <img src="{{ Storage::url('users/avatars/') . $article->author->avatar }}" alt="{{ $article->author->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
                     </div>
                     <div class="nk-gap"></div>
                     <div class="nk-post-text text-right">

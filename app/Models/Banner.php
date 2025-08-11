@@ -28,7 +28,6 @@ class Banner extends Model
         'type',
         'button_text',
         'button_link',
-        'button_icon',
         'status',
         'is_active',
     ];
@@ -46,7 +45,6 @@ class Banner extends Model
         'type' => 'string',
         'button_text' => 'string',
         'button_link' => 'string',
-        'button_icon' => 'string',
         'status' => 'integer',
         'is_active' => 'boolean',
     ];

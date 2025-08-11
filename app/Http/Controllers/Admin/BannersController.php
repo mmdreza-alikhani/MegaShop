@@ -51,7 +51,6 @@ class BannersController extends Controller
                 'type' => $request->input('type'),
                 'button_text' => $request->input('button_text'),
                 'button_link' => $request->input('button_link'),
-                'button_icon' => $request->input('button_icon'),
                 'priority' => $request->input('priority'),
                 'image' => $imageName,
             ]);
@@ -108,7 +107,6 @@ class BannersController extends Controller
                 'type' => $request->type,
                 'button_text' => $request->button_text,
                 'button_link' => $request->button_link,
-                'button_icon' => $request->button_icon,
                 'priority' => $request->priority,
             ]);
 

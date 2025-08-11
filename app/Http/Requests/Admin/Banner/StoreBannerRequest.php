@@ -32,7 +32,6 @@ class StoreBannerRequest extends FormRequest
             'type' => 'required|string|max:255',
             'button_text' => 'required|string|max:255',
             'button_link' => 'required|string|max:255',
-            'button_icon' => 'nullable|string|max:255',
             'priority' => 'required|integer|between:1,100',
         ];
     }

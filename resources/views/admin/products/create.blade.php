@@ -83,7 +83,7 @@
                                 <select id="tagSelect" class="form-control" name="tag_ids[]" multiple
                                         data-live-search="true" required>
                                     @foreach($tags as $key => $value)
-                                        <option value="{{ $key }}" {{ old('tag_ids') ? (in_array($key , old('tag_ids')->toArray() ) ? 'selected' : '') : '' }}>{{ $value }}</option>
+                                        <option value="{{ $key }}" {{ old('tag_ids') ? (in_array($key , old('tag_ids') ) ? 'selected' : '') : '' }}>{{ $value }}</option>
                                     @endforeach
                                 </select>
                             </div>

@@ -87,7 +87,8 @@ class ProductController extends Controller
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+            dd($ex->getMessage());
+//            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
 
             return redirect()->route('admin.products.create');
         }

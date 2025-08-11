@@ -3,27 +3,27 @@
 <div class="nk-gap"></div>
 
 <div class="nk-news-box">
-    <div class="nk-news-box-each-info">
-        <div class="nano">
-            <div class="nano-content">
-                <!-- There will be inserted info about selected news-->
-                <div class="nk-news-box-item-image">
-                    <img src="assets/images/post-1.jpg" alt="">
-                    <span class="nk-news-box-item-categories">
-                    <span class="bg-main-4">MMO</span>
-                </span>
-                </div>
-                <h3 class="nk-news-box-item-title text-right">Smell magic in the air. Or maybe barbecue</h3>
-                <div class="nk-news-box-item-text text-right">
-                    <p>With what mingled joy and sorrow do I take up the pen to write to my dearest friend! Oh, what a change between to-day and yesterday! Now I am friendless and alone...</p>
-                </div>
-                <a href="blog-article.html" class="nk-news-box-item-more">ادامه مطلب</a>
-                <div class="nk-news-box-item-date" style="direction: rtl">
-                    <span class="fa fa-calendar"></span> Sep 18, 2018
-                </div>
-            </div>
-        </div>
-    </div>
+{{--    <div class="nk-news-box-each-info">--}}
+{{--        <div class="nano">--}}
+{{--            <div class="nano-content">--}}
+{{--                <!-- There will be inserted info about selected news-->--}}
+{{--                <div class="nk-news-box-item-image">--}}
+{{--                    <img src="assets/images/post-1.jpg" alt="">--}}
+{{--                    <span class="nk-news-box-item-categories">--}}
+{{--                    <span class="bg-main-4">MMO</span>--}}
+{{--                </span>--}}
+{{--                </div>--}}
+{{--                <h3 class="nk-news-box-item-title text-right">Smell magic in the air. Or maybe barbecue</h3>--}}
+{{--                <div class="nk-news-box-item-text text-right">--}}
+{{--                    <p>With what mingled joy and sorrow do I take up the pen to write to my dearest friend! Oh, what a change between to-day and yesterday! Now I am friendless and alone...</p>--}}
+{{--                </div>--}}
+{{--                <a href="blog-article.html" class="nk-news-box-item-more">ادامه مطلب</a>--}}
+{{--                <div class="nk-news-box-item-date" style="direction: rtl">--}}
+{{--                    <span class="fa fa-calendar"></span> Sep 18, 2018--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
     <div class="nk-news-box-list">
         <div class="nano">
             <div class="nano-content">

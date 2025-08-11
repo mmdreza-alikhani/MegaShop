@@ -36,12 +36,12 @@
                     <!-- START: Post Text -->
                     <div class="nk-post-text mt-0">
                         <div class="nk-post-img">
-                            <img src="{{ env('POST_IMAGE_UPLOAD_PATH') . '/' . $post->image }}" alt="{{ $post->title }}-image">
+                            <img src="{{ Storage::url('posts/images/') . $post->image }}" alt="{{ $post->title }}-image">
                         </div>
                         <div class="nk-gap-1"></div>
                         <h1 class="nk-post-title h4 text-right" style="direction: rtl">{{ $post->title }}</h1>
                         <div class="nk-post-by text-right" style="direction: rtl">
-                            <img src="{{ Str::contains($post->author->avatar, 'https://') ? $post->author->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $post->author->avatar }}" alt="{{ $post->author->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
+                            <img src="{{ Storage::url('users/avatars/') . $post->author->avatar }}" alt="{{ $post->author->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
                             <a href="#">{{ $post->author->username }}</a>
                             نوشته:
                             <span class="text-left" style="direction: ltr">

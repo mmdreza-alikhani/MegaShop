@@ -1,12 +1,19 @@
+@php
+    $domain = request()->getHost(); // "example.com"
+    $parts = explode('.', $domain);
+
+    $name = $parts[0];       // "example"
+//    $tld  = $parts[1] ? '.' . $parts[1] : ''; // ".com"
+@endphp
 <footer class="nk-footer">
     <div class="container py-3">
         <div class="row justify-content-center">
             <div class="col-md-12 text-center">
                 <h2>
-                    <a href="#">
-                            MegaShop
+                    <a href="{{ route('home.index') }}">
+                        {{ $name }}
                         <span class="text-light">
-                            .com
+{{--                            {{ $tld }}--}}
                         </span>
                     </a>
                 </h2>
