@@ -135,6 +135,7 @@ Route::prefix('/')->name('home.')->group(function () {
     });
 
     Route::prefix('products/')->name('products.')->group(function () {
+        Route::get('', [HomeProductController::class, 'index'])->name('index');
         Route::prefix('wishlist/')->middleware('auth.check')->name('wishlist.')->group(function () {
             Route::get('add/{product}', [HomeWishlistController::class, 'add'])->name('add');
             Route::get('remove/{product}', [HomeWishlistController::class, 'remove'])->name('remove');

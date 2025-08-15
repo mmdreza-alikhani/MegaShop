@@ -145,14 +145,14 @@
                             @foreach($parent_categories as $parent_category)
                                 <li class="nk-drop-item">
                                     <a class="text-right">
-                                        {{$parent_category->name}}
+                                        {{ $parent_category->title }}
                                     </a>
                                     <ul class="dropdown">
                                         @foreach($parent_category->children as $children)
                                             <li>
                                                 <a href="{{ route('home.categories.show', ['category' => $children->slug]) }}"
                                                    class="text-right">
-                                                    {{ $children->name }}
+                                                    {{ $children->title }}
                                                 </a>
                                             </li>
                                         @endforeach

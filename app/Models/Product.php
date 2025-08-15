@@ -77,6 +77,11 @@ class Product extends Model
         });
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'product_tag');
@@ -112,69 +117,149 @@ class Product extends Model
         $query->where('category_id', $category_id);
     }
 
+//    public function scopeFilter($query)
+//    {
+//        if (request()->has('attribute')) {
+//            foreach (request()->attribute as $attribute) {
+//                $query->whereHas('attributes', function ($query) use ($attribute) {
+//                    foreach (explode('-', $attribute) as $index => $item) {
+//                        if ($index == 0) {
+//                            $query->where('value', $item);
+//                        } else {
+//                            $query->orWhere('value', $item);
+//                        }
+//                    }
+//                });
+//            }
+//        }
+//
+//        if (request()->has('variation')) {
+//            $query->whereHas('variations', function ($query) {
+//                foreach (explode('-', request()->variation) as $index => $variation) {
+//                    if ($index == 0) {
+//                        $query->where('value', $variation);
+//                    } else {
+//                        $query->orWhere('value', $variation);
+//                    }
+//                }
+//            });
+//        }
+//
+//        if (request()->has('platform')) {
+//            $query->whereHas('platform', function ($query) {
+//                foreach (explode('-', request()->platform) as $index => $platform) {
+//                    if ($index == 0) {
+//                        $query->where('title', $platform);
+//                    } else {
+//                        $query->orWhere('title', $platform);
+//                    }
+//                }
+//            });
+//        }
+//
+//        if (request()->has('sortBy')) {
+//            $sortBy = request()->sortBy;
+//            switch ($sortBy) {
+//                case 'highest':
+//                    $query->orderByDesc(
+//                        ProductVariation::select('price')->whereColumn('product_variations.product_id', 'products.id')->orderBy('price', 'desc')->take(1)
+//                    );
+//                    break;
+//                case 'lowest':
+//                    $query->orderBy(
+//                        ProductVariation::select('price')->whereColumn('product_variations.product_id', 'products.id')->orderBy('price', 'asc')->take(1)
+//                    );
+//                    break;
+//                case 'latest':
+//                    $query->latest();
+//                    break;
+//                case 'oldest':
+//                    $query->oldest();
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//
+//        return $query;
+//    }
+//
+//    public function scopeDiscount($query)
+//    {
+//        if (request()->has('discount') || request()->discount === true) {
+//            $query->whereHas('variations', function ($query) {
+//                $query->where('quantity', '>', '0');
+//            })->whereHas('variations', function ($query) {
+//                $query->where('date_on_sale_from', '<', Carbon::now());
+//            })->whereHas('variations', function ($query) {
+//                $query->where('date_on_sale_to', '>', Carbon::now());
+//            });
+//        }
+//
+//        return $query;
+//    }
+
     public function scopeFilter($query)
     {
+        $request = request();
 
-        if (request()->has('attribute')) {
-            foreach (request()->attribute as $attribute) {
-                $query->whereHas('attributes', function ($query) use ($attribute) {
-                    foreach (explode('-', $attribute) as $index => $item) {
-                        if ($index == 0) {
-                            $query->where('value', $item);
-                        } else {
-                            $query->orWhere('value', $item);
-                        }
+        // Helper to apply whereHas with OR conditions
+        $applyFilter = function ($relation, $field, $values) use ($query) {
+            $query->whereHas($relation, function ($q) use ($field, $values) {
+                $values = explode('-', $values);
+                $q->where(function ($subQ) use ($field, $values) {
+                    foreach ($values as $value) {
+                        $subQ->orWhere($field, $value);
                     }
                 });
+            });
+        };
+
+        // Attribute filters
+        if ($request->filled('filter')) {
+            foreach ($request->filter as $filter) {
+                $applyFilter('filters', 'value', $filter);
             }
         }
 
-        if (request()->has('variation')) {
-            $query->whereHas('variations', function ($query) {
-                foreach (explode('-', request()->variation) as $index => $variation) {
-                    if ($index == 0) {
-                        $query->where('value', $variation);
-                    } else {
-                        $query->orWhere('value', $variation);
-                    }
-                }
+        // Variation filter
+        if ($request->filled('v')) {
+            $applyFilter('variations', 'value', $request->v);
+        }
+
+        // Platform filter
+        if ($request->filled('platform')) {
+            $applyFilter('platform', 'title', $request->platform);
+        }
+
+        // Discount filter
+        if ($request->boolean('discount')) {
+            $query->whereHas('variations', function ($q) {
+                $q->where('quantity', '>', 0)
+                    ->where('date_on_sale_from', '<', now())
+                    ->where('date_on_sale_to', '>', now());
             });
         }
 
-        if (request()->has('platform')) {
-            $query->whereHas('platform', function ($query) {
-                foreach (explode('-', request()->platform) as $index => $platform) {
-                    if ($index == 0) {
-                        $query->where('title', $platform);
-                    } else {
-                        $query->orWhere('title', $platform);
-                    }
-                }
-            });
-        }
-
-        if (request()->has('sortBy')) {
-            $sortBy = request()->sortBy;
-            switch ($sortBy) {
-                case 'highest':
-                    $query->orderByDesc(
-                        ProductVariation::select('price')->whereColumn('product_variations.product_id', 'products.id')->orderBy('price', 'desc')->take(1)
-                    );
-                    break;
-                case 'lowest':
-                    $query->orderBy(
-                        ProductVariation::select('price')->whereColumn('product_variations.product_id', 'products.id')->orderBy('price', 'asc')->take(1)
-                    );
-                    break;
-                case 'latest':
-                    $query->latest();
-                    break;
-                case 'oldest':
-                    $query->oldest();
-                    break;
-                default:
-                    break;
-            }
+        // Sorting
+        if ($request->filled('sortBy')) {
+            match ($request->sortBy) {
+                'highest' => $query->orderByDesc(
+                    ProductVariation::select('price')
+                        ->whereColumn('product_variations.product_id', 'products.id')
+                        ->orderByDesc('price')
+                        ->limit(1)
+                ),
+                'lowest' => $query->orderBy(
+                    ProductVariation::select('price')
+                        ->whereColumn('product_variations.product_id', 'products.id')
+                        ->orderBy('price')
+                        ->limit(1)
+                ),
+                'latest' => $query->latest(),
+                'oldest' => $query->oldest(),
+                default => null,
+            };
         }
 
         return $query;
@@ -190,44 +275,12 @@ class Product extends Model
         return $query;
     }
 
-    public function scopeDiscount($query)
-    {
-        if (request()->has('discount') || request()->discount === true) {
-            $query->whereHas('variations', function ($query) {
-                $query->where('quantity', '>', '0');
-            })->whereHas('variations', function ($query) {
-                $query->where('date_on_sale_from', '<', Carbon::now());
-            })->whereHas('variations', function ($query) {
-                $query->where('date_on_sale_to', '>', Carbon::now());
-            });
-        }
-
-        return $query;
-    }
-
-    //    public function getQuantityCheckAttribute(){
-    //        return $this->variations()->where('quantity', '>', '0')->first() ?? null;
-    //    }
-    //
-    //    public function getSalePriceAttribute(){
-    //        return $this->variations()->where('quantity', '>', '0')->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? null;
-    //    }
-    //
-    //    public function getMinPriceAttribute(){
-    //        return $this->variations()->where('quantity', '>', '0')->orderBy('price')->first() ?? null;
-    //    }
-
     public function getBestSellingPriceAttribute()
     {
         return $this->variations()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? $this->variations()->orderBy('price')->first();
     }
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
-    public function attributes(): HasMany
+    public function filters(): HasMany
     {
         return $this->hasMany(ProductFilter::class);
     }

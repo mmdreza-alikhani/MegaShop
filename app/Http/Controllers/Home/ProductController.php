@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
+use App\Models\Platform;
 use App\Models\Product;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -10,6 +11,15 @@ use Illuminate\Contracts\View\View;
 
 class ProductController extends Controller
 {
+    public function index(): View|Application|Factory
+    {
+        $products = Product::latest()->paginate(10);
+        $platforms = Platform::pluck('title', 'id');
+//        $filters = $category->filters()->with('filterValues')->get();
+//        $variation = $category->variation()->with('variationValues')->first();
+
+        return view('home.products.index', compact('products', 'platforms'));
+    }
     public function show(Product $product): View|Application|Factory
     {
         $filters = $product->attributes()

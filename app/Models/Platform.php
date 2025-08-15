@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static create(array $array)
  * @method static where(string $string, int $int)
  * @method static active()
+ * @method static pluck(string $string, string $string1)
  */
 class Platform extends Model
 {

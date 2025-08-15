@@ -5,7 +5,6 @@
 @endsection
 
 @section('content')
-
     @include('home.sections.backtotop')
 
     <!-- START: Breadcrumbs -->
@@ -112,7 +111,7 @@
                     <h3 class="nk-decorated-h-2"><span><span class="text-main-1">مقالات</span> مشابه</span></h3>
                     <div class="nk-gap"></div>
                     <div class="row">
-                        @foreach($related as $post)
+                        @forelse($related as $post)
                             <div class="col-md-6">
                                 <div class="nk-blog-post">
                                     <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="nk-post-img">
@@ -144,13 +143,18 @@
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        @empty
+                            <div class="alert alert-danger text-right">
+                                <ul class="mb-0">
+                                    <li class="alert-text mx-3">{{ $error }}</li>
+                                </ul>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('scripts')
