@@ -2,6 +2,7 @@
 
 use App\Models\Coupon;
 use App\Models\Order;
+use Binafy\LaravelCart\Models\Cart;
 use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 
@@ -48,13 +49,31 @@ function convertPersianNumbersToEnglish($input): array|string
     return str_replace($english, $persian, $input);
 }
 
+function isCartEmpty(): bool
+{
+    $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
+
+    if (!$cart) {
+        // Optionally treat a missing cart as empty
+        return true;
+    }
+
+    return $cart->items->isEmpty();
+}
+
+function cartItems()
+{
+    $cart = Cart::with('items.itemable.filters')->firstOrCreate(['user_id' => auth()->id()]);
+
+    return $cart->items;
+}
+
 function cartTotalSaleAmount(): float|int
 {
     $cartTotalSaleAmount = 0;
-    foreach (\Cart::getContent() as $item) {
-        if ($item->attributes->is_sale) {
-            $cartTotalSaleAmount += $item->quantity * ($item->attributes->price - $item->attributes->sale_price);
-        }
+    foreach (cartItems() as $item) {
+        $options = json_decode($item->options, true);
+        $cartTotalSaleAmount += $item->quantity * $options->sale_price;
     }
 
     return $cartTotalSaleAmount;
@@ -63,8 +82,8 @@ function cartTotalSaleAmount(): float|int
 function cartTotalDeliveryAmount()
 {
     $cartTotalDeliveryAmount = 0;
-    foreach (\Cart::getContent() as $item) {
-        $cartTotalDeliveryAmount += $item->associatedModel->delivery_amount;
+    foreach (cartItems() as $item) {
+        $cartTotalDeliveryAmount += $item->itemable->delivery_amount;
     }
 
     return $cartTotalDeliveryAmount;

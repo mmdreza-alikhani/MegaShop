@@ -11,6 +11,12 @@ class UpdateUserRequest extends FormRequest
 {
     protected $errorBag = 'update';
 
+    public function prepareForValidation(): void
+    {
+        $this->merge([
+            'username' => trim(strtolower($this->input('username'))),
+        ]);
+    }
     /**
      * Determine if the user is authorized to make this request.
      */

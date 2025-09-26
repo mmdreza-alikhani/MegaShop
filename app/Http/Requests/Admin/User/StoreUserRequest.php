@@ -9,6 +9,13 @@ class StoreUserRequest extends FormRequest
 {
     protected $errorBag = 'store';
 
+
+    public function prepareForValidation(): void
+    {
+        $this->merge([
+            'username' => trim(strtolower($this->input('username'))),
+        ]);
+    }
     /**
      * Determine if the user is authorized to make this request.
      */

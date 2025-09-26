@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\SearchableTrait;
+use Binafy\LaravelCart\Cartable;
 use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -20,8 +21,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static search(string $string, string $trim)
  * @method static create(array $array)
  * @method static active()
+ * @method static findOrFail(mixed $input)
  */
-class Product extends Model
+class Product extends Model implements Cartable
 {
     use HasFactory, SearchableTrait, sluggable;
 
@@ -82,6 +84,11 @@ class Product extends Model
         return 'slug';
     }
 
+    public function getPrice(): float
+    {
+        //
+    }
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'product_tag');
@@ -117,93 +124,10 @@ class Product extends Model
         $query->where('category_id', $category_id);
     }
 
-//    public function scopeFilter($query)
-//    {
-//        if (request()->has('attribute')) {
-//            foreach (request()->attribute as $attribute) {
-//                $query->whereHas('attributes', function ($query) use ($attribute) {
-//                    foreach (explode('-', $attribute) as $index => $item) {
-//                        if ($index == 0) {
-//                            $query->where('value', $item);
-//                        } else {
-//                            $query->orWhere('value', $item);
-//                        }
-//                    }
-//                });
-//            }
-//        }
-//
-//        if (request()->has('variation')) {
-//            $query->whereHas('variations', function ($query) {
-//                foreach (explode('-', request()->variation) as $index => $variation) {
-//                    if ($index == 0) {
-//                        $query->where('value', $variation);
-//                    } else {
-//                        $query->orWhere('value', $variation);
-//                    }
-//                }
-//            });
-//        }
-//
-//        if (request()->has('platform')) {
-//            $query->whereHas('platform', function ($query) {
-//                foreach (explode('-', request()->platform) as $index => $platform) {
-//                    if ($index == 0) {
-//                        $query->where('title', $platform);
-//                    } else {
-//                        $query->orWhere('title', $platform);
-//                    }
-//                }
-//            });
-//        }
-//
-//        if (request()->has('sortBy')) {
-//            $sortBy = request()->sortBy;
-//            switch ($sortBy) {
-//                case 'highest':
-//                    $query->orderByDesc(
-//                        ProductVariation::select('price')->whereColumn('product_variations.product_id', 'products.id')->orderBy('price', 'desc')->take(1)
-//                    );
-//                    break;
-//                case 'lowest':
-//                    $query->orderBy(
-//                        ProductVariation::select('price')->whereColumn('product_variations.product_id', 'products.id')->orderBy('price', 'asc')->take(1)
-//                    );
-//                    break;
-//                case 'latest':
-//                    $query->latest();
-//                    break;
-//                case 'oldest':
-//                    $query->oldest();
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//
-//        return $query;
-//    }
-//
-//    public function scopeDiscount($query)
-//    {
-//        if (request()->has('discount') || request()->discount === true) {
-//            $query->whereHas('variations', function ($query) {
-//                $query->where('quantity', '>', '0');
-//            })->whereHas('variations', function ($query) {
-//                $query->where('date_on_sale_from', '<', Carbon::now());
-//            })->whereHas('variations', function ($query) {
-//                $query->where('date_on_sale_to', '>', Carbon::now());
-//            });
-//        }
-//
-//        return $query;
-//    }
-
     public function scopeFilter($query)
     {
         $request = request();
 
-        // Helper to apply whereHas with OR conditions
         $applyFilter = function ($relation, $field, $values) use ($query) {
             $query->whereHas($relation, function ($q) use ($field, $values) {
                 $values = explode('-', $values);
@@ -215,24 +139,20 @@ class Product extends Model
             });
         };
 
-        // Attribute filters
         if ($request->filled('filter')) {
             foreach ($request->filter as $filter) {
                 $applyFilter('filters', 'value', $filter);
             }
         }
 
-        // Variation filter
         if ($request->filled('v')) {
             $applyFilter('variations', 'value', $request->v);
         }
 
-        // Platform filter
         if ($request->filled('platform')) {
             $applyFilter('platform', 'title', $request->platform);
         }
 
-        // Discount filter
         if ($request->boolean('discount')) {
             $query->whereHas('variations', function ($q) {
                 $q->where('quantity', '>', 0)
@@ -241,7 +161,6 @@ class Product extends Model
             });
         }
 
-        // Sorting
         if ($request->filled('sortBy')) {
             match ($request->sortBy) {
                 'highest' => $query->orderByDesc(

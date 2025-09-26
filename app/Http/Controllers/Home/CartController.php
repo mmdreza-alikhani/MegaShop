@@ -3,69 +3,116 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Home\Cart\AddRequest;
 use App\Models\Product;
 use App\Models\ProductVariation;
-use App\Models\UserAddresses;
+use Binafy\LaravelCart\Models\Cart;
+use Binafy\LaravelCart\Models\CartItem;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function add(Request $request)
+    public function add(AddRequest $request): RedirectResponse
     {
-        dd($request->all());
-        $request->validate([
-            'productId' => 'required',
-            'quantity' => 'required',
-        ]);
-        $product = Product::findOrFail($request->productId);
-        $productVariation = ProductVariation::findOrFail(json_decode($request->variation)->id);
+        $product = Product::findOrFail($request->input('product_id'));
+        $productVariation = ProductVariation::findOrFail($request->input('variation_id'));
 
-        if ($request->quantity > $productVariation->quantity) {
-            toastr()->warning('تعداد محصولات انتخابی بیش از حد مجاز است!');
+        if ($request->input('quantity') > $productVariation->quantity) {
+            flash()->warning('تعداد محصولات انتخابی بیش از حد مجاز است!');
 
             return redirect()->back();
         }
 
-        $rowId = $product->id.'-'.$productVariation->id;
-        \Cart::add([
-            'id' => $rowId,
-            'name' => $product->name,
-            'price' => $productVariation->sale_price ? $productVariation->sale_price : $productVariation->price,
-            'quantity' => $request->quantity,
-            'attributes' => $productVariation->toArray(),
-            'associatedModel' => $product,
+        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
+
+        $cartItem = new CartItem([
+            'itemable_id'   => $product->id,
+            'itemable_type' => Product::class,
+            'quantity'      => (int) $request->input('quantity'),
+            'options'       => json_encode([
+                'variation_id'    => (int) $request->input('variation_id'),
+                'price'           => (int) $productVariation->price,
+                'sale_price'      => (int) $productVariation->best_price,
+                'sku'             => $productVariation->sku,
+                'is_discounted'   => $productVariation->is_discounted,
+                'delivery_amount' => $product->delivery_amount,
+            ]),
         ]);
 
-        toastr()->success('با موفقیت به سبد خرید شما اضافه شد!');
+        $existingItem = $cart->items()
+            ->where('itemable_id', $product->id)
+            ->whereJsonContains('options->variation_id', (int) $request->input('variation_id'))
+            ->first();
+
+        $requestedQty = (int) $request->input('quantity');
+        $variationStock = $productVariation->quantity;
+
+        if ($existingItem) {
+            $newQty = $existingItem->quantity + $requestedQty;
+
+            if ($newQty <= $variationStock) {
+                $existingItem->increment('quantity', $requestedQty);
+            } else {
+                flash()->warning('تعداد بیش از حد مجاز است!');
+                return redirect()->back();
+            }
+        } else {
+            if ($requestedQty <= $variationStock) {
+                $cart->items()->save($cartItem);
+            } else {
+                flash()->warning('تعداد بیش از حد مجاز است!');
+                return redirect()->back();
+            }
+        }
+
+
+        flash()->success('با موفقیت به سبد خرید شما اضافه شد!');
 
         return redirect()->back();
 
     }
 
-    public function remove($rowId)
+    public function remove($itemable_id): RedirectResponse
     {
-        \Cart::remove($rowId);
+        $cart = Cart::where('user_id', auth()->id())->first();
 
-        toastr()->success('محصول مورد نظر با موفقیت از سبد خرید حذف شد!');
+        $cart->items()
+            ->where('itemable_id', $itemable_id)
+            ->where('itemable_type', Product::class)
+            ->delete();
+
+
+        flash()->success('محصول مورد نظر با موفقیت از سبد خرید حذف شد!');
 
         return redirect()->back();
     }
 
-    public function clear(Request $request)
+    public function clear(): RedirectResponse
     {
-        \Cart::clear();
+        $cart = Cart::where('user_id', auth()->id())->first();
 
-        toastr()->success('تمامی محصولات سبد خرید با موفقیت حذف شدند!');
+        if ($cart) {
+            $cart->items()->delete();
+            $cart->delete();
+        }else{
+            flash()->warning('سبد خریدی وجود ندارد!');
+            return redirect()->back();
+        }
 
+        flash()->warning('سبد خرید با موفقیت حذف شد!');
         return redirect()->back();
     }
 
-    public function index()
+    public function index(): View|Application|Factory
     {
         return view('home.cart.cart');
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         $request->validate([
             'quantity' => 'required',
@@ -73,7 +120,7 @@ class CartController extends Controller
         foreach ($request->quantity as $rowId => $quantity) {
             $item = \Cart::get($rowId);
             if ($quantity > $item->attributes->quantity) {
-                toastr()->warning('تعداد محصولات انتخابی بیش از حد مجاز است!');
+                flash()->warning('تعداد محصولات انتخابی بیش از حد مجاز است!');
 
                 return redirect()->back();
             }
@@ -84,7 +131,7 @@ class CartController extends Controller
                 ],
             ]);
         }
-        toastr()->success('تعداد محصولات انتخابی با موفقیت ویرایش شد!');
+        flash()->success('تعداد محصولات انتخابی با موفقیت ویرایش شد!');
 
         return redirect()->back();
     }
@@ -93,12 +140,12 @@ class CartController extends Controller
     {
         $user = auth()->user();
         if ($user->first_name == null || $user->last_name == null || $user->phone_number == null) {
-            toastr()->warning('لطفا مشخصات خود را در حساب کاربری تکمیل کنید');
+            flash()->warning('لطفا مشخصات خود را در حساب کاربری تکمیل کنید');
 
             return redirect()->route('home.profile.info');
         } else {
             if (\Cart::isEmpty()) {
-                toastr()->warning('سبد خرید شما خالی است!');
+                flash()->warning('سبد خرید شما خالی است!');
 
                 return redirect()->back();
             }
@@ -117,18 +164,18 @@ class CartController extends Controller
         ]);
 
         if (! auth()->check()) {
-            toastr()->warning('اول ثبت نام کنید!');
+            flash()->warning('اول ثبت نام کنید!');
 
             return redirect()->back();
         }
 
         $result = checkCoupon($request->code);
         if (array_key_exists('error', $result)) {
-            toastr()->warning($result['error']);
+            flash()->warning($result['error']);
 
             return redirect()->back();
         } else {
-            toastr()->success($result['success']);
+            flash()->success($result['success']);
 
             return redirect()->back();
         }

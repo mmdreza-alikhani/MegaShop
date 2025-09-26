@@ -93,7 +93,7 @@ Route::prefix('/management/')->name('admin.')->middleware(['permission:manage-ge
 
 Route::get('/reset-password/{token}', function (string $token) {
     return view('auth.reset-password', ['token' => $token]);
-})->middleware('guest')->name('password.reset');
+})->middleware('guest', 'throttle:6,1')->name('password.reset');
 
 Route::prefix('/')->name('home.')->group(function () {
 
@@ -155,7 +155,7 @@ Route::prefix('/')->name('home.')->group(function () {
     Route::get('login/{provider}/callback', [HomeAuthController::class, 'handleProviderCallback']);
 
     // Add And Remove Cart //
-    Route::post('add-to-cart', [CartController::class, 'add'])->name('cart.add');
+    Route::post('add-to-cart', [CartController::class, 'add'])->middleware('auth')->name('cart.add');
     Route::get('remove-from-cart/{rowId}', [CartController::class, 'remove'])->name('cart.remove');
     Route::get('clear-cart', [CartController::class, 'clear'])->name('cart.clear');
     // End: Add And Remove Cart //

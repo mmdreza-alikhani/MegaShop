@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static findOrFail(int|string $key)
  * @method static where(string $string, $id)
  * @method static create(array $array)
+ * @method static find(mixed $variationId)
  */
 class ProductVariation extends Model
 {
@@ -42,17 +43,7 @@ class ProductVariation extends Model
         'date_on_sale_to' => 'datetime',
     ];
 
-    protected $appends = ['is_sale', 'sale_percent'];
-
-    public function getIsSaleAttribute(): bool
-    {
-        return $this->sale_price = ! null && $this->date_on_sale_from < Carbon::now() && $this->date_on_sale_to > Carbon::now();
-    }
-
-    public function getSalePercentAttribute(): ?float
-    {
-        return $this->is_sale ? round((($this->price - $this->sale_price) / $this->price) * 100) : null;
-    }
+    protected $appends = ['best_price'];
 
     public function product(): BelongsTo
     {
@@ -67,5 +58,17 @@ class ProductVariation extends Model
     public function scopeAvailable($query, $q = 0): void
     {
         $query->where('quantity', '>=', $q);
+    }
+
+    public function getIsDiscountedAttribute(): bool
+    {
+        return ($this->sale_price != null) && ($this->date_on_sale_from < Carbon::now()) && ($this->date_on_sale_to > Carbon::now());
+    }
+
+    // where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? $this->variations()->orderBy('price')->first();
+
+    public function getBestPriceAttribute()
+    {
+        return $this->is_discounted ? $this->sale_price : $this->price;
     }
 }

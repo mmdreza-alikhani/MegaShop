@@ -17,7 +17,11 @@ class CategoryController extends Controller
         $platforms = Platform::pluck('title', 'id');
         $filters = $category->filters()->with('filterValues')->get();
         $variation = $category->variation()->with('variationValues')->first();
+        $rootCategories = Category::where('parent_id', 0)
+            ->with('children.children.children') // eager load nested children
+            ->get();
 
-        return view('home.categories.index', compact('products', 'category', 'filters', 'variation', 'platforms'));
+
+        return view('home.categories.index', compact('products', 'category', 'filters', 'variation', 'platforms', 'rootCategories'));
     }
 }

@@ -63,13 +63,23 @@
                         </div>
                         <div class="nk-widget nk-widget-highlighted" style="direction: rtl">
                             <ul class="nk-breadcrumbs text-right px-3" style="direction: rtl;background-color: #293139">
-                                <li><span style="font-size: 24px">دسته بندی: {{ $category->parent ? $category->parent->title : $category->title }}</span></li>
+                                <li><span style="font-size: 24px">دسته بندی: </span></li>
                             </ul>
                             <div class="nk-widget-content">
                                 <ul class="nk-widget-categories text-right" style="direction: rtl">
-                                    @foreach($category->parent ? $category->parent->children : $category->children as $childCategory)
-                                        <li><a class="{{ $childCategory->slug == $category->slug ? 'active-link' : '' }}" href="{{ route('home.categories.show', ['category' => $childCategory->slug]) }}"> {{ $childCategory->name }} </a></li>
-                                    @endforeach
+                                    <!-- START: Accordion -->
+                                    <div class="nk-accordion" id="accordion-0" role="tablist" aria-multiselectable="true">
+                                        @include('home.sections.category-accordion', [
+                                            'categories' => $rootCategories, // top-level categories
+                                            'parentId' => 0,
+                                            'depth' => 0
+                                        ])
+                                    </div>
+
+                                    <!-- END: Accordion -->
+{{--                                    @foreach($category->parent ? $category->parent->children : $category->children as $childCategory)--}}
+{{--                                        <li><a class="{{ $childCategory->slug == $category->slug ? 'active-link' : '' }}" href="{{ route('home.categories.show', ['category' => $childCategory->slug]) }}"> {{ $childCategory->name }} </a></li>--}}
+{{--                                    @endforeach--}}
                                 </ul>
                             </div>
                         </div>
@@ -135,6 +145,7 @@
                     <input id="filteredSortBy" type="hidden" name="sortBy">
                     <input id="filteredSearch" type="hidden" name="search">
                     <input id="filteredDiscount" type="hidden" name="discount">
+                    <input id="filteredCategories" type="hidden" name="categories">
                 </form>
             </div>
         </div>

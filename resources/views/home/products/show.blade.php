@@ -55,7 +55,7 @@
                             <form action="{{ route('home.cart.add') }}" method="POST" class="nk-product-addtocart">
                                 @csrf
                                 <label style="display: flex;justify-content: flex-end" for="variationSelect">{{ $variations->first()['title'] }} را انتخاب کنید</label>
-                                <select class="form-control" id="variationSelect" style="direction: rtl;height: 35px" name="variation">
+                                <select class="form-control" id="variationSelect" style="direction: rtl;height: 35px" name="variation_id">
                                     @foreach($variations as $variation)
                                         <option value="{{ $variation['id'] }}">{{ $variation['value'] }}</option>
                                     @endforeach
@@ -85,7 +85,7 @@
                                 <div class="input-group w-100">
                                     @if(!is_null($variations))
                                         <input type="number" id="productQuantity" class="form-control" value="1" min="1" name="quantity">
-                                        <input type="hidden" value="{{ $product->id }}" name="productId">
+                                        <input type="hidden" value="{{ $product->id }}" name="product_id">
                                         <button class="nk-btn nk-btn-rounded nk-btn-color-main-1" type="submit">افزودن به سبد خرید</button>
                                     @endif
                                     <a href="{{ $product->checkUserWishlist(auth()->id()) ? route('home.products.wishlist.remove', ['product' => $product]) : route('home.products.wishlist.add', ['product' => $product]) }}" class="btn bg-transparent"><i class="fa fa-heart fa-lg {{ $product->checkUserWishlist(auth()->id()) ? 'text-danger' : 'text-light' }}"></i></a>
