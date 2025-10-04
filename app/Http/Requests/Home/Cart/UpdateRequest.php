@@ -7,9 +7,9 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class AddRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
-    protected $errorBag = 'addToCart';
+    protected $errorBag = 'updateCart';
 
     /**
      * Determine if the user is authorized to make this request.

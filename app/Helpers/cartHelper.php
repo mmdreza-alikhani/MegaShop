@@ -4,60 +4,13 @@ use App\Models\Coupon;
 use App\Models\Order;
 use Binafy\LaravelCart\Models\Cart;
 use Carbon\Carbon;
-use Hekmatinasser\Verta\Verta;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-
-foreach (glob(__DIR__ . 'Helpers/*.php') as $file) {
-    dd('fwefwefwe');
-    require_once $file;
-}
-
-function generateFileName($name): string
-{
-    $year = Carbon::now()->year;
-    $month = Carbon::now()->month;
-    $day = Carbon::now()->day;
-    $hour = Carbon::now()->hour;
-    $minute = Carbon::now()->minute;
-    $second = Carbon::now()->second;
-
-    return $year.'_'.$month.'_'.$day.'_'.$hour.'_'.$minute.'_'.$second.strtolower($name);
-}
-
-function convertToGregorianDate($date): ?string
-{
-    if ($date == null) {
-        return null;
-    }
-    $pattern = "#[/\s]#";
-    $splitedSolarDate = preg_split($pattern, $date);
-    $gregorianFormat = Verta::jalaliToGregorian($splitedSolarDate[0], $splitedSolarDate[1], $splitedSolarDate[2]);
-
-    return implode('/', $gregorianFormat).' '.$splitedSolarDate[3];
-}
-
-function removeTimeFromDate($date)
-{
-    if ($date == null) {
-        return null;
-    }
-    $pattern = "#[\s]#";
-    $splitedSolarDate = preg_split($pattern, $date);
-
-    return $splitedSolarDate[0];
-}
-
-function convertPersianNumbersToEnglish($input): array|string
-{
-    $persian = ['۰', '۱', '۲', '۳', '۴', '٤', '۵', '٥', '٦', '۶', '۷', '۸', '۹'];
-    $english = [0,  1,  2,  3,  4,  4,  5,  5,  6,  6,  7,  8,  9];
-
-    return str_replace($english, $persian, $input);
-}
-
+/**
+ * @throws Exception
+ */
 function removeFromCartById($itemable_id, $itemable_type, $user_id): void
 {
     try {
@@ -113,7 +66,7 @@ function cartItems(): HasMany
     return Cart::with('items.itemable.filters')->firstOrCreate(['user_id' => auth()->id()])->items();
 }
 
-function isItemInCart($itemable_id): bool
+function itemIsInCart($itemable_id): bool
 {
     $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
     $existingItem = $cart->items()

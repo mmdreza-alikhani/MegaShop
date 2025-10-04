@@ -52,16 +52,20 @@
                     </div>
                     <div class="col-md-6">
                         @if(!is_null($variations))
-                            <form action="{{ route('home.cart.add') }}" method="POST" class="nk-product-addtocart">
-                                @csrf
-                                <label style="display: flex;justify-content: flex-end" for="variationSelect">{{ $variations->first()['title'] }} را انتخاب کنید</label>
-                                <select class="form-control" id="variationSelect" style="direction: rtl;height: 35px" name="variation_id">
-                                    @foreach($variations as $variation)
-                                        <option value="{{ $variation['id'] }}">{{ $variation['value'] }}</option>
-                                    @endforeach
-                                </select>
+                            @if(isItemInCart($product->id))
+                                <div class="alert alert-secondary text-right">!محصول داخل سبد خرید شماست</div>
+                            @else
+                                <form action="{{ route('home.cart.add') }}" method="POST" class="nk-product-addtocart">
+                                    @csrf
+                                    <label style="display: flex;justify-content: flex-end" for="variationSelect">{{ $variations->first()['title'] }} را انتخاب کنید</label>
+                                    <select class="form-control" id="variationSelect" style="direction: rtl;height: 35px" name="variation_id">
+                                        @foreach($variations as $variation)
+                                            <option value="{{ $variation['id'] }}">{{ $variation['value'] }}</option>
+                                        @endforeach
+                                    </select>
+                            @endif
                         @else
-                            <div class="alert alert-secondary">محصول موجود نمی باشد!</div>
+                            <div class="alert alert-warning text-right rtl">!محصول موجود نمی باشد</div>
                         @endif
 
                         <div class="nk-product-description text-right">
@@ -84,9 +88,13 @@
                             <div class="nk-gap-1"></div>
                                 <div class="input-group w-100">
                                     @if(!is_null($variations))
-                                        <input type="number" id="productQuantity" class="form-control" value="1" min="1" name="quantity">
-                                        <input type="hidden" value="{{ $product->id }}" name="product_id">
-                                        <button class="nk-btn nk-btn-rounded nk-btn-color-main-1" type="submit">افزودن به سبد خرید</button>
+                                        @if(isItemInCart($product->id))
+                                            <button class="nk-btn nk-btn-rounded nk-btn-color-main-1" disabled>.از قبل به سبد خرید اضافه شده</button>
+                                        @else
+                                            <input type="number" id="productQuantity" class="form-control" value="1" min="1" name="quantity">
+                                            <input type="hidden" value="{{ $product->id }}" name="product_id">
+                                            <button class="nk-btn nk-btn-rounded nk-btn-color-main-1" type="submit">افزودن به سبد خرید</button>
+                                        @endif
                                     @endif
                                     <a href="{{ $product->checkUserWishlist(auth()->id()) ? route('home.products.wishlist.remove', ['product' => $product]) : route('home.products.wishlist.add', ['product' => $product]) }}" class="btn bg-transparent"><i class="fa fa-heart fa-lg {{ $product->checkUserWishlist(auth()->id()) ? 'text-danger' : 'text-light' }}"></i></a>
                                 </div>

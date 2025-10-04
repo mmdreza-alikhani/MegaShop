@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Home\Cart\AddRequest;
+use App\Http\Requests\Home\Cart\UpdateRequest;
 use App\Models\Product;
 use App\Models\ProductVariation;
 use Binafy\LaravelCart\Models\Cart;
 use Binafy\LaravelCart\Models\CartItem;
+use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -18,37 +20,24 @@ class CartController extends Controller
 {
     public function add(AddRequest $request): RedirectResponse
     {
-        $product = Product::findOrFail($request->input('product_id'));
         $productVariation = ProductVariation::findOrFail($request->input('variation_id'));
 
-        if ($request->input('quantity') > $productVariation->quantity) {
-            flash()->warning('تعداد محصولات انتخابی بیش از حد مجاز است!');
-
-            return redirect()->back();
-        }
-
         $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
-
         $cartItem = new CartItem([
-            'itemable_id'   => $product->id,
+            'itemable_id'   => $request->integer('product_id'),
             'itemable_type' => Product::class,
-            'quantity'      => (int) $request->input('quantity'),
+            'quantity'      => $request->integer('quantity'),
             'options'       => json_encode([
-                'variation_id'    => (int) $request->input('variation_id'),
-                'price'           => (int) $productVariation->price,
-                'sale_price'      => (int) $productVariation->best_price,
-                'sku'             => $productVariation->sku,
-                'is_discounted'   => $productVariation->is_discounted,
-                'delivery_amount' => $product->delivery_amount,
+                'variation_id'    => $request->integer('variation_id'),
             ]),
         ]);
 
         $existingItem = $cart->items()
-            ->where('itemable_id', $product->id)
-            ->whereJsonContains('options->variation_id', (int) $request->input('variation_id'))
+            ->where('itemable_id', $request->integer('product_id'))
+            ->whereJsonContains('options->variation_id', $request->integer('variation_id'))
             ->first();
 
-        $requestedQty = (int) $request->input('quantity');
+        $requestedQty = $request->integer('quantity');
         $variationStock = $productVariation->quantity;
 
         if ($existingItem) {
@@ -69,41 +58,32 @@ class CartController extends Controller
             }
         }
 
-
         flash()->success('با موفقیت به سبد خرید شما اضافه شد!');
-
         return redirect()->back();
 
     }
 
     public function remove($itemable_id): RedirectResponse
     {
-        $cart = Cart::where('user_id', auth()->id())->first();
-
-        $cart->items()
-            ->where('itemable_id', $itemable_id)
-            ->where('itemable_type', Product::class)
-            ->delete();
-
-
-        flash()->success('محصول مورد نظر با موفقیت از سبد خرید حذف شد!');
+        try {
+            removeFromCartById($itemable_id, Product::class, auth()->id());
+            flash()->success('محصول مورد نظر با موفقیت از سبد خرید حذف شد!');
+        } catch (Exception $e) {
+            flash()->error('خطا در حذف محصول از سبد خرید: ' . $e->getMessage());
+        }
 
         return redirect()->back();
     }
 
-    public function clear(): RedirectResponse
+    public function clearCart(): RedirectResponse
     {
-        $cart = Cart::where('user_id', auth()->id())->first();
-
-        if ($cart) {
-            $cart->items()->delete();
-            $cart->delete();
-        }else{
-            flash()->warning('سبد خریدی وجود ندارد!');
-            return redirect()->back();
+        try {
+            clearCart(auth()->id());
+            flash()->success('سبد خرید با حذف شد!');
+        } catch (Exception $e) {
+            flash()->error('خطا در حذف سبد خرید: ' . $e->getMessage());
         }
 
-        flash()->warning('سبد خرید با موفقیت حذف شد!');
         return redirect()->back();
     }
 
@@ -112,27 +92,26 @@ class CartController extends Controller
         return view('home.cart.cart');
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(UpdateRequest $request): RedirectResponse
     {
-        $request->validate([
-            'quantity' => 'required',
-        ]);
-        foreach ($request->quantity as $rowId => $quantity) {
-            $item = \Cart::get($rowId);
-            if ($quantity > $item->attributes->quantity) {
-                flash()->warning('تعداد محصولات انتخابی بیش از حد مجاز است!');
+        $productVariation = ProductVariation::findOrFail($request->input('variation_id'));
 
-                return redirect()->back();
-            }
-            \Cart::update($rowId, [
-                'quantity' => [
-                    'relative' => false,
-                    'value' => $quantity,
-                ],
-            ]);
+        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
+
+        $item = $cart->items()
+            ->where('itemable_id', $request->integer('product_id'))
+            ->whereJsonContains('options->variation_id', $request->integer('variation_id'))
+            ->first();
+
+        $requestedQty = $request->integer('quantity') + $item->quantity;
+        $variationStock = $productVariation->quantity;
+
+        if ($requestedQty <= $variationStock - 1) {
+            $item->update(['quantity' => $requestedQty]);
+            flash()->warning('تعداد محصولات انتخابی با موفقیت تغییر کرد!');
+        }else{
+            flash()->warning('تعداد محصولات انتخابی بیش از حد مجاز است!');
         }
-        flash()->success('تعداد محصولات انتخابی با موفقیت ویرایش شد!');
-
         return redirect()->back();
     }
 
@@ -156,7 +135,7 @@ class CartController extends Controller
 
     }
 
-    public function checkCoupon(Request $request)
+    public function checkCoupon(Request $request): RedirectResponse
     {
 
         $request->validate([
@@ -173,11 +152,10 @@ class CartController extends Controller
         if (array_key_exists('error', $result)) {
             flash()->warning($result['error']);
 
-            return redirect()->back();
         } else {
             flash()->success($result['success']);
 
-            return redirect()->back();
         }
+        return redirect()->back();
     }
 }
