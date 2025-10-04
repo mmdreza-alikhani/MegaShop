@@ -30,4 +30,8 @@ class UserAddress extends Model
         'longitude' => 'string',
         'latitude' => 'string',
     ];
+
+    public function scopeUser($query, $user_id){
+        return $query->where('user_id', $user_id);
+    }
 }

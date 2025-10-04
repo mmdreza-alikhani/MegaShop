@@ -22,8 +22,7 @@ return new class extends Migration
             $table->text('description');
             $table->integer('status');
             $table->boolean('is_active');
-            $table->unsignedInteger('delivery_amount');
-            $table->unsignedInteger('delivery_amount_per_product')->nullable();
+            $table->unsignedInteger('delivery_amount')->default(0);
             $table->timestamps();
         });
     }

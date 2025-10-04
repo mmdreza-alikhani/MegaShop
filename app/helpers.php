@@ -2,6 +2,8 @@
 
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\ProductVariation;
 use Binafy\LaravelCart\Models\Cart;
 use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
@@ -9,11 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-
-foreach (glob(__DIR__ . 'Helpers/*.php') as $file) {
-    dd('fwefwefwe');
-    require_once $file;
-}
 
 function generateFileName($name): string
 {
@@ -58,6 +55,11 @@ function convertPersianNumbersToEnglish($input): array|string
     return str_replace($english, $persian, $input);
 }
 
+// Cart
+
+/**
+ * @throws Exception
+ */
 function removeFromCartById($itemable_id, $itemable_type, $user_id): void
 {
     try {
@@ -123,30 +125,33 @@ function isItemInCart($itemable_id): bool
     return $existingItem !== null;
 }
 
-function cartTotalSaleAmount(): float|int
+function cartTotalAmount(): float|int
 {
     $cartTotalSaleAmount = 0;
     foreach (cartItems() as $item) {
         $options = json_decode($item->options, true);
-        $cartTotalSaleAmount += $item->quantity * $options->sale_price;
+        $variation = ProductVariation::find($options->variation_id)->first();
+        $cartTotalSaleAmount += $item->quantity * $variation->best_price;
     }
 
     return $cartTotalSaleAmount;
 }
 
-function cartTotalDeliveryAmount()
+function cartDeliveryAmount()
 {
-    $cartTotalDeliveryAmount = 0;
+    $cartDeliveryAmount = 0;
     foreach (cartItems() as $item) {
-        $cartTotalDeliveryAmount += $item->itemable->delivery_amount;
+        $product = Product::find($item->itemable_id)->first();
+        if ($product->delivary_amount !== null) {
+            $cartDeliveryAmount += $product->delivary_amount;
+        }
     }
-
-    return $cartTotalDeliveryAmount;
+    return $cartDeliveryAmount;
 }
 
 function checkCoupon($code): array
 {
-    $coupon = Coupon::where('code', $code)->where('expired_at', '>', Carbon::now())->first();
+    $coupon = Coupon::where('code', $code)->is_available()->first();
     if ($coupon == null) {
         session()->forget('coupon');
 
@@ -160,8 +165,8 @@ function checkCoupon($code): array
     if ($coupon->getRawOriginal('type') == 'amount') {
         session()->put('coupon', ['code' => $coupon->code, 'id' => $coupon->id, 'amount' => $coupon->amount]);
     } else {
-        $total = \Cart::getTotal();
-        $amount = (($total * $coupon->percentage) / 100) > $coupon->max_percentage_amount ? $coupon->max_percentage_amount : (($total * $coupon->percentage) / 100);
+        $totalAmount = cartTotalAmount();
+        $amount = min((($totalAmount * $coupon->percentage) / 100), $coupon->max_percentage_amount);
         session()->put('coupon', ['code' => $coupon->code, 'id' => $coupon->id, 'amount' => $amount]);
     }
 
@@ -172,15 +177,19 @@ function checkCoupon($code): array
  * @throws ContainerExceptionInterface
  * @throws NotFoundExceptionInterface
  */
-function cartTotalAmount()
+function cartPayingAmount(): int
 {
-    if (session()->has('coupon')) {
-        if (session()->get('coupon.amount') > (\Cart::getTotal() + cartTotalDeliveryAmount())) {
-            return 0;
-        } else {
-            return (\Cart::getTotal() + cartTotalDeliveryAmount()) - session()->get('coupon.amount');
-        }
-    } else {
-        return \Cart::getTotal() + cartTotalDeliveryAmount();
-    }
+    $totalAmount = cartTotalAmount();
+    $deliveryAmount = cartDeliveryAmount();
+    $couponAmount = session()->has('coupon') ? session()->get('coupon.amount') : null;
+    return $totalAmount + $deliveryAmount + $couponAmount;
+//    if (session()->has('coupon')) {
+//        if (session()->get('coupon.amount') > (cartTotalAmount() + cartTotalDeliveryAmount())) {
+//            return 0;
+//        } else {
+//            return (\Cart::getTotal() + cartTotalDeliveryAmount()) - session()->get('coupon.amount');
+//        }
+//    } else {
+//        return \Cart::getTotal() + cartTotalDeliveryAmount();
+//    }
 }

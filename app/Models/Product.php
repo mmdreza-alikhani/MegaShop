@@ -40,7 +40,6 @@ class Product extends Model implements Cartable
         'status',
         'is_active',
         'delivery_amount',
-        'delivery_amount_per_product',
     ];
 
     protected $casts = [
@@ -50,13 +49,12 @@ class Product extends Model implements Cartable
         'status' => 'integer',
         'is_active' => 'boolean',
         'delivery_amount' => 'integer',
-        'delivery_amount_per_product' => 'integer',
     ];
 
     protected $attributes = [
         'status' => '1',
-        'is_active' => '0',
-        'delivery_amount' => '0',
+        'is_active' => 0,
+        'delivery_amount' => 0,
     ];
 
     protected $appends = ['best_selling_price'];

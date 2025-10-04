@@ -7,6 +7,7 @@ use App\Http\Requests\Home\Cart\AddRequest;
 use App\Http\Requests\Home\Cart\UpdateRequest;
 use App\Models\Product;
 use App\Models\ProductVariation;
+use App\Models\UserAddress;
 use Binafy\LaravelCart\Models\Cart;
 use Binafy\LaravelCart\Models\CartItem;
 use Exception;
@@ -32,35 +33,13 @@ class CartController extends Controller
             ]),
         ]);
 
-        $existingItem = $cart->items()
-            ->where('itemable_id', $request->integer('product_id'))
-            ->whereJsonContains('options->variation_id', $request->integer('variation_id'))
-            ->first();
-
-        $requestedQty = $request->integer('quantity');
-        $variationStock = $productVariation->quantity;
-
-        if ($existingItem) {
-            $newQty = $existingItem->quantity + $requestedQty;
-
-            if ($newQty <= $variationStock) {
-                $existingItem->increment('quantity', $requestedQty);
-            } else {
-                flash()->warning('تعداد بیش از حد مجاز است!');
-                return redirect()->back();
-            }
+        if ($request->integer('quantity') <= $productVariation->quantity) {
+            $cart->items()->save($cartItem);
+            flash()->success('با موفقیت به سبد خرید شما اضافه شد!');
         } else {
-            if ($requestedQty <= $variationStock) {
-                $cart->items()->save($cartItem);
-            } else {
-                flash()->warning('تعداد بیش از حد مجاز است!');
-                return redirect()->back();
-            }
+            flash()->warning('تعداد بیش از حد مجاز است!');
         }
-
-        flash()->success('با موفقیت به سبد خرید شما اضافه شد!');
         return redirect()->back();
-
     }
 
     public function remove($itemable_id): RedirectResponse
@@ -115,43 +94,38 @@ class CartController extends Controller
         return redirect()->back();
     }
 
-    public function checkout()
+    public function checkout(): View|Application|Factory|RedirectResponse
     {
         $user = auth()->user();
-        if ($user->first_name == null || $user->last_name == null || $user->phone_number == null) {
+        if ($user->is_validated) {
             flash()->warning('لطفا مشخصات خود را در حساب کاربری تکمیل کنید');
 
             return redirect()->route('home.profile.info');
-        } else {
-            if (\Cart::isEmpty()) {
-                flash()->warning('سبد خرید شما خالی است!');
-
-                return redirect()->back();
-            }
-            $addresses = UserAddresses::where('user_id', $user->id)->get();
-
-            return view('home.cart.checkout', compact('addresses'));
         }
 
+        if (isCartEmpty()) {
+            flash()->warning('سبد خرید شما خالی است!');
+            return redirect()->back();
+        }
+
+        $addresses = UserAddress::User($user->id)->get();
+        return view('home.cart.checkout', compact('addresses'));
     }
 
     public function checkCoupon(Request $request): RedirectResponse
     {
-
         $request->validate([
-            'code' => 'required',
+            'code' => 'required|string|exists:coupons,code|max:255',
         ]);
 
         if (! auth()->check()) {
-            flash()->warning('اول ثبت نام کنید!');
-
+            flash()->warning('لطفا وارد حساب خود شوید!');
             return redirect()->back();
         }
 
-        $result = checkCoupon($request->code);
+        $result = checkCoupon($request->input('code'));
         if (array_key_exists('error', $result)) {
             flash()->warning($result['error']);
-
         } else {
             flash()->success($result['success']);
 

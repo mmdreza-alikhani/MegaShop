@@ -65,8 +65,6 @@ class ProductVariation extends Model
         return ($this->sale_price != null) && ($this->date_on_sale_from < Carbon::now()) && ($this->date_on_sale_to > Carbon::now());
     }
 
-    // where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? $this->variations()->orderBy('price')->first();
-
     public function getBestPriceAttribute()
     {
         return $this->is_discounted ? $this->sale_price : $this->price;

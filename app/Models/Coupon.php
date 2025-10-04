@@ -48,7 +48,12 @@ class Coupon extends Model
         'status' => '1',
     ];
 
-    public function getTypeAttribute($type)
+    public function scopeIsAvailable($query): void
+    {
+        $query->where('is_active', 1)->where('expired_at', '>', now());
+    }
+
+    public function getTypeAttribute($type): string
     {
         return $type == 'amount' ? 'مبلغی' : 'درصدی';
     }
