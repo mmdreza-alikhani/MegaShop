@@ -110,10 +110,33 @@ function isCartEmpty(): bool
     return $cart->items->isEmpty();
 }
 
-function cartItems(): HasMany
+function cartItems()
 {
-    return Cart::with('items.itemable.filters')->firstOrCreate(['user_id' => auth()->id()])->items();
+    $cart = Cart::with('items.itemable')->firstOrCreate(['user_id' => auth()->id()]);
+
+    // Collect all variation_ids from options
+    $variationIds = $cart->items->map(function ($item) {
+        $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
+        return $options['variation_id'] ?? null;
+    })->filter()->unique();
+
+    // Load all variations in one query
+    $variations = ProductVariation::whereIn('id', $variationIds)->get()->keyBy('id');
+
+    // Map items and attach variation + options
+    return $cart->items->map(function ($item) use ($variations) {
+        $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
+
+        foreach ($options as $key => $value) {
+            $item->$key = $value;
+        }
+
+        $item->variation = $variations[$options['variation_id']] ?? null;
+
+        return $item;
+    });
 }
+
 
 function isItemInCart($itemable_id): bool
 {
@@ -130,7 +153,7 @@ function cartTotalAmount(): float|int
     $cartTotalSaleAmount = 0;
     foreach (cartItems() as $item) {
         $options = json_decode($item->options, true);
-        $variation = ProductVariation::find($options->variation_id)->first();
+        $variation = ProductVariation::find($options['variation_id'])->first();
         $cartTotalSaleAmount += $item->quantity * $variation->best_price;
     }
 
@@ -142,8 +165,8 @@ function cartDeliveryAmount()
     $cartDeliveryAmount = 0;
     foreach (cartItems() as $item) {
         $product = Product::find($item->itemable_id)->first();
-        if ($product->delivary_amount !== null) {
-            $cartDeliveryAmount += $product->delivary_amount;
+        if ($product->delivery_amount != null) {
+            $cartDeliveryAmount += $product->delivery_amount;
         }
     }
     return $cartDeliveryAmount;
@@ -151,7 +174,7 @@ function cartDeliveryAmount()
 
 function checkCoupon($code): array
 {
-    $coupon = Coupon::where('code', $code)->is_available()->first();
+    $coupon = Coupon::where('code', $code)->isAvailable()->first();
     if ($coupon == null) {
         session()->forget('coupon');
 
@@ -182,7 +205,7 @@ function cartPayingAmount(): int
     $totalAmount = cartTotalAmount();
     $deliveryAmount = cartDeliveryAmount();
     $couponAmount = session()->has('coupon') ? session()->get('coupon.amount') : null;
-    return $totalAmount + $deliveryAmount + $couponAmount;
+    return $totalAmount + $deliveryAmount - $couponAmount;
 //    if (session()->has('coupon')) {
 //        if (session()->get('coupon.amount') > (cartTotalAmount() + cartTotalDeliveryAmount())) {
 //            return 0;

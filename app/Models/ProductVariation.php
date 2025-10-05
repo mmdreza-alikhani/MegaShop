@@ -43,7 +43,7 @@ class ProductVariation extends Model
         'date_on_sale_to' => 'datetime',
     ];
 
-    protected $appends = ['best_price'];
+    protected $appends = ['best_price', 'is_discounted'];
 
     public function product(): BelongsTo
     {

@@ -51,6 +51,6 @@ return [
      * Driver
      */
     'driver' => [
-        'default' => 'session',
+        'default' => 'database',
     ],
 ];

@@ -156,7 +156,7 @@ Route::prefix('/')->name('home.')->group(function () {
 
     // Add And Remove Cart //
     Route::post('add-to-cart', [CartController::class, 'add'])->middleware('auth')->name('cart.add');
-    Route::get('remove-from-cart/{rowId}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('remove-from-cart/{itemable_id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::get('clear-cart', [CartController::class, 'clear'])->name('cart.clear');
     // End: Add And Remove Cart //
 

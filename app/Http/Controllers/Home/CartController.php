@@ -73,25 +73,37 @@ class CartController extends Controller
 
     public function update(UpdateRequest $request): RedirectResponse
     {
-        $productVariation = ProductVariation::findOrFail($request->input('variation_id'));
-
         $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
+        $successMessages = $warningMessages = [];
 
-        $item = $cart->items()
-            ->where('itemable_id', $request->integer('product_id'))
-            ->whereJsonContains('options->variation_id', $request->integer('variation_id'))
-            ->first();
+        foreach ($request->input('products') as $productId => $variations) {
+            foreach ($variations as $variationId => $quantity) {
+                $product = Product::findOrFail($productId);
+                $variation = ProductVariation::findOrFail($variationId);
+                $item = $cart->items()
+                    ->where('itemable_id', $productId)
+                    ->whereJsonContains('options->variation_id', $variationId)
+                    ->first();
 
-        $requestedQty = $request->integer('quantity') + $item->quantity;
-        $variationStock = $productVariation->quantity;
+                if ($quantity <= $variation->quantity) {
+                    $item?->update(['quantity' => $quantity]);
+                    $successMessages[] = "محصول {$product->title} با مدل {$variation->value} با موفقیت بروزرسانی شد.";
+                } else {
+                    $warningMessages[] = "تعداد محصول {$product->title} با مدل {$variation->value} بیش از موجودی است.";
+                }
 
-        if ($requestedQty <= $variationStock - 1) {
-            $item->update(['quantity' => $requestedQty]);
-            flash()->warning('تعداد محصولات انتخابی با موفقیت تغییر کرد!');
-        }else{
-            flash()->warning('تعداد محصولات انتخابی بیش از حد مجاز است!');
+            }
         }
+
+        foreach ($successMessages as $msg) {
+            flash()->success($msg);
+        }
+        foreach ($warningMessages as $msg) {
+            flash()->warning($msg);
+        }
+
         return redirect()->back();
+
     }
 
     public function checkout(): View|Application|Factory|RedirectResponse

@@ -27,9 +27,9 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required|exists:products,id',
-            'variation_id' => 'required|exists:product_variations,id',
-            'quantity' => 'required|integer|min:1',
+            'products' => 'required|array|min:1',
+            'products.*' => 'required|array|distinct|min:1',
+            'products.*.*' => 'required|distinct|min:1'
         ];
     }
 

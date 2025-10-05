@@ -29,19 +29,17 @@
                 <form action="{{ route('home.cart.update') }}" method="POST">
                     @csrf
                     @method('PUT')
+                    @include('home.sections.errors', ['errors' => $errors->updateCart])
                     <div class="table-responsive">
                         <table class="table nk-store-cart-products text-right" style="direction: rtl">
                             <tbody>
                             @foreach(cartItems() as $product)
-                                @php
-                                    $options = json_decode(cartItems()->first()->options);
-                                @endphp
                                 <tr>
                                     <td class="nk-product-cart-thumb">
                                         <a href="{{ route('home.products.show', ['product' => $product->itemable->slug]) }}"
                                            class="nk-image-box-1 nk-post-image">
                                             <img
-                                                src="{{ env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH') . '/' . $product->itemable->primary_image }}"
+                                                src="{{ Storage::url('products/images/primary_images') . '/' . $product->itemable->primary_image }}"
                                                 width="115" alt="">
                                         </a>
                                     </td>
@@ -58,32 +56,31 @@
                                     <td class="nk-product-cart-price">
                                         <h5 class="h6">قیمت:</h5>
                                         <div class="nk-gap-1"></div>
-                                        <strong>{{ number_format($options->price) }} <i id="tooman_icon"
+                                        <strong>{{ number_format($product->variation->price) }} <i id="tooman_icon"
                                                                                         class="icony icony-toman"></i></strong>
-                                        @if($options->is_discounted)
+                                        @if($product->variation->is_discounted)
                                             <small style="color: #dd163b">درصد
-                                                تخفیف: {{ round((($product->attributes->price - $product->attributes->price) / $product->attributes->price) * 100) . '%' }}</small>
+                                                تخفیف: {{ round((($product->variation->price - $product->variation->sale_price) / $product->variation->price) * 100) . '%' }}</small>
                                         @endif
                                     </td>
-                                    @dd($product->itemable->filters)
                                     <td class="nk-product-cart-quantity">
                                         <h5 class="h6">تعداد:</h5>
                                         <div class="nk-gap-1"></div>
                                         <div class="nk-form text-left" style="direction: ltr;width: 125%">
                                             <input type="number" class="form-control" value="{{ $product->quantity }}"
-                                                   min="1" max="{{ $product->itemable->filters->quantity }}"
-                                                   name="quantity[{{ $product->id }}]">
+                                                   min="1" max="{{ $product->variation->quantity }}"
+                                                   name="products[{{ $product->itemable->id }}][{{ $product->variation->id }}]]">
                                         </div>
                                     </td>
                                     <td class="nk-product-cart-total">
                                         <h5 class="h6">قیمت کل:</h5>
                                         <div class="nk-gap-1"></div>
 
-                                        <strong>{{ number_format($product->quantity * $options->price) }} <i
+                                        <strong>{{ number_format($product->quantity * ($product->variation->is_discounted ? $product->variation->sale_price : $product->variation->price)) }} <i
                                                 id="tooman_icon" class="icony icony-toman"></i></strong>
                                     </td>
                                     <td class="nk-product-cart-remove"><a
-                                            href="{{ route('home.cart.remove', ['id' => $product->id]) }}"><span
+                                            href="{{ route('home.cart.remove', ['itemable_id' => $product->id]) }}"><span
                                                 class="ion-android-close"></span></a></td>
                                 </tr>
                             @endforeach
@@ -110,7 +107,7 @@
                                     قیمت کل:
                                 </td>
                                 <td>
-                                    {{ number_format(cartTotalSaleAmount()) }} <i id="tooman_icon" class="icony icony-toman"></i>
+                                    {{ number_format(cartTotalAmount()) }} <i id="tooman_icon" class="icony icony-toman"></i>
                                 </td>
                             </tr>
                             <tr class="nk-store-cart-totals-shipping">
@@ -118,22 +115,18 @@
                                     هزینه ارسال:
                                 </td>
                                 <td>
-                                    {{ number_format(cartTotalDeliveryAmount()) }} <i id="tooman_icon" class="icony icony-toman"></i>
+                                    {{ number_format(cartDeliveryAmount()) }} <i id="tooman_icon" class="icony icony-toman"></i>
                                 </td>
                             </tr>
-                            @if(cartTotalSaleAmount() == 0)
-
-                            @else
-                                <tr class="nk-store-cart-totals-shipping">
-                                    <td>
-                                        مقدار تخفیف کالاها:
-                                    </td>
-                                    <td style="color: #dd163b">
-                                        {{ number_format(cartTotalSaleAmount()) }} <i id="tooman_icon"
-                                                                                      class="icony icony-toman"></i>
-                                    </td>
-                                </tr>
-                            @endif
+{{--                            <tr class="nk-store-cart-totals-shipping">--}}
+{{--                                <td>--}}
+{{--                                    مقدار تخفیف کالاها:--}}
+{{--                                </td>--}}
+{{--                                <td style="color: #dd163b">--}}
+{{--                                    {{ number_format(cartTotalAmount()) }} <i id="tooman_icon"--}}
+{{--                                                                                  class="icony icony-toman"></i>--}}
+{{--                                </td>--}}
+{{--                            </tr>--}}
                             @if(session()->has('coupon'))
                                 <tr class="nk-store-cart-totals-shipping">
                                     <td>
@@ -150,7 +143,7 @@
                                     قیمت نهایی:
                                 </td>
                                 <td>
-                                    {{ number_format(cartTotalAmount()) }} <i id="tooman_icon"
+                                    {{ number_format(cartPayingAmount()) }} <i id="tooman_icon"
                                                                               class="icony icony-toman"></i>
                                 </td>
                             </tr>
@@ -159,7 +152,6 @@
                         <!-- END: Cart Totals -->
                     </div>
                     <div class="col-md-4">
-
                         <h3 class="nk-title h4 text-right">کد تخفیف</h3>
                         <form action="{{ route('home.cart.coupons.check') }}" method="POST" class="nk-form">
                             @csrf
@@ -175,7 +167,6 @@
                             <button class="nk-btn nk-btn-rounded nk-btn-color-white float-right" type="submit">ثبت
                             </button>
                         </form>
-
                     </div>
                 </div>
 
