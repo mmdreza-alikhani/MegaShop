@@ -60,14 +60,14 @@ function convertPersianNumbersToEnglish($input): array|string
 /**
  * @throws Exception
  */
-function removeFromCartById($itemable_id, $itemable_type, $user_id): void
+function removeFromCartById(int $itemable_id, $user_id): void
 {
     try {
         $cart = Cart::where('user_id', $user_id)->firstOrFail();
 
         $deleted = $cart->items()
             ->where('itemable_id', $itemable_id)
-            ->where('itemable_type', $itemable_type)
+            ->where('itemable_type', 'App\Models\Product')
             ->delete();
 
         if ($deleted === 0) {
@@ -89,8 +89,8 @@ function clearCart($user_id): void
         if (!$cart) {
             throw new Exception('سبد خرید یافت نشد یا قبلاً حذف شده است.');
         }else{
-            $cart->items()->delete();
             $cart->delete();
+            $cart->items()->delete();
         }
 
     } catch (Exception $e) {

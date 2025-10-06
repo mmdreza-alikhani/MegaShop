@@ -48,40 +48,46 @@
                                         <h2 class="nk-post-title h4">
                                             <a href="{{ route('home.products.show', ['product' => $product->itemable->slug]) }}">{{ $product->itemable->title }}</a>
                                             <div class="nk-gap"></div>
-{{--                                            <small--}}
-{{--                                                style="color: #dd163b">{{ \App\Models\Attribute::findOrFail($product->attributes->attribute_id)->name }}--}}
-{{--                                                : {{ $product->attributes->value }}</small>--}}
+{{--                                            <small style="color: #dd163b">--}}
+{{--                                                {{ \App\Models\Attribute::findOrFail($product->attributes->attribute_id)->name . ':' }}--}}
+{{--                                                {{ $product->attributes->value }}--}}
+{{--                                            </small>--}}
                                         </h2>
                                     </td>
                                     <td class="nk-product-cart-price">
                                         <h5 class="h6">قیمت:</h5>
                                         <div class="nk-gap-1"></div>
-                                        <strong>{{ number_format($product->variation->price) }} <i id="tooman_icon"
-                                                                                        class="icony icony-toman"></i></strong>
+                                        <strong>
+                                            {{ number_format($product->variation->price) }}
+                                            <i id="tooman_icon" class="icony icony-toman"></i>
+                                        </strong>
                                         @if($product->variation->is_discounted)
-                                            <small style="color: #dd163b">درصد
-                                                تخفیف: {{ round((($product->variation->price - $product->variation->sale_price) / $product->variation->price) * 100) . '%' }}</small>
+                                            <small style="color: #dd163b">
+                                                درصد تخفیف:
+                                                {{ round((($product->variation->price - $product->variation->sale_price) / $product->variation->price) * 100) . '%' }}
+                                            </small>
                                         @endif
                                     </td>
                                     <td class="nk-product-cart-quantity">
                                         <h5 class="h6">تعداد:</h5>
                                         <div class="nk-gap-1"></div>
                                         <div class="nk-form text-left" style="direction: ltr;width: 125%">
-                                            <input type="number" class="form-control" value="{{ $product->quantity }}"
-                                                   min="1" max="{{ $product->variation->quantity }}"
-                                                   name="products[{{ $product->itemable->id }}][{{ $product->variation->id }}]]">
+                                            <input type="number" class="form-control" value="{{ $product->quantity }}" min="1" max="{{ $product->variation->quantity }}" name="products[{{ $product->itemable->id }}][{{ $product->variation->id }}]]">
                                         </div>
                                     </td>
                                     <td class="nk-product-cart-total">
                                         <h5 class="h6">قیمت کل:</h5>
                                         <div class="nk-gap-1"></div>
-
-                                        <strong>{{ number_format($product->quantity * ($product->variation->is_discounted ? $product->variation->sale_price : $product->variation->price)) }} <i
-                                                id="tooman_icon" class="icony icony-toman"></i></strong>
+                                        <strong>
+                                            {{ number_format($product->quantity * ($product->variation->is_discounted ? $product->variation->sale_price : $product->variation->price)) }}
+                                            <i id="tooman_icon" class="icony icony-toman"></i>
+                                        </strong>
                                     </td>
-                                    <td class="nk-product-cart-remove"><a
-                                            href="{{ route('home.cart.remove', ['itemable_id' => $product->id]) }}"><span
-                                                class="ion-android-close"></span></a></td>
+                                    <td class="nk-product-cart-remove">
+                                        <a href="{{ route('home.cart.remove', ['itemable_id' => $product->itemable->id]) }}">
+                                            <span class="ion-android-close"></span>
+                                        </a>
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>

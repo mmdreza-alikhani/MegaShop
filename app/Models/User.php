@@ -65,9 +65,9 @@ class User extends Authenticatable
         return $is_active ? 'فعال' : 'غیرفعال';
     }
 
-    public function getIsValidatedAttribute($user): bool
+    public function getIsValidatedAttribute(): bool
     {
-        return $user->first_name && $user->last_name && $user->phone_number && $user->email_verified_at;
+        return $this->first_name && $this->last_name && $this->phone_number && $this->email_verified_at;
     }
 
     public function rates(): HasMany

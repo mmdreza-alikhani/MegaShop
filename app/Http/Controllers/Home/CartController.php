@@ -45,7 +45,7 @@ class CartController extends Controller
     public function remove($itemable_id): RedirectResponse
     {
         try {
-            removeFromCartById($itemable_id, Product::class, auth()->id());
+            removeFromCartById($itemable_id, auth()->id());
             flash()->success('محصول مورد نظر با موفقیت از سبد خرید حذف شد!');
         } catch (Exception $e) {
             flash()->error('خطا در حذف محصول از سبد خرید: ' . $e->getMessage());
@@ -109,9 +109,8 @@ class CartController extends Controller
     public function checkout(): View|Application|Factory|RedirectResponse
     {
         $user = auth()->user();
-        if ($user->is_validated) {
+        if (!$user->is_validated) {
             flash()->warning('لطفا مشخصات خود را در حساب کاربری تکمیل کنید');
-
             return redirect()->route('home.profile.info');
         }
 
