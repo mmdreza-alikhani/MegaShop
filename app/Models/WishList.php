@@ -30,4 +30,14 @@ class WishList extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function scopeUserId($query, $user_id): void
+    {
+        $query->where('user_id', $user_id);
+    }
 }

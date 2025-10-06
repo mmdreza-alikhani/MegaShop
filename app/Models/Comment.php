@@ -51,9 +51,9 @@ class Comment extends Model
         'status' => '1',
     ];
 
-    public function statusCondition($status): string
+    public function statusCondition(): string
     {
-        return match ($status) {
+        return match ($this->status) {
             1 => 'در دست بررسی',
             2 => 'رد شده',
             3 => 'منتشر شده',
@@ -78,7 +78,7 @@ class Comment extends Model
 
     public function getIsActiveAttribute($is_active): string
     {
-        return $is_active ? 'منتشر شده' : 'رد شده';
+        return $is_active ? 'منتشر شده' : 'منتشر نشده';
     }
 
     public function parent(): BelongsTo
@@ -91,14 +91,21 @@ class Comment extends Model
         return $this->hasMany(Comment::class, 'reply_of');
     }
 
-    public function getAwaitingReviewAttribute($query): void
+    public function scopeUserId($query, $user_id): void
     {
-        $query->where('status', '1');
+        $query->where('user_id', $user_id);
+    }
+
+    public function scopeAwaitingReview($query)
+    {
+        return $query->where('status', 1);
     }
 
     public function getCommentableLabel(): string
     {
-        return match (get_class($this->commentable)) {
+        $type = $this->commentable_type;
+
+        return match ($type) {
             Post::class => 'پست',
             Product::class => 'محصول',
             default => 'نامشخص',

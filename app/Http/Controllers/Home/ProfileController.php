@@ -3,186 +3,150 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Home\Profile\UpdateRequest;
+use App\Models\Comment;
 use App\Models\Order;
 use App\Models\Transaction;
 use App\Models\WishList;
+use Exception;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use Intervention\Image\Drivers\Imagick\Driver;
-use Intervention\Image\ImageManager;
 
 class ProfileController extends Controller
 {
-    public function info()
+    public function info(): Factory|View|RedirectResponse
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-
-            return view('home.profile.info', compact('user'));
-        }
-        toastr()->error('لطفا ثبت نام کنید.');
-
-        return redirect()->back();
+        $user = Auth::user();
+        return view('home.profile.info', compact('user'));
     }
 
-    public function orders()
+    public function orders(): Factory|View
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            $orders = Order::where('user_id', $user->id)->latest()->paginate();
+        $user = Auth::user();
+        $orders = Order::where('user_id', auth()->id())->latest()->paginate();
 
-            return view('home.profile.orders.index', compact('user', 'orders'));
-        }
-        toastr()->error('لطفا ابتدا ثبت نام کنید.');
-
-        return redirect()->back();
+        return view('home.profile.orders.index', compact('user', 'orders'));
     }
 
-    public function showOrder(Order $order)
+    public function showOrder(Order $order): Factory|View|RedirectResponse
     {
-        if (Auth::check()) {
-            if ($order->user_id != \auth()->id()) {
-                return redirect()->back();
-            }
-            $user = Auth::user();
-            $transaction = Transaction::where('order_id', $order->id)->first();
-
-            return view('home.profile.orders.show', compact('user', 'order', 'transaction'));
+        if ($order->user_id != \auth()->id()) {
+            return redirect()->back();
         }
-        toastr()->error('لطفا ابتدا ثبت نام کنید.');
+        $user = Auth::user();
+        $transaction = Transaction::where('order_id', $order->id)->first();
 
-        return redirect()->back();
+        return view('home.profile.orders.show', compact('user', 'order', 'transaction'));
     }
 
-    public function wishlist()
+    public function wishlist(): Factory|View
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            $wishlist = WishList::where('user_id', \auth()->id())->get();
-
-            return view('home.profile.wishlist', compact('user', 'wishlist'));
-        }
-        toastr()->error('لطفا ابتدا ثبت نام کنید.');
-
-        return redirect()->back();
+        $user = Auth::user();
+        $wishlist = WishList::userId(auth()->id())->with('product')->get();
+        return view('home.profile.wishlist', compact('user', 'wishlist'));
     }
 
-    public function comments()
+    public function comments(): Factory|View
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-
-            return view('home.profile.comments', compact('user'));
-        }
-        toastr()->error('لطفا ابتدا ثبت نام کنید.');
-
-        return redirect()->back();
+        $user = Auth::user();
+        $comments = Comment::userId(auth()->id())->with('commentable', 'user.rates')->orderBy('commentable_type')->get();
+        return view('home.profile.comments', compact('user', 'comments'));
     }
 
-    public function addresses() {}
+    public function addresses() {
 
-    public function resetPassword()
-    {
-        if (Auth::check()) {
-            $user = Auth::user();
-
-            return view('home.profile.resetPassword', compact('user'));
-        }
-        toastr()->error('لطفا ابتدا ثبت نام کنید.');
-
-        return redirect()->back();
     }
 
-    public function resetPasswordCheck(Request $request)
+    public function resetPassword(): Factory|View|RedirectResponse
+    {
+        $user = Auth::user();
+        return view('home.profile.resetPassword', compact('user'));
+    }
+
+    public function resetPasswordCheck(Request $request): RedirectResponse
     {
         $request->validate([
-            'currentPassword' => 'nullable',
-            'newPassword' => 'required|min:8|max:32',
-            'confirmNewPassword' => 'required|same:newPassword',
+            'currentPassword' => 'sometimes|required|string|min:8|max:255',
+            'newPassword' => 'required|string|min:8|max:255|different:currentPassword',
+            'confirmNewPassword' => 'required|string|same:newPassword',
         ]);
+        $user = Auth::user();
 
-        if (Hash::check($request->currentPassword, \auth()->user()->password)) {
-            $newPassword = Hash::make($request->newPassword);
-            $user = Auth::user();
+        if ($user->provider_name == 'manual'){
+            if (Hash::check($request->input('currentPassword'), $user->password)) {
+                $newPassword = Hash::make($request->newPassword);
+                $user->update([
+                    'password' => $newPassword,
+                ]);
+                toastr()->success('کلمه عبور با موفقیت تغییر یافت.');
+            } else {
+                toastr()->error('کلمه عبور فعلی وارد شده درست نیست.');
+            }
+        }else{
+            $newPassword = Hash::make($request->input('newPassword'));
             $user->update([
                 'password' => $newPassword,
+                'provider_name' => 'manual'
             ]);
             toastr()->success('کلمه عبور با موفقیت تغییر یافت.');
-
-            return redirect()->back();
-        } else {
-            toastr()->error('کلمه عبور فعلی وارد شده درست نیست.');
-
-            return redirect()->back();
         }
-    }
-
-    public function verifyEmail()
-    {
-        if (Auth::check()) {
-            $user = Auth::user();
-            if ($user->email_verified_at == null) {
-                return view('home.profile.verifyEmail', compact('user'));
-            } else {
-                toastr()->info(('ایمیل شما قبلا تایید شده است.'));
-
-                return redirect()->back();
-            }
-        }
-        toastr()->error('لطفا ابتدا ثبت نام کنید.');
 
         return redirect()->back();
     }
 
-    public function logout()
+    public function verifyEmail(): Factory|View|RedirectResponse
     {
-        if (Auth::check()) {
-            auth()->logout();
+        $user = Auth::user();
+        if ($user->email_verified_at == null) {
+            return view('home.profile.verifyEmail', compact('user'));
+        } else {
+            toastr()->info(('ایمیل شما قبلا تایید شده است.'));
+            return redirect()->back();
         }
+    }
 
+    public function logout(): RedirectResponse
+    {
+        auth()->logout();
         return redirect()->route('home.index');
     }
 
-    public function update(Request $request)
+    public function update(UpdateRequest $request): RedirectResponse
     {
-        $request->validate([
-            'username' => ['required', Rule::unique('users')->ignore($request->user_id)],
-            'first_name' => 'nullable|min:3|max:16',
-            'last_name' => 'nullable|min:3|max:16',
-            'phone_number' => ['nullable', Rule::unique('users')->ignore($request->user_id), 'min:10', 'max:10'],
-            'avatar' => 'nullable|mimes:jpg,jpeg,png,svg',
-            'email' => 'required|email',
-        ]);
-
         try {
             DB::beginTransaction();
 
             $user = Auth::user();
 
-            $manager = new ImageManager(
-                new Driver
-            );
-
             if ($request->avatar) {
-                $avatarName = generateFileName($request->avatar->getClientOriginalName());
-                $resized = $manager->read($request->avatar)->resize(100, 100)->save(public_path(env('USER_AVATAR_UPLOAD_PATH')), $avatarName);
-                //                $request->avatar->move(public_path(env('USER_AVATAR_UPLOAD_PATH')) , $avatarName);
+                $imageName = generateFileName($request->avatar->getClientOriginalName());
+                $request->avatar->storeAs(env('USER_AVATAR_UPLOAD_PATH'), $imageName, 'public');
+                $user->fill([
+                    'avatar' => $imageName,
+                ]);
             }
 
-            $user->update([
-                'username' => $request->username,
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'phone_number' => $request->phone_number,
-                'avatar' => $request->avatar ? $avatarName : $user->avatar,
-                'email' => $request->email,
+            $user->fill([
+                'username'     => $request->input('username'),
+                'first_name'   => $request->input('first_name'),
+                'last_name'    => $request->input('last_name'),
+                'phone_number' => $request->input('phone_number'),
+                'email'        => $request->input('email'),
             ]);
 
+            if ($user->isDirty('email')) {
+                $user->email_verified_at = null;
+            }
+
+            $user->save();
+
             DB::commit();
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
             toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
 
@@ -190,7 +154,6 @@ class ProfileController extends Controller
         }
 
         toastr()->success('با موفقیت اطلاعات ویرایش شد.');
-
         return redirect()->back();
     }
 }
