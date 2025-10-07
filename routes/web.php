@@ -125,7 +125,7 @@ Route::prefix('/')->name('home.')->group(function () {
         Route::get('logout', [HomeProfileController::class, 'logout'])->name('logout');
     });
 
-    Route::get('get_province_cities_list', [HomeProfileAddressesController::class, 'get_province_cities_list']);
+    Route::get('get_province_cities_list/{province}', [HomeProfileAddressesController::class, 'get_province_cities_list']);
 
     Route::post('comments/{model}/{id}', [HomeCommentController::class, 'store'])->name('comments.store');
 
