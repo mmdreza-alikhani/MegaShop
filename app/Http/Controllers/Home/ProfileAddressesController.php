@@ -8,25 +8,38 @@ use App\Http\Requests\Home\Profile\Address\UpdateRequest;
 use App\Models\City;
 use App\Models\Province;
 use App\Models\UserAddress;
-use App\Models\UserAddresses;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class ProfileAddressesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): Factory|View
+    public function index(): View|Application|Factory
     {
-        $user = Auth::user();
-        $provinces = Province::pluck('name', 'id');
-        $cities = City::all();
-        dd($cities);
-        return view('home.profile.addresses.index', compact('user', 'provinces'));
+        $user = auth()->user();
+
+        // ✅ Cache برای provinces و cities (این داده‌ها کم تغییر می‌کنن)
+        $provinces = Cache::remember('provinces_list', now()->addDay(), function () {
+            return Province::pluck('name', 'id');
+        });
+
+        $cities = Cache::remember('cities_grouped_by_province', now()->addDay(), function () {
+            return City::all(['id', 'name', 'province_id'])
+                ->groupBy('province_id')
+                ->map(fn($cities) => $cities->pluck('name', 'id'));
+        });
+
+        // ✅ Eager Loading برای جلوگیری از N+1 Query
+        $user->load(['addresses.city', 'addresses.province']);
+
+        return view('home.profile.addresses.index', compact('user', 'provinces', 'cities'));
     }
 
     /**
@@ -34,14 +47,17 @@ class ProfileAddressesController extends Controller
      */
     public function store(StoreRequest $request): RedirectResponse
     {
+        // ✅ Authorization check
+        // اگه می‌خوای محدودیت تعداد آدرس داشته باشی:
+        if (auth()->user()->addresses()->count() >= 10) {
+            flash()->error('حداکثر تعداد آدرس‌های مجاز 10 عدد است');
+            return redirect()->back();
+        }
+
+        // ✅ فقط validated data رو بگیر
         UserAddress::create([
             'user_id' => auth()->id(),
-            'title' => $request->input('title'),
-            'phone_number' => $request->input('phone_number'),
-            'postal_code' => $request->integer('postal_code'),
-            'province_id' => $request->integer('province_id'),
-            'city_id' => $request->integer('city_id'),
-            'address' => $request->input('address'),
+            ...$request->validated()
         ]);
 
         flash()->success('آدرس مورد نظر با موفقیت ثبت شد');
@@ -49,47 +65,34 @@ class ProfileAddressesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Request $request, UserAddress $userAddress): Factory|View
-    {
-        $user = Auth::user();
-        $address = UserAddress::where('user_id', $user->id)->where('id', $request->address)->first();
-        $cities = City::where('province_id', $address->province_id)->get();
-        return view('home.profile.addresses.edit', compact('user', 'address', 'cities'));
-    }
-
-    /**
      * Update the specified resource in storage.
+     * @throws AuthorizationException
      */
     public function update(UpdateRequest $request, UserAddress $address): RedirectResponse
     {
-        $address->update([
-            'title' => $request->input('title'),
-            'phone_number' => $request->integer('phone_number'),
-            'postal_code' => $request->integer('postal_code'),
-            'province_id' => $request->integer('province_id'),
-            'city_id' => $request->integer('city_id'),
-            'address' => $request->string('address'),
-        ]);
+        // ✅ Authorization - کاربر فقط آدرس خودش رو ویرایش کنه
+        $this->authorize('update', $address);
 
-        toastr()->success('آدرس مورد نظر با موفقیت ویرایش شد');
+        // ✅ مستقیم validated data رو آپدیت کن
+        $address->update($request->validated());
+
+        flash()->success('آدرس مورد نظر با موفقیت ویرایش شد');
         return redirect()->route('home.profile.addresses.index');
     }
 
     /**
      * Remove the specified resource from storage.
+     * @throws AuthorizationException
      */
     public function destroy(UserAddress $address): RedirectResponse
     {
+        // ✅ Authorization
+        $this->authorize('delete', $address);
+
+        // ✅ Soft delete در صورت نیاز
         $address->delete();
 
-        toastr()->success('آدرس مورد نظر با موفقیت حذف شد!');
+        flash()->success('آدرس مورد نظر با موفقیت حذف شد');
         return redirect()->back();
-    }
-
-    public function get_province_cities_list(Province $province)
-    {
-        return City::where('province_id', $province->id)->pluck('name', 'id');
     }
 }
