@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @method static latest()
  * @method static create(array $array)
- * @method static search(string $string, string $trim)
  * @method static where(string $string, int $int)
  * @method static whereHas(string $string, \Closure $param)
  * @method static active()

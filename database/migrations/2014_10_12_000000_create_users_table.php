@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('status');
             $table->boolean('is_active');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

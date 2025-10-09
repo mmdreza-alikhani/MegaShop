@@ -8,20 +8,17 @@ use App\Models\Platform;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends Controller
 {
     public function show_category(Category $category): View|Application|Factory
     {
-        $products = $category->products()->filter()->search()->paginate(10);
+        $products = $category->products()->filter()->search('title', request('q'))->paginate(10);
         $platforms = Platform::pluck('title', 'id');
         $filters = $category->filters()->with('filterValues')->get();
         $variation = $category->variation()->with('variationValues')->first();
-        $rootCategories = Category::where('parent_id', 0)
-            ->with('children.children.children') // eager load nested children
-            ->get();
 
-
-        return view('home.categories.index', compact('products', 'category', 'filters', 'variation', 'platforms', 'rootCategories'));
+        return view('home.categories.index', compact('products', 'category', 'filters', 'variation', 'platforms'));
     }
 }

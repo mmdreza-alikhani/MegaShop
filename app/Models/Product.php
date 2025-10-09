@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static whereIn(string $string, string $string1, $getAllCategoryIds)
  * @method static where(string $string, string $string1)
  * @method static latest()
- * @method static search(string $string, string $trim)
  * @method static create(array $array)
  * @method static active()
  * @method static findOrFail(mixed $input)
@@ -177,16 +176,6 @@ class Product extends Model implements Cartable
                 'oldest' => $query->oldest(),
                 default => null,
             };
-        }
-
-        return $query;
-    }
-
-    public function scopeSearch($query)
-    {
-        $keyWord = request()->search;
-        if (request()->has('search') && trim($keyWord) != '') {
-            $query->where('title', 'LIKE', '%'.trim($keyWord).'%');
         }
 
         return $query;

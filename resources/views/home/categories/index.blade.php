@@ -57,30 +57,8 @@
                             <div class="nk-widget-content">
                                 <div class="input-group">
                                     <button onclick="filter()" type="button" class="nk-btn nk-btn-color-main-1"><span class="ion-search"></span></button>
-                                    <input id="searchInput" type="text" class="form-control" style="text-align: right" value="{{ request()->has('search') ? request()->search : '' }}" placeholder="جستجو در دسته بندی {{ $category->title }}">
+                                    <input id="searchInput" type="text" class="form-control" style="text-align: right" value="{{ request('q') }}" placeholder="جستجو در دسته بندی {{ $category->title }}">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="nk-widget nk-widget-highlighted" style="direction: rtl">
-                            <ul class="nk-breadcrumbs text-right px-3" style="direction: rtl;background-color: #293139">
-                                <li><span style="font-size: 24px">دسته بندی: </span></li>
-                            </ul>
-                            <div class="nk-widget-content">
-                                <ul class="nk-widget-categories text-right" style="direction: rtl">
-                                    <!-- START: Accordion -->
-                                    <div class="nk-accordion" id="accordion-0" role="tablist" aria-multiselectable="true">
-                                        @include('home.sections.category-accordion', [
-                                            'categories' => $rootCategories, // top-level categories
-                                            'parentId' => 0,
-                                            'depth' => 0
-                                        ])
-                                    </div>
-
-                                    <!-- END: Accordion -->
-{{--                                    @foreach($category->parent ? $category->parent->children : $category->children as $childCategory)--}}
-{{--                                        <li><a class="{{ $childCategory->slug == $category->slug ? 'active-link' : '' }}" href="{{ route('home.categories.show', ['category' => $childCategory->slug]) }}"> {{ $childCategory->name }} </a></li>--}}
-{{--                                    @endforeach--}}
-                                </ul>
                             </div>
                         </div>
                         <div class="nk-widget nk-widget-highlighted" style="direction: rtl">
@@ -100,7 +78,7 @@
                                 </ul>
                             </div>
                         </div>
-                        @foreach($filters as $filter)
+                        @forelse($filters as $filter)
                             <div class="nk-widget nk-widget-highlighted" style="direction: rtl">
                                 <ul class="nk-breadcrumbs text-right px-3" style="direction: rtl;background-color: #293139">
                                     <li><span style="font-size: 24px">{{ $filter->title }}</span></li>
@@ -118,7 +96,8 @@
                                     </ul>
                                 </div>
                             </div>
-                        @endforeach
+                        @empty
+                        @endforelse
                         <div class="nk-widget nk-widget-highlighted" style="direction: rtl">
                             <ul class="nk-breadcrumbs text-right px-3" style="direction: rtl;background-color: #293139">
                                 <li><span style="font-size: 24px">{{ $variation->title }}</span></li>
@@ -143,9 +122,8 @@
                     <input id="filteredPlatform" type="hidden" name="platform">
                     <input id="filteredVariation" type="hidden" name="v">
                     <input id="filteredSortBy" type="hidden" name="sortBy">
-                    <input id="filteredSearch" type="hidden" name="search">
+                    <input id="filteredSearch" type="hidden" name="q">
                     <input id="filteredDiscount" type="hidden" name="discount">
-                    <input id="filteredCategories" type="hidden" name="categories">
                 </form>
             </div>
         </div>

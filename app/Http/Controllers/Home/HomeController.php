@@ -28,14 +28,6 @@ class HomeController extends Controller
         return view('home.index', compact('banners', 'news', 'articles', 'products', 'platforms'));
     }
 
-    public function globalSearch(): View|Application|Factory
-    {
-        $products = Product::search('title', trim(request()->keyword))->get();
-        $articles = Post::search('title', trim(request()->keyword))->get();
-
-        return view('home.search.index', compact('products', 'allNews', 'articles', 'keyWord'));
-    }
-
     public function aboutUs(): View|Application|Factory
     {
         return view('home.about-us');
@@ -49,10 +41,5 @@ class HomeController extends Controller
             'message' => 'required|string|min:3|max:2500',
             'g-recaptcha-response' => [new GoogleReCaptchaV3ValidationRule('contact_us')],
         ]);
-    }
-
-    public function test()
-    {
-        dd(session()->has('coupon') ? session()->get('coupon.id') : null);
     }
 }

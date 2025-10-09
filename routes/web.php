@@ -28,6 +28,7 @@ use App\Http\Controllers\Home\PostController as HomePostController;
 use App\Http\Controllers\Home\ProductController as HomeProductController;
 use App\Http\Controllers\Home\ProfileAddressesController as HomeProfileAddressesController;
 use App\Http\Controllers\Home\ProfileController as HomeProfileController;
+use App\Http\Controllers\Home\SearchController;
 use App\Http\Controllers\Home\WishListController as HomeWishlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -98,7 +99,8 @@ Route::get('/reset-password/{token}', function (string $token) {
 Route::prefix('/')->name('home.')->group(function () {
 
     Route::get('', [HomeController::class, 'index'])->name('index');
-    Route::get('search', [HomeController::class, 'globalSearch'])->name('global-search');
+    Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])->name('search.autocomplete');
+    Route::get('s', [SearchController::class, 'search'])->name('search');
     Route::get('aboutus', [HomeController::class, 'aboutUs'])->name('aboutus');
     Route::get('aboutus#contact', [HomeController::class, 'aboutUs'])->name('aboutus.contact');
     Route::post('contactForm', [HomeController::class, 'contactForm'])->name('contactForm');
