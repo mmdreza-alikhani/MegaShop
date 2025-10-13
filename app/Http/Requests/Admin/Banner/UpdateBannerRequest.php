@@ -16,7 +16,7 @@ class UpdateBannerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->can('manage-banners');
+        return auth()->user()->can('banners-edit');
     }
 
     /**
@@ -27,7 +27,7 @@ class UpdateBannerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|unique:banners,title,'.$this->route('article')->id,
+            'title' => 'required|string|max:255|unique:banners,title,'.$this->route('banner')->id,
             'is_active' => 'required',
             'text' => 'required|string',
             'image' => 'required|max:2048|mimes:jpg,jpeg,png,svg',

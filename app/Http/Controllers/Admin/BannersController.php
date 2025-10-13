@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Banner\StoreBannerRequest;
 use App\Http\Requests\Admin\Banner\UpdateBannerRequest;
 use App\Models\Banner;
+use App\Services\FileUploadService;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -13,12 +14,13 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class BannersController extends Controller
 {
-    public function __construct()
+    protected mixed $uploadPath;
+    public function __construct(private readonly FileUploadService $fileUpload)
     {
+        $this->uploadPath = config('upload.banner_path');
         $this->middleware('permission:banners-index', ['only' => ['show', 'index']]);
         $this->middleware('permission:banners-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:banners-edit', ['only' => ['edit', 'update']]);
@@ -35,7 +37,7 @@ class BannersController extends Controller
         }
         $banners = $query->orderBy('priority')->latest()->paginate(15)->withQueryString();
 
-        return view('admin.attributes.index', compact('banners'));
+        return view('admin.banners.index', compact('banners'));
     }
 
     /**
@@ -54,9 +56,7 @@ class BannersController extends Controller
         try {
             DB::beginTransaction();
 
-            $imageName = $this->uploadImage($request->file('image'));
-//            $imageName = generateFileName($request->image->getClientOriginalName());
-//            $request->file('image')->storeAs(env('BANNER_IMAGE_UPLOAD_PATH'), $imageName, 'public');
+            $imageName = $this->fileUpload->upload($request->file('image'), $this->uploadPath);
 
             Banner::create([
                 ...$request->validated(),
@@ -100,14 +100,9 @@ class BannersController extends Controller
             DB::beginTransaction();
 
             $data = $request->validated();
-            if ($request->has('image')) {
-                $this->deleteImage($banner->image);
-                $data['image'] = $this->uploadImage($request->file('image'));
-//                $imageName = generateFileName($request->image->getClientOriginalName());
-//                $request->file('image')->storeAs(env('BANNER_IMAGE_UPLOAD_PATH'), $imageName, 'public');
-//                $banner->update([
-//                    'image' => $imageName,
-//                ]);
+            if ($request->hasFile('image')) {
+                $imageName = $this->fileUpload->replace($request->file('image'), $banner->image, $this->uploadPath);
+                $data['image'] = $imageName;
             }
             $data['is_active'] = $request->has('is_active');
             $banner->update($data);
@@ -131,9 +126,10 @@ class BannersController extends Controller
     public function destroy(Banner $banner): RedirectResponse
     {
         try {
-            // ✅ حذف تصویر
-            $this->deleteImage($banner->image);
-
+            $this->fileUpload->delete(
+                $this->uploadPath,
+                $banner->image
+            );
             $banner->delete();
 
             flash()->success('بنر با موفقیت حذف شد');
@@ -144,24 +140,4 @@ class BannersController extends Controller
             return redirect()->back();
         }
     }
-
-//    private function uploadImage($file): string
-//    {
-//        $imageName = generateFileName($file->getClientOriginalName());
-//        $file->storeAs(config('app.banner_image_path', 'banners'), $imageName, 'public');
-//
-//        return $imageName;
-//    }
-//
-//    /**
-//     * حذف تصویر
-//     */
-//    private function deleteImage(string $imageName): void
-//    {
-//        $path = config('app.banner_image_path', 'banners') . '/' . $imageName;
-//
-//        if (Storage::disk('public')->exists($path)) {
-//            Storage::disk('public')->delete($path);
-//        }
-//    }
 }

@@ -58,6 +58,7 @@
                     <div class="card-body">
                         @include('admin.layout.errors', ['errors' => $errors->update])
                         <form class="row p-3" action="{{ route('admin.banners.update', ['banner' => $banner]) }}" method="POST" enctype="multipart/form-data">
+                            @method('PUT')
                             @csrf
                             <div class="form-group col-12 col-lg-4">
                                 <label for="title">عنوان:*</label>
@@ -86,7 +87,7 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <img class="card-img"
-                                                 src="{{ url(env('BANNER_IMAGE_UPLOAD_PATH')) . '/' . $banner->image }}"
+                                                 src="{{ Storage::url('banners/images/') . $banner->image }}"
                                                  alt="{{ $banner->title }}-image">
                                         </div>
                                         <div class="col-6 m-1">
