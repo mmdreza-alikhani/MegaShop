@@ -101,13 +101,17 @@ function clearCart($user_id): void
 
 function isCartEmpty(): bool
 {
-    $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
+    if (auth()->check()) {
+        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
 
-    if (!$cart) {
-        return true;
+        if (!$cart) {
+            return true;
+        }
+
+        return $cart->items->isEmpty();
+    }else{
+        return false;
     }
-
-    return $cart->items->isEmpty();
 }
 
 function cartItems()
@@ -140,12 +144,16 @@ function cartItems()
 
 function isItemInCart($itemable_id): bool
 {
-    $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
-    $existingItem = $cart->items()
-        ->where('itemable_id', $itemable_id)
-        ->first();
+    if (auth()->check()) {
+        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
+        $existingItem = $cart->items()
+            ->where('itemable_id', $itemable_id)
+            ->first();
 
-    return $existingItem !== null;
+        return $existingItem !== null;
+    }else{
+        return false;
+    }
 }
 
 function cartTotalAmount(): float|int

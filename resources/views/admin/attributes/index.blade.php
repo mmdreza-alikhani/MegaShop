@@ -34,43 +34,16 @@
                 </div>
             </div>
             <div class="d-flex m-1 align-items-center justify-content-between">
-                <div class="c-grey text-center">
-                    <button data-target="#createAttributeModal" data-toggle="modal" type="button" class="btn f-primary fnt-xxs text-center">
-                        ایجاد ویژگی
-                    </button>
-                </div>
-                <div class="modal w-lg fade light rtl" id="createAttributeModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <form method="post" action="{{ route('admin.attributes.store') }}">
-                            @csrf
-                            <div class="modal-content card shade">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">
-                                        ایجاد ویژگی جدید
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal">
-                                        <span>&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    @include('admin.layout.errors', ['errors' => $errors->store])
-                                    <div class="row">
-                                        <div class="form-group col-12 col-lg-6">
-                                            <label for="title">نام:*</label>
-                                            <input type="text" name="title" id="title" class="form-control"
-                                                   value="{{ old('title') }}" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
-                                    <button type="submit" class="btn main f-main">ایجاد</button>
-                                </div>
-                            </div>
-                        </form>
+                @can('attributes-create')
+                    <div class="c-grey text-center">
+                        <button data-target="#createAttributeModal" data-toggle="modal" type="button" class="btn f-primary fnt-xxs text-center">
+                            ایجاد ویژگی
+                        </button>
                     </div>
-                </div>
-                <form action="{{ route('admin.attributes.search') }}" method="GET" class="m-0 p-0">
+                    @include('admin.attributes.partials.create-modal')
+                @endcan
+
+                <form action="#" method="GET" class="m-0 p-0">
                     <div class="input-group">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary c-primary" type="submit">
@@ -79,7 +52,7 @@
                         </div>
                         <input type="text" class="form-control" placeholder="جستجو"
                                style="width: 300px"
-                               value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword" required>
+                               value="{{ request('q') }}" name="q" required>
                     </div>
                 </form>
             </div>
@@ -117,75 +90,20 @@
                                                         <i class="fa fa-cog"></i>
                                                     </a>
                                                     <div class="dropdown-menu">
-                                                        <button data-target="#editAttributeModal-{{ $attribute->id }}" data-toggle="modal" type="button" class="dropdown-item">ویرایش</button>
-                                                        <button data-target="#deleteAttributeModal-{{ $attribute->id }}" data-toggle="modal" type="button" class="dropdown-item">حذف</button>
-                                                    </div>
-                                                    <div class="modal w-lg fade light rtl" id="editAttributeModal-{{ $attribute->id }}" tabindex="-1" role="dialog">
-                                                        <div class="modal-dialog" role="document">
-                                                            <form method="post" action="{{ route('admin.attributes.update', ['attribute' => $attribute->id]) }}">
-                                                                @method('put')
-                                                                @csrf
-                                                                <div class="modal-content card shade">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="exampleModalLabel">
-                                                                            ویرایش ویژگی: {{ $attribute->title }}
-                                                                        </h5>
-                                                                        <button type="button" class="close" data-dismiss="modal">
-                                                                            <span>&times;</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        @include('admin.layout.errors', ['errors' => $errors->update])
-                                                                        <div class="row">
-                                                                            <div class="form-group col-12 col-lg-6">
-                                                                                <label for="title-{{ $attribute->id }}">عنوان:*</label>
-                                                                                <input type="text" name="title" id="title-{{ $attribute->id }}" class="form-control"
-                                                                                       value="{{ $attribute->title }}" required>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
-                                                                        <button type="submit" class="btn main f-main">ویرایش</button>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                    @if(count($errors->update) > 0)
-                                                        <script>
-                                                            $(function() {
-                                                                $('#editAttributeModal-{{ session()->get('attribute_id') }}').modal({
-                                                                    show: true
-                                                                });
-                                                            });
-                                                        </script>
-                                                    @endif
-                                                    <div class="modal w-lg fade justify rtl" id="deleteAttributeModal-{{ $attribute->id }}" tabindex="-1" role="dialog">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">حذف ویژگی: {{ $attribute->title }}</h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    آیا از این عملیات مطمئن هستید؟
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn outlined o-danger c-danger"
-                                                                            data-dismiss="modal">بستن</button>
-                                                                    <form action="{{ route('admin.attributes.destroy', $attribute->id) }}" method="POST" style="display: inline;">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn f-main">حذف</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                        @can('attributes-edit')
+                                                            <button data-target="#editAttributeModal-{{ $attribute->id }}" data-toggle="modal" type="button" class="dropdown-item">ویرایش</button>
+                                                        @endcan
+                                                        @can('attributes-delete')
+                                                            <button data-target="#deleteAttributeModal-{{ $attribute->id }}" data-toggle="modal" type="button" class="dropdown-item">حذف</button>
+                                                        @endcan
                                                     </div>
                                                 </div>
+                                                @can('attributes-edit')
+                                                    @include('admin.attributes.partials.edit-modal')
+                                                @endcan
+                                                @can('attributes-delete')
+                                                    @include('admin.attributes.partials.delete-modal')
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
@@ -199,15 +117,4 @@
             </div>
         </div>
     </main>
-@endsection
-@section('scripts')
-    <script>
-        @if(count($errors->store) > 0)
-        $(function() {
-            $('#createAttributeModal').modal({
-                show: true
-            });
-        });
-        @endif
-    </script>
 @endsection

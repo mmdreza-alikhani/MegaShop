@@ -150,6 +150,10 @@ class Product extends Model implements Cartable
             $applyFilter('platform', 'title', $request->platform);
         }
 
+        if ($request->filled('brand')) {
+            $applyFilter('brand', 'title', $request->brand);
+        }
+
         if ($request->boolean('discount')) {
             $query->whereHas('variations', function ($q) {
                 $q->where('quantity', '>', 0)

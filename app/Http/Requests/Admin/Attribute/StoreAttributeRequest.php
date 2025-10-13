@@ -14,7 +14,7 @@ class StoreAttributeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->can('manage-products');
+        return auth()->user()->can('attributes-create');
     }
 
     /**
@@ -26,6 +26,15 @@ class StoreAttributeRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255|unique:attributes,title',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'title.required' => 'عنوان ویژگی الزامی است',
+            'title.unique' => 'این ویژگی قبلاً ثبت شده است',
+            'title.max' => 'عنوان نباید بیشتر از 255 کاراکتر باشد',
         ];
     }
 }

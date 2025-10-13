@@ -17,7 +17,6 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Home\AuthController as HomeAuthController;
-use App\Http\Controllers\Home\BrandController as HomeBrandController;
 use App\Http\Controllers\Home\CartController;
 use App\Http\Controllers\Home\CategoryController as HomeCategoryController;
 use App\Http\Controllers\Home\CommentController as HomeCommentController;
@@ -43,52 +42,51 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('/management/')->name('admin.')->middleware(['permission:manage-general', 'auth.check'])->group(function () {
+Route::prefix('/management/')->name('admin.')->middleware(['auth.check'])->group(function () {
 
     Route::get('', [AdminHomeController::class, 'mainPage'])->name('panel');
 
-    Route::resource('users', UserController::class)->middleware(['permission:manage-users']);
-    Route::get('usersSearch', [UserController::class, 'search'])->middleware(['permission:manage-users'])->name('users.search');
-    Route::resource('permissions', PermissionController::class)->middleware(['permission:manage-users']);
-    Route::resource('roles', RoleController::class)->middleware(['permission:manage-users']);
-    Route::resource('brands', BrandController::class)->middleware(['permission:manage-products']);
-    Route::get('brandsSearch', [BrandController::class, 'search'])->middleware(['permission:manage-products'])->name('brands.search');
-    Route::resource('platforms', PlatformController::class)->middleware(['permission:manage-products']);
-    Route::resource('attributes', AttributeController::class)->middleware(['permission:manage-products']);
-    Route::get('attributesSearch', [AttributeController::class, 'search'])->middleware(['permission:manage-products'])->name('attributes.search');
-    Route::resource('categories', CategoryController::class)->middleware(['permission:manage-products']);
-    Route::get('categoriesSearch', [CategoryController::class, 'search'])->middleware(['permission:manage-products'])->name('categories.search');
-    Route::resource('tags', TagController::class)->middleware(['permission:manage-products']);
-    Route::get('tagsSearch', [TagController::class, 'search'])->middleware(['permission:manage-products'])->name('tags.search');
-    Route::resource('products', ProductController::class)->middleware(['permission:manage-products']);
-    Route::get('productsSearch', [ProductController::class, 'search'])->middleware(['permission:manage-products'])->name('products.search');
-    Route::resource('banners', BannersController::class)->middleware(['permission:manage-general']);
-    Route::get('bannersSearch', [BannersController::class, 'search'])->middleware(['permission:manage-general'])->name('banners.search');
-    Route::resource('posts', PostController::class)->middleware(['permission:manage-products']);
-    Route::get('postsSearch', [PostController::class, 'search'])->middleware(['permission:manage-products'])->name('posts.search');
-    Route::get('comments/toggle', [CommentController::class, 'toggle'])->middleware(['permission:manage-comments'])->name('comments.toggle');
-    Route::resource('comments', CommentController::class)->middleware(['permission:manage-comments']);
-    Route::get('commentsSearch', [CommentController::class, 'search'])->middleware(['permission:manage-comments'])->name('comments.search');
-    Route::resource('coupons', CouponController::class)->middleware(['permission:manage-orders']);
-    Route::get('couponsSearch', [CouponController::class, 'search'])->middleware(['permission:manage-orders'])->name('coupons.search');
-    Route::resource('orders', OrderController::class)->middleware(['permission:manage-orders']);
-    Route::get('ordersSearch', [OrderController::class, 'search'])->middleware(['permission:manage-orders'])->name('orders.search');
+    Route::resource('users', UserController::class)->middleware(['permission:users-index']);
+    Route::get('usersSearch', [UserController::class, 'search'])->middleware(['permission:users-index'])->name('users.search');
+    Route::resource('permissions', PermissionController::class)->middleware(['permission:users-index']);
+    Route::resource('roles', RoleController::class)->middleware(['permission:users-index']);
+    Route::resource('brands', BrandController::class)->middleware(['permission:brands-index']);
+    Route::get('brandsSearch', [BrandController::class, 'search'])->middleware(['permission:brands-index'])->name('brands.search');
+    Route::resource('platforms', PlatformController::class)->middleware(['permission:platforms-index']);
+    Route::resource('attributes', AttributeController::class)->middleware(['permission:attributes-index']);
+    Route::resource('categories', CategoryController::class)->middleware(['permission:categories-index']);
+    Route::get('categoriesSearch', [CategoryController::class, 'search'])->middleware(['permission:categories-index'])->name('categories.search');
+    Route::resource('tags', TagController::class)->middleware(['permission:tags-index']);
+    Route::get('tagsSearch', [TagController::class, 'search'])->middleware(['permission:tags-index'])->name('tags.search');
+    Route::resource('products', ProductController::class)->middleware(['permission:products-index']);
+    Route::get('productsSearch', [ProductController::class, 'search'])->middleware(['permission:products-index'])->name('products.search');
+    Route::resource('banners', BannersController::class)->middleware(['permission:banners-index']);
+    Route::get('bannersSearch', [BannersController::class, 'search'])->middleware(['permission:banners-index'])->name('banners.search');
+    Route::resource('posts', PostController::class)->middleware(['permission:posts-index']);
+    Route::get('postsSearch', [PostController::class, 'search'])->middleware(['permission:posts-index'])->name('posts.search');
+    Route::get('comments/toggle', [CommentController::class, 'toggle'])->middleware(['permission:comments-index'])->name('comments.toggle');
+    Route::resource('comments', CommentController::class)->middleware(['permission:comments-index']);
+    Route::get('commentsSearch', [CommentController::class, 'search'])->middleware(['permission:comments-index'])->name('comments.search');
+    Route::resource('coupons', CouponController::class)->middleware(['permission:coupons-index']);
+    Route::get('couponsSearch', [CouponController::class, 'search'])->middleware(['permission:coupons-index'])->name('coupons.search');
+    Route::resource('orders', OrderController::class)->middleware(['permission:orders-index']);
+    Route::get('ordersSearch', [OrderController::class, 'search'])->middleware(['permission:orders-index'])->name('orders.search');
 
     // Approve Comment
-    Route::get('/comments/{comment}/change-status', [CommentController::class, 'changeStatus'])->name('comments.changeStatus')->middleware(['permission:manage-comments']);
+    Route::get('/comments/{comment}/change-status', [CommentController::class, 'changeStatus'])->name('comments.changeStatus')->middleware(['permission:comments-toggle']);
 
     // Get Category Attributes
-    Route::get('/get-category-attribute/{category}', [CategoryController::class, 'getCategoryAttribute'])->middleware(['permission:manage-products']);
+    Route::get('/get-category-attribute/{category}', [CategoryController::class, 'getCategoryAttribute'])->middleware(['permission:categories-index']);
 
     // Edit Product Images
-    Route::get('/products/{product}/edit-images', [ProductImageController::class, 'edit'])->name('products.images.edit')->middleware(['permission:manage-products']);
-    Route::delete('/products/{product}/destroy-images', [ProductImageController::class, 'destroy'])->name('products.images.destroy')->middleware(['permission:manage-products']);
-    Route::put('/products/{product}/set-to-primary', [ProductImageController::class, 'set_primary'])->name('products.images.set_primary')->middleware(['permission:manage-products']);
-    Route::post('/products/{product}/add-images', [ProductImageController::class, 'add'])->name('products.images.add')->middleware(['permission:manage-products']);
+    Route::get('/products/{product}/edit-images', [ProductImageController::class, 'edit'])->name('products.images.edit')->middleware(['permission:products-edit']);
+    Route::delete('/products/{product}/destroy-images', [ProductImageController::class, 'destroy'])->name('products.images.destroy')->middleware(['permission:products-edit']);
+    Route::put('/products/{product}/set-to-primary', [ProductImageController::class, 'set_primary'])->name('products.images.set_primary')->middleware(['permission:products-edit']);
+    Route::post('/products/{product}/add-images', [ProductImageController::class, 'add'])->name('products.images.add')->middleware(['permission:products-edit']);
 
     // Edit Product Category
-    Route::get('/products/{product}/edit-category', [ProductController::class, 'edit_category'])->name('products.category.edit')->middleware(['permission:manage-products']);
-    Route::put('/products/{product}/update-category', [ProductController::class, 'update_category'])->name('products.category.update')->middleware(['permission:manage-products']);
+    Route::get('/products/{product}/edit-category', [ProductController::class, 'edit_category'])->name('products.category.edit')->middleware(['permission:products-edit']);
+    Route::put('/products/{product}/update-category', [ProductController::class, 'update_category'])->name('products.category.update')->middleware(['permission:products-edit']);
 
 });
 
@@ -149,7 +147,7 @@ Route::prefix('/')->name('home.')->group(function () {
 
     Route::get('platforms/{platform:slug}', [HomePlatformController::class, 'show_products'])->name('platforms.products.show');
 
-    Route::get('brands/{brand:slug}', [HomeBrandController::class, 'show_products'])->name('brands.products.show');
+//    Route::get('brands/{brand:slug}', [HomeBrandController::class, 'show_products'])->name('brands.products.show');
 
 //    Route::get('register', [HomeAuthController::class, 'register'])->name('register');
 //    Route::get('login', [HomeAuthController::class, 'login'])->name('login');

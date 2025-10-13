@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @method static latest()
@@ -126,8 +129,99 @@ class Category extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function allProducts()
+    public function getMergedFilters(): Collection
     {
-        return Product::whereIn('category_id', '=', $this->getAllCategoryIds())->get();
+        $categoryIds = $this->getAllDescendantIds();
+        $cacheKey = 'filters_categories_' . md5(implode(',', $categoryIds));
+
+        return Cache::remember($cacheKey, now()->addHour(), function () use ($categoryIds) {
+            // ✅ یک Query برای گرفتن ID فیلترها
+            $filterIds = CategoryAttribute::whereIn('category_id', $categoryIds)
+                ->filter()
+                ->distinct()
+                ->pluck('attribute_id');
+
+            if ($filterIds->isEmpty()) {
+                return collect();
+            }
+
+            // ✅ گرفتن فیلترها با مقادیرشون
+            return Attribute::whereIn('id', $filterIds)
+                ->with(['filterValues' => function ($query) {
+                    $query->select('id', 'attribute_id', 'value')
+                        ->orderBy('value');
+                }])
+                ->select('id', 'title')
+                ->orderBy('title')
+                ->get()
+                ->map(function ($filter) {
+                    $filter->filterValues = $filter->filterValues
+                        ->unique('value')
+                        ->values();
+
+                    return $filter;
+                });
+        });
+    }
+
+    /**
+     * گرفتن ID تمام دسته‌بندی‌های فرزند
+     */
+    public function getAllDescendantIds(): array
+    {
+        return Cache::remember("category_{$this->id}_descendants", now()->addDay(), function () {
+            return $this->getDescendantIdsRecursive($this->id);
+        });
+    }
+
+    /**
+     * Recursive method
+     */
+    private function getDescendantIdsRecursive(int $categoryId): array
+    {
+        $ids = [$categoryId];
+
+        $children = self::where('parent_id', '=', $categoryId)->pluck('id');
+
+        foreach ($children as $childId) {
+            $ids = array_merge($ids, $this->getDescendantIdsRecursive($childId));
+        }
+
+        return $ids;
+    }
+
+    /**
+     * پاک کردن Cache فیلترها
+     */
+    public function clearFiltersCache(): void
+    {
+        $categoryIds = $this->getAllDescendantIds();
+        $cacheKey = 'filters_categories_' . md5(implode(',', $categoryIds));
+        Cache::forget($cacheKey);
+
+        // پاک کردن Cache والدین
+        $parent = $this->parent;
+        while ($parent) {
+            $parentIds = $parent->getAllDescendantIds();
+            $parentCacheKey = 'filters_categories_' . md5(implode(',', $parentIds));
+            Cache::forget($parentCacheKey);
+            $parent = $parent->parent;
+        }
+    }
+
+    /**
+     * Model Events
+     */
+    protected static function booted(): void
+    {
+        static::saved(function ($category) {
+            Cache::forget("category_{$category->id}_descendants");
+            $category->clearFiltersCache();
+        });
+
+        static::deleted(function ($category) {
+            Cache::forget("category_{$category->id}_descendants");
+            $category->clearFiltersCache();
+        });
     }
 }

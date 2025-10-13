@@ -78,49 +78,49 @@
                                 </ul>
                             </div>
                         </div>
-                        @forelse($filters as $filter)
-                            <div class="nk-widget nk-widget-highlighted" style="direction: rtl">
-                                <ul class="nk-breadcrumbs text-right px-3" style="direction: rtl;background-color: #293139">
-                                    <li><span style="font-size: 24px">{{ $filter->title }}</span></li>
-                                </ul>
-                                <div class="nk-widget-content">
-                                    <ul class="nk-widget-categories text-right" style="direction: rtl">
-                                        @foreach($filter->filterValues as $value)
-                                            <li class="my-2">
-                                                <label class="form-check-label" for="filter-{{ $value->value }}">
-                                                    {{ $value->value }}
-                                                </label>
-                                                <input class="form-check-input m-2 filter-{{ $filter->id }}" type="checkbox" onchange="filter()" value="{{ $value->value }}" id="filter-{{ $value->value }}" {{ request()->has('filter.' . $filter->id) && in_array( $value->value, explode('-', request()->filter[$filter->id] ) ) ? 'checked' : '' }}>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        @empty
-                        @endforelse
                         <div class="nk-widget nk-widget-highlighted" style="direction: rtl">
                             <ul class="nk-breadcrumbs text-right px-3" style="direction: rtl;background-color: #293139">
-                                <li><span style="font-size: 24px">{{ $variation->title }}</span></li>
+                                <li><span style="font-size: 24px">برند ها</span></li>
                             </ul>
                             <div class="nk-widget-content">
                                 <ul class="nk-widget-categories text-right" style="direction: rtl">
-                                    @foreach($variation->variationValues as $value)
+                                    @foreach($brands as $key => $value)
                                         <li class="my-2">
-                                            <label class="form-check-label" for="variation-{{ $value->value }}">
-                                                {{ $value->value }}
+                                            <label class="form-check-label" for="brand-{{ $value }}">
+                                                {{ $value }}
                                             </label>
-                                            <input class="form-check-input m-2 variation" type="checkbox" onchange="filter()" value="{{ $value->value }}" id="variation-{{ $value->value }}" {{ request()->v && in_array( $value->value, explode('-', request('v')) ) ? 'checked' : '' }}>
+                                            <input class="form-check-input m-2 brand" type="checkbox" onchange="filter()" value="{{ $value }}" id="brand-{{ $value }}" {{ request()->brand && in_array( $value, explode('-', request('brand')) ) ? 'checked' : '' }}>
                                         </li>
                                     @endforeach
                                 </ul>
                             </div>
                         </div>
+{{--                        @forelse($filters as $filter)--}}
+{{--                            <div class="nk-widget nk-widget-highlighted" style="direction: rtl">--}}
+{{--                                <ul class="nk-breadcrumbs text-right px-3" style="direction: rtl;background-color: #293139">--}}
+{{--                                    <li><span style="font-size: 24px">{{ $filter->title }}</span></li>--}}
+{{--                                </ul>--}}
+{{--                                <div class="nk-widget-content">--}}
+{{--                                    <ul class="nk-widget-categories text-right" style="direction: rtl">--}}
+{{--                                        @foreach($filter->filterValues as $value)--}}
+{{--                                            <li class="my-2">--}}
+{{--                                                <label class="form-check-label" for="filter-{{ $value->value }}">--}}
+{{--                                                    {{ $value->value }}--}}
+{{--                                                </label>--}}
+{{--                                                <input class="form-check-input m-2 filter-{{ $filter->id }}" type="checkbox" onchange="filter()" value="{{ $value->value }}" id="filter-{{ $value->value }}" {{ request()->has('filter.' . $filter->id) && in_array( $value->value, explode('-', request()->filter[$filter->id] ) ) ? 'checked' : '' }}>--}}
+{{--                                            </li>--}}
+{{--                                        @endforeach--}}
+{{--                                    </ul>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        @empty--}}
+{{--                        @endforelse--}}
                     </aside>
-                    @foreach($filters as $filter)
-                        <input id="filter-{{ $filter->id }}" type="hidden" name="filter[{{ $filter->id }}]">
-                    @endforeach
+{{--                    @foreach($filters as $filter)--}}
+{{--                        <input id="filter-{{ $filter->id }}" type="hidden" name="filter[{{ $filter->id }}]">--}}
+{{--                    @endforeach--}}
                     <input id="filteredPlatform" type="hidden" name="platform">
-                    <input id="filteredVariation" type="hidden" name="v">
+                    <input id="filteredBrand" type="hidden" name="brand">
                     <input id="filteredSortBy" type="hidden" name="sortBy">
                     <input id="filteredSearch" type="hidden" name="q">
                     <input id="filteredDiscount" type="hidden" name="discount">
@@ -147,13 +147,13 @@
                 return this.value;
             }).get().join('-');
 
-            updateField("#filteredVariation", joinChecked("variation"));
             updateField("#filteredPlatform", joinChecked("platform"));
+            updateField("#filteredBrand", joinChecked("brand"));
 
-            let filters = @json($filters);
-            filters.forEach(({ id }) => {
-                updateField(`#filter-${id}`, joinChecked(`filter-${id}`));
-            });
+            {{--let filters = @json($filters);--}}
+            {{--filters.forEach(({ id }) => {--}}
+            {{--    updateField(`#filter-${id}`, joinChecked(`filter-${id}`));--}}
+            {{--});--}}
 
             updateField("#filteredDiscount", $('#discountedProducts').prop('checked') ? true : '');
             updateField("#filteredSearch", $('#searchInput').val());

@@ -20,24 +20,12 @@ class Attribute extends Model
     use HasFactory, SearchableTrait;
 
     protected $table = 'attributes';
-
-    protected $fillable = [
-        'title',
-    ];
-
+    protected $fillable = ['title',];
     protected $casts = [
         'title' => 'string',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
-
-    public function scopeFilter($query): void
-    {
-        $query->where('type', 'filter');
-    }
-
-    public function scopeVariation($query): void
-    {
-        $query->where('type', 'variation');
-    }
 
     public function categories(): BelongsToMany
     {

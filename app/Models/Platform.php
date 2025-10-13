@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @method static latest()
@@ -70,6 +71,14 @@ class Platform extends Model
 
         static::updating(function ($platform) {
             $platform->slug = SlugService::createSlug($platform, 'slug', $platform->name);
+        });
+
+        static::saved(function () {
+            Cache::forget("platforms_list");
+        });
+
+        static::deleted(function () {
+            Cache::forget("platforms_list");
         });
     }
 

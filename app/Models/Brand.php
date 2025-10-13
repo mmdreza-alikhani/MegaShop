@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @method static latest()
@@ -62,6 +63,14 @@ class Brand extends Model
 
         static::updating(function ($brand) {
             $brand->slug = SlugService::createSlug($brand, 'slug', $brand->title);
+        });
+
+        static::saved(function () {
+            Cache::forget("brands_list");
+        });
+
+        static::deleted(function () {
+            Cache::forget("brands_list");
         });
     }
 

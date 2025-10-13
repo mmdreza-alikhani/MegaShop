@@ -105,7 +105,7 @@
                         <!-- START: Meta -->
                         <div class="nk-product-meta text-right" style="direction: rtl">
                             <div><strong>شناسه محصول:</strong> <span id="ProductSku"></span></div>
-                            <div><strong>برند</strong>: <a href="{{ route('home.brands.products.show', ['brand' => $product->brand->slug]) }}">{{ $product->brand->title }}</a></div>
+                            <div><strong>برند</strong>: <a href="#">{{ $product->brand->title }}</a></div>
                             <div><strong>دسته بندی</strong>: <a href="{{ route('home.categories.show', ['category' => $product->category->slug]) }}">{{ $product->category->title }}</a> </div>
                             <div><strong>برچسب ها</strong>:
                                 @foreach($product->tags as $tag)

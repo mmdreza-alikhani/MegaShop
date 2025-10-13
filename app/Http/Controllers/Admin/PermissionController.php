@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Permission\StorePermissionRequest;
+use App\Http\Requests\Admin\Permission\UpdatePermissionRequest;
 use App\Http\Requests\Admin\Role\StoreRoleRequest;
 use App\Http\Requests\Admin\Role\UpdateRoleRequest;
 use Illuminate\Contracts\View\Factory;
@@ -20,7 +22,7 @@ class PermissionController extends Controller
         return view('admin.permissions.index', compact('permissions'));
     }
 
-    public function store(StoreRoleRequest $request): RedirectResponse
+    public function store(StorePermissionRequest $request): RedirectResponse
     {
         Permission::create([
             'name' => $request->input('name'),
@@ -33,7 +35,7 @@ class PermissionController extends Controller
         return redirect()->back();
     }
 
-    public function update(UpdateRoleRequest $request, Permission $permission): RedirectResponse
+    public function update(UpdatePermissionRequest $request, Permission $permission): RedirectResponse
     {
         $permission->update([
             'name' => $request->input('name'),
