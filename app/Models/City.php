@@ -13,6 +13,15 @@ class City extends Model
     protected $table = 'cities';
     protected $fillable = [];
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        foreach (['created', 'updated', 'deleted'] as $event) {
+            static::$event(fn () => cache()->forget('cities'));
+        }
+    }
+
     public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class);

@@ -39,7 +39,7 @@
                         ایجاد دسته بندی
                     </a>
                 </div>
-                <form action="{{ route('admin.categories.search') }}" method="GET" class="m-0 p-0">
+                <form action="#" method="GET" class="m-0 p-0">
                     <div class="input-group">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary c-primary" type="submit">
@@ -48,7 +48,7 @@
                         </div>
                         <input type="text" class="form-control" placeholder="جستجو"
                                style="width: 300px"
-                               value="{{ request()->keyword ?? '' }}" name="keyword" required>
+                               value="{{ request('q') }}" name="q" required>
                     </div>
                 </form>
             </div>
@@ -143,7 +143,7 @@
                                                                             <div id="filtersCollapse" class="collapse">
                                                                                 <div class="row align-items-center">
                                                                                     @foreach($category->filters as $filter)
-                                                                                        <p><a href="{{ route('admin.attributes.search', ['keyword' => $filter->title]) }}">{{ $filter->title }}</a>,</p>
+                                                                                        <p><a>{{ $filter->title }}</a>,</p>
                                                                                     @endforeach
                                                                                 </div>
                                                                             </div>
@@ -156,7 +156,7 @@
                                                                             <div id="variationCollapse" class="collapse">
                                                                                 <div class="row">
                                                                                     @foreach($category->variation as $variation)
-                                                                                        <p><a href="{{ route('admin.attributes.search', ['keyword' => $variation->title]) }}">{{ $variation->title }}</a>,</p>
+                                                                                        <p><a>{{ $variation->title }}</a>,</p>
                                                                                     @endforeach
                                                                                 </div>
                                                                             </div>

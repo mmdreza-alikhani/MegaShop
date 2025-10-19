@@ -22,26 +22,31 @@ class Brand extends Model
     use HasFactory, SearchableTrait, sluggable, SoftDeletes;
 
     protected $table = 'brands';
-
     protected $fillable = [
         'title',
         'slug',
         'status',
         'is_active',
     ];
-
     protected $casts = [
         'title' => 'string',
         'slug' => 'string',
         'status' => 'integer',
         'is_active' => 'boolean',
     ];
-
-    // Default Values
     protected $attributes = [
         'is_active' => 1,
         'status' => '1',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        foreach (['created', 'updated', 'deleted'] as $event) {
+            static::$event(fn () => cache()->forget('brands'));
+        }
+    }
 
     public function sluggable(): array
     {

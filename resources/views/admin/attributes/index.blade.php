@@ -42,7 +42,6 @@
                     </div>
                     @include('admin.attributes.partials.create-modal')
                 @endcan
-
                 <form action="#" method="GET" class="m-0 p-0">
                     <div class="input-group">
                         <div class="input-group-append">

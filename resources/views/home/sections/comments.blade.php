@@ -5,7 +5,7 @@
             در تاریخ
             {{ verta($comment->updated_at)->format('%d %B، %Y') }}
             گفته:
-            @if($comment->user->hasPermissionTo('manage-general'))
+            @if($comment->user->hasPermissionTo('products-index'))
                 <span class="alert alert-info mx-2">
                     {{ $comment->user->roles->first()->display_name }}
                 </span>

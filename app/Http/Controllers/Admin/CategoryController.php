@@ -13,24 +13,42 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:categories-index', ['only' => ['show', 'index']]);
+        $this->middleware('permission:categories-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:categories-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:categories-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index(): View|Application|Factory
+    public function index(Request $request): View|Application|Factory
     {
-        $categories = Category::latest()->with('parent', 'filters', 'variation')->paginate(10);
+        $query = Category::query();
+        if ($request->input('q')) {
+            $query->search('title', trim(request()->input('q')));
+        }
+        $categories = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.categories.index', compact('categories'));
     }
 
     public function create(): View|Application|Factory
     {
-        $parentCategories = Category::parents()->pluck('title', 'id');
-        $attributes = Attribute::pluck('title', 'id');
+        $parentCategories = Cache::remember('parent_categories', now()->addHour(), function () {
+            return Category::whereNull('parent_id')->pluck('title', 'id');
+        });
+
+        $attributes = Cache::remember('attributes', now()->addHour(), function () {
+            return Attribute::pluck('title', 'id');
+        });
 
         return view('admin.categories.create', compact('parentCategories', 'attributes'));
     }
@@ -45,10 +63,11 @@ class CategoryController extends Controller
 
             $category = Category::create([
                 'title' => $request->input('title'),
-                'parent_id' => $request->input('parent_id'),
-                'is_active' => $request->input('is_active'),
+                'parent_id' => $request->integer('parent_id'),
+                'is_active' => $request->has('is_active'), // ✅ checkbox
                 'description' => $request->input('description'),
                 'icon' => $request->input('icon'),
+                'priority' => $request->priority ?? 0,
             ]);
 
             CategoryAttribute::create([

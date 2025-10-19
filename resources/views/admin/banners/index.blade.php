@@ -39,7 +39,7 @@
                         ایجاد بنر
                     </a>
                 </div>
-                <form action="{{ route('admin.banners.search') }}" method="GET" class="m-0 p-0">
+                <form action="#" method="GET" class="m-0 p-0">
                     <div class="input-group">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary c-primary" type="submit">
@@ -48,7 +48,7 @@
                         </div>
                         <input type="text" class="form-control" placeholder="جستجو"
                                style="width: 300px"
-                               value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword" required>
+                               value="{{ request('q') }}" name="q" required>
                     </div>
                 </form>
             </div>

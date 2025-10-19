@@ -19,7 +19,6 @@ class Banner extends Model
     use HasFactory, SearchableTrait, SoftDeletes;
 
     protected $table = 'banners';
-
     protected $fillable = [
         'image',
         'title',
@@ -31,12 +30,6 @@ class Banner extends Model
         'status',
         'is_active',
     ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
     protected $casts = [
         'image' => 'string',
         'title' => 'string',
@@ -48,12 +41,19 @@ class Banner extends Model
         'status' => 'integer',
         'is_active' => 'boolean',
     ];
-
-    // Default Values
     protected $attributes = [
         'is_active' => true,
         'status' => '1',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        foreach (['created', 'updated', 'deleted'] as $event) {
+            static::$event(fn () => cache()->forget('banners'));
+        }
+    }
 
     public function getIsActiveAttribute($is_active): string
     {

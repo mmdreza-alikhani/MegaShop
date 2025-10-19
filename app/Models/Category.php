@@ -30,7 +30,6 @@ class Category extends Model
     use HasFactory, SearchableTrait, sluggable;
 
     protected $table = 'categories';
-
     protected $fillable = [
         'title',
         'slug',
@@ -39,7 +38,6 @@ class Category extends Model
         'status',
         'is_active',
     ];
-
     protected $casts = [
         'title' => 'string',
         'slug' => 'string',
@@ -48,13 +46,23 @@ class Category extends Model
         'status' => 'integer',
         'is_active' => 'boolean',
     ];
-
-    // Default Values
     protected $attributes = [
         'is_active' => 1,
         'status' => '1',
         'parent_id' => '0',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        foreach (['created', 'updated', 'deleted'] as $event) {
+            static::$event(function () {
+                cache()->forget('categories');
+                cache()->forget('parent_categories');
+            });
+        }
+    }
 
     public function sluggable(): array
     {
@@ -63,15 +71,6 @@ class Category extends Model
                 'source' => 'title',
             ],
         ];
-    }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::updating(function ($category) {
-            $category->slug = SlugService::createSlug($category, 'slug', $category->name);
-        });
     }
 
     public function scopeActive($query): void

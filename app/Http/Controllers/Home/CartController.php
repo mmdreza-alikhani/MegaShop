@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Home\Cart\UpdateRequest;
+use App\Http\Requests\Home\Cart\AddRequest;
 use App\Http\Requests\Home\Cart\UpdateRequest;
 use App\Models\Product;
 use App\Models\ProductVariation;
@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function add(UpdateRequest $request): RedirectResponse
+    public function add(AddRequest $request): RedirectResponse
     {
         $productVariation = ProductVariation::findOrFail($request->input('variation_id'));
 

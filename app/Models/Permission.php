@@ -11,6 +11,14 @@ class Permission extends Model
     use HasFactory, HasRoles;
 
     protected $table = 'permissions';
-
     protected $guarded = [];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        foreach (['created', 'updated', 'deleted'] as $event) {
+            static::$event(fn () => cache()->forget('permissions'));
+        }
+    }
 }

@@ -103,7 +103,7 @@ class ProductController extends Controller
      */
     public function show(Product $product): Factory|Application|View
     {
-        $filters = $product->attributes()
+        $filters = $product->filters()
             ->with('attribute')
             ->get()
             ->map(function ($attr) {

@@ -16,13 +16,11 @@ class CategoryAttribute extends Model
     use HasFactory;
 
     protected $table = 'category_attributes';
-
     protected $fillable = [
         'attribute_id',
         'category_id',
         'type',
     ];
-
     protected $casts = [
         'attribute_id' => 'integer',
         'category_id' => 'integer',

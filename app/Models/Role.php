@@ -11,6 +11,14 @@ class Role extends Model
     use HasFactory, HasRoles;
 
     protected $table = 'roles';
-
     protected $guarded = [];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        foreach (['created', 'updated', 'deleted'] as $event) {
+            static::$event(fn () => cache()->forget('roles'));
+        }
+    }
 }

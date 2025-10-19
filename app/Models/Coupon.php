@@ -17,7 +17,6 @@ class Coupon extends Model
     use HasFactory, SearchableTrait, SoftDeletes;
 
     protected $table = 'coupons';
-
     protected $fillable = [
         'title',
         'code',
@@ -30,7 +29,6 @@ class Coupon extends Model
         'status',
         'is_active',
     ];
-
     protected $casts = [
         'title' => 'string',
         'code' => 'string',
@@ -42,11 +40,19 @@ class Coupon extends Model
         'status' => 'integer',
         'is_active' => 'boolean',
     ];
-
     protected $attributes = [
         'is_active' => 1,
         'status' => '1',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        foreach (['created', 'updated', 'deleted'] as $event) {
+            static::$event(fn () => cache()->forget('coupons'));
+        }
+    }
 
     public function scopeIsAvailable($query): void
     {
