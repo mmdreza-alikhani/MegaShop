@@ -34,12 +34,14 @@
                 </div>
             </div>
             <div class="d-flex m-1 align-items-center justify-content-between">
-                <div class="c-grey text-center">
-                    <a href="{{ route('admin.posts.create') }}" type="button" class="btn f-primary fnt-xxs text-center">
-                        ایجاد پست
-                    </a>
-                </div>
-                <form action="{{ route('admin.posts.search') }}" method="GET" class="m-0 p-0">
+                @can('posts-create')
+                    <div class="c-grey text-center">
+                        <a href="{{ route('admin.posts.create') }}" type="button" class="btn f-primary fnt-xxs text-center">
+                            ایجاد پست
+                        </a>
+                    </div>
+                @endcan
+                <form action="#" method="GET" class="m-0 p-0">
                     <div class="input-group">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary c-primary" type="submit">
@@ -48,7 +50,7 @@
                         </div>
                         <input type="text" class="form-control" placeholder="جستجو"
                                style="width: 300px"
-                               value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword" required>
+                               value="{{ request('q') }}" name="q" required>
                     </div>
                 </form>
             </div>
@@ -96,34 +98,19 @@
                                                         <i class="fa fa-cog"></i>
                                                     </a>
                                                     <div class="dropdown-menu">
-                                                        <a href="{{ route('admin.posts.show', ['post' => $post->id]) }}" class="dropdown-item">نمایش</a>
-                                                        <a href="{{ route('admin.posts.edit', ['post' => $post->id]) }}" class="dropdown-item">ویرایش</a>
-                                                        <button data-target="#deletePostModal-{{ $post->id }}" data-toggle="modal" type="button" class="dropdown-item">حذف</button>
+                                                        @can('posts.index')
+                                                            <a href="{{ route('admin.posts.show', ['post' => $post->id]) }}" class="dropdown-item">نمایش</a>
+                                                        @endcan
+                                                        @can('posts.edit')
+                                                            <a href="{{ route('admin.posts.edit', ['post' => $post->id]) }}" class="dropdown-item">ویرایش</a>
+                                                        @endcan
+                                                        @can('posts-delete')
+                                                            <button data-target="#deletePostModal-{{ $post->id }}" data-toggle="modal" type="button" class="dropdown-item">حذف</button>
+                                                        @endcan
                                                     </div>
-                                                    <div class="modal w-lg fade justify rtl" id="deletePostModal-{{ $post->id }}" tabindex="-1" role="dialog">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">حذف پست: {{ $post->title }}</h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    آیا از این عملیات مطمئن هستید؟
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn outlined o-danger c-danger"
-                                                                            data-dismiss="modal">بستن</button>
-                                                                    <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST" style="display: inline;">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn f-main">حذف</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    @can('posts-delete')
+                                                        @include('admin.posts.partials.delete-modal')
+                                                    @endcan
                                                 </div>
                                             </td>
                                         </tr>

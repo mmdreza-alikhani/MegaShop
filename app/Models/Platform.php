@@ -47,7 +47,7 @@ class Platform extends Model
         parent::boot();
 
         static::updating(function ($platform) {
-            $platform->slug = SlugService::createSlug($platform, 'slug', $platform->name);
+            $platform->slug = SlugService::createSlug($platform, 'slug', $platform->title);
         });
 
         foreach (['created', 'updated', 'deleted'] as $event) {

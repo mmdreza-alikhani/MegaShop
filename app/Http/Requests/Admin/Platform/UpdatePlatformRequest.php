@@ -27,7 +27,7 @@ class UpdatePlatformRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|max:255|unique:platforms,title,'.$this->route('platforms')->id,
+            'title' => 'required|max:255|unique:platforms,title,'.$this->route('platform')->id,
             'is_active' => 'required|boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];

@@ -19,22 +19,23 @@ class RoleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:roles-index', ['only' => ['index']]);
-        $this->middleware('permission:roles-create', ['only' => ['store']]);
-        $this->middleware('permission:roles-edit', ['only' => ['update']]);
+        $this->middleware('permission:users-index', ['only' => ['index']]);
+        $this->middleware('permission:users-create', ['only' => ['store']]);
+        $this->middleware('permission:users-edit', ['only' => ['update']]);
     }
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): View|Application|Factory
     {
+        $permissions = Permission::all();
         $query = Role::query();
         if ($request->input('q')) {
             $query->search('title', trim(request()->input('q')));
         }
-        $roles = $query->latest()->paginate(15)->withQueryString();
+        $roles = $query->latest()->with('permissions')->paginate(15)->withQueryString();
 
-        return view('admin.roles.index', compact('roles'));
+        return view('admin.roles.index', compact('roles', 'permissions'));
     }
 
     public function store(StoreRoleRequest $request): RedirectResponse

@@ -1,0 +1,24 @@
+<div class="modal w-lg fade justify rtl" id="deleteTagModal-{{ $tag->id }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">حذف برچسب: {{ $tag->title }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                آیا از این عملیات مطمئن هستید؟
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn outlined o-danger c-danger"
+                        data-dismiss="modal">بستن</button>
+                <form action="{{ route('admin.tags.destroy', $tag->id) }}" method="POST" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn f-main">حذف</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

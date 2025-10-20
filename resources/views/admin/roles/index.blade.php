@@ -32,11 +32,26 @@
                 </div>
             </div>
             <div class="d-flex row m-1 justify-content-between">
-                <div class="c-grey text-center my-auto">
-                    <button data-target="#createRoleModal" data-toggle="modal" type="button" class="btn f-primary btn-block fnt-xxs text-center">
-                        ایجاد نقش
-                    </button>
-                </div>
+                @can('users-create')
+                    <div class="c-grey text-center my-auto">
+                        <button data-target="#createRoleModal" data-toggle="modal" type="button" class="btn f-primary btn-block fnt-xxs text-center">
+                            ایجاد نقش
+                        </button>
+                    </div>
+                    @include('admin.roles.partials.create-modal')
+                @endcan
+                <form action="#" method="GET" class="m-0 p-0">
+                    <div class="input-group">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary c-primary" type="submit">
+                                <i class="fab fas fa-search"></i>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control" placeholder="جستجو"
+                               style="width: 300px"
+                               value="{{ request('q') }}" name="q" required>
+                    </div>
+                </form>
             </div>
             <div class="modal w-lg fade light rtl" id="createRoleModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
@@ -134,163 +149,26 @@
                                                         <i class="fa fa-cog"></i>
                                                     </a>
                                                     <div class="dropdown-menu">
-                                                        <a href="#" class="dropdown-item" data-target="#editRoleModal-{{ $role->id }}" data-toggle="modal">ویرایش</a>
-                                                        <a href="#" class="dropdown-item" data-target="#deleteRoleModal-{{ $role->id }}" data-toggle="modal">حذف</a>
+                                                        @can('users-index')
+                                                            <button class="dropdown-item" data-target="#showRoleModal-{{ $role->id }}" data-toggle="modal">نمایش</button>
+                                                        @endcan
+                                                        @can('users-edit')
+                                                            <button class="dropdown-item" data-target="#editRoleModal-{{ $role->id }}" data-toggle="modal">ویرایش</button>
+                                                        @endcan
+                                                        @can('users-delete')
+                                                            <button class="dropdown-item" data-target="#deleteRoleModal-{{ $role->id }}" data-toggle="modal">حذف</button>
+                                                        @endcan
                                                     </div>
                                                 </div>
-                                                <div class="modal w-lg fade light rtl" id="editRoleModal-{{ $role->id }}" tabindex="-1" role="dialog">
-                                                    <div class="modal-dialog" role="document">
-                                                        <form method="post" action="{{ route('admin.roles.update', ['role' => $role->id]) }}">
-                                                            @method('put')
-                                                            @csrf
-                                                            <div class="modal-content card shade">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="exampleModalLabel">
-                                                                        ویرایش نقش: {{ $role->name }}
-                                                                    </h5>
-                                                                    <button type="button" class="close" data-dismiss="modal">
-                                                                        <span>&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    @include('admin.layout.errors', ['errors' => $errors->update])
-                                                                    <div class="row">
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="name-{{ $role->id }}">نام:</label>
-                                                                            <input type="text" name="name" id="name-{{ $role->id }}" class="form-control"
-                                                                                   value="{{ $role->name }}">
-                                                                        </div>
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="display_name-{{ $role->id }}">نام نمایشی:</label>
-                                                                            <input type="text" name="display_name" id="display_name-{{ $role->id }}" class="form-control"
-                                                                                   value="{{ $role->display_name }}">
-                                                                        </div>
-                                                                        <div class="form-group col-12 col-lg-12">
-                                                                            <button class="btn btn-block text-right border border-info" type="button"
-                                                                                    data-toggle="collapse" data-target="#permissionsCollapse">
-                                                                                دسترسی به مجوز ها
-                                                                            </button>
-                                                                            <div id="permissionsCollapse" class="collapse">
-                                                                                <div class="row">
-                                                                                    @foreach($permissions as $permission)
-                                                                                        <div class="col-lg-2 col-6 p-2 d-flex align-items-center">
-                                                                                            <input type="checkbox"
-                                                                                                   value="{{ $permission->name }}"
-                                                                                                   name="{{ $permission->name }}"
-                                                                                                   id="{{ $permission->name . '-check' }}"
-                                                                                                   class="mr-2"
-                                                                                                {{ in_array($permission->id, $role->permissions()->pluck('id')->toArray()) ? 'checked' : '' }}>
-                                                                                            <label for="{{ $permission->name . '-check' }}">
-                                                                                                {{ $permission->display_name }}
-                                                                                            </label>
-                                                                                        </div>
-                                                                                    @endforeach
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
-                                                                    <button type="submit" class="btn main f-main">ویرایش</button>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                @if(count($errors->update) > 0)
-                                                    <script>
-                                                        $(function() {
-                                                            $('#editRoleModal-{{ session()->get('role_id') }}').modal({
-                                                                show: true
-                                                            });
-                                                        });
-                                                    </script>
-                                                @endif
-                                                <div class="modal w-lg fade light rtl" tabindex="-1" role="dialog">
-                                                    <div class="modal-dialog" role="document">
-                                                        <form method="post" action="{{ route('admin.roles.update', ['role' => $role->id]) }}">
-                                                            @method('put')
-                                                            @csrf
-                                                            <div class="modal-content card shade">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="exampleModalLabel">
-                                                                        ویرایش نقش: {{ $role->name }}
-                                                                    </h5>
-                                                                    <button type="button" class="close" data-dismiss="modal">
-                                                                        <span>&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    @include('admin.layout.errors', ['errors' => $errors->update])
-                                                                    <div class="row">
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="name-{{ $role->id }}">نام:</label>
-                                                                            <input type="text" name="name" id="name-{{ $role->id }}" class="form-control"
-                                                                                   value="{{ $role->name }}">
-                                                                        </div>
-                                                                        <div class="form-group col-12 col-lg-4">
-                                                                            <label for="display_name-{{ $role->id }}">نام نمایشی:</label>
-                                                                            <input type="text" name="display_name" id="display_name-{{ $role->id }}" class="form-control"
-                                                                                   value="{{ $role->display_name }}">
-                                                                        </div>
-                                                                        <div class="form-group col-12 col-lg-12">
-                                                                            <button class="btn btn-block text-right border border-info" type="button"
-                                                                                    data-toggle="collapse" data-target="#permissionsCollapse">
-                                                                                دسترسی به مجوز ها
-                                                                            </button>
-                                                                            <div id="permissionsCollapse" class="collapse">
-                                                                                <div class="row">
-                                                                                    @foreach($permissions as $permission)
-                                                                                        <div class="col-lg-2 col-6 p-2 d-flex align-items-center">
-                                                                                            <input type="checkbox"
-                                                                                                   value="{{ $permission->name }}"
-                                                                                                   name="{{ $permission->name }}"
-                                                                                                   id="{{ $permission->name . '-check' }}"
-                                                                                                   class="mr-2"
-                                                                                                {{ in_array($permission->id, $role->permissions()->pluck('id')->toArray()) ? 'checked' : '' }}>
-                                                                                            <label for="{{ $permission->name . '-check' }}">
-                                                                                                {{ $permission->display_name }}
-                                                                                            </label>
-                                                                                        </div>
-                                                                                    @endforeach
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
-                                                                    <button type="submit" class="btn main f-main">ویرایش</button>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <div class="modal w-lg fade justify rtl" id="deleteRoleModal-{{ $role->id }}" tabindex="-1" role="dialog">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">حذف نقش: {{ $role->name }}</h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                آیا از این عملیات مطمئن هستید؟
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn outlined o-danger c-danger"
-                                                                        data-dismiss="modal">بستن</button>
-                                                                <form action="{{ route('admin.roles.destroy', $role->id) }}" method="POST" style="display: inline;">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn f-main">حذف</button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                @can('users-index')
+                                                    @include('admin.roles.partials.show-modal')
+                                                @endcan
+                                                @can('users-edit')
+                                                    @include('admin.roles.partials.edit-modal')
+                                                @endcan
+                                                @can('users-delete')
+                                                    @include('admin.roles.partials.delete-modal')
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
@@ -304,15 +182,4 @@
             </div>
         </div>
     </main>
-@endsection
-@section('scripts')
-    <script>
-        @if(count($errors->store) > 0)
-        $(function() {
-            $('#createRoleModal').modal({
-                show: true
-            });
-        });
-        @endif
-    </script>
 @endsection

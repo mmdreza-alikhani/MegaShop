@@ -19,9 +19,9 @@ class PermissionController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:permission-index', ['only' => ['index']]);
-        $this->middleware('permission:permission-create', ['only' => ['store']]);
-        $this->middleware('permission:permission-edit', ['only' => ['update']]);
+        $this->middleware('permission:users-index', ['only' => ['index']]);
+        $this->middleware('permission:users-create', ['only' => ['store']]);
+        $this->middleware('permission:users-edit', ['only' => ['update']]);
     }
     /**
      * Display a listing of the resource.

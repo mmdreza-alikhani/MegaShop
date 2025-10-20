@@ -34,44 +34,15 @@
                 </div>
             </div>
             <div class="d-flex m-1 align-items-center justify-content-between">
-                <div class="c-grey text-center">
-                    <button data-target="#createTagModal" data-toggle="modal" type="button" class="btn f-primary fnt-xxs text-center">
-                        ایجاد برچسب
-                    </button>
-                </div>
-                <div class="modal w-lg fade light rtl" id="createTagModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <form method="post" action="{{ route('admin.tags.store') }}">
-                            @csrf
-                            <div class="modal-content card shade">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">
-                                        ایجاد برچسب جدید
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal">
-                                        <span>&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    @include('admin.layout.errors', ['errors' => $errors->store])
-                                    <div class="row">
-                                        <div class="form-group col-12 col-lg-6">
-                                            <label for="title">
-                                                نام:*</label>
-                                            <input type="text" name="title" id="title" class="form-control"
-                                                   value="{{ old('title') }}" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
-                                    <button type="submit" class="btn main f-main">ایجاد</button>
-                                </div>
-                            </div>
-                        </form>
+                @can('tags-create')
+                    <div class="c-grey text-center">
+                        <button data-target="#createTagModal" data-toggle="modal" type="button" class="btn f-primary fnt-xxs text-center">
+                            ایجاد برچسب
+                        </button>
                     </div>
-                </div>
-                <form action="{{ route('admin.tags.search') }}" method="GET" class="m-0 p-0">
+                    @include('admin.tags.partials.create-modal')
+                @endcan
+                <form action="" method="GET" class="m-0 p-0">
                     <div class="input-group">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary c-primary" type="submit">
@@ -80,7 +51,7 @@
                         </div>
                         <input type="text" class="form-control" placeholder="جستجو"
                                style="width: 300px"
-                               value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword" required>
+                               value="{{ request('q') }}" name="q" required>
                     </div>
                 </form>
             </div>
@@ -118,75 +89,20 @@
                                                         <i class="fa fa-cog"></i>
                                                     </a>
                                                     <div class="dropdown-menu">
-                                                        <button data-target="#editTagModal-{{ $tag->id }}" data-toggle="modal" type="button" class="dropdown-item">ویرایش</button>
-                                                        <button data-target="#deleteTagModal-{{ $tag->id }}" data-toggle="modal" type="button" class="dropdown-item">حذف</button>
-                                                    </div>
-                                                    <div class="modal w-lg fade light rtl" id="editTagModal-{{ $tag->id }}" tabindex="-1" role="dialog">
-                                                        <div class="modal-dialog" role="document">
-                                                            <form method="post" action="{{ route('admin.tags.update', ['tag' => $tag->id]) }}">
-                                                                @method('put')
-                                                                @csrf
-                                                                <div class="modal-content card shade">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="exampleModalLabel">
-                                                                            ویرایش برچسب: {{ $tag->title }}
-                                                                        </h5>
-                                                                        <button type="button" class="close" data-dismiss="modal">
-                                                                            <span>&times;</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        @include('admin.layout.errors', ['errors' => $errors->update])
-                                                                        <div class="row">
-                                                                            <div class="form-group col-12 col-lg-6">
-                                                                                <label for="title-{{ $tag->id }}">عنوان:*</label>
-                                                                                <input type="text" name="title" id="title-{{ $tag->id }}" class="form-control"
-                                                                                       value="{{ $tag->title }}" required>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
-                                                                        <button type="submit" class="btn main f-main">ویرایش</button>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                    @if(count($errors->update) > 0)
-                                                        <script>
-                                                            $(function() {
-                                                                $('#editTagModal-{{ session()->get('tag_id') }}').modal({
-                                                                    show: true
-                                                                });
-                                                            });
-                                                        </script>
-                                                    @endif
-                                                    <div class="modal w-lg fade justify rtl" id="deleteTagModal-{{ $tag->id }}" tabindex="-1" role="dialog">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">حذف برچسب: {{ $tag->title }}</h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    آیا از این عملیات مطمئن هستید؟
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn outlined o-danger c-danger"
-                                                                            data-dismiss="modal">بستن</button>
-                                                                    <form action="{{ route('admin.tags.destroy', $tag->id) }}" method="POST" style="display: inline;">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn f-main">حذف</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                        @can('tags-edit')
+                                                            <button data-target="#editTagModal-{{ $tag->id }}" data-toggle="modal" type="button" class="dropdown-item">ویرایش</button>
+                                                        @endcan
+                                                        @can('tags-delete')
+                                                            <button data-target="#deleteTagModal-{{ $tag->id }}" data-toggle="modal" type="button" class="dropdown-item">حذف</button>
+                                                        @endcan
                                                     </div>
                                                 </div>
+                                                @can('tags-edit')
+                                                    @include('admin.tags.partials.edit-modal')
+                                                @endcan
+                                                @can('tags-delete')
+                                                    @include('admin.tags.partials.delete-modal')
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach

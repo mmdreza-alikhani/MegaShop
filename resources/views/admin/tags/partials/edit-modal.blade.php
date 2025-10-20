@@ -1,0 +1,41 @@
+<div class="modal w-lg fade light rtl" id="editTagModal-{{ $tag->id }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <form method="post" action="{{ route('admin.tags.update', ['tag' => $tag->id]) }}">
+            @method('put')
+            @csrf
+            <div class="modal-content card shade">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        ویرایش برچسب: {{ $tag->title }}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @include('admin.layout.errors', ['errors' => $errors->update])
+                    <div class="row">
+                        <div class="form-group col-12 col-lg-6">
+                            <label for="title-{{ $tag->id }}">عنوان:*</label>
+                            <input type="text" name="title" id="title-{{ $tag->id }}" class="form-control"
+                                   value="{{ $tag->title }}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                    <button type="submit" class="btn main f-main">ویرایش</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@if($errors->update->any() && session('tag_id'))
+    <script>
+        $(function() {
+            $('#editTagModal-{{ session('tag_id') }}').modal({
+                show: true
+            });
+        });
+    </script>
+@endif
