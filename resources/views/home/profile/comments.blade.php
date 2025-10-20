@@ -6,7 +6,7 @@
         @forelse($comments as $comment)
             <div class="nk-comment w-100 m-5">
                 <div class="nk-comment-meta text-right" style="direction: rtl">
-                    <img src="{{ Storage::url('users/avatars/') . $comment->user->avatar }}" alt="{{ $comment->user->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
+                    <img src="{{ Storage::url(config('upload.user_avatar_path') . '/') . $comment->user->avatar }}" alt="{{ $comment->user->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
                     در تاریخ
                     {{ verta($comment->updated_at)->format('%d %B، %Y') }}
                     برای

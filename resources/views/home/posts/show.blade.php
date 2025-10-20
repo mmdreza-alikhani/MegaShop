@@ -35,12 +35,12 @@
                     <!-- START: Post Text -->
                     <div class="nk-post-text mt-0">
                         <div class="nk-post-img">
-                            <img src="{{ Storage::url('posts/images/') . $post->image }}" alt="{{ $post->title }}-image">
+                            <img src="{{ Storage::url(config('upload.post_path') . '/') . $post->image }}" alt="{{ $post->title }}-image">
                         </div>
                         <div class="nk-gap-1"></div>
                         <h1 class="nk-post-title h4 text-right" style="direction: rtl">{{ $post->title }}</h1>
                         <div class="nk-post-by text-right" style="direction: rtl">
-                            <img src="{{ Storage::url('users/avatars/') . $post->author->avatar }}" alt="{{ $post->author->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
+                            <img src="{{ Storage::url(config('upload.user_avatar_path') . '/') . $post->author->avatar }}" alt="{{ $post->author->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
                             <a href="#">{{ $post->author->username }}</a>
                             نوشته:
                             <span class="text-left" style="direction: ltr">

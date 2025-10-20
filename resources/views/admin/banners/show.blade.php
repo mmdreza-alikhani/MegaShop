@@ -82,7 +82,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <img class="card-img"
-                                         src="{{ Storage::url('banners/images/') . $banner->image }}"
+                                         src="{{ Storage::url(config('upload.banner_path') . '/') . $banner->image }}"
                                          alt="{{ $banner->title }}-image">
                                 </div>
                             </div>

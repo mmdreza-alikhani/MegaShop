@@ -30,9 +30,9 @@
                     <div class="col-md-6">
                         <div class="nk-popup-gallery">
                             <div class="nk-gallery-item-box">
-                                <a href="{{ Storage::url('products/images/primary_images/') . $product->primary_image }}" class="nk-gallery-item" data-size="1200x554">
+                                <a href="{{ Storage::url(config('upload.product_primary_path') . '/') . $product->primary_image }}" class="nk-gallery-item" data-size="1200x554">
                                     <div class="nk-gallery-item-overlay"><span class="ion-eye"></span></div>
-                                    <img src="{{ Storage::url('products/images/primary_images/') . $product->primary_image }}" alt="">
+                                    <img src="{{ Storage::url(config('upload.product_primary_path') . '/') . $product->primary_image }}" alt="">
                                 </a>
                             </div>
                             <hr style="background-color: #dd163b">
@@ -40,9 +40,9 @@
                                 @foreach($product->images as $image)
                                     <div class="col-4 col-lg-3">
                                         <div class="nk-gallery-item-box">
-                                            <a href="{{ Storage::url('products/images/other_images/') . $image->image }}" class="nk-gallery-item">
+                                            <a href="{{ Storage::url(config('upload.product_others_path') . '/') . $image->image }}" class="nk-gallery-item">
                                                 <div class="nk-gallery-item-overlay"><span class="ion-eye"></span></div>
-                                                <img src="{{ Storage::url('products/images/other_images/') . $image->image }}" alt="">
+                                                <img src="{{ Storage::url(config('upload.product_others_path') . '/') . $image->image }}" alt="">
                                             </a>
                                         </div>
                                     </div>

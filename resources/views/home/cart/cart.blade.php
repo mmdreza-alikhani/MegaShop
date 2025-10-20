@@ -39,7 +39,7 @@
                                         <a href="{{ route('home.products.show', ['product' => $product->itemable->slug]) }}"
                                            class="nk-image-box-1 nk-post-image">
                                             <img
-                                                src="{{ Storage::url('products/images/primary_images') . '/' . $product->itemable->primary_image }}"
+                                                src="{{ Storage::url(config('upload.product_primary_path') . '/') . '/' . $product->itemable->primary_image }}"
                                                 width="115" alt="">
                                         </a>
                                     </td>

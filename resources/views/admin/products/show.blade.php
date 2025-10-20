@@ -114,7 +114,7 @@
                                     <div class="row justify-content-center">
                                         <div class="text-center">
                                             <img class="card-img img-fluid"
-                                                 src="{{ Storage::url('products/images/primary_images/') . $product->primary_image }}"
+                                                 src="{{ Storage::url(config('upload.product_primary_path') . '/') . $product->primary_image }}"
                                                  alt="{{ $product->title }}-image" style="max-width: 100%; max-height: 200px; object-fit: contain;">
                                         </div>
                                     </div>
@@ -124,7 +124,7 @@
                                         @foreach ($product->images as $image)
                                             <div class="col-12 col-md-4 text-center mb-3">
                                                 <img class="img-fluid"
-                                                     src="{{ Storage::url('products/images/other_images/') . $image->image }}"
+                                                     src="{{ Storage::url(config('upload.product_others_path') . '/') . $image->image }}"
                                                      alt="{{ $product->title }}-image"
                                                      style="max-width: 100%; max-height: 200px; object-fit: contain;">
                                             </div>

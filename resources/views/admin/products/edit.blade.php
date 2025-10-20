@@ -99,7 +99,7 @@
                                         <div class="row justify-content-center">
                                             <div class="text-center">
                                                 <img class="card-img img-fluid"
-                                                     src="{{ url(env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH')) . '/' . $product->primary_image }}"
+                                                     src="{{ Storage::url(config('upload.product_primary_path') . '/') . $product->primary_image }}"
                                                      alt="{{ $product->title }}-image" style="max-width: 100%; max-height: 200px; object-fit: contain;">
                                             </div>
                                         </div>
@@ -109,7 +109,7 @@
                                             @foreach ($product->images as $image)
                                                 <div class="col-12 col-md-4 text-center mb-3">
                                                     <img class="img-fluid"
-                                                         src="{{ url(env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH') . '/' . $image->image) }}"
+                                                         src="{{ Storage::url(config('upload.product_others_path') . '/') . $image->image }}"
                                                          alt="{{ $product->title }}-image"
                                                          style="max-width: 100%; max-height: 200px; object-fit: contain;">
                                                 </div>
@@ -195,28 +195,30 @@
 @endsection
 @section('scripts')
     <script>
-            const categoryId = {{ $product->category_id }};
-            const url = `{{ url('/management/get-category-attribute/' . $product->category_id) }}`;
+        const selects = ['#brandSelect', '#platformSelect', '#tagSelect', '#genreSelect', '#categorySelect'];
+        selects.forEach(sel => $(sel).selectpicker({ title: $(sel).attr('title') || 'انتخاب گزینه' }));
+        const categoryId = {{ $product->category_id }};
+        const url = `{{ url('/management/get-category-attribute/' . $product->category_id) }}`;
 
-            $.get(url, function (response, status) {
-                if (status !== 'success') return alert('اتصال برقرار نشد!');
+        $.get(url, function (response, status) {
+            if (status !== 'success') return alert('اتصال برقرار نشد!');
 
-                $.each(response.filters, function (key, value) {
-                    const group = $('<div/>', { class: 'form-group col-12 col-lg-4' });
-                    const label = $('<label/>', { for: 'filter' + value, text: `${value}:` });
-                    const input = $('<input/>', {
-                        id: 'filter' + value,
-                        type: 'text',
-                        class: 'form-control',
-                        name: `filters_value[${key}]`
-                    });
-
-                    group.append(label).append(input);
-                    $('#filters').append(group);
+            $.each(response.filters, function (key, value) {
+                const group = $('<div/>', { class: 'form-group col-12 col-lg-4' });
+                const label = $('<label/>', { for: 'filter' + value, text: `${value}:` });
+                const input = $('<input/>', {
+                    id: 'filter' + value,
+                    type: 'text',
+                    class: 'form-control',
+                    name: `filters_value[${key}]`
                 });
 
-                const variationValue = Object.values(response.variation)[0];
-                $('#variationTitle').text(variationValue || '');
-            }).fail(() => alert('مشکلی در درخواست!'));
+                group.append(label).append(input);
+                $('#filters').append(group);
+            });
+
+            const variationValue = Object.values(response.variation)[0];
+            $('#variationTitle').text(variationValue || '');
+        }).fail(() => alert('مشکلی در درخواست!'));
     </script>
 @endsection

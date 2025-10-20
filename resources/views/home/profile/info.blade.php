@@ -11,7 +11,7 @@
                         <span style="display: none;max-width: fit-content">تغییر پروفایل</span>
                     </label>
                     <input id="file" type="file" onchange="loadFile(event)" name="avatar"/>
-                    <img src="{{ Storage::url('users/avatars/') . $user->avatar }}" alt="{{ $user->username }}-image" id="output" width="200" />
+                    <img src="{{ Storage::url(config('upload.user_avatar_path') . '/') . $user->avatar }}" alt="{{ $user->username }}-image" id="output" width="200" />
                 </div>
             </div>
             <div class="col-12 col-lg-6 text-right" style="direction: rtl">

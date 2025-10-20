@@ -30,9 +30,9 @@
                 @foreach($news as $item)
                     <div class="nk-news-box-item nk-news-box-item-active">
                         <div class="nk-news-box-item-img">
-                            <img src="{{ Storage::url('posts/images/') . $item->image }}" alt="{{ $item->title }}-image">
+                            <img src="{{ Storage::url(config('upload.post_path') . '/') . $item->image }}" alt="{{ $item->title }}-image">
                         </div>
-                        <img src="{{ Storage::url('posts/images/') . $item->image }}" alt="{{ $item->title }}-image" class="nk-news-box-item-full-img">
+                        <img src="{{ Storage::url(config('upload.post_path') . '/') . $item->image }}" alt="{{ $item->title }}-image" class="nk-news-box-item-full-img">
                         <h3 class="nk-news-box-item-title text-right">{{ $item->title }}</h3>
 
                         <span class="nk-news-box-item-categories">

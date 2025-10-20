@@ -3,7 +3,7 @@
     <div class="col-lg-3">
         <div class="nk-feature-1">
             <div class="nk-feature-icon">
-                <img src="{{ $platform->image ? Storage::url('platforms/images/') . $platform->image : asset('assets/images/icon-gamepad.png') }}" alt="{{ $platform->title }}-image">
+                <img src="{{ $platform->image ? Storage::url(config('upload.platform_path') . '/') . $platform->image : asset('assets/images/icon-gamepad.png') }}" alt="{{ $platform->title }}-image">
             </div>
             <div class="nk-feature-cont text-center w-100">
                 <h3 class="nk-feature-title"><a>{{ $platform->title }}</a></h3>

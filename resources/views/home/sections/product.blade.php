@@ -36,7 +36,7 @@
             <a href="{{ route('home.products.show', ['product' => $product->slug]) }}" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 nk-btn-hover-color-main-1">مشخصات</a>
         </div>
         <a class="nk-product-image col-4" style="height: 160px;" href="{{ route('home.products.show', ['product' => $product->slug]) }}">
-            <img src="{{ Storage::url('products/images/primary_images') . '/' . $product->primary_image }}" alt="{{ $product->title . 'image' }}">
+            <img src="{{ Storage::url(config('upload.product_primary_path') . '/') . $product->primary_image }}" alt="{{ $product->title . 'image' }}">
         </a>
     </div>
 </div>
