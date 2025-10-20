@@ -4,14 +4,6 @@
     داشبورد
 @endsection
 
-@php
-    use Illuminate\Support\Facades\DB;
-    $usersCount = DB::table('users')->count();
-    $ordersCount = DB::table('orders')->count();
-    $productsCount = DB::table('products')->count();
-    $postsCount = DB::table('posts')->count();
-@endphp
-
 @section('content')
     <main class="bmd-layout-content">
         <div class="container-fluid">

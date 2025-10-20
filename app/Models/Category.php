@@ -60,6 +60,7 @@ class Category extends Model
             static::$event(function () {
                 cache()->forget('categories');
                 cache()->forget('parent_categories');
+                cache()->forget('active_categories');
             });
         }
     }

@@ -11,16 +11,27 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:tags-index', ['only' => ['index']]);
+        $this->middleware('permission:tags-create', ['only' => ['store']]);
+        $this->middleware('permission:tags-edit', ['only' => ['update']]);
+        $this->middleware('permission:tags-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index(): View|Application|Factory
+    public function index(Request $request): View|Application|Factory
     {
-        $tags = Tag::latest()->paginate(10);
+        $query = Tag::query();
+        if ($request->input('q')) {
+            $query->search('title', trim(request()->input('q')));
+        }
+        $tags = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.tags.index', compact('tags'));
     }
@@ -31,23 +42,15 @@ class TagController extends Controller
     public function store(StoreTagRequest $request): RedirectResponse
     {
         try {
-            DB::beginTransaction();
+            Tag::create($request->validated());
 
-            Tag::create([
-                'title' => $request->title,
-            ]);
-
-            DB::commit();
-        } catch (Exception $ex) {
-            DB::rollBack();
-            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
-
+            toastr()->success(config('flasher.tag.created'));
             return redirect()->back();
+        } catch (Exception $e) {
+            report($e);
+            flash()->error(config('flasher.tag.create_failed'));
+            return redirect()->back()->withInput();
         }
-
-        toastr()->success('با موفقیت اضافه شد!');
-
-        return redirect()->back();
     }
 
     /**
@@ -56,25 +59,17 @@ class TagController extends Controller
     public function update(UpdateTagRequest $request, Tag $tag): RedirectResponse
     {
         try {
-            DB::transaction(function () use ($request, $tag) {
-                $tag->update([
-                    'title' => $request->title,
-                ]);
-            });
+            $tag->update($request->validated());
 
-            toastr()->success('با موفقیت ویرایش شد!');
-        } catch (Exception $ex) {
-            toastr()->error($ex->getMessage().' مشکلی پیش آمد!');
+            flash()->success(config('flasher.tag.updated'));
+            return redirect()->back();
+        } catch (Exception $e) {
+            report($e);
+            flash()->error(config('flasher.tag.update_failed'));
+            return redirect()->back()
+                ->withInput()
+                ->with('tag_id', $tag->id);
         }
-
-        return redirect()->back();
-    }
-
-    public function search(): View|\Illuminate\Contracts\Foundation\Application|Factory
-    {
-        $tags = Tag::search('title', trim(request()->keyword))->latest()->paginate(10);
-
-        return view('admin.tags.index', compact('tags'));
     }
 
     /**
@@ -82,10 +77,20 @@ class TagController extends Controller
      */
     public function destroy(Tag $tag): RedirectResponse
     {
-        $tag->delete();
+        try {
+            if ($tag->categories()->exists()) {
+                flash()->warning('این ویژگی در دسته بندی ها استفاده شده و قابل حذف نیست');
+                return redirect()->back();
+            }
 
-        toastr()->success('موفقیت حذف شد!');
+            $tag->delete();
 
-        return redirect()->back();
+            flash()->success(config('flasher.tag.deleted'));
+            return redirect()->back();
+        } catch (Exception $e) {
+            report($e);
+            flash()->warning(config('flasher.tag.delete_failed'));
+            return redirect()->back();
+        }
     }
 }

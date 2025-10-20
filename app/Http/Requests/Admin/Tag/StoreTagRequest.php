@@ -14,7 +14,7 @@ class StoreTagRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->can('manage-general');
+        return auth()->user()->can('tags-create');
     }
 
     /**

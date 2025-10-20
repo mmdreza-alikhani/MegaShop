@@ -14,7 +14,7 @@ class StoreProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->can('manage-products');
+        return auth()->user()->can('products-create');
     }
 
     /**
@@ -41,7 +41,7 @@ class StoreProductRequest extends FormRequest
             'variation_values.*.value' => 'required|string|max:255',
             'variation_values.*.price' => 'required|numeric|min:0',
             'variation_values.*.quantity' => 'required|integer|min:0',
-            'variation_values.*.sku' => 'required|string|max:255',
+            'variation_values.*.sku' => 'required|string|max:255|unique:product_variations,sku',
             'primary_image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'other_images' => 'array',
             'other_images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',

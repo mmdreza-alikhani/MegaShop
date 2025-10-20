@@ -4,30 +4,37 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Post;
 use App\Models\Product;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
     public function mainPage(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        $orderCount = Order::where('status', '1')
-            ->where('updated_at', '>=', Carbon::now()->subHours(24))
-            ->count();
-
-        $recentUserCount = User::where('status', '1')
-            ->where('updated_at', '>=', Carbon::now()->subHours(24))
-            ->count();
-
-        $productCount = Product::where('status', '1')
-            ->where('updated_at', '>=', Carbon::now()->subHours(24))
-            ->count();
         $user = auth()->user();
 
-        return view('admin.index', compact('orderCount', 'recentUserCount', 'productCount', 'user'));
+        $ordersCount = Cache::remember('orders_count', now()->addHour(), function () {
+            return Order::count();
+        });
+
+        $usersCount = Cache::remember('users_count', now()->addHour(), function () {
+            return User::count();
+        });
+
+        $productsCount = Cache::remember('products_count', now()->addHour(), function () {
+            return Product::count();
+        });
+
+        $postsCount = Cache::remember('posts_count', now()->addHour(), function () {
+            return Post::count();
+        });
+
+
+        return view('admin.index', compact('ordersCount', 'usersCount', 'productsCount', 'postsCount', 'user'));
     }
 }

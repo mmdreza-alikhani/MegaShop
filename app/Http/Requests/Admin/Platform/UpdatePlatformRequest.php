@@ -16,7 +16,7 @@ class UpdatePlatformRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->can('manage-products');
+        return auth()->user()->can('platforms-edit');
     }
 
     /**

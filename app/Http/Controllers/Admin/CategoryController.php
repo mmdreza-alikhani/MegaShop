@@ -64,7 +64,7 @@ class CategoryController extends Controller
             $category = Category::create([
                 'title' => $request->input('title'),
                 'parent_id' => $request->integer('parent_id'),
-                'is_active' => $request->has('is_active'), // ✅ checkbox
+                'is_active' => $request->has('is_active'),
                 'description' => $request->input('description'),
                 'icon' => $request->input('icon'),
                 'priority' => $request->priority ?? 0,
@@ -85,15 +85,14 @@ class CategoryController extends Controller
             }
 
             DB::commit();
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
-
+            toastr()->error(config('flasher.category.create_failed'));
+            report($e);
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت اضافه شد!');
-
+        toastr()->success(config('flasher.category.created'));
         return redirect()->back();
     }
 
@@ -102,9 +101,15 @@ class CategoryController extends Controller
      */
     public function edit(Category $category): View|Application|Factory
     {
+        $category->load(['variation', 'filters']);
+        $parentCategories = Cache::remember('parent_categories', now()->addHour(), function () {
+            return Category::whereNull('parent_id')->pluck('title', 'id');
+        });
+
+        $attributes = Cache::remember('attributes', now()->addHour(), function () {
+            return Attribute::pluck('title', 'id');
+        });
         $relatedAttributes = $this->getCategoryAttribute($category);
-        $parentCategories = Category::parents()->pluck('title', 'id');
-        $attributes = Attribute::pluck('title', 'id');
 
         return view('admin.categories.edit', compact('category', 'parentCategories', 'attributes', 'relatedAttributes'));
     }
@@ -142,15 +147,14 @@ class CategoryController extends Controller
             }
 
             DB::commit();
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
-
+            toastr()->error(config('flasher.category.update_failed'));
+            report($e);
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت ویرایش شد.');
-
+        toastr()->success(config('flasher.category.updated'));
         return redirect()->back();
     }
 
@@ -159,25 +163,28 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category): RedirectResponse
     {
-        $category->delete();
+        try {
+            if ($category->children()->count() > 0 && $category->products()->count() > 0) {
+                toastr()->warning('دسته بندی غیرقابل حذف است!');
+                return redirect()->back();
+            }
 
-        toastr()->success('با موفقیت حذف شد!');
+            $category->delete();
 
-        return redirect()->back();
+            flash()->success(config('flasher.category.deleted'));
+            return redirect()->back();
+        } catch (Exception $e) {
+            report($e);
+            flash()->error(config('flasher.category.delete_failed'));
+            return redirect()->back();
+        }
     }
 
     public function getCategoryAttribute(Category $category): array
     {
-        $filters = $category->attributes()->filter()->pluck('title', 'id');
-        $variation = $category->attributes()->variation()->take(1)->pluck('title', 'id');
+        $filters = $category->filters()->pluck('title', 'id');
+        $variation = $category->variation()->take(1)->pluck('title', 'id');
 
         return ['filters' => $filters, 'variation' => $variation];
-    }
-
-    public function search(): View|Application|Factory
-    {
-        $categories = Category::search('title', trim(request()->keyword))->latest()->paginate(10);
-
-        return view('admin.categories.index', compact('categories'));
     }
 }

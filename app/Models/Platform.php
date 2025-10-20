@@ -46,8 +46,15 @@ class Platform extends Model
     {
         parent::boot();
 
+        static::updating(function ($platform) {
+            $platform->slug = SlugService::createSlug($platform, 'slug', $platform->name);
+        });
+
         foreach (['created', 'updated', 'deleted'] as $event) {
-            static::$event(fn () => cache()->forget('platforms'));
+            static::$event(function () {
+                cache()->forget('platforms');
+                cache()->forget('active_platforms');
+            });
         }
     }
 
@@ -63,23 +70,6 @@ class Platform extends Model
                 'source' => 'title',
             ],
         ];
-    }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::updating(function ($platform) {
-            $platform->slug = SlugService::createSlug($platform, 'slug', $platform->name);
-        });
-
-        static::saved(function () {
-            Cache::forget("platforms_list");
-        });
-
-        static::deleted(function () {
-            Cache::forget("platforms_list");
-        });
     }
 
     public function getIsActiveAttribute($is_active): string

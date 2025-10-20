@@ -27,12 +27,12 @@ class CategoryAttribute extends Model
         'type' => 'string',
     ];
 
-    public function scopeFilter($query): void
+    public function scopeFilters($query): void
     {
         $query->where('type', 'filter');
     }
 
-    public function scopeVariation($query): void
+    public function scopeVariations($query): void
     {
         $query->where('type', 'variation');
     }

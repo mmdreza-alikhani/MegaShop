@@ -8,15 +8,24 @@ use App\Models\Transaction;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:orders-index', ['only' => ['index', 'show']]);
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index(): View|Application|Factory
+    public function index(Request $request): View|Application|Factory
     {
-        $orders = Order::latest()->paginate(10);
+        $query = Order::query();
+        if ($request->input('q')) {
+            $query->search('id', trim(request()->input('q')));
+        }
+        $orders = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.orders.index', compact('orders'));
     }
@@ -29,12 +38,5 @@ class OrderController extends Controller
         $transaction = Transaction::where('order_id', $order->id)->first();
 
         return view('admin.orders.show', compact('order', 'transaction'));
-    }
-
-    public function search(): View|Application|Factory
-    {
-        $orders = Order::search('id', trim(request()->keyword))->latest()->paginate(10);
-
-        return view('admin.orders.index', compact('orders'));
     }
 }

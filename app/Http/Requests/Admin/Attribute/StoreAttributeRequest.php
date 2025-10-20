@@ -14,7 +14,7 @@ class StoreAttributeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->can('banners-create');
+        return auth()->user()->can('attributes-create');
     }
 
     /**

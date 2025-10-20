@@ -64,13 +64,12 @@ class BannersController extends Controller
             ]);
 
             DB::commit();
-            flash()->success('بنر با موفقیت ایجاد شد');
-            return redirect()->route('admin.banners.index');
-        } catch (Exception $ex) {
+            flash()->success(config('flasher.banner.created'));
+            return redirect()->back();
+        } catch (Exception $e) {
             DB::rollBack();
-            report($ex); // ✅ Log error
-
-            flash()->error('مشکلی در ایجاد بنر پیش آمد');
+            report($e);
+            flash()->error(config('flasher.banner.create_failed'));
             return redirect()->back()->withInput();
         }
     }
@@ -108,14 +107,12 @@ class BannersController extends Controller
             $banner->update($data);
 
             DB::commit();
-
-            flash()->success('بنر با موفقیت ویرایش شد');
-            return redirect()->route('admin.banners.index');
+            flash()->success(config('flasher.banner.updated'));
+            return redirect()->back();
         } catch (Exception $ex) {
             DB::rollBack();
             report($ex);
-
-            flash()->error('مشکلی در ویرایش بنر پیش آمد');
+            flash()->error(config('flasher.banner.update_failed'));
             return redirect()->back()->withInput();
         }
     }
@@ -132,11 +129,11 @@ class BannersController extends Controller
             );
             $banner->delete();
 
-            flash()->success('بنر با موفقیت حذف شد');
+            flash()->success(config('flasher.banner.deleted'));
             return redirect()->back();
         } catch (Exception $ex) {
             report($ex);
-            flash()->error('مشکلی در حذف بنر پیش آمد');
+            flash()->error(config('flasher.banner.delete_failed'));
             return redirect()->back();
         }
     }

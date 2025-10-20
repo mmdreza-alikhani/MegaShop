@@ -5,23 +5,40 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Post\StorePostRequest;
 use App\Http\Requests\Admin\Post\UpdatePostRequest;
+use App\Models\Attribute;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Services\FileUploadService;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
+    protected mixed $uploadPath;
+    public function __construct(private readonly FileUploadService $fileUpload)
+    {
+        $this->uploadPath = config('upload.post_path');
+        $this->middleware('permission:posts-index', ['only' => ['index']]);
+        $this->middleware('permission:posts-create', ['only' => ['store']]);
+        $this->middleware('permission:posts-edit', ['only' => ['update']]);
+        $this->middleware('permission:posts-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index(): View|Application|Factory
+    public function index(Request $request): View|Application|Factory
     {
-        $posts = Post::latest()->with('author')->paginate(10);
+        $query = Post::query();
+        if ($request->input('q')) {
+            $query->search('title', trim(request()->input('q')));
+        }
+        $posts = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.posts.index', compact('posts'));
     }
@@ -31,7 +48,9 @@ class PostController extends Controller
      */
     public function create(): View|Application|Factory
     {
-        $tags = Tag::pluck('title', 'id');
+        $tags = Cache::remember('tags', now()->addHour(), function () {
+            return Tag::pluck('title', 'id');
+        });
 
         return view('admin.posts.create', compact('tags'));
     }
@@ -44,31 +63,25 @@ class PostController extends Controller
         try {
             DB::beginTransaction();
 
-            // check
-            $postImageController = new PostImageController;
-            $imagesTitle = $postImageController->upload($request->image);
+            $imageName = $this->fileUpload->upload($request->file('image'), $this->uploadPath);
 
             $post = Post::create([
-                'title' => $request->input('title'),
+                ...$request->validated(),
+                'image' => $imageName,
                 'user_id' => auth()->id(),
-                'is_active' => $request->input('is_active'),
-                'image' => $imagesTitle['image'],
-                'text' => $request->input('text'),
-                'type' => $request->input('type'),
             ]);
 
-            $post->tags()->attach($request->tag_ids);
+            $post->tags()->attach($request->array('tag_ids'));
 
             DB::commit();
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
-
+            toastr()->error(config('flasher.post.create_failed'));
+            report($e);
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت اضافه شد!');
-
+        toastr()->success(config('flasher.post.created'));
         return redirect()->back();
     }
 
@@ -85,7 +98,9 @@ class PostController extends Controller
      */
     public function edit(Post $post): View|Application|Factory
     {
-        $tags = Tag::pluck('title', 'id');
+        $tags = Cache::remember('tags', now()->addHour(), function () {
+            return Tag::pluck('title', 'id');
+        });
 
         return view('admin.posts.edit', compact('post', 'tags'));
     }
@@ -98,42 +113,30 @@ class PostController extends Controller
         try {
             DB::beginTransaction();
 
-            if ($request->has('image')) {
-                $postImageController = new PostImageController;
-                $imagesFileName = $postImageController->upload($request->image);
+            if ($request->hasFile('image')) {
+                $imageName = $this->fileUpload->replace($request->file('image'), $post->image, $this->uploadPath);
                 $post->update([
-                    'image' => $imagesFileName,
+                    'image' => $imageName,
                 ]);
             }
 
             $post->update([
-                'title' => $request->input('title'),
+                ...$request->validated(),
                 'user_id' => auth()->id(),
-                'is_active' => $request->input('is_active'),
-                'text' => $request->input('text'),
-                'type' => $request->input('type'),
             ]);
 
-            $post->tags()->sync($request->tag_ids);
+            $post->tags()->sync($request->array('tag_ids'));
 
             DB::commit();
-        } catch (\Exception $ex) {
+        } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
-
+            toastr()->error(config('flasher.post.update_failed'));
+            report($e);
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت ویرایش شد.');
-
+        toastr()->success(config('flasher.post.updated'));
         return redirect()->back();
-    }
-
-    public function search(): View|Application|Factory
-    {
-        $posts = Post::search('title', trim(request()->keyword))->latest()->paginate(10);
-
-        return view('admin.posts.index', compact('posts'));
     }
 
     /**
@@ -141,10 +144,15 @@ class PostController extends Controller
      */
     public function destroy(Post $post): RedirectResponse
     {
-        $post->delete();
+        try {
+            $post->delete();
 
-        toastr()->success('موفقیت حذف شد!');
-
-        return redirect()->back();
+            flash()->success(config('flasher.post.deleted'));
+            return redirect()->back();
+        } catch (Exception $e) {
+            report($e);
+            flash()->error(config('flasher.post.delete_failed'));
+            return redirect()->back();
+        }
     }
 }

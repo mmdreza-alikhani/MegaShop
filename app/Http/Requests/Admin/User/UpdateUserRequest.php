@@ -22,8 +22,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
-//        return auth()->user()->can('manage-users');
+        return auth()->user()->can('users-edit');
     }
 
     /**
@@ -38,7 +37,7 @@ class UpdateUserRequest extends FormRequest
             'first_name' => 'nullable|string|max:255',
             'last_name' => 'nullable|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,'.auth()->id(),
-            'phone_number' => 'nullable|size:10|regex:/^9\d{0,11}$/|unique:users,phone_number,'.auth()->id(),
+            'phone_number' => 'nullable|regex:/^9\d{0,11}$/|unique:users,phone_number,'.auth()->id(),
         ];
     }
 

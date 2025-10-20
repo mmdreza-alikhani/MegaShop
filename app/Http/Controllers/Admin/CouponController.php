@@ -11,16 +11,28 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CouponController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:coupons-index', ['only' => ['index']]);
+        $this->middleware('permission:coupons-create', ['only' => ['store']]);
+        $this->middleware('permission:coupons-edit', ['only' => ['update']]);
+        $this->middleware('permission:coupons-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index(): View|Application|Factory
+    public function index(Request $request): View|Application|Factory
     {
-        $coupons = Coupon::latest()->paginate(10);
+        $query = Coupon::query();
+        if ($request->input('q')) {
+            $query->search('title', trim(request()->input('q')));
+        }
+        $coupons = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.coupons.index', compact('coupons'));
     }
@@ -31,30 +43,15 @@ class CouponController extends Controller
     public function store(StoreCouponRequest $request): RedirectResponse
     {
         try {
-            DB::beginTransaction();
+            Coupon::create($request->validated());
 
-            Coupon::create([
-                'title' => $request->input('title'),
-                'code' => $request->input('code'),
-                'type' => $request->input('type'),
-                'amount' => $request->input('amount'),
-                'percentage' => $request->input('percentage'),
-                'max_percentage_amount' => $request->input('max_percentage_amount'),
-                'expired_at' => convertToGregorianDate($request->input('expired_at')),
-                'description' => $request->input('description'),
-            ]);
-
-            DB::commit();
-        } catch (Exception $ex) {
-            DB::rollBack();
-            toastr()->error($ex->getMessage().'مشکلی پیش آمد!');
-
+            flash()->success(config('flasher.coupon.created'));
             return redirect()->back();
+        } catch (Exception $e) {
+            report($e);
+            flash()->error(config('flasher.coupon.create_failed'));
+            return redirect()->back()->withInput();
         }
-
-        toastr()->success('با موفقیت اضافه شد!');
-
-        return redirect()->back();
     }
 
     /**
@@ -62,38 +59,28 @@ class CouponController extends Controller
      */
     public function update(UpdateCouponRequest $request, Coupon $coupon): RedirectResponse
     {
+        // need some review in the validation and storing data
+        // store method too
         try {
             DB::beginTransaction();
 
             $coupon->update([
-                'title' => $request->input('title'),
-                'code' => $request->input('code'),
-                'type' => $request->input('type'),
+                ...$request->validated(),
                 'amount' => $request->has('amount') ? $request->input('amount') : null,
                 'percentage' => $request->has('percentage') ? $request->input('percentage') : null,
                 'max_percentage_amount' => $request->has('max_percentage_amount') ? $request->input('max_percentage_amount') : null,
-                'expired_at' => convertToGregorianDate($request->input('expired_at')),
-                'description' => $request->input('description'),
             ]);
 
             DB::commit();
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
-
+            report($e);
+            toastr()->error(config('flasher.coupon.update_failed'));
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت ویرایش شد.');
-
+        toastr()->success(config('flasher.coupon.updated'));
         return redirect()->back();
-    }
-
-    public function search(): View|Application|Factory
-    {
-        $coupons = Coupon::search('title', trim(request()->keyword))->latest()->paginate(10);
-
-        return view('admin.coupons.index', compact('coupons'));
     }
 
     /**
@@ -101,10 +88,20 @@ class CouponController extends Controller
      */
     public function destroy(Coupon $coupon): RedirectResponse
     {
-        $coupon->delete();
+        try {
+            if ($coupon->orders()->count() > 0) {
+                toastr()->warning('کد تخفیف غیرقابل حذف است!');
+                return redirect()->back();
+            }
 
-        toastr()->success('با موفقیت حذف شد!');
+            $coupon->delete();
 
-        return redirect()->back();
+            flash()->success(config('flasher.coupon.deleted'));
+            return redirect()->back();
+        } catch (Exception $e) {
+            report($e);
+            flash()->error(config('flasher.coupon.delete_failed'));
+            return redirect()->back();
+        }
     }
 }

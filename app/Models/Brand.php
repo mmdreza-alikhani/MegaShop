@@ -43,8 +43,15 @@ class Brand extends Model
     {
         parent::boot();
 
+        static::updating(function ($brand) {
+            $brand->slug = SlugService::createSlug($brand, 'slug', $brand->title);
+        });
+
         foreach (['created', 'updated', 'deleted'] as $event) {
-            static::$event(fn () => cache()->forget('brands'));
+            static::$event(function () {
+                cache()->forget('brands');
+                cache()->forget('active_brands');
+            });
         }
     }
 
@@ -60,23 +67,6 @@ class Brand extends Model
     public function scopeActive($query): void
     {
         $query->where('is_active', 1);
-    }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::updating(function ($brand) {
-            $brand->slug = SlugService::createSlug($brand, 'slug', $brand->title);
-        });
-
-        static::saved(function () {
-            Cache::forget("brands_list");
-        });
-
-        static::deleted(function () {
-            Cache::forget("brands_list");
-        });
     }
 
     public function getIsActiveAttribute($is_active): string

@@ -9,7 +9,6 @@ class StoreUserRequest extends FormRequest
 {
     protected $errorBag = 'store';
 
-
     public function prepareForValidation(): void
     {
         $this->merge([
@@ -21,8 +20,7 @@ class StoreUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
-//        return auth()->user()->can('manage-users');
+        return auth()->user()->can('users-create');
     }
 
     /**
@@ -38,7 +36,7 @@ class StoreUserRequest extends FormRequest
             'last_name' => 'nullable|string|max:255',
             'password' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
-            'phone_number' => 'nullable|integer|size:10|regex:/^9\d{0,11}$/|unique:users,phone_number',
+            'phone_number' => 'nullable|integer|regex:/^9\d{0,11}$/|unique:users,phone_number',
         ];
     }
 }

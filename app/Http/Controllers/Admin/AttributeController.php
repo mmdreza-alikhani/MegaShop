@@ -44,11 +44,11 @@ class AttributeController extends Controller
         try {
             Attribute::create($request->validated());
 
-            flash()->success('ویژگی با موفقیت ایجاد شد');
-            return redirect()->route('admin.attributes.index');
+            toastr()->success(config('flasher.attribute.created'));
+            return redirect()->back();
         } catch (Exception $e) {
             report($e);
-            flash()->error('مشکلی در ایجاد ویژگی پیش آمد');
+            flash()->error(config('flasher.attribute.create_failed'));
             return redirect()->back()->withInput();
         }
     }
@@ -61,11 +61,11 @@ class AttributeController extends Controller
         try {
             $attribute->update($request->validated());
 
-            flash()->success('ویژگی با موفقیت ویرایش شد');
-            return redirect()->route('admin.attributes.index');
+            flash()->success(config('flasher.attribute.updated'));
+            return redirect()->back();
         } catch (Exception $e) {
             report($e);
-            flash()->error('مشکلی در ویرایش ویژگی پیش آمد');
+            flash()->error(config('flasher.attribute.update_failed'));
             return redirect()->back()
                 ->withInput()
                 ->with('attribute_id', $attribute->id);
@@ -85,11 +85,11 @@ class AttributeController extends Controller
 
             $attribute->delete();
 
-            flash()->success('ویژگی با موفقیت حذف شد');
+            flash()->success(config('flasher.attribute.deleted'));
             return redirect()->back();
         } catch (Exception $e) {
             report($e);
-            flash()->error('مشکلی در حذف ویژگی پیش آمد');
+            flash()->warning(config('flasher.attribute.delete_failed'));
             return redirect()->back();
         }
     }

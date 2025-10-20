@@ -38,16 +38,4 @@ class CommentController extends Controller
 
         return view('admin.comments.index', compact('comments'));
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Comment $comment): RedirectResponse
-    {
-        $comment->delete();
-
-        toastr()->success('با موفقیت حذف شد!');
-
-        return redirect()->back();
-    }
 }

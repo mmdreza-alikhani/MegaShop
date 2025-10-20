@@ -10,22 +10,38 @@ use App\Models\Platform;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Tag;
+use App\Services\FileUploadService;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    protected mixed $primaryUploadPath, $othersUploadPath;
+    public function __construct(private readonly FileUploadService $fileUpload)
+    {
+        $this->primaryUploadPath = config('upload.product_primary_path');
+        $this->othersUploadPath = config('upload.product_others_path');
+        $this->middleware('permission:products-index', ['only' => ['index', 'show']]);
+        $this->middleware('permission:products-create', ['only' => ['store', 'create']]);
+        $this->middleware('permission:products-edit', ['only' => ['update', 'edit']]);
+        $this->middleware('permission:products-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index(): Factory|Application|View
+    public function index(Request $request): View|Application|Factory
     {
-        $products = Product::latest()->paginate(10);
+        $query = Product::query();
+        if ($request->input('q')) {
+            $query->search('title', trim(request()->input('q')));
+        }
+        $products = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.products.index', compact('products'));
     }
@@ -35,10 +51,18 @@ class ProductController extends Controller
      */
     public function create(): View|Application|Factory
     {
-        $brands = Brand::active()->pluck('title', 'id');
-        $platforms = Platform::active()->pluck('title', 'id');
-        $tags = Tag::pluck('title', 'id');
-        $categories = Category::active()->parents()->pluck('title', 'id');
+        $brands = Cache::remember('roles', now()->addHour(), function () {
+            return Brand::active()->pluck('title', 'id');
+        });
+        $platforms = Cache::remember('platforms', now()->addHour(), function () {
+            return Platform::active()->pluck('title', 'id');
+        });
+        $tags = Cache::remember('tags', now()->addHour(), function () {
+            return Tag::pluck('title', 'id');
+        });
+        $categories = Cache::remember('active_categories', now()->addHour(), function () {
+            return Category::active()->pluck('title', 'id');
+        });
 
         return view('admin.products.create', compact('brands', 'tags', 'categories', 'platforms'));
     }
@@ -51,27 +75,21 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
-            $productImageController = new ProductImageController;
-            $imagesFileName = $productImageController->upload($request->primary_image, $request->other_images);
+            $images = $this->fileUpload->uploadWithGallery($request->file('primary_image'), $request->other_images, $this->primaryUploadPath, $this->othersUploadPath);
 
             $product = Product::create([
-                'title' => $request->input('title'),
-                'is_active' => $request->input('is_active'),
-                'brand_id' => $request->input('brand_id'),
-                'platform_id' => $request->input('platform_id'),
-                'description' => $request->input('description'),
-                'delivery_amount' => $request->input('delivery_amount'),
-                'delivery_amount_per_product' => $request->input('delivery_amount_per_product'),
-                'category_id' => $request->input('category_id'),
-                'primary_image' => $imagesFileName['primaryImage'],
+                ...$request->validated(),
+                'primary_image' => $images['primary'],
             ]);
 
-            foreach ($imagesFileName['otherImages'] as $imgFileName) {
+            foreach ($images['gallery'] as $imageName) {
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image' => $imgFileName,
+                    'image' => $imageName,
                 ]);
             }
+
+            $product->tags()->attach($request->input('tag_ids'));
 
             // Store Filters
             $ProductAttributeController = new ProductAttributeController;
@@ -82,19 +100,15 @@ class ProductController extends Controller
             $ProductVariationController = new ProductVariationController;
             $ProductVariationController->store($request->input('variation_values'), $attributeId, $product->id);
 
-            $product->tags()->attach($request->input('tag_ids'));
-
             DB::commit();
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             DB::rollBack();
-            dd($ex->getMessage());
-//            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
-
-            return redirect()->route('admin.products.create');
+            toastr()->error(config('flasher.product.create_failed'));
+            report($e);
+            return redirect()->back();
         }
 
-        toastr()->success('با موفقیت محصول اضافه شد.');
-
+        toastr()->success(config('flasher.product.created'));
         return redirect()->back();
     }
 
@@ -134,22 +148,52 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit(Product $product): Factory|View
     {
-        $brands = Brand::active()->pluck('title', 'id');
-        $platforms = Platform::active()->pluck('title', 'id');
-        $tags = Tag::pluck('title', 'id');
-        $categories = Category::active()->parents()->pluck('title', 'id');
-        $productAttributes = $product->attributes()->with('attribute')->get();
-        $productVariations = $product->variations;
+        $brands = Cache::remember('roles', now()->addHour(), function () {
+            return Brand::active()->pluck('title', 'id');
+        });
+        $platforms = Cache::remember('platforms', now()->addHour(), function () {
+            return Platform::active()->pluck('title', 'id');
+        });
+        $tags = Cache::remember('tags', now()->addHour(), function () {
+            return Tag::pluck('title', 'id');
+        });
+        $categories = Cache::remember('active_categories', now()->addHour(), function () {
+            return Category::active()->pluck('title', 'id');
+        });
+        $filters = $product->filters()
+            ->with('attribute')
+            ->get()
+            ->map(function ($attr) {
+                return [
+                    'value' => $attr->value,
+                    'title' => $attr->attribute->title,
+                ];
+            });
+        $variations = $product->variations()
+            ->with('attribute')
+            ->get()
+            ->map(function ($attr) {
+                return [
+                    'title' => $attr->attribute->title,
+                    'value' => $attr->value,
+                    'price' => $attr->price,
+                    'quantity' => $attr->quantity,
+                    'sku' => $attr->sku,
+                    'sale_price' => $attr->sale_price,
+                    'date_on_sale_from' => $attr->date_on_sale_from,
+                    'date_on_sale_to' => $attr->date_on_sale_to,
+                ];
+            });
 
-        return view('admin.products.edit', compact('product', 'brands', 'tags', 'categories', 'productVariations', 'platforms'));
+        return view('admin.products.edit', compact('product', 'brands', 'tags', 'categories', 'filters', 'variations', 'platforms'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Product $product): RedirectResponse
     {
         //        dd($request->all());
         $request->validate([
@@ -203,20 +247,6 @@ class ProductController extends Controller
         toastr()->success('با موفقیت محصول ویرایش شد.');
 
         return redirect()->back();
-    }
-
-    public function search(Request $request)
-    {
-        $keyWord = request()->keyword;
-        if (request()->has('keyword') && trim($keyWord) != '') {
-            $products = Product::where('name', 'LIKE', '%'.trim($keyWord).'%')->latest()->paginate(10);
-
-            return view('admin.products.index', compact('products'));
-        } else {
-            $products = Product::latest()->paginate(10);
-
-            return view('admin.products.index', compact('products'));
-        }
     }
 
     /**

@@ -44,11 +44,11 @@ class BrandController extends Controller
         try {
             Brand::create($request->validated());
 
-            flash()->success('برند با موفقیت ایجاد شد');
-            return redirect()->route('admin.brands.index');
+            flash()->success(config('flasher.brand.created'));
+            return redirect()->back();
         } catch (Exception $e) {
             report($e);
-            flash()->error('مشکلی در ایجاد برند پیش آمد');
+            flash()->error(config('flasher.brand.create_failed'));
             return redirect()->back()->withInput();
         }
     }
@@ -61,11 +61,11 @@ class BrandController extends Controller
         try {
             $brand->update($request->validated());
 
-            flash()->success('برند با موفقیت ویرایش شد');
-            return redirect()->route('admin.brands.index');
+            flash()->success(config('flasher.brand.updated'));
+            return redirect()->back();
         } catch (Exception $e) {
             report($e);
-            flash()->error('مشکلی در ویرایش برند پیش آمد');
+            flash()->error(config('flasher.brand.update_failed'));
             return redirect()->back()
                 ->withInput()
                 ->with('brand_id', $brand->id);
@@ -85,11 +85,11 @@ class BrandController extends Controller
 
             $brand->delete();
 
-            flash()->success('برند با موفقیت حذف شد');
+            flash()->success(config('flasher.brand.deleted'));
             return redirect()->back();
         } catch (Exception $e) {
             report($e);
-            flash()->error('مشکلی در حذف برند پیش آمد');
+            flash()->error(config('flasher.brand.delete_failed'));
             return redirect()->back();
         }
     }

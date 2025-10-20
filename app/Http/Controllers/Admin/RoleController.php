@@ -10,18 +10,31 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    public function index(): View|Application|Factory
+    public function __construct()
     {
-        $roles = Role::latest()->paginate(10);
-        $permissions = Permission::latest()->get();
+        $this->middleware('permission:roles-index', ['only' => ['index']]);
+        $this->middleware('permission:roles-create', ['only' => ['store']]);
+        $this->middleware('permission:roles-edit', ['only' => ['update']]);
+    }
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request): View|Application|Factory
+    {
+        $query = Role::query();
+        if ($request->input('q')) {
+            $query->search('title', trim(request()->input('q')));
+        }
+        $roles = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.roles.index', compact('roles', 'permissions'));
+        return view('admin.roles.index', compact('roles'));
     }
 
     public function store(StoreRoleRequest $request): RedirectResponse
@@ -29,9 +42,8 @@ class RoleController extends Controller
         try {
             DB::beginTransaction();
 
-            $role = Role::create([
-                'name' => $request->input('name'),
-                'display_name' => $request->input('display_name'),
+            $role = Permission::create([
+                ...$request->validated(),
                 'guard_name' => 'web',
             ]);
 
@@ -39,15 +51,14 @@ class RoleController extends Controller
             $role->givePermissionTo($permissions);
 
             DB::commit();
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error($ex->getMessage().' مشکل به وجود آمد!');
-
-            return redirect()->back();
+            report($e);
+            flash()->error(config('flasher.role.create_failed'));
+            return redirect()->back()->withInput();
         }
 
-        toastr()->success('با موفقیت اضافه شد!');
-
+        toastr()->success(config('flasher.role.created'));
         return redirect()->back();
     }
 
@@ -56,33 +67,20 @@ class RoleController extends Controller
         try {
             DB::beginTransaction();
 
-            $role->update([
-                'name' => $request->input('name'),
-                'display_name' => $request->input('display_name'),
-            ]);
+            $role->update($request->validated());
 
             $permissions = $request->except('id', '_token', 'name', 'display_name', '_method');
             $role->syncPermissions($permissions);
 
             DB::commit();
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error($ex->getMessage().' مشکل به وجود آمد!');
-
-            return redirect()->back();
+            report($e);
+            flash()->error(config('flasher.role.update_failed'));
+            return redirect()->back()->withInput();
         }
 
-        toastr()->success('با موفقیت ویرایش شد!');
-
-        return redirect()->back();
-    }
-
-    public function destroy(Role $role): RedirectResponse
-    {
-        $role->delete();
-
-        toastr()->success('با موفقیت حذف شد!');
-
+        toastr()->success(config('flasher.role.updated'));
         return redirect()->back();
     }
 }

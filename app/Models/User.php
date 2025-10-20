@@ -34,20 +34,16 @@ class User extends Authenticatable
         'is_active',
         'avatar',
     ];
-
     protected $hidden = [
         'password',
         'remember_token',
     ];
-
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'status' => 'integer',
         'is_active' => 'boolean',
     ];
-
-    // Default Values
     protected $attributes = [
         'email_verified_at' => NULL,
         'avatar' => 'avatar.png',
@@ -55,6 +51,15 @@ class User extends Authenticatable
         'status' => 1,
         'provider_name' => 'web',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        foreach (['created', 'updated', 'deleted'] as $event) {
+            static::$event(fn () => cache()->forget('users_count'));
+        }
+    }
 
     public function scopeActive($query)
     {
