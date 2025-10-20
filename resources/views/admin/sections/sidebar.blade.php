@@ -14,31 +14,34 @@
             </a>
         </li>
         <p class="side-comment fnt-mxs">کاربران</p>
-        <ul class="side a-collapse {{ request()->is('management/users*') || request()->is('management/roles*') || request()->is('management/permissions*') ? '' : 'short' }}">
-            <a class="ul-text fnt-mxs"><i class="fas fa-user-friends mr-1"></i> کاربران
-                <i class="fas fa-chevron-up arrow"></i>
-            </a>
-            <div
-                class="side-item-container {{ request()->is('management/users*') || request()->is('management/roles*') || request()->is('management/permissions*') ? '' : 'hide animated' }}">
-                <li class="side-item {{ request()->is('management/users') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.users.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست کاربران
-                    </a>
-                </li>
-                <li class="side-item {{ request()->is('management/roles') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.roles.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>گروه های کاربری
-                    </a>
-                </li>
-                <li class="side-item {{ request()->is('management/permissions') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.permissions.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>دسترسی ها
-                    </a>
-                </li>
-            </div>
-        </ul>
+        @can('users-index')
+            <ul class="side a-collapse {{ request()->is('management/users*') || request()->is('management/roles*') || request()->is('management/permissions*') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fas fa-user-friends mr-1"></i> کاربران
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div
+                    class="side-item-container {{ request()->is('management/users*') || request()->is('management/roles*') || request()->is('management/permissions*') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/users') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.users.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست کاربران
+                        </a>
+                    </li>
+                    <li class="side-item {{ request()->is('management/roles') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.roles.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>گروه های کاربری
+                        </a>
+                    </li>
+                    <li class="side-item {{ request()->is('management/permissions') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.permissions.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>دسترسی ها
+                        </a>
+                    </li>
+                </div>
+            </ul>
+        @endcan
         <p class="side-comment fnt-mxs">محصولات</p>
-        <ul class="side a-collapse {{ request()->is('management/attributes*') ? '' : 'short' }}">
+        @can('attributes-index')
+            <ul class="side a-collapse {{ request()->is('management/attributes*') ? '' : 'short' }}">
             <a class="ul-text fnt-mxs"><i class="fas fa-star mr-1"></i> ویژگی ها
                 <i class="fas fa-chevron-up arrow"></i>
             </a>
@@ -50,7 +53,9 @@
                 </li>
             </div>
         </ul>
-        <ul class="side a-collapse {{ request()->is('management/categories*') ? '' : 'short' }}">
+        @endcan
+        @can('categories-index')
+            <ul class="side a-collapse {{ request()->is('management/categories*') ? '' : 'short' }}">
             <a class="ul-text fnt-mxs"><i class="fas fa-box-open mr-1"></i> دسته بندی ها
                 <i class="fas fa-chevron-up arrow"></i>
             </a>
@@ -67,7 +72,9 @@
                 </li>
             </div>
         </ul>
-        <ul class="side a-collapse {{ request()->is('management/brands*') ? '' : 'short' }}">
+        @endcan
+        @can('brands-index')
+            <ul class="side a-collapse {{ request()->is('management/brands*') ? '' : 'short' }}">
             <a class="ul-text fnt-mxs"><i class="fas fa-tags mr-1"></i> برند ها
                 <i class="fas fa-chevron-up arrow"></i>
             </a>
@@ -79,37 +86,43 @@
                 </li>
             </div>
         </ul>
-        <ul class="side a-collapse {{ request()->is('management/platforms*') ? '' : 'short' }}">
-            <a class="ul-text fnt-mxs"><i class="fas fa-gamepad mr-1"></i> پلتفرم ها
-                <i class="fas fa-chevron-up arrow"></i>
-            </a>
-            <div class="side-item-container {{ request()->is('management/platforms*') ? '' : 'hide animated' }}">
-                <li class="side-item {{ request()->is('management/platforms') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.platforms.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست پلتفرم ها
-                    </a>
-                </li>
-            </div>
-        </ul>
-        <ul class="side a-collapse {{ request()->is('management/products*') ? '' : 'short' }}">
-            <a class="ul-text fnt-mxs"><i class="fa fa-box mr-1"></i> محصولات
-                <i class="fas fa-chevron-up arrow"></i>
-            </a>
-            <div class="side-item-container {{ request()->is('management/products*') ? '' : 'hide animated' }}">
-                <li class="side-item {{ request()->is('management/products') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.products.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست محصولات
-                    </a>
-                </li>
-                <li class="side-item {{ request()->is('management/products/create') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.products.create') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>ایجاد محصول جدید
-                    </a>
-                </li>
-            </div>
-        </ul>
+        @endcan
+        @can('platforms-index')
+            <ul class="side a-collapse {{ request()->is('management/platforms*') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fas fa-gamepad mr-1"></i> پلتفرم ها
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/platforms*') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/platforms') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.platforms.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست پلتفرم ها
+                        </a>
+                    </li>
+                </div>
+            </ul>
+        @endcan
+        @can('products-index')
+            <ul class="side a-collapse {{ request()->is('management/products*') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fa fa-box mr-1"></i> محصولات
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/products*') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/products') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.products.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست محصولات
+                        </a>
+                    </li>
+                    <li class="side-item {{ request()->is('management/products/create') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.products.create') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>ایجاد محصول جدید
+                        </a>
+                    </li>
+                </div>
+            </ul>
+        @endcan
         <p class="side-comment fnt-mxs">سفارشات</p>
-        <ul class="side a-collapse {{ request()->is('management/coupons*') ? '' : 'short' }}">
+        @can('coupons-index')
+            <ul class="side a-collapse {{ request()->is('management/coupons*') ? '' : 'short' }}">
             <a class="ul-text fnt-mxs"><i class="fa fa-ticket-alt mr-1"></i> کد های تخفیف
                 <i class="fas fa-chevron-up arrow"></i>
             </a>
@@ -121,73 +134,84 @@
                 </li>
             </div>
         </ul>
-        <ul class="side a-collapse {{ request()->is('management/orders*') ? '' : 'short' }}">
-            <a class="ul-text fnt-mxs"><i class="fa fa-truck-loading mr-1"></i> سفارشات
-                <i class="fas fa-chevron-up arrow"></i>
-            </a>
-            <div class="side-item-container {{ request()->is('management/orders*') ? '' : 'hide animated' }}">
-                <li class="side-item {{ request()->is('management/orders') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.orders.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست سفارشات
-                    </a>
-                </li>
-            </div>
-        </ul>
+        @endcan
+        @can('orders-index')
+            <ul class="side a-collapse {{ request()->is('management/orders*') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fa fa-truck-loading mr-1"></i> سفارشات
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/orders*') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/orders') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.orders.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست سفارشات
+                        </a>
+                    </li>
+                </div>
+            </ul>
+        @endcan
         <p class="side-comment fnt-mxs">محتوا</p>
-        <ul class="side a-collapse {{ request()->is('management/posts*') ? '' : 'short' }}">
-            <a class="ul-text fnt-mxs"><i class="fa fa-newspaper mr-1"></i>مقالات
-                <i class="fas fa-chevron-up arrow"></i>
-            </a>
-            <div class="side-item-container {{ request()->is('management/posts*') ? '' : 'hide animated' }}">
-                <li class="side-item {{ request()->is('management/posts') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.posts.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست مقالات
-                    </a>
-                </li>
-            </div>
-        </ul>
+        @can('posts-index')
+            <ul class="side a-collapse {{ request()->is('management/posts*') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fa fa-newspaper mr-1"></i>مقالات
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/posts*') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/posts') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.posts.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست مقالات
+                        </a>
+                    </li>
+                </div>
+            </ul>
+        @endcan
         <p class="side-comment fnt-mxs">عمومی</p>
-        <ul class="side a-collapse {{ request()->is('management/tags*') ? '' : 'short' }}">
-            <a class="ul-text fnt-mxs"><i class="fa fa-ticket-alt mr-1"></i> برچسب ها
-                <i class="fas fa-chevron-up arrow"></i>
-            </a>
-            <div class="side-item-container {{ request()->is('management/tags*') ? '' : 'hide animated' }}">
-                <li class="side-item {{ request()->is('management/tags') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.tags.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست برچسب ها
-                    </a>
-                </li>
-            </div>
-        </ul>
-        <ul class="side a-collapse {{ request()->is('management/banners*') ? '' : 'short' }}">
-            <a class="ul-text fnt-mxs"><i class="fa fa-box mr-1"></i> بنر ها
-                <i class="fas fa-chevron-up arrow"></i>
-            </a>
-            <div class="side-item-container {{ request()->is('management/banners*') ? '' : 'hide animated' }}">
-                <li class="side-item {{ request()->is('management/banners') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.banners.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست بنر ها
-                    </a>
-                </li>
-                <li class="side-item {{ request()->is('management/banners/create') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.banners.create') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>ایجاد بنر ها جدید
-                    </a>
-                </li>
-            </div>
-        </ul>
-        <ul class="side a-collapse {{ request()->is('management/comments*') ? '' : 'short' }}">
-            <a class="ul-text fnt-mxs"><i class="fa fa-comments mr-1"></i>نظرات
-                <i class="fas fa-chevron-up arrow"></i>
-                <span class="badge badge-danger">{{ Comment::where('status' ,'1')->count() }}</span>
-            </a>
-            <div class="side-item-container {{ request()->is('management/comments*') ? '' : 'hide animated' }}">
-                <li class="side-item {{ request()->is('management/comments') ? 'selected' : '' }}">
-                    <a href="{{ route('admin.comments.index') }}" class="fnt-mxs">
-                        <i class="fas fa-angle-right mr-2"></i>لیست نظرات
-                    </a>
-                </li>
-            </div>
-        </ul>
+        @can('tags-index')
+            <ul class="side a-collapse {{ request()->is('management/tags*') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fa fa-ticket-alt mr-1"></i> برچسب ها
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/tags*') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/tags') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.tags.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست برچسب ها
+                        </a>
+                    </li>
+                </div>
+            </ul>
+        @endcan
+        @can('banners-index')
+            <ul class="side a-collapse {{ request()->is('management/banners*') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fa fa-box mr-1"></i> بنر ها
+                    <i class="fas fa-chevron-up arrow"></i>
+                </a>
+                <div class="side-item-container {{ request()->is('management/banners*') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/banners') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.banners.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست بنر ها
+                        </a>
+                    </li>
+                    <li class="side-item {{ request()->is('management/banners/create') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.banners.create') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>ایجاد بنر ها جدید
+                        </a>
+                    </li>
+                </div>
+            </ul>
+        @endcan
+        @can('comments-index')
+            <ul class="side a-collapse {{ request()->is('management/comments*') ? '' : 'short' }}">
+                <a class="ul-text fnt-mxs"><i class="fa fa-comments mr-1"></i>نظرات
+                    <i class="fas fa-chevron-up arrow"></i>
+                    <span class="badge badge-danger">{{ Comment::where('status' ,'1')->count() }}</span>
+                </a>
+                <div class="side-item-container {{ request()->is('management/comments*') ? '' : 'hide animated' }}">
+                    <li class="side-item {{ request()->is('management/comments') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.comments.index') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>لیست نظرات
+                        </a>
+                    </li>
+                </div>
+            </ul>
+        @endcan
     </div>
 </div>
