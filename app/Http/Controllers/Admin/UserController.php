@@ -52,7 +52,7 @@ class UserController extends Controller
                 'password' => Hash::make($request->input('password')),
                 'provider_name' => 'manual',
             ]);
-            toastr()->success(config('flasher.user.created'));
+            flash()->success(config('flasher.user.created'));
             return redirect()->back();
         } catch (Exception $e) {
             report($e);
@@ -92,12 +92,12 @@ class UserController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error(config('flasher.user.update_failed'));
+            flash()->error(config('flasher.user.update_failed'));
             report($e);
             return redirect()->back();
         }
 
-        toastr()->success(config('flasher.user.updated'));
+        flash()->success(config('flasher.user.updated'));
         return redirect()->back();
     }
 }

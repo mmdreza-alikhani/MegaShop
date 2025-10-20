@@ -52,12 +52,12 @@ class CommentController extends Controller
                 }
             }
             DB::commit();
-            toastr()->success('نظر شما با موفقیت ثبت و در انتظار تایید است!');
+            flash()->success('نظر شما با موفقیت ثبت و در انتظار تایید است!');
 
             return redirect()->back();
         } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->warning($ex->getMessage().'مشکلی پیش آمد!');
+            flash()->warning($ex->getMessage().'مشکلی پیش آمد!');
 
             return redirect()->back();
         }

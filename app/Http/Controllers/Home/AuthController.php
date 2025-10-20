@@ -62,7 +62,7 @@ class AuthController extends Controller
 
         auth()->loginUsingId($user->id);
 
-        toastr()->success('ورود با موفقیت انجام شد!');
+        flash()->success('ورود با موفقیت انجام شد!');
 
         return redirect()->route('home.index');
 

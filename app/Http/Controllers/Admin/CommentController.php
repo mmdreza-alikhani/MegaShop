@@ -27,7 +27,7 @@ class CommentController extends Controller
             'status' => $comment->status == 1 ? 0 : 1,
         ]);
 
-        toastr()->success('وضعیت نظر با موفقیت تغییر کرد!');
+        flash()->success('وضعیت نظر با موفقیت تغییر کرد!');
 
         return redirect()->back();
     }

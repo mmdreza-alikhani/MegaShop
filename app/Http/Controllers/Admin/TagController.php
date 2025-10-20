@@ -44,7 +44,7 @@ class TagController extends Controller
         try {
             Tag::create($request->validated());
 
-            toastr()->success(config('flasher.tag.created'));
+            flash()->success(config('flasher.tag.created'));
             return redirect()->back();
         } catch (Exception $e) {
             report($e);

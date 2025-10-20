@@ -44,7 +44,7 @@ class AttributeController extends Controller
         try {
             Attribute::create($request->validated());
 
-            toastr()->success(config('flasher.attribute.created'));
+            flash()->success(config('flasher.attribute.created'));
             return redirect()->back();
         } catch (Exception $e) {
             report($e);

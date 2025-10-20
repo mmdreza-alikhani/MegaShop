@@ -75,11 +75,11 @@ class CouponController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             report($e);
-            toastr()->error(config('flasher.coupon.update_failed'));
+            flash()->error(config('flasher.coupon.update_failed'));
             return redirect()->back();
         }
 
-        toastr()->success(config('flasher.coupon.updated'));
+        flash()->success(config('flasher.coupon.updated'));
         return redirect()->back();
     }
 
@@ -90,7 +90,7 @@ class CouponController extends Controller
     {
         try {
             if ($coupon->orders()->count() > 0) {
-                toastr()->warning('کد تخفیف غیرقابل حذف است!');
+                flash()->warning('کد تخفیف غیرقابل حذف است!');
                 return redirect()->back();
             }
 

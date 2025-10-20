@@ -103,12 +103,12 @@ class ProductController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error(config('flasher.product.create_failed'));
+            flash()->error(config('flasher.product.create_failed'));
             report($e);
             return redirect()->back();
         }
 
-        toastr()->success(config('flasher.product.created'));
+        flash()->success(config('flasher.product.created'));
         return redirect()->back();
     }
 
@@ -239,12 +239,12 @@ class ProductController extends Controller
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+            flash()->error('مشکلی پیش آمد!', $ex->getMessage());
 
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت محصول ویرایش شد.');
+        flash()->success('با موفقیت محصول ویرایش شد.');
 
         return redirect()->back();
     }
@@ -293,12 +293,12 @@ class ProductController extends Controller
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+            flash()->error('مشکلی پیش آمد!', $ex->getMessage());
 
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت دسته بندی محصول ویرایش شد.');
+        flash()->success('با موفقیت دسته بندی محصول ویرایش شد.');
 
         return redirect()->back();
     }

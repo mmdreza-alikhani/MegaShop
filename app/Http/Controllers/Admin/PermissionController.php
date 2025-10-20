@@ -45,7 +45,7 @@ class PermissionController extends Controller
                 'guard_name' => 'web',
             ]);
 
-            toastr()->success(config('flasher.permission.created'));
+            flash()->success(config('flasher.permission.created'));
             return redirect()->back();
         } catch (Exception $e) {
             report($e);

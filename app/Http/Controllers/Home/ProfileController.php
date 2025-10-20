@@ -83,9 +83,9 @@ class ProfileController extends Controller
                 $user->update([
                     'password' => $newPassword,
                 ]);
-                toastr()->success('کلمه عبور با موفقیت تغییر یافت.');
+                flash()->success('کلمه عبور با موفقیت تغییر یافت.');
             } else {
-                toastr()->error('کلمه عبور فعلی وارد شده درست نیست.');
+                flash()->error('کلمه عبور فعلی وارد شده درست نیست.');
             }
         }else{
             $newPassword = Hash::make($request->input('newPassword'));
@@ -93,7 +93,7 @@ class ProfileController extends Controller
                 'password' => $newPassword,
                 'provider_name' => 'manual'
             ]);
-            toastr()->success('کلمه عبور با موفقیت تغییر یافت.');
+            flash()->success('کلمه عبور با موفقیت تغییر یافت.');
         }
 
         return redirect()->back();
@@ -105,7 +105,7 @@ class ProfileController extends Controller
         if ($user->email_verified_at == null) {
             return view('home.profile.verifyEmail', compact('user'));
         } else {
-            toastr()->info(('ایمیل شما قبلا تایید شده است.'));
+            flash()->info(('ایمیل شما قبلا تایید شده است.'));
             return redirect()->back();
         }
     }
@@ -148,12 +148,12 @@ class ProfileController extends Controller
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
-            toastr()->error('مشکلی پیش آمد!', $ex->getMessage());
+            flash()->error('مشکلی پیش آمد!', $ex->getMessage());
 
             return redirect()->back();
         }
 
-        toastr()->success('با موفقیت اطلاعات ویرایش شد.');
+        flash()->success('با موفقیت اطلاعات ویرایش شد.');
         return redirect()->back();
     }
 }

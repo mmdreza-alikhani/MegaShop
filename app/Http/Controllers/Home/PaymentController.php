@@ -105,22 +105,22 @@ class PaymentController extends Controller
             if ($result->status == 1) {
                 $updateOrder = $this->updateOrder($token, $result->transId);
                 if (array_key_exists('error', $updateOrder)) {
-                    toastr()->error($updateOrder['error']);
+                    flash()->error($updateOrder['error']);
 
                     return redirect()->route('home.index');
                 }
                 \Cart::clear();
-                toastr()->success('تراکنش با موفقیت انجام شد!');
+                flash()->success('تراکنش با موفقیت انجام شد!');
 
                 return redirect()->back();
             } else {
-                toastr()->error('پرداخت با خطا مواجه شد!');
+                flash()->error('پرداخت با خطا مواجه شد!');
 
                 return redirect()->back();
             }
         } else {
             if ($request->status == 0) {
-                toastr()->error('پرداخت با خطا مواجه شد!');
+                flash()->error('پرداخت با خطا مواجه شد!');
 
                 return redirect()->back();
             }
@@ -213,21 +213,21 @@ class PaymentController extends Controller
             'address_id' => 'required',
         ]);
         if ($validator->fails()) {
-            toastr()->error('!ادامه فرایند ممکن نیست');
+            flash()->error('!ادامه فرایند ممکن نیست');
 
             return redirect()->route('home.index');
         }
 
         $checkCart = $this->checkCart();
         if (array_key_exists('error', $checkCart)) {
-            toastr()->error($checkCart['error']);
+            flash()->error($checkCart['error']);
 
             return redirect()->route('home.index');
         }
 
         $amounts = $this->getAmount();
         if (array_key_exists('error', $amounts)) {
-            toastr()->error($amounts['error']);
+            flash()->error($amounts['error']);
 
             return redirect()->route('home.cart.index');
         }
@@ -243,7 +243,7 @@ class PaymentController extends Controller
         if ($result->status) {
             $createOrder = $this->createOrder($request->address_id, $amounts, $result->token, 'pay');
             if (array_key_exists('error', $createOrder)) {
-                toastr()->error($createOrder['error']);
+                flash()->error($createOrder['error']);
 
                 return redirect()->route('home.index');
             }

@@ -58,7 +58,7 @@ class RoleController extends Controller
             return redirect()->back()->withInput();
         }
 
-        toastr()->success(config('flasher.role.created'));
+        flash()->success(config('flasher.role.created'));
         return redirect()->back();
     }
 
@@ -80,7 +80,7 @@ class RoleController extends Controller
             return redirect()->back()->withInput();
         }
 
-        toastr()->success(config('flasher.role.updated'));
+        flash()->success(config('flasher.role.updated'));
         return redirect()->back();
     }
 }

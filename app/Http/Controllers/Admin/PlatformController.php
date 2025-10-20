@@ -66,7 +66,7 @@ class PlatformController extends Controller
             return redirect()->back()->withInput();
         }
 
-        toastr()->success(config('flasher.platform.created'));
+        flash()->success(config('flasher.platform.created'));
         return redirect()->back();
     }
 

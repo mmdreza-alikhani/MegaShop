@@ -76,12 +76,12 @@ class PostController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error(config('flasher.post.create_failed'));
+            flash()->error(config('flasher.post.create_failed'));
             report($e);
             return redirect()->back();
         }
 
-        toastr()->success(config('flasher.post.created'));
+        flash()->success(config('flasher.post.created'));
         return redirect()->back();
     }
 
@@ -130,12 +130,12 @@ class PostController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error(config('flasher.post.update_failed'));
+            flash()->error(config('flasher.post.update_failed'));
             report($e);
             return redirect()->back();
         }
 
-        toastr()->success(config('flasher.post.updated'));
+        flash()->success(config('flasher.post.updated'));
         return redirect()->back();
     }
 

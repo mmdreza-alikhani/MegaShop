@@ -87,12 +87,12 @@ class CategoryController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error(config('flasher.category.create_failed'));
+            flash()->error(config('flasher.category.create_failed'));
             report($e);
             return redirect()->back();
         }
 
-        toastr()->success(config('flasher.category.created'));
+        flash()->success(config('flasher.category.created'));
         return redirect()->back();
     }
 
@@ -149,12 +149,12 @@ class CategoryController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            toastr()->error(config('flasher.category.update_failed'));
+            flash()->error(config('flasher.category.update_failed'));
             report($e);
             return redirect()->back();
         }
 
-        toastr()->success(config('flasher.category.updated'));
+        flash()->success(config('flasher.category.updated'));
         return redirect()->back();
     }
 
@@ -165,7 +165,7 @@ class CategoryController extends Controller
     {
         try {
             if ($category->children()->count() > 0 && $category->products()->count() > 0) {
-                toastr()->warning('دسته بندی غیرقابل حذف است!');
+                flash()->warning('دسته بندی غیرقابل حذف است!');
                 return redirect()->back();
             }
 
