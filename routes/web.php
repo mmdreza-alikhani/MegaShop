@@ -46,31 +46,21 @@ Route::prefix('/management/')->name('admin.')->middleware(['auth.check'])->group
 
     Route::get('', [AdminHomeController::class, 'mainPage'])->name('panel');
 
-    Route::resource('users', UserController::class)->middleware(['permission:users-index']);
-    Route::get('usersSearch', [UserController::class, 'search'])->middleware(['permission:users-index'])->name('users.search');
-    Route::resource('permissions', PermissionController::class)->middleware(['permission:users-index']);
-    Route::resource('roles', RoleController::class)->middleware(['permission:users-index']);
-    Route::resource('brands', BrandController::class)->middleware(['permission:brands-index']);
-    Route::get('brandsSearch', [BrandController::class, 'search'])->middleware(['permission:brands-index'])->name('brands.search');
-    Route::resource('platforms', PlatformController::class)->middleware(['permission:platforms-index']);
-    Route::resource('attributes', AttributeController::class)->middleware(['permission:attributes-index']);
-    Route::resource('categories', CategoryController::class)->middleware(['permission:categories-index']);
-    Route::get('categoriesSearch', [CategoryController::class, 'search'])->middleware(['permission:categories-index'])->name('categories.search');
-    Route::resource('tags', TagController::class)->middleware(['permission:tags-index']);
-    Route::get('tagsSearch', [TagController::class, 'search'])->middleware(['permission:tags-index'])->name('tags.search');
+    Route::resource('users', UserController::class)->middleware(['permission:users-index'])->only(['index', 'store', 'update']);
+    Route::resource('permissions', PermissionController::class)->middleware(['permission:users-index'])->only(['index', 'store', 'update']);
+    Route::resource('roles', RoleController::class)->middleware(['permission:users-index'])->only(['index', 'store', 'update']);
+    Route::resource('brands', BrandController::class)->middleware(['permission:brands-index'])->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('platforms', PlatformController::class)->middleware(['permission:platforms-index'])->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('attributes', AttributeController::class)->middleware(['permission:attributes-index'])->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('categories', CategoryController::class)->middleware(['permission:categories-index'])->except(['show']);
+    Route::resource('tags', TagController::class)->middleware(['permission:tags-index'])->only(['index', 'store', 'update', 'destroy']);
     Route::resource('products', ProductController::class)->middleware(['permission:products-index']);
-    Route::get('productsSearch', [ProductController::class, 'search'])->middleware(['permission:products-index'])->name('products.search');
     Route::resource('banners', BannersController::class)->middleware(['permission:banners-index']);
-    Route::get('bannersSearch', [BannersController::class, 'search'])->middleware(['permission:banners-index'])->name('banners.search');
     Route::resource('posts', PostController::class)->middleware(['permission:posts-index']);
-    Route::get('postsSearch', [PostController::class, 'search'])->middleware(['permission:posts-index'])->name('posts.search');
     Route::get('comments/toggle', [CommentController::class, 'toggle'])->middleware(['permission:comments-index'])->name('comments.toggle');
-    Route::resource('comments', CommentController::class)->middleware(['permission:comments-index']);
-    Route::get('commentsSearch', [CommentController::class, 'search'])->middleware(['permission:comments-index'])->name('comments.search');
-    Route::resource('coupons', CouponController::class)->middleware(['permission:coupons-index']);
-    Route::get('couponsSearch', [CouponController::class, 'search'])->middleware(['permission:coupons-index'])->name('coupons.search');
-    Route::resource('orders', OrderController::class)->middleware(['permission:orders-index']);
-    Route::get('ordersSearch', [OrderController::class, 'search'])->middleware(['permission:orders-index'])->name('orders.search');
+    Route::resource('comments', CommentController::class)->middleware(['permission:comments-index'])->only(['index']);
+    Route::resource('coupons', CouponController::class)->middleware(['permission:coupons-index'])->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('orders', OrderController::class)->middleware(['permission:orders-index'])->only(['index', 'show']);
 
     // Approve Comment
     Route::get('/comments/{comment}/change-status', [CommentController::class, 'changeStatus'])->name('comments.changeStatus')->middleware(['permission:comments-toggle']);
@@ -97,7 +87,6 @@ Route::get('/reset-password/{token}', function (string $token) {
 Route::prefix('/')->name('home.')->group(function () {
 
     Route::get('', [HomeController::class, 'index'])->name('index');
-    Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])->name('search.autocomplete');
     Route::get('s', [SearchController::class, 'search'])->name('search');
     Route::get('aboutus', [HomeController::class, 'aboutUs'])->name('aboutus');
     Route::get('aboutus#contact', [HomeController::class, 'aboutUs'])->name('aboutus.contact');
@@ -147,10 +136,6 @@ Route::prefix('/')->name('home.')->group(function () {
 
     Route::get('platforms/{platform:slug}', [HomePlatformController::class, 'show_products'])->name('platforms.products.show');
 
-//    Route::get('brands/{brand:slug}', [HomeBrandController::class, 'show_products'])->name('brands.products.show');
-
-//    Route::get('register', [HomeAuthController::class, 'register'])->name('register');
-//    Route::get('login', [HomeAuthController::class, 'login'])->name('login');
     Route::get('login/{provider}', [HomeAuthController::class, 'redirectToProvider'])->name('redirectToProvider');
     Route::get('login/{provider}/callback', [HomeAuthController::class, 'handleProviderCallback']);
 

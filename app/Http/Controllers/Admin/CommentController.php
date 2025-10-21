@@ -31,11 +31,4 @@ class CommentController extends Controller
 
         return redirect()->back();
     }
-
-    public function search(): View|Application|Factory
-    {
-        $comments = Comment::search('title', trim(request()->keyword))->latest()->paginate(10);
-
-        return view('admin.comments.index', compact('comments'));
-    }
 }
