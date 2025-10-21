@@ -16,15 +16,16 @@ class WishList extends Model
         'user_id',
         'product_id',
     ];
-
     protected $casts = [
         'user_id' => 'integer',
         'product_id' => 'integer',
     ];
+    protected $primaryKey = ['user_id', 'product_id'];
 
-    public $incrementing = false; // Since we use a composite key
-
-    protected $primaryKey = ['user_id', 'product_id']; // Composite primary key
+    public function scopeUserId($query, $user_id): void
+    {
+        $query->where('user_id', $user_id);
+    }
 
     public function product(): BelongsTo
     {
@@ -34,10 +35,5 @@ class WishList extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function scopeUserId($query, $user_id): void
-    {
-        $query->where('user_id', $user_id);
     }
 }

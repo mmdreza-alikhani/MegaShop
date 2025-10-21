@@ -57,6 +57,10 @@ class Category extends Model
     {
         parent::boot();
 
+        static::updating(function ($category) {
+            $category->slug = SlugService::createSlug($category, 'slug', $category->title);
+        });
+
         foreach (['created', 'updated', 'deleted'] as $event) {
             static::$event(function () {
                 cache()->forget('categories');
@@ -90,24 +94,19 @@ class Category extends Model
         return $is_active ? 'فعال' : 'غیرفعال';
     }
 
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'parent_id');
-    }
-
     public function isParent(): bool
     {
         return $this->parent_id == 0;
     }
 
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
     public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id')->with('children');
-    }
-
-    public function allChildren(): HasMany
-    {
-        return $this->children()->with('allChildren');
     }
 
     public function attributes(): BelongsToMany
@@ -189,40 +188,5 @@ class Category extends Model
         }
 
         return $ids;
-    }
-
-    /**
-     * پاک کردن Cache فیلترها
-     */
-    public function clearFiltersCache(): void
-    {
-        $categoryIds = $this->getAllDescendantIds();
-        $cacheKey = 'filters_categories_' . md5(implode(',', $categoryIds));
-        Cache::forget($cacheKey);
-
-        // پاک کردن Cache والدین
-        $parent = $this->parent;
-        while ($parent) {
-            $parentIds = $parent->getAllDescendantIds();
-            $parentCacheKey = 'filters_categories_' . md5(implode(',', $parentIds));
-            Cache::forget($parentCacheKey);
-            $parent = $parent->parent;
-        }
-    }
-
-    /**
-     * Model Events
-     */
-    protected static function booted(): void
-    {
-        static::saved(function ($category) {
-            Cache::forget("category_{$category->id}_descendants");
-            $category->clearFiltersCache();
-        });
-
-        static::deleted(function ($category) {
-            Cache::forget("category_{$category->id}_descendants");
-            $category->clearFiltersCache();
-        });
     }
 }

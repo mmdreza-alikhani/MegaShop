@@ -70,14 +70,12 @@ class ProfileAddressesController extends Controller
      */
     public function update(UpdateRequest $request, UserAddress $address): RedirectResponse
     {
-        // ✅ Authorization - کاربر فقط آدرس خودش رو ویرایش کنه
         $this->authorize('update', $address);
 
-        // ✅ مستقیم validated data رو آپدیت کن
         $address->update($request->validated());
 
         flash()->success('آدرس مورد نظر با موفقیت ویرایش شد');
-        return redirect()->route('home.profile.addresses.index');
+        return redirect()->back();
     }
 
     /**

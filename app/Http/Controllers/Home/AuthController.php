@@ -64,7 +64,7 @@ class AuthController extends Controller
 
         flash()->success('ورود با موفقیت انجام شد!');
 
-        return redirect()->route('home.index');
+        return redirect()->back();
 
     }
 }

@@ -113,7 +113,7 @@ class ProfileController extends Controller
     public function logout(): RedirectResponse
     {
         auth()->logout();
-        return redirect()->route('home.index');
+        return redirect()->back();
     }
 
     public function update(UpdateRequest $request): RedirectResponse

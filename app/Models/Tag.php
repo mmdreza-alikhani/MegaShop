@@ -20,6 +20,9 @@ class Tag extends Model
     protected $fillable = [
         'title',
     ];
+    protected $casts = [
+        'title' => 'string',
+    ];
 
     protected static function boot(): void
     {

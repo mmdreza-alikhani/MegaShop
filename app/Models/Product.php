@@ -27,7 +27,6 @@ class Product extends Model implements Cartable
     use HasFactory, SearchableTrait, sluggable;
 
     protected $table = 'products';
-
     protected $fillable = [
         'title',
         'brand_id',
@@ -40,7 +39,6 @@ class Product extends Model implements Cartable
         'is_active',
         'delivery_amount',
     ];
-
     protected $casts = [
         'brand_id' => 'integer',
         'category_id' => 'integer',
@@ -49,23 +47,12 @@ class Product extends Model implements Cartable
         'is_active' => 'boolean',
         'delivery_amount' => 'integer',
     ];
-
     protected $attributes = [
         'status' => '1',
         'is_active' => 0,
         'delivery_amount' => 0,
     ];
-
     protected $appends = ['best_selling_price'];
-
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => 'title',
-            ],
-        ];
-    }
 
     protected static function boot(): void
     {
@@ -76,6 +63,15 @@ class Product extends Model implements Cartable
         });
     }
 
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title',
+            ],
+        ];
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';
@@ -84,6 +80,21 @@ class Product extends Model implements Cartable
     public function getPrice(): float
     {
         //
+    }
+
+    public function getIsActiveAttribute($is_active): string
+    {
+        return $is_active ? 'فعال' : 'غیرفعال';
+    }
+
+    public function scopeActive($query): void
+    {
+        $query->where('is_active', 1);
+    }
+
+    public function scopeCategory($query, $category_id): void
+    {
+        $query->where('category_id', $category_id);
     }
 
     public function tags(): BelongsToMany
@@ -106,19 +117,39 @@ class Product extends Model implements Cartable
         return $this->belongsTo(Category::class);
     }
 
-    public function getIsActiveAttribute($is_active): string
+    public function getBestSellingPriceAttribute()
     {
-        return $is_active ? 'فعال' : 'غیرفعال';
+        return $this->variations()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? $this->variations()->orderBy('price')->first();
     }
 
-    public function scopeActive($query): void
+    public function filters(): HasMany
     {
-        $query->where('is_active', 1);
+        return $this->hasMany(ProductFilter::class);
     }
 
-    public function scopeCategory($query, $category_id): void
+    public function variations(): HasMany
     {
-        $query->where('category_id', $category_id);
+        return $this->hasMany(ProductVariation::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    public function rates(): HasMany
+    {
+        return $this->hasMany(ProductRate::class);
+    }
+
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable')->where('is_active', 1);
+    }
+
+    public function checkUserWishlist($userId): bool
+    {
+        return $this->hasMany(WishList::class)->where('user_id', $userId)->exists();
     }
 
     public function scopeFilter($query)
@@ -183,40 +214,5 @@ class Product extends Model implements Cartable
         }
 
         return $query;
-    }
-
-    public function getBestSellingPriceAttribute()
-    {
-        return $this->variations()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? $this->variations()->orderBy('price')->first();
-    }
-
-    public function filters(): HasMany
-    {
-        return $this->hasMany(ProductFilter::class);
-    }
-
-    public function variations(): HasMany
-    {
-        return $this->hasMany(ProductVariation::class);
-    }
-
-    public function images(): HasMany
-    {
-        return $this->hasMany(ProductImage::class);
-    }
-
-    public function rates(): HasMany
-    {
-        return $this->hasMany(ProductRate::class);
-    }
-
-    public function comments(): MorphMany
-    {
-        return $this->morphMany(Comment::class, 'commentable')->where('is_active', 1);
-    }
-
-    public function checkUserWishlist($userId): bool
-    {
-        return $this->hasMany(WishList::class)->where('user_id', $userId)->exists();
     }
 }

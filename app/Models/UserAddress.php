@@ -11,7 +11,6 @@ class UserAddress extends Model
     use HasFactory;
 
     protected $table = 'user_addresses';
-
     protected $fillable = [
         'title',
         'address',
@@ -23,7 +22,6 @@ class UserAddress extends Model
         'longitude',
         'latitude',
     ];
-
     protected $casts = [
         'user_id' => 'integer',
         'province_id' => 'integer',
@@ -31,6 +29,11 @@ class UserAddress extends Model
         'longitude' => 'string',
         'latitude' => 'string',
     ];
+
+    public function getFullAddressAttribute(): string
+    {
+        return "{$this->province->name}, {$this->city->name}, {$this->address}";
+    }
 
     public function scopeUser($query, $user_id){
         return $query->where('user_id', $user_id);
@@ -49,11 +52,5 @@ class UserAddress extends Model
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);
-    }
-
-    // ✅ Accessor برای فرمت بهتر
-    public function getFullAddressAttribute(): string
-    {
-        return "{$this->province->name}, {$this->city->name}, {$this->address}";
     }
 }

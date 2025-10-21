@@ -19,7 +19,6 @@ class Order extends Model
     use HasFactory, SearchableTrait;
 
     protected $table = 'orders';
-
     protected $fillable = [
         'user_id',
         'address_id',
@@ -33,7 +32,6 @@ class Order extends Model
         'payment_status',
         'description',
     ];
-
     protected $casts = [
         'status' => 'integer',
         'total_amount' => 'integer',
@@ -42,38 +40,12 @@ class Order extends Model
         'paying_amount' => 'integer',
         'payment_status' => 'integer',
     ];
-
     protected $attributes = [
         'coupon_amount' => '0',
         'delivery_amount' => '0',
         'status' => '0',
         'payment_status' => '0',
     ];
-
-    public function address(): BelongsTo
-    {
-        return $this->belongsTo(UserAddress::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function transaction(): HasOne
-    {
-        return $this->hasOne(Transaction::class);
-    }
-
-    public function coupon(): BelongsTo
-    {
-        return $this->belongsTo(Coupon::class);
-    }
-
-    public function items(): HasMany
-    {
-        return $this->hasMany(OrderItem::class);
-    }
 
     public function getPaymentStatusAttribute($payment_status): string
     {
@@ -101,5 +73,30 @@ class Order extends Model
         }
 
         return $payment_type;
+    }
+
+    public function address(): BelongsTo
+    {
+        return $this->belongsTo(UserAddress::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function transaction(): HasOne
+    {
+        return $this->hasOne(Transaction::class);
+    }
+
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }

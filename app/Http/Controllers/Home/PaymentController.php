@@ -107,7 +107,7 @@ class PaymentController extends Controller
                 if (array_key_exists('error', $updateOrder)) {
                     flash()->error($updateOrder['error']);
 
-                    return redirect()->route('home.index');
+                    return redirect()->back();
                 }
                 \Cart::clear();
                 flash()->success('تراکنش با موفقیت انجام شد!');
@@ -215,21 +215,21 @@ class PaymentController extends Controller
         if ($validator->fails()) {
             flash()->error('!ادامه فرایند ممکن نیست');
 
-            return redirect()->route('home.index');
+            return redirect()->back();
         }
 
         $checkCart = $this->checkCart();
         if (array_key_exists('error', $checkCart)) {
             flash()->error($checkCart['error']);
 
-            return redirect()->route('home.index');
+            return redirect()->back();
         }
 
         $amounts = $this->getAmount();
         if (array_key_exists('error', $amounts)) {
             flash()->error($amounts['error']);
 
-            return redirect()->route('home.cart.index');
+            return redirect()->back();
         }
 
         $api = 'test';
@@ -245,7 +245,7 @@ class PaymentController extends Controller
             if (array_key_exists('error', $createOrder)) {
                 flash()->error($createOrder['error']);
 
-                return redirect()->route('home.index');
+                return redirect()->back();
             }
             $go = "https://pay.ir/pg/$result->token";
 

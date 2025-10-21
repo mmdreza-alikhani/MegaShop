@@ -15,7 +15,6 @@ class Transaction extends Model
     use HasFactory, SearchableTrait;
 
     protected $table = 'transactions';
-
     protected $fillable = [
         'user_id',
         'order_id',
@@ -26,14 +25,12 @@ class Transaction extends Model
         'gateway_name',
         'status',
     ];
-
     protected $casts = [
         'user_id' => 'integer',
         'order_id' => 'integer',
         'amount' => 'integer',
         'status' => 'integer',
     ];
-
     protected $attributes = [
         'status' => 0,
     ];

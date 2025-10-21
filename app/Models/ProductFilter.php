@@ -16,20 +16,17 @@ class ProductFilter extends Model
     use HasFactory;
 
     protected $table = 'product_filters';
-
     protected $fillable = [
         'attribute_id',
         'product_id',
         'value',
         'is_active',
     ];
-
     protected $casts = [
         'attribute_id' => 'integer',
         'product_id' => 'integer',
         'is_active' => 'boolean',
     ];
-
     protected $attributes = [
         'is_active' => 1,
     ];

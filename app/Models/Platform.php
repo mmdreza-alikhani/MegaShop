@@ -58,11 +58,6 @@ class Platform extends Model
         }
     }
 
-    public function scopeActive($query): void
-    {
-        $query->where('is_active', 1);
-    }
-
     public function sluggable(): array
     {
         return [
@@ -70,6 +65,11 @@ class Platform extends Model
                 'source' => 'title',
             ],
         ];
+    }
+
+    public function scopeActive($query): void
+    {
+        $query->where('is_active', 1);
     }
 
     public function getIsActiveAttribute($is_active): string

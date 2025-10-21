@@ -20,7 +20,6 @@ class ProductVariation extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'product_variations';
-
     protected $fillable = [
         'attribute_id',
         'product_id',
@@ -32,7 +31,6 @@ class ProductVariation extends Model
         'date_on_sale_from',
         'date_on_sale_to',
     ];
-
     protected $casts = [
         'attribute_id' => 'integer',
         'product_id' => 'integer',
@@ -42,8 +40,12 @@ class ProductVariation extends Model
         'date_on_sale_from' => 'datetime',
         'date_on_sale_to' => 'datetime',
     ];
-
     protected $appends = ['best_price', 'is_discounted'];
+
+    public function scopeAvailable($query, $q = 0): void
+    {
+        $query->where('quantity', '>=', $q);
+    }
 
     public function product(): BelongsTo
     {
@@ -53,11 +55,6 @@ class ProductVariation extends Model
     public function attribute(): BelongsTo
     {
         return $this->belongsTo(Attribute::class);
-    }
-
-    public function scopeAvailable($query, $q = 0): void
-    {
-        $query->where('quantity', '>=', $q);
     }
 
     public function getIsDiscountedAttribute(): bool

@@ -20,9 +20,7 @@ class Comment extends Model
     use HasFactory, SearchableTrait, SoftDeletes;
 
     protected $table = 'comments';
-
     protected $appends = ['rates'];
-
     protected $fillable = [
         'user_id',
         'commentable_id',
@@ -32,7 +30,6 @@ class Comment extends Model
         'status',
         'is_active',
     ];
-
     protected $casts = [
         'user_id' => 'integer',
         'commentable_id' => 'integer',
@@ -43,13 +40,37 @@ class Comment extends Model
         'status' => 'integer',
         'is_active' => 'boolean',
     ];
-
-    // Default Values
     protected $attributes = [
         'reply_of' => '0',
         'is_active' => 0,
         'status' => '1',
     ];
+
+    public function getIsActiveAttribute($is_active): string
+    {
+        return $is_active ? 'منتشر شده' : 'منتشر نشده';
+    }
+
+    public function scopeUserId($query, $user_id): void
+    {
+        $query->where('user_id', $user_id);
+    }
+
+    public function scopeAwaitingReview($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    public function getCommentableLabel(): string
+    {
+        $type = $this->commentable_type;
+
+        return match ($type) {
+            Post::class => 'پست',
+            Product::class => 'محصول',
+            default => 'نامشخص',
+        };
+    }
 
     public function statusCondition(): string
     {
@@ -76,11 +97,6 @@ class Comment extends Model
         return $this->belongsTo(ProductRate::class);
     }
 
-    public function getIsActiveAttribute($is_active): string
-    {
-        return $is_active ? 'منتشر شده' : 'منتشر نشده';
-    }
-
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Comment::class, 'reply_of');
@@ -89,26 +105,5 @@ class Comment extends Model
     public function child(): HasMany
     {
         return $this->hasMany(Comment::class, 'reply_of');
-    }
-
-    public function scopeUserId($query, $user_id): void
-    {
-        $query->where('user_id', $user_id);
-    }
-
-    public function scopeAwaitingReview($query)
-    {
-        return $query->where('status', 1);
-    }
-
-    public function getCommentableLabel(): string
-    {
-        $type = $this->commentable_type;
-
-        return match ($type) {
-            Post::class => 'پست',
-            Product::class => 'محصول',
-            default => 'نامشخص',
-        };
     }
 }

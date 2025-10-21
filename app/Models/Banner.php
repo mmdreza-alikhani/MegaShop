@@ -55,13 +55,13 @@ class Banner extends Model
         }
     }
 
-    public function getIsActiveAttribute($is_active): string
-    {
-        return $is_active ? 'فعال' : 'غیرفعال';
-    }
-
     public function scopeActive($query): void
     {
         $query->where('is_active', 1);
+    }
+
+    public function getIsActiveAttribute($is_active): string
+    {
+        return $is_active ? 'فعال' : 'غیرفعال';
     }
 }

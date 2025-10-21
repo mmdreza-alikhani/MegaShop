@@ -24,7 +24,6 @@ class Post extends Model
     use HasFactory, SearchableTrait, sluggable, SoftDeletes;
 
     protected $table = 'posts';
-
     protected $fillable = [
         'title',
         'slug',
@@ -34,7 +33,6 @@ class Post extends Model
         'status',
         'is_active',
     ];
-
     protected $casts = [
         'title' => 'string',
         'slug' => 'string',
@@ -44,21 +42,10 @@ class Post extends Model
         'status' => 'integer',
         'is_active' => 'boolean',
     ];
-
-    // Default Values
     protected $attributes = [
         'is_active' => 1,
         'status' => '1',
     ];
-
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => 'title',
-            ],
-        ];
-    }
 
     protected static function boot(): void
     {
@@ -67,6 +54,15 @@ class Post extends Model
         static::updating(function ($post) {
             $post->slug = SlugService::createSlug($post, 'slug', $post->title);
         });
+    }
+
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title',
+            ],
+        ];
     }
 
     public function scopeActive($query): void

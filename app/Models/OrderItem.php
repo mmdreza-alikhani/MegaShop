@@ -11,7 +11,6 @@ class OrderItem extends Model
     use HasFactory;
 
     protected $table = 'order_items';
-
     protected $fillable = [
         'order_id',
         'product_id',
@@ -20,7 +19,6 @@ class OrderItem extends Model
         'quantity',
         'subtotal',
     ];
-
     protected $casts = [
         'price' => 'integer',
         'quantity' => 'integer',

@@ -11,7 +11,16 @@ class Permission extends Model
     use HasFactory, HasRoles;
 
     protected $table = 'permissions';
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'display_name',
+        'guard_name'
+    ];
+    protected $casts = [
+        'name' => 'string',
+        'display_name' => 'string',
+        'guard_name' => 'string',
+    ];
 
     protected static function boot(): void
     {
