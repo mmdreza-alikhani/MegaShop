@@ -152,13 +152,18 @@
         <p class="side-comment fnt-mxs">محتوا</p>
         @can('posts-index')
             <ul class="side a-collapse {{ request()->is('management/posts*') ? '' : 'short' }}">
-                <a class="ul-text fnt-mxs"><i class="fa fa-newspaper mr-1"></i>مقالات
+                <a class="ul-text fnt-mxs"><i class="fa fa-newspaper mr-1"></i>پست ها
                     <i class="fas fa-chevron-up arrow"></i>
                 </a>
                 <div class="side-item-container {{ request()->is('management/posts*') ? '' : 'hide animated' }}">
                     <li class="side-item {{ request()->is('management/posts') ? 'selected' : '' }}">
                         <a href="{{ route('admin.posts.index') }}" class="fnt-mxs">
-                            <i class="fas fa-angle-right mr-2"></i>لیست مقالات
+                            <i class="fas fa-angle-right mr-2"></i>لیست پست ها
+                        </a>
+                    </li>
+                    <li class="side-item {{ request()->is('management/posts/create') ? 'selected' : '' }}">
+                        <a href="{{ route('admin.posts.create') }}" class="fnt-mxs">
+                            <i class="fas fa-angle-right mr-2"></i>ایجاد پست جدید
                         </a>
                     </li>
                 </div>

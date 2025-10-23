@@ -12,4 +12,6 @@ return [
     'post_path' => env('POST_IMAGE_UPLOAD_PATH', 'posts/images'),
 
     'category_icon_path' => env('CATEGORY_IMAGE_PATH', 'categories/images'),
+
+    'ckeditor_path' => env('CKEDITOR_UPLOAD_PATH', 'ckeditor/images'),
 ];

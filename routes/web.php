@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BannersController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CKEditorController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
@@ -12,7 +13,6 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PlatformController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController;
@@ -80,11 +80,18 @@ Route::prefix('/management/')->name('admin.')->middleware(['auth.check'])->group
 
 });
 
+Route::post('/ckeditor/upload', [CKEditorController::class, 'upload'])
+    ->name('ckeditor.upload')
+    ->middleware('auth'); // فقط کاربران لاگین شده
+
 Route::get('/reset-password/{token}', function (string $token) {
     return view('auth.reset-password', ['token' => $token]);
 })->middleware('guest', 'throttle:6,1')->name('password.reset');
 
 Route::prefix('/')->name('home.')->group(function () {
+
+    Route::get('/q/{code}', [ShortLinkController::class, 'redirect'])->name('shortlink.redirect');
+
 
     Route::get('', [HomeController::class, 'index'])->name('index');
     Route::get('s', [SearchController::class, 'search'])->name('search');

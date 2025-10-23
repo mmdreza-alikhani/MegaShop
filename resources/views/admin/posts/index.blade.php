@@ -85,7 +85,7 @@
                                                 {{ $post->title }}
                                             </td>
                                             <td>
-                                                <a href="{{ route('admin.users.search', ['keyword' => $post->author->usename]) }}">{{ $post->author->username }}</a>
+                                                <a href="{{ url('management/users?q=') . $post->author->username }}">{{ $post->author->username }}</a>
                                             </td>
                                             <td>
                                                 <span class="badge {{ $post->getRawOriginal('is_active') ?  'badge-success' : 'badge-secondary' }}">

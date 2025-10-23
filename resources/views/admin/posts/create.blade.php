@@ -7,6 +7,7 @@
 @section('title', $title)
 
 @section('styles')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         .d-flex.border.rounded.p-2 {
             background-color: transparent !important;
@@ -116,12 +117,35 @@
             </div>
         </div>
     </main>
+
 @endsection
 @section('scripts')
     <script>
-        $('#tagSelect').selectpicker({
-            'title': 'انتخاب برچسب'
+        CKEDITOR.replace('text', {
+            language: 'en',
+            filebrowserImageUploadUrl: '/ckeditor/upload?_token=' + document.querySelector('meta[name="csrf-token"]').content,
+            filebrowserBrowseUrl: '/storage/ckeditor/images',
+            filebrowserImageBrowseUrl: '/storage/ckeditor/images',
+
+            extraPlugins: 'uploadimage,filebrowser',
+            removePlugins: 'image2,easyimage,cloudservices',
+            toolbar: [
+                { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo'] },
+                { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+                { name: 'tools', items: ['Maximize'] },
+                '/',
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
+                { name: 'links', items: ['Link', 'Unlink'] },
+                { name: 'styles', items: ['Format', 'Font', 'FontSize'] },
+                { name: 'colors', items: ['TextColor', 'BGColor'] }
+            ]
         });
+
+        $('#tagSelect').selectpicker({
+            title: 'انتخاب برچسب'
+        });
+
         $('#image').on('change', function () {
             const fileName = this.files[0]?.name || 'هیچ فایلی انتخاب نشده';
             $('#image-file-name').text(fileName);

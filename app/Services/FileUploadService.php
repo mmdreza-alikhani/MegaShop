@@ -107,7 +107,10 @@ class FileUploadService
      */
     public function url(string $path, string $fileName, ?string $disk = 'public'): string
     {
-        return Storage::disk($disk)->url($path . '/' . $fileName);
+        $fullUrl = Storage::disk($disk)->url($path . '/' . $fileName);
+
+        // فقط بخش /storage/... را نگه می‌داریم
+        return parse_url($fullUrl, PHP_URL_PATH);
     }
 
     /**

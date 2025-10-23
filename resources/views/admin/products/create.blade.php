@@ -7,6 +7,7 @@
 @section('title', $title)
 
 @section('styles')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         .d-flex.border.rounded.p-2 {
             background-color: transparent !important;
@@ -206,7 +207,27 @@
 @section('scripts')
     <script>
         $(function () {
-            // 🔹 File input handlers
+            CKEDITOR.replace('description', {
+                language: 'en',
+                filebrowserImageUploadUrl: '/ckeditor/upload?_token=' + document.querySelector('meta[name="csrf-token"]').content,
+                filebrowserBrowseUrl: '/storage/ckeditor/images',
+                filebrowserImageBrowseUrl: '/storage/ckeditor/images',
+
+                extraPlugins: 'uploadimage,filebrowser',
+                removePlugins: 'image2,easyimage,cloudservices',
+                toolbar: [
+                    { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo'] },
+                    { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+                    { name: 'tools', items: ['Maximize'] },
+                    '/',
+                    { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                    { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
+                    { name: 'links', items: ['Link', 'Unlink'] },
+                    { name: 'styles', items: ['Format', 'Font', 'FontSize'] },
+                    { name: 'colors', items: ['TextColor', 'BGColor'] }
+                ]
+            });
+
             $('#primary_image').on('change', function () {
                 $('#primary-image-file-name').text(this.files[0]?.name || 'هیچ فایلی انتخاب نشده');
             });

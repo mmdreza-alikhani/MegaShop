@@ -7,6 +7,7 @@
 @section('title', $title)
 
 @section('styles')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         .d-flex.border.rounded.p-2 {
             background-color: transparent !important;
@@ -58,19 +59,20 @@
                     <div class="card-body">
                         @include('admin.layout.errors', ['errors' => $errors->update])
                         <form class="row p-3" action="{{ route('admin.posts.update', ['post' => $post]) }}" method="POST" enctype="multipart/form-data">
+                            @method('put')
                             @csrf
-                            <div class="form-group col-12 col-lg-4">
+                            <div class="form-group col-12 col-lg-6">
                                 <label for="title">عنوان:*</label>
                                 <input type="text" name="title" id="title" class="form-control" value="{{ $post->title }}">
                             </div>
-                            <div class="form-group col-12 col-lg-4">
+                            <div class="form-group col-12 col-lg-6">
                                 <label for="is_active">وضعیت:*</label>
                                 <select class="form-control" id="is_active" name="is_active">
                                     <option value="1" {{ $post->is_active == '1' ? 'selected' : '' }}>فعال</option>
                                     <option value="0" {{ $post->is_active == '0' ? 'selected' : '' }}>غیرفعال</option>
                                 </select>
                             </div>
-                            <div class="form-group col-12 col-lg-4">
+                            <div class="form-group col-12 col-lg-6">
                                 <label for="type">نوع:*</label>
                                 <select class="form-control" id="type" name="type">
                                     <option value="article" {{ $post->type == 'article' ? 'selected' : '' }}>مقاله</option>
@@ -93,7 +95,7 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <img class="card-img"
-                                                 src="{{ url(env('POST_IMAGE_UPLOAD_PATH')) . '/' . $post->image }}"
+                                                 src="{{ Storage::url(config('upload.post_path') . '/') . $post->image }}"
                                                  alt="{{ $post->title }}-image">
                                         </div>
                                         <div class="col-6 m-1">
@@ -113,7 +115,7 @@
                             </div>
                             <div class="form-group col-12 col-lg-12">
                                 <label for="text">متن:*</label>
-                                <textarea id="text" type="text" name="text" class="form-control">{!! $post->text !!}</textarea>
+                                <textarea id="text" type="text" name="text" class="form-control">{{ $post->text }}</textarea>
                             </div>
                             <div class="d-flex justify-content-end gap-2">
                                 <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
@@ -128,9 +130,26 @@
 @endsection
 @section('scripts')
     <script>
-        // $(document).ready(function () {
-        //     $('#text').summernote();
-        // });
+        CKEDITOR.replace('text', {
+            language: 'en',
+            filebrowserImageUploadUrl: '/ckeditor/upload?_token=' + document.querySelector('meta[name="csrf-token"]').content,
+            filebrowserBrowseUrl: '/storage/ckeditor/images',
+            filebrowserImageBrowseUrl: '/storage/ckeditor/images',
+
+            extraPlugins: 'uploadimage,filebrowser',
+            removePlugins: 'image2,easyimage,cloudservices',
+            toolbar: [
+                { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo'] },
+                { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+                { name: 'tools', items: ['Maximize'] },
+                '/',
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
+                { name: 'links', items: ['Link', 'Unlink'] },
+                { name: 'styles', items: ['Format', 'Font', 'FontSize'] },
+                { name: 'colors', items: ['TextColor', 'BGColor'] }
+            ]
+        });
         $('#tagSelect').selectpicker({
             'title': 'انتخاب برچسب'
         });

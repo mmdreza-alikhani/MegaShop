@@ -31,7 +31,7 @@ class UpdatePostRequest extends FormRequest
             'is_active' => 'required|boolean',
             'tag_ids' => 'required|array|exists:tags,id',
             'text' => 'required|string',
-            'image' => 'required|max:2048|mimes:jpg,jpeg,png,svg,webp',
+            'image' => 'nullable|max:2048|mimes:jpg,jpeg,png,svg,webp',
         ];
     }
 
