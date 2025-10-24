@@ -45,7 +45,7 @@
                 <form action="#" method="GET" class="m-0 p-0">
                     <div class="input-group">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary c-primary" type="submit">
+                            <button class="btn btn-outline-secondary c-primary" type="submit" style="height: 45px">
                                 <i class="fab fas fa-search"></i>
                             </button>
                         </div>

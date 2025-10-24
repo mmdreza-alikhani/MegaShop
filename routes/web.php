@@ -1,161 +1,232 @@
 <?php
 
-use App\Http\Controllers\Admin\AttributeController;
-use App\Http\Controllers\Admin\BannersController;
-use App\Http\Controllers\Admin\BrandController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\CKEditorController;
-use App\Http\Controllers\Admin\CommentController;
-use App\Http\Controllers\Admin\CouponController;
-use App\Http\Controllers\Admin\HomeController as AdminHomeController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\PlatformController;
-use App\Http\Controllers\Admin\PostController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\TagController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Home\AuthController as HomeAuthController;
-use App\Http\Controllers\Home\CartController;
-use App\Http\Controllers\Home\CategoryController as HomeCategoryController;
-use App\Http\Controllers\Home\CommentController as HomeCommentController;
-use App\Http\Controllers\Home\HomeController;
-use App\Http\Controllers\Home\PaymentController;
-use App\Http\Controllers\Home\PlatformController as HomePlatformController;
-use App\Http\Controllers\Home\PostController as HomePostController;
-use App\Http\Controllers\Home\ProductController as HomeProductController;
-use App\Http\Controllers\Home\ProfileAddressesController as HomeProfileAddressesController;
-use App\Http\Controllers\Home\ProfileController as HomeProfileController;
-use App\Http\Controllers\Home\SearchController;
-use App\Http\Controllers\Home\ShortLinkController;
-use App\Http\Controllers\Home\WishListController as HomeWishlistController;
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\Home;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
-Route::prefix('/management/')->name('admin.')->middleware(['auth.check'])->group(function () {
+// ============================================
+// Admin Routes
+// ============================================
 
-    Route::get('', [AdminHomeController::class, 'mainPage'])->name('panel');
+Route::prefix('management')
+    ->name('admin.')
+    ->middleware(['auth', 'hasAnyPermission'])
+    ->group(function () {
 
-    Route::resource('users', UserController::class)->middleware(['permission:users-index'])->only(['index', 'store', 'update']);
-    Route::resource('permissions', PermissionController::class)->middleware(['permission:users-index'])->only(['index', 'store', 'update']);
-    Route::resource('roles', RoleController::class)->middleware(['permission:users-index'])->only(['index', 'store', 'update']);
-    Route::resource('brands', BrandController::class)->middleware(['permission:brands-index'])->only(['index', 'store', 'update', 'destroy']);
-    Route::resource('platforms', PlatformController::class)->middleware(['permission:platforms-index'])->only(['index', 'store', 'update', 'destroy']);
-    Route::resource('attributes', AttributeController::class)->middleware(['permission:attributes-index'])->only(['index', 'store', 'update', 'destroy']);
-    Route::resource('categories', CategoryController::class)->middleware(['permission:categories-index'])->except(['show']);
-    Route::resource('tags', TagController::class)->middleware(['permission:tags-index'])->only(['index', 'store', 'update', 'destroy']);
-    Route::resource('products', ProductController::class)->middleware(['permission:products-index']);
-    Route::resource('banners', BannersController::class)->middleware(['permission:banners-index']);
-    Route::resource('posts', PostController::class)->middleware(['permission:posts-index']);
-    Route::get('comments/toggle', [CommentController::class, 'toggle'])->middleware(['permission:comments-index'])->name('comments.toggle');
-    Route::resource('comments', CommentController::class)->middleware(['permission:comments-index'])->only(['index']);
-    Route::resource('coupons', CouponController::class)->middleware(['permission:coupons-index'])->only(['index', 'store', 'update', 'destroy']);
-    Route::resource('orders', OrderController::class)->middleware(['permission:orders-index'])->only(['index', 'show']);
+        Route::get('/', [Admin\HomeController::class, 'mainPage'])->name('panel');
 
-    // Approve Comment
-    Route::get('/comments/{comment}/change-status', [CommentController::class, 'changeStatus'])->name('comments.changeStatus')->middleware(['permission:comments-toggle']);
+        Route::post('ckeditor/upload', [Admin\CKEditorController::class, 'upload'])
+            ->name('ckeditor.upload')
+            ->middleware('throttle:60,1');
 
-    // Get Category Attributes
-    Route::get('/get-category-attribute/{category}', [CategoryController::class, 'getCategoryAttribute'])->middleware(['permission:categories-index']);
+        Route::middleware('permission:users-index')->group(function () {
+            Route::resource('users', Admin\UserController::class)->only(['index', 'store', 'update']);
+            Route::resource('permissions', Admin\PermissionController::class)->only(['index', 'store', 'update']);
+            Route::resource('roles', Admin\RoleController::class)->only(['index', 'store', 'update']);
+        });
 
-    // Edit Product Images
-    Route::get('/products/{product}/edit-images', [ProductImageController::class, 'edit'])->name('products.images.edit')->middleware(['permission:products-edit']);
-    Route::delete('/products/{product}/destroy-images', [ProductImageController::class, 'destroy'])->name('products.images.destroy')->middleware(['permission:products-edit']);
-    Route::put('/products/{product}/set-to-primary', [ProductImageController::class, 'set_primary'])->name('products.images.set_primary')->middleware(['permission:products-edit']);
-    Route::post('/products/{product}/add-images', [ProductImageController::class, 'add'])->name('products.images.add')->middleware(['permission:products-edit']);
+        Route::middleware('permission:brands-index')->group(function () {
+            Route::resource('brands', Admin\BrandController::class)->only(['index', 'store', 'update', 'destroy']);
+        });
 
-    // Edit Product Category
-    Route::get('/products/{product}/edit-category', [ProductController::class, 'edit_category'])->name('products.category.edit')->middleware(['permission:products-edit']);
-    Route::put('/products/{product}/update-category', [ProductController::class, 'update_category'])->name('products.category.update')->middleware(['permission:products-edit']);
+        Route::middleware('permission:platforms-index')->group(function () {
+            Route::resource('platforms', Admin\PlatformController::class)->only(['index', 'store', 'update', 'destroy']);
+        });
 
+        Route::middleware('permission:attributes-index')->group(function () {
+            Route::resource('attributes', Admin\AttributeController::class)->only(['index', 'store', 'update', 'destroy']);
+        });
+
+        Route::middleware('permission:categories-index')->group(function () {
+            Route::resource('categories', Admin\CategoryController::class)->except(['show']);
+            Route::get('categories/{category}/attributes', [Admin\CategoryController::class, 'getCategoryAttribute'])
+                ->name('categories.attributes');
+        });
+
+        Route::middleware('permission:tags-index')->group(function () {
+            Route::resource('tags', Admin\TagController::class)->only(['index', 'store', 'update', 'destroy']);
+        });
+
+        Route::middleware('permission:products-index')->group(function () {
+            Route::resource('products', Admin\ProductController::class);
+
+            Route::prefix('products/{product}')->name('products.')->group(function () {
+                Route::get('images/edit', [Admin\ProductImageController::class, 'edit'])->name('images.edit');
+                Route::post('images', [Admin\ProductImageController::class, 'add'])->name('images.add');
+                Route::delete('images/{image}', [Admin\ProductImageController::class, 'destroy'])->name('images.destroy');
+                Route::patch('images/{image}/primary', [Admin\ProductImageController::class, 'setPrimary'])->name('images.primary');
+
+                Route::get('category/edit', [Admin\ProductController::class, 'editCategory'])->name('category.edit');
+                Route::put('category', [Admin\ProductController::class, 'updateCategory'])->name('category.update');
+            });
+        });
+
+        Route::middleware('permission:banners-index')->group(function () {
+            Route::resource('banners', Admin\BannersController::class);
+        });
+
+        Route::middleware('permission:posts-index')->group(function () {
+            Route::resource('posts', Admin\PostController::class);
+        });
+
+        Route::middleware('permission:comments-index')->group(function () {
+            Route::get('comments', [Admin\CommentController::class, 'index'])->name('comments.index');
+            Route::patch('comments/{comment}/toggle', [Admin\CommentController::class, 'toggle'])->name('comments.toggle');
+            Route::patch('comments/{comment}/approve', [Admin\CommentController::class, 'approve'])->name('comments.approve');
+            Route::patch('comments/{comment}/reject', [Admin\CommentController::class, 'reject'])->name('comments.reject');
+            Route::delete('comments/{comment}', [Admin\CommentController::class, 'destroy'])->name('comments.destroy');
+        });
+
+        Route::middleware('permission:coupons-index')->group(function () {
+            Route::resource('coupons', Admin\CouponController::class)->only(['index', 'store', 'update', 'destroy']);
+        });
+
+        Route::middleware('permission:orders-index')->group(function () {
+            Route::resource('orders', Admin\OrderController::class)->only(['index', 'show']);
+        });
+    });
+
+// ============================================
+// Home Routes
+// ============================================
+
+Route::name('home.')->group(function () {
+
+    Route::get('q/{code}', Home\ShortLinkController::class)
+        ->name('shortlink.redirect')
+        ->middleware('throttle:100,1');
+
+    Route::get('/', [Home\HomeController::class, 'index'])->name('index');
+    Route::get('about-us', [Home\HomeController::class, 'aboutUs'])->name('aboutus');
+
+    Route::post('contact', [Home\HomeController::class, 'contactForm'])
+        ->name('contactForm')
+        ->middleware('throttle:5,1');
+
+    Route::get('search', [Home\SearchController::class, 'search'])
+        ->name('search')
+        ->middleware('throttle:60,1');
+
+    Route::prefix('auth')->group(function () {
+        Route::get('login/{provider}', [Home\AuthController::class, 'redirectToProvider'])
+            ->name('redirectToProvider')
+            ->middleware('throttle:10,1');
+
+        Route::get('login/{provider}/callback', [Home\AuthController::class, 'handleProviderCallback'])
+            ->name('handleProviderCallback')
+            ->middleware('throttle:10,1');
+    });
+
+    Route::get('reset-password/{token}', function (string $token) {
+        return view('auth.reset-password', ['token' => $token]);
+    })->middleware(['guest', 'throttle:6,1'])->name('password.reset');
+
+    // ============================================
+    // Profile Routes
+    // ============================================
+
+    Route::prefix('profile')
+        ->name('profile.')
+        ->middleware('auth')
+        ->group(function () {
+
+            Route::get('/', [Home\ProfileController::class, 'info'])->name('info');
+
+            Route::post('update', [Home\ProfileController::class, 'update'])
+                ->name('update')
+                ->middleware('throttle:10,1');
+
+            Route::prefix('orders')->name('orders.')->group(function () {
+                Route::get('/', [Home\ProfileController::class, 'orders'])->name('index');
+                Route::get('{order}', [Home\ProfileController::class, 'showOrder'])->name('show');
+            });
+
+            Route::get('wishlist', [Home\ProfileController::class, 'wishlist'])->name('wishlist');
+            Route::get('comments', [Home\ProfileController::class, 'comments'])->name('comments');
+
+            Route::resource('addresses', Home\ProfileAddressesController::class)->except(['show']);
+
+            Route::get('reset-password', [Home\ProfileController::class, 'resetPassword'])->name('resetPassword');
+            Route::post('reset-password', [Home\ProfileController::class, 'resetPasswordCheck'])
+                ->name('resetPasswordCheck')
+                ->middleware('throttle:5,1');
+
+            Route::get('verify-email', [Home\ProfileController::class, 'verifyEmail'])
+                ->name('verifyEmail')
+                ->middleware('throttle:3,1');
+
+            Route::post('logout', [Home\ProfileController::class, 'logout'])->name('logout');
+        });
+
+    Route::post('comments/{model}/{id}', [Home\CommentController::class, 'store'])
+        ->name('comments.store')
+        ->middleware(['auth', 'throttle:10,1']);
+
+    Route::prefix('posts')->name('posts.')->group(function () {
+        Route::get('/', [Home\PostController::class, 'index'])->name('index');
+        Route::get('{post:slug}', [Home\PostController::class, 'show'])->name('show');
+    });
+
+    Route::prefix('products')->name('products.')->group(function () {
+        Route::get('/', [Home\ProductController::class, 'index'])->name('index');
+        Route::get('{product:slug}', [Home\ProductController::class, 'show'])->name('show');
+
+        Route::middleware(['auth', 'throttle:30,1'])->group(function () {
+            Route::post('{product}/wishlist', [Home\WishlistController::class, 'add'])->name('wishlist.add');
+            Route::delete('{product}/wishlist', [Home\WishlistController::class, 'remove'])->name('wishlist.remove');
+        });
+    });
+
+    Route::get('categories/{category:slug}', [Home\CategoryController::class, 'show'])->name('categories.show');
+    Route::get('platforms/{platform:slug}', [Home\PlatformController::class, 'show'])->name('platforms.show');
+
+    // ============================================
+    // Cart & Checkout
+    // ============================================
+
+    Route::middleware('auth')->group(function () {
+
+        // Cart Operations (with throttle)
+        Route::prefix('cart')->name('cart.')->group(function () {
+            Route::get('/', [Home\CartController::class, 'index'])->name('index');
+            Route::post('add', [Home\CartController::class, 'add'])
+                ->name('add')
+                ->middleware('throttle:30,1'); // 30 per minute
+            Route::put('update', [Home\CartController::class, 'update'])
+                ->name('update')
+                ->middleware('throttle:30,1');
+            Route::delete('items/{itemId}', [Home\CartController::class, 'remove'])->name('remove');
+            Route::delete('clear', [Home\CartController::class, 'clear'])->name('clear');
+
+            // Coupon
+            Route::post('coupon/check', [Home\CartController::class, 'checkCoupon'])
+                ->name('coupon.check')
+                ->middleware('throttle:10,1'); // 10 per minute
+
+            // Checkout
+            Route::get('checkout', [Home\CartController::class, 'checkout'])->name('checkout');
+        });
+
+        // ✅ Payment (with strict throttle)
+        Route::prefix('payment')->name('payment.')->group(function () {
+            Route::post('/', [Home\PaymentController::class, 'payment'])
+                ->name('process')
+                ->middleware('throttle:5,1'); // 5 per minute
+
+            Route::get('verify', [Home\PaymentController::class, 'verify'])
+                ->name('verify')
+                ->middleware('throttle:10,1');
+        });
+    });
 });
 
-Route::post('/ckeditor/upload', [CKEditorController::class, 'upload'])
-    ->name('ckeditor.upload')
-    ->middleware('auth'); // فقط کاربران لاگین شده
-
-Route::get('/reset-password/{token}', function (string $token) {
-    return view('auth.reset-password', ['token' => $token]);
-})->middleware('guest', 'throttle:6,1')->name('password.reset');
-
-Route::prefix('/')->name('home.')->group(function () {
-
-    Route::get('/q/{code}', ShortLinkController::class)->name('shortlink.redirect');
-
-    Route::get('', [HomeController::class, 'index'])->name('index');
-    Route::get('s', [SearchController::class, 'search'])->name('search');
-    Route::get('aboutus', [HomeController::class, 'aboutUs'])->name('aboutus');
-    Route::get('aboutus#contact', [HomeController::class, 'aboutUs'])->name('aboutus.contact');
-    Route::post('contactForm', [HomeController::class, 'contactForm'])->name('contactForm');
-
-    Route::prefix('profile/')->middleware('auth.check')->name('profile.')->group(function () {
-        Route::get('', [HomeProfileController::class, 'info'])->name('info');
-        Route::get('info', [HomeProfileController::class, 'info'])->name('info');
-        Route::post('update', [HomeProfileController::class, 'update'])->name('update');
-        Route::get('orders', [HomeProfileController::class, 'orders'])->name('orders');
-        Route::get('orders/{order}', [HomeProfileController::class, 'showOrder'])->name('orders.showOrder');
-        Route::get('wishlist', [HomeProfileController::class, 'wishlist'])->name('wishlist');
-        Route::get('comments', [HomeProfileController::class, 'comments'])->name('comments');
-        Route::prefix('addresses/')->name('addresses.')->group(function () {
-            Route::get('', [HomeProfileAddressesController::class, 'index'])->name('index');
-            Route::get('create', [HomeProfileAddressesController::class, 'create'])->name('create');
-            Route::post('store', [HomeProfileAddressesController::class, 'store'])->name('store');
-            Route::get('{address}/edit', [HomeProfileAddressesController::class, 'edit'])->name('edit');
-            Route::put('{address}/update', [HomeProfileAddressesController::class, 'update'])->name('update');
-            Route::delete('{address}/delete', [HomeProfileAddressesController::class, 'destroy'])->name('destroy');
-        });
-        Route::get('resetPassword', [HomeProfileController::class, 'resetPassword'])->name('resetPassword');
-        Route::post('resetPasswordCheck', [HomeProfileController::class, 'resetPasswordCheck'])->name('resetPasswordCheck');
-        Route::get('verifyEmail', [HomeProfileController::class, 'verifyEmail'])->name('verifyEmail');
-        Route::get('logout', [HomeProfileController::class, 'logout'])->name('logout');
-    });
-
-    Route::get('get_province_cities_list/{province}', [HomeProfileAddressesController::class, 'get_province_cities_list']);
-
-    Route::post('comments/{model}/{id}', [HomeCommentController::class, 'store'])->name('comments.store');
-
-    Route::prefix('posts/')->name('posts.')->group(function () {
-        Route::get('', [HomePostController::class, 'index'])->name('index');
-        Route::get('{post:slug}', [HomePostController::class, 'show'])->name('show');
-    });
-
-    Route::prefix('products/')->name('products.')->group(function () {
-        Route::get('', [HomeProductController::class, 'index'])->name('index');
-        Route::prefix('wishlist/')->middleware('auth.check')->name('wishlist.')->group(function () {
-            Route::get('add/{product}', [HomeWishlistController::class, 'add'])->name('add');
-            Route::get('remove/{product}', [HomeWishlistController::class, 'remove'])->name('remove');
-        });
-        Route::get('{product}', [HomeProductController::class, 'show'])->name('show');
-    });
-
-    Route::get('categories/{category:slug}', [HomeCategoryController::class, 'show_category'])->name('categories.show');
-
-    Route::get('platforms/{platform:slug}', [HomePlatformController::class, 'show_products'])->name('platforms.products.show');
-
-    Route::get('login/{provider}', [HomeAuthController::class, 'redirectToProvider'])->name('redirectToProvider');
-    Route::get('login/{provider}/callback', [HomeAuthController::class, 'handleProviderCallback']);
-
-    // Add And Remove Cart //
-    Route::post('add-to-cart', [CartController::class, 'add'])->middleware('auth')->name('cart.add');
-    Route::get('remove-from-cart/{itemable_id}', [CartController::class, 'remove'])->name('cart.remove');
-    Route::get('clear-cart', [CartController::class, 'clearCart'])->name('cart.clear');
-    // End: Add And Remove Cart //
-
-    Route::get('cart', [CartController::class, 'index'])->name('cart.index');
-    Route::put('cart', [CartController::class, 'update'])->name('cart.update');
-    Route::post('checkCoupon', [CartController::class, 'checkCoupon'])->name('cart.coupons.check');
-    Route::get('checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-    Route::post('payment', [PaymentController::class, 'payment'])->name('cart.payment');
-    Route::get('payment-verification', [PaymentController::class, 'paymentVerification'])->name('cart.payment.verification');
-});
+// ✅ AJAX Endpoints
+Route::get('provinces/{province}/cities', [Home\ProfileAddressesController::class, 'getCitiesByProvince'])
+    ->name('provinces.cities')
+    ->middleware('throttle:60,1');

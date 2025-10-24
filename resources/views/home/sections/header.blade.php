@@ -115,18 +115,20 @@
                     </li>
 
                     <li>
-                        <a href="{{ route('home.aboutus.contact') }}">
+                        <a href="{{ route('home.contactForm') }}">
                             تماس با من
                         </a>
                     </li>
 
-                    @can('manage-general')
-                        <li>
-                            <a href="{{ route('admin.panel') }}">
-                                ادمین پنل
-                            </a>
-                        </li>
-                    @endcan
+                    @auth
+                        @if(auth()->user()->getAllPermissions()->isNotEmpty())
+                            <li>
+                                <a href="{{ route('admin.panel') }}">
+                                    ادمین پنل
+                                </a>
+                            </li>
+                        @endif
+                    @endauth
 
                     <li>
                         <a href="{{ route('home.posts.index') }}">

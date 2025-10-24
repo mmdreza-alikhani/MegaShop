@@ -34,7 +34,7 @@
                         <div class="nk-widget-content">
                             <ul class="nk-widget-categories text-right" style="direction: rtl">
                                 <li><a class="info {{ request()->is('profile/info') || request()->is('profile') ? 'active-link' : '' }}" href="{{ route('home.profile.info') }}"> مشخصات کاربری </a></li>
-                                <li><a class="purchasesHistory {{ request()->is('profile/orders') ? 'active-link' : '' }}" href="{{ route('home.profile.orders') }}"> تاریخچه خرید ها </a></li>
+                                <li><a class="purchasesHistory {{ request()->is('profile/orders') ? 'active-link' : '' }}" href="{{ route('home.profile.orders.index') }}"> تاریخچه خرید ها </a></li>
                                 <li><a class="wishlist {{ request()->is('profile/wishlist') ? 'active-link' : '' }}" href="{{ route('home.profile.wishlist') }}"> علاقه مندیها </a></li>
                                 <li><a class="comments {{ request()->is('profile/comments') ? 'active-link' : '' }}" href="{{ route('home.profile.comments') }}"> وضعیت کامنت ها </a></li>
                                 <li><a class="addresses {{ request()->is('profile/addresses') ? 'active-link' : '' }}" href="{{ route('home.profile.addresses.index') }}"> آدرس ها </a></li>
