@@ -30,6 +30,7 @@ class StorePostRequest extends FormRequest
             'tag_ids' => 'required|array|exists:tags,id',
             'text' => 'required|string',
             'image' => 'required|max:2048|mimes:jpg,jpeg,png,svg,webp',
+            'short_link' => 'nullable|max:12|unique:short_links,code|string',
         ];
     }
 }

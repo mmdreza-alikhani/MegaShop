@@ -105,6 +105,10 @@
                             <label for="description">توضیحات:*</label>
                             <textarea id="description" name="description" class="form-control" disabled>{{ $product->description }}</textarea>
                         </div>
+                        <div class="form-group col-12 col-lg-4">
+                            <label>لینک کوتاه:</label>
+                            <input type="text" value="{{ $product->shortLink }}" class="form-control" disabled>
+                        </div>
                         <div class="form-group card shade c-grey col-12">
                             <h5 class="card-header c-primary">تصاویر</h5>
                             <div class="card shade c-grey ">

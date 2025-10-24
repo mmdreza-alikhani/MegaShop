@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Home;
 use App\Http\Controllers\Controller;
 use App\Models\Platform;
 use App\Models\Product;
+use App\Models\ShortLink;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -22,6 +23,7 @@ class ProductController extends Controller
     }
     public function show(Product $product): View|Application|Factory
     {
+        $shortLink = ShortLink::where('type', 'product')->where('target_id', $product->id)->pluck('code')->first();
         $filters = $product->filters()
             ->with('attribute')
             ->get()
@@ -93,6 +95,6 @@ class ProductController extends Controller
 
         $relatedProducts = Product::active()->category($product->category_id)->take(4)->get();
 
-        return view('home.products.show', compact('product', 'filters', 'variations', 'relatedProducts'));
+        return view('home.products.show', compact('product', 'filters', 'variations', 'relatedProducts', 'shortLink'));
     }
 }

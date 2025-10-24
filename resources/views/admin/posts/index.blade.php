@@ -72,6 +72,7 @@
                                         <th scope="col">عنوان</th>
                                         <th scope="col">وضعیت</th>
                                         <th scope="col">نویسنده</th>
+                                        <th scope="col">لینک کوتاه</th>
                                         <th scope="col">تنظیمات</th>
                                     </tr>
                                     </thead>
@@ -85,12 +86,15 @@
                                                 {{ $post->title }}
                                             </td>
                                             <td>
-                                                <a href="{{ url('management/users?q=') . $post->author->username }}">{{ $post->author->username }}</a>
-                                            </td>
-                                            <td>
                                                 <span class="badge {{ $post->getRawOriginal('is_active') ?  'badge-success' : 'badge-secondary' }}">
                                                     {{ $post->is_active }}
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <a href="{{ url('management/users?q=') . $post->author->username }}">{{ $post->author->username }}</a>
+                                            </td>
+                                            <td>
+                                                {{ $post->shortLink->code }}
                                             </td>
                                             <td>
                                                 <div class="dropdown base show">
@@ -98,10 +102,10 @@
                                                         <i class="fa fa-cog"></i>
                                                     </a>
                                                     <div class="dropdown-menu">
-                                                        @can('posts.index')
+                                                        @can('posts-index')
                                                             <a href="{{ route('admin.posts.show', ['post' => $post->id]) }}" class="dropdown-item">نمایش</a>
                                                         @endcan
-                                                        @can('posts.edit')
+                                                        @can('posts-edit')
                                                             <a href="{{ route('admin.posts.edit', ['post' => $post->id]) }}" class="dropdown-item">ویرایش</a>
                                                         @endcan
                                                         @can('posts-delete')

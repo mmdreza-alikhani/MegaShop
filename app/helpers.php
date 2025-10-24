@@ -4,12 +4,15 @@ use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariation;
+use App\Models\ShortLink;
 use Binafy\LaravelCart\Models\Cart;
 use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Random\RandomException;
 
 
 function generateFileName($name): string
@@ -53,6 +56,29 @@ function convertPersianNumbersToEnglish($input): array|string
     $english = [0,  1,  2,  3,  4,  4,  5,  5,  6,  6,  7,  8,  9];
 
     return str_replace($english, $persian, $input);
+}
+
+/**
+ * @throws RandomException
+ * @throws Exception
+ */
+function generateUniqueShortCode(int $length = 6): string
+{
+    $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789'; // بدون 0 و O و l
+    $maxAttempts = 5;
+
+    for ($i = 0; $i < $maxAttempts; $i++) {
+        $code = '';
+        for ($j = 0; $j < $length; $j++) {
+            $code .= $characters[random_int(0, strlen($characters) - 1)];
+        }
+
+        if (!ShortLink::where('code', $code)->exists()) {
+            return $code;
+        }
+    }
+
+    throw new Exception('کد یکتا تولید نشد. لطفاً دوباره تلاش کنید.');
 }
 
 // Cart

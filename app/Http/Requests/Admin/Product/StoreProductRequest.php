@@ -45,6 +45,7 @@ class StoreProductRequest extends FormRequest
             'primary_image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'other_images' => 'array',
             'other_images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'short_link' => 'nullable|max:12|unique:short_links,code|string',
         ];
     }
 }

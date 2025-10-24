@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
@@ -145,6 +146,11 @@ class Product extends Model implements Cartable
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable')->where('is_active', 1);
+    }
+
+    public function shortLink(): HasOne
+    {
+        return $this->hasOne(ShortLink::class, 'target_id')->where('type', '=', 'p');
     }
 
     public function checkUserWishlist($userId): bool

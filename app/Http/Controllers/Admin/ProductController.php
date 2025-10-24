@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Platform;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ShortLink;
 use App\Models\Tag;
 use App\Services\FileUploadService;
 use Exception;
@@ -41,7 +42,7 @@ class ProductController extends Controller
         if ($request->input('q')) {
             $query->search('title', trim(request()->input('q')));
         }
-        $products = $query->latest()->paginate(15)->withQueryString();
+        $products = $query->latest()->with('shortLink')->paginate(15)->withQueryString();
 
         return view('admin.products.index', compact('products'));
     }
@@ -88,6 +89,12 @@ class ProductController extends Controller
                     'image' => $imageName,
                 ]);
             }
+
+            ShortLink::create([
+                'code' => $request->has('code') ? $request->string('code') : generateUniqueShortCode(),
+                'type' => 'product',
+                'target_id' => $product->id,
+            ]);
 
             $product->tags()->attach($request->input('tag_ids'));
 

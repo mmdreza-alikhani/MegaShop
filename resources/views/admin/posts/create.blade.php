@@ -60,23 +60,27 @@
                         @include('admin.layout.errors', ['errors' => $errors->store])
                         <form class="row p-3" action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <div class="form-group col-12 col-lg-4">
+                            <div class="form-group col-12 col-lg-3">
                                 <label for="title">عنوان:*</label>
                                 <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}">
                             </div>
-                            <div class="form-group col-12 col-lg-4">
+                            <div class="form-group col-12 col-lg-3">
                                 <label for="is_active">وضعیت:*</label>
                                 <select class="form-control" id="is_active" name="is_active">
                                     <option value="1" {{ old('is_active') && old('is_active') == '1' ? 'selected' : '' }}>فعال</option>
                                     <option value="0" {{ old('is_active') && old('is_active') == '0' ? 'selected' : '' }}>غیرفعال</option>
                                 </select>
                             </div>
-                            <div class="form-group col-12 col-lg-4">
+                            <div class="form-group col-12 col-lg-3">
                                 <label for="type">نوع:*</label>
                                 <select class="form-control" id="type" name="type">
                                     <option value="article" {{ old('type') && old('type') == 'article' ? 'selected' : '' }}>مقاله</option>
                                     <option value="news" {{ old('type') && old('type') == 'news' ? 'selected' : '' }}>خبر</option>
                                 </select>
+                            </div>
+                            <div class="form-group col-12 col-lg-3">
+                                <label for="short_link">لینک کوتاه:(برای تولید خودکار این فیلد را خالی بگذارید.)</label>
+                                <input type="text" name="short_link" id="short_link" class="form-control" value="{{ old('short_link') }}">
                             </div>
                             <div class="form-group col-12 col-lg-6">
                                 <label for="tagSelect">برچسب ها:*</label>

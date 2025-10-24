@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Post\StorePostRequest;
 use App\Http\Requests\Admin\Post\UpdatePostRequest;
 use App\Models\Attribute;
 use App\Models\Post;
+use App\Models\ShortLink;
 use App\Models\Tag;
 use App\Services\FileUploadService;
 use Exception;
@@ -38,7 +39,7 @@ class PostController extends Controller
         if ($request->input('q')) {
             $query->search('title', trim(request()->input('q')));
         }
-        $posts = $query->latest()->paginate(15)->withQueryString();
+        $posts = $query->latest()->with('shortLink')->paginate(15)->withQueryString();
 
         return view('admin.posts.index', compact('posts'));
     }
@@ -69,6 +70,12 @@ class PostController extends Controller
                 ...$request->validated(),
                 'image' => $imageName,
                 'user_id' => auth()->id(),
+            ]);
+
+            ShortLink::create([
+                'code' => $request->has('code') ? $request->string('code') : generateUniqueShortCode(),
+                'type' => 'post',
+                'target_id' => $post->id,
             ]);
 
             $post->tags()->attach($request->array('tag_ids'));

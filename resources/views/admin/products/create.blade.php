@@ -79,7 +79,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-12 col-lg-6">
+                            <div class="form-group col-12 col-lg-4">
                                 <label for="tagSelect">برچسب ها:*</label>
                                 <select id="tagSelect" class="form-control" name="tag_ids[]" multiple
                                         data-live-search="true" required>
@@ -88,7 +88,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-12 col-lg-6">
+                            <div class="form-group col-12 col-lg-4">
                                 <label for="platformSelect">پلتفرم:*</label>
                                 <select id="platformSelect" class="form-control" name="platform_id"
                                         data-live-search="true" required>
@@ -96,6 +96,10 @@
                                         <option value="{{ $key }}" {{ old('platform_id') && old('platform_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="form-group col-12 col-lg-4">
+                                <label for="short_link">لینک کوتاه:(برای تولید خودکار این فیلد را خالی بگذارید.)</label>
+                                <input type="text" name="short_link" id="short_link" class="form-control" value="{{ old('short_link') }}">
                             </div>
                             <div class="form-group col-12 col-lg-12">
                                 <label for="description">توضیحات:*</label>

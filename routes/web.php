@@ -28,6 +28,7 @@ use App\Http\Controllers\Home\ProductController as HomeProductController;
 use App\Http\Controllers\Home\ProfileAddressesController as HomeProfileAddressesController;
 use App\Http\Controllers\Home\ProfileController as HomeProfileController;
 use App\Http\Controllers\Home\SearchController;
+use App\Http\Controllers\Home\ShortLinkController;
 use App\Http\Controllers\Home\WishListController as HomeWishlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -90,8 +91,7 @@ Route::get('/reset-password/{token}', function (string $token) {
 
 Route::prefix('/')->name('home.')->group(function () {
 
-    Route::get('/q/{code}', [ShortLinkController::class, 'redirect'])->name('shortlink.redirect');
-
+    Route::get('/q/{code}', ShortLinkController::class)->name('shortlink.redirect');
 
     Route::get('', [HomeController::class, 'index'])->name('index');
     Route::get('s', [SearchController::class, 'search'])->name('search');

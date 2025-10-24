@@ -127,6 +127,19 @@
                         <li><span class="nk-social-twitter" title="Share page on Twitter" data-share="twitter"><span class="fab fa-twitter"></span></span></li>
                     </ul>
                 </div>
+                <div class="nk-gap-1"></div>
+                <div class="nk-post-share" style="direction: rtl">
+                    <span class="h5">لینک کوتاه:</span>
+                    <ul style="list-style: none; padding: 0; margin-top: 10px;">
+                        <li style="display: flex; align-items: center; gap: 10px; direction: ltr;">
+                            <span id="shortLinkText">{{ config('app.url') . '/q/' . $shortLink }}</span>
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyShortLink()">
+                                <span class="fa fa-copy"></span>
+                            </button>
+                        </li>
+                    </ul>
+                    <small id="copyFeedback" class="text-success d-none">✅ لینک کپی شد!</small>
+                </div>
                 <!-- END: Share -->
 
                 <div class="nk-gap-2"></div>
@@ -228,6 +241,22 @@
 
 @section('scripts')
     <script>
+        function copyShortLink() {
+            const text = document.getElementById('shortLinkText').innerText;
+
+            // ساخت یک input موقت برای کپی
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            // نمایش بازخورد
+            const feedback = document.getElementById('copyFeedback');
+            feedback.classList.remove('d-none');
+            setTimeout(() => feedback.classList.add('d-none'), 3000);
+        }
         function numberFormat(number, decimals = 0, decPoint = '.', thousandsSep = ',') {
             number = parseFloat(number).toFixed(decimals);
             const parts = number.split('.');

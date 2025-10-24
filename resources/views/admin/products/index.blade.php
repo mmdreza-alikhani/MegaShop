@@ -68,6 +68,7 @@
                                         <th scope="col">عنوان برند</th>
                                         <th scope="col">عنوان دسته</th>
                                         <th scope="col">وضعیت</th>
+                                        <th scope="col">لینک کوتاه</th>
                                         <th scope="col">تنظیمات</th>
                                     </tr>
                                     </thead>
@@ -94,6 +95,9 @@
                                                 <span class="badge {{ $product->getRawOriginal('is_active') ?  'badge-success' : 'badge-secondary' }}">
                                                     {{ $product->is_active }}
                                                 </span>
+                                            </td>
+                                            <td>
+                                                {{ $product->shortLink->code }}
                                             </td>
                                             <td>
                                                 <div class="dropdown base show">
