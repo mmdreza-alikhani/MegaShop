@@ -96,6 +96,12 @@ class Post extends Model
         return $this->morphMany(Comment::class, 'commentable')->where('is_active', 1);
     }
 
+    public function faqs(): MorphMany
+    {
+        return $this->morphMany(Faq::class, 'faqable');
+    }
+
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

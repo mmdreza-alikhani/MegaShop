@@ -148,6 +148,11 @@ class Product extends Model implements Cartable
         return $this->morphMany(Comment::class, 'commentable')->where('is_active', 1);
     }
 
+    public function faqs(): MorphMany
+    {
+        return $this->morphMany(Faq::class, 'faqable');
+    }
+
     public function shortLink(): HasOne
     {
         return $this->hasOne(ShortLink::class, 'target_id')->where('type', '=', 'p');
