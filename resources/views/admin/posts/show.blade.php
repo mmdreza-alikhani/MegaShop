@@ -84,14 +84,36 @@
                             <div class="card-body">
                                 <div class="row">
                                     <img class="card-img"
-                                         src="{{ url(env('POST_IMAGE_UPLOAD_PATH')) . '/' . $post->image }}"
+                                         src="{{ Storage::url(config('upload.post_path') . '/') . $post->image }}"
                                          alt="{{ $post->title }}-image">
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group col-12 col-lg-12">
+                        <div class="form-group col-12">
                             <label for="text">متن:</label>
                             <textarea id="text" type="text" class="form-control" disabled>{!! $post->text !!}</textarea>
+                        </div>
+                        <div class="form-group col-12">
+                            <label for="text">سوالات متداول:</label>
+                            <div class="accordion" id="faqsAccordion">
+                                @foreach($post->faqs as $faq)
+                                    <div id="accordion" class="accordion card shade full-outlined o-primary">
+                                        <div class="card-header" id="heading-{{ $faq->id }}">
+                                            <h2 class="mb-0">
+                                                <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#collapse-{{ $faq->id }}">
+                                                    {{ $faq->question }}
+                                                </button>
+                                            </h2>
+                                        </div>
+
+                                        <div id="collapse-{{ $faq->id }}" class="collapse" aria-labelledby="heading-{{ $faq->id }}" data-parent="#faqsAccordion">
+                                            <div class="card-body">
+                                                {{ $faq->answer }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                         <div class="d-flex justify-content-end gap-2">
                             <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
@@ -101,4 +123,28 @@
             </div>
         </div>
     </main>
+@endsection
+@section('scripts')
+    <script>
+        CKEDITOR.replace('text', {
+            language: 'en',
+            // filebrowserImageUploadUrl: '/ckeditor/upload?_token=' + document.querySelector('meta[name="csrf-token"]').content,
+            filebrowserBrowseUrl: '/storage/ckeditor/images',
+            filebrowserImageBrowseUrl: '/storage/ckeditor/images',
+
+            extraPlugins: 'uploadimage,filebrowser',
+            removePlugins: 'image2,easyimage,cloudservices',
+            toolbar: [
+                { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo'] },
+                { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+                { name: 'tools', items: ['Maximize'] },
+                '/',
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
+                { name: 'links', items: ['Link', 'Unlink'] },
+                { name: 'styles', items: ['Format', 'Font', 'FontSize'] },
+                { name: 'colors', items: ['TextColor', 'BGColor'] }
+            ]
+        });
+    </script>
 @endsection

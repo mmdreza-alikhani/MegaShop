@@ -32,6 +32,12 @@ class UpdatePostRequest extends FormRequest
             'tag_ids' => 'required|array|exists:tags,id',
             'text' => 'required|string',
             'image' => 'nullable|max:2048|mimes:jpg,jpeg,png,svg,webp',
+            'newFaqs' => 'nullable|array',
+            'newFaqs.*.question' => 'required|string|max:1250',
+            'newFaqs.*.answer' => 'required|string|max:1250',
+            'faqs' => 'nullable|array',
+            'faqs.*.question' => 'required|string|max:1250',
+            'faqs.*.answer' => 'required|string|max:1250',
         ];
     }
 

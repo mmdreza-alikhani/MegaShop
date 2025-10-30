@@ -53,67 +53,87 @@
                 </div>
             </div>
 
-            <div class="row mx-1">
+            <div class="mx-1">
                 <div class="card shade c-grey w-100">
                     <h5 class="card-header c-primary">{{ $title }}</h5>
                     <div class="card-body">
                         @include('admin.layout.errors', ['errors' => $errors->store])
-                        <form class="row p-3" action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
+                        <form class="p-3" action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="title">عنوان:*</label>
-                                <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}">
-                            </div>
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="is_active">وضعیت:*</label>
-                                <select class="form-control" id="is_active" name="is_active">
-                                    <option value="1" {{ old('is_active') && old('is_active') == '1' ? 'selected' : '' }}>فعال</option>
-                                    <option value="0" {{ old('is_active') && old('is_active') == '0' ? 'selected' : '' }}>غیرفعال</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="type">نوع:*</label>
-                                <select class="form-control" id="type" name="type">
-                                    <option value="article" {{ old('type') && old('type') == 'article' ? 'selected' : '' }}>مقاله</option>
-                                    <option value="news" {{ old('type') && old('type') == 'news' ? 'selected' : '' }}>خبر</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-12 col-lg-3">
-                                <label for="short_link">لینک کوتاه:(برای تولید خودکار این فیلد را خالی بگذارید.)</label>
-                                <input type="text" name="short_link" id="short_link" class="form-control" value="{{ old('short_link') }}">
-                            </div>
-                            <div class="form-group col-12 col-lg-6">
-                                <label for="tagSelect">برچسب ها:*</label>
-                                <select id="tagSelect" class="form-control" name="tag_ids[]" multiple data-live-search="true">
-                                    @foreach($tags as $key => $value)
-                                        <option value="{{ $key }}" {{ old('tag_ids') && in_array($key , old('tag_ids')) ? 'selected' : '' }}>{{ $value }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group card shade c-grey col-12 col-lg-6">
-                                <h5 class="card-header c-primary">افزودن تصویر</h5>
-                                <div class="card-body row">
-                                    <div class="col-12 m-1">
-                                        <label class="d-block mb-2 text-right" for="image">تصویر اصلی</label>
-                                        <div class="d-flex flex-row-reverse align-items-center border rounded p-2" style="background-color: #f8f9fa;">
+                            <div class="row">
+                                <div class="form-group col-12 col-lg-3">
+                                    <label for="title">عنوان:*</label>
+                                    <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}">
+                                </div>
+                                <div class="form-group col-12 col-lg-3">
+                                    <label for="is_active">وضعیت:*</label>
+                                    <select class="form-control" id="is_active" name="is_active">
+                                        <option value="1" {{ old('is_active') && old('is_active') == '1' ? 'selected' : '' }}>فعال</option>
+                                        <option value="0" {{ old('is_active') && old('is_active') == '0' ? 'selected' : '' }}>غیرفعال</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-12 col-lg-3">
+                                    <label for="type">نوع:*</label>
+                                    <select class="form-control" id="type" name="type">
+                                        <option value="article" {{ old('type') && old('type') == 'article' ? 'selected' : '' }}>مقاله</option>
+                                        <option value="news" {{ old('type') && old('type') == 'news' ? 'selected' : '' }}>خبر</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-12 col-lg-3">
+                                    <label for="short_link">لینک کوتاه:(برای تولید خودکار این فیلد را خالی بگذارید.)</label>
+                                    <input type="text" name="short_link" id="short_link" class="form-control" value="{{ old('short_link') }}">
+                                </div>
+                                <div class="form-group col-12 col-lg-6">
+                                    <label for="tagSelect">برچسب ها:*</label>
+                                    <select id="tagSelect" class="form-control" name="tag_ids[]" multiple data-live-search="true">
+                                        @foreach($tags as $key => $value)
+                                            <option value="{{ $key }}" {{ old('tag_ids') && in_array($key , old('tag_ids')) ? 'selected' : '' }}>{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group card shade c-grey col-12 col-lg-6">
+                                    <h5 class="card-header c-primary">افزودن تصویر</h5>
+                                    <div class="card-body row">
+                                        <div class="col-12 m-1">
+                                            <label class="d-block mb-2 text-right" for="image">تصویر اصلی</label>
+                                            <div class="d-flex flex-row-reverse align-items-center border rounded p-2" style="background-color: #f8f9fa;">
                                             <span class="btn f-primary ml-2 px-2" onclick="document.getElementById('image').click();">
                                                 انتخاب فایل
                                             </span>
-                                            <span id="image-file-name" class="text-muted flex-grow-1 text-right">
+                                                <span id="image-file-name" class="text-muted flex-grow-1 text-right">
                                                 هیچ فایلی انتخاب نشده
                                             </span>
-                                            <input type="file" id="image" name="image" class="d-none" lang="fa">
+                                                <input type="file" id="image" name="image" class="d-none" lang="fa">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label for="text">متن:*</label>
+                                    <textarea id="text" type="text" name="text" class="form-control" required>{{ old('text') }}</textarea>
+                                </div>
+                                <label for="faqsContainer">سوالات متداول:</label>
+                                <div class="col-12" id="faqsContainer">
+                                    <div id="first">
+                                        <div class="recordset border-bottom">
+                                            <div class="row m-2">
+                                                <div class="form-group col-12">
+                                                    <label for="question">عنوان سوال:*</label>
+                                                    <input id="question" type="text" name="faqs[][question]" class="form-control question" required>
+                                                </div>
+                                                <div class="form-group col-12">
+                                                    <label for="answer">پاسخ سوال:*</label>
+                                                    <textarea id="answer" type="text" name="faqs[][answer]" class="form-control answer" required></textarea>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group col-12 col-lg-12">
-                                <label for="text">متن:*</label>
-                                <textarea id="text" type="text" name="text" class="form-control">{{ old('text') }}</textarea>
-                            </div>
-                            <div class="d-flex justify-content-end gap-2">
+                            <hr>
+                            <div class="d-flex justify-content-between">
                                 <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
-                                <button type="submit" class="btn f-primary">ادامه</button>
+                                <button type="submit" class="btn f-primary p-2">ادامه</button>
                             </div>
                         </form>
                     </div>
@@ -146,6 +166,8 @@
             ]
         });
 
+        $('#faqsContainer').czMore();
+
         $('#tagSelect').selectpicker({
             title: 'انتخاب برچسب'
         });
@@ -153,6 +175,16 @@
         $('#image').on('change', function () {
             const fileName = this.files[0]?.name || 'هیچ فایلی انتخاب نشده';
             $('#image-file-name').text(fileName);
+        });
+
+        $('form').on('submit', function () {
+            // Remove previous name attributes to avoid duplicates
+            $('.question, .answer').removeAttr('name');
+
+            $('#faqsContainer .recordset').each(function (index) {
+                $(this).find('.question').attr('name', `faqs[${index}][question]`);
+                $(this).find('.answer').attr('name', `faqs[${index}][answer]`);
+            });
         });
     </script>
 @endsection

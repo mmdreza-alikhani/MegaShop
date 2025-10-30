@@ -113,12 +113,12 @@ Route::name('home.')->group(function () {
         ->name('search')
         ->middleware('throttle:60,1');
 
-    Route::prefix('auth')->group(function () {
-        Route::get('login/{provider}', [Home\AuthController::class, 'redirectToProvider'])
+    Route::prefix('login/{provider}')->group(function () {
+        Route::get('/', [Home\AuthController::class, 'redirectToProvider'])
             ->name('redirectToProvider')
             ->middleware('throttle:10,1');
 
-        Route::get('login/{provider}/callback', [Home\AuthController::class, 'handleProviderCallback'])
+        Route::get('/callback', [Home\AuthController::class, 'handleProviderCallback'])
             ->name('handleProviderCallback')
             ->middleware('throttle:10,1');
     });
@@ -161,7 +161,7 @@ Route::name('home.')->group(function () {
                 ->name('verifyEmail')
                 ->middleware('throttle:3,1');
 
-            Route::post('logout', [Home\ProfileController::class, 'logout'])->name('logout');
+            Route::get('logout', [Home\ProfileController::class, 'logout'])->name('logout');
         });
 
     Route::post('comments/{model}/{id}', [Home\CommentController::class, 'store'])

@@ -9,7 +9,7 @@
     <div class="container">
         @include('home.sections.top-header-slider')
         <div class="nk-gap-2"></div>
-        @include('home.sections.platforms')
+{{--        @include('home.sections.platforms')--}}
         <div class="nk-gap-2"></div>
         @include('home.sections.latest-news')
         <div class="nk-gap-2"></div>

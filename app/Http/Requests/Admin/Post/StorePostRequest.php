@@ -31,6 +31,9 @@ class StorePostRequest extends FormRequest
             'text' => 'required|string',
             'image' => 'required|max:2048|mimes:jpg,jpeg,png,svg,webp',
             'short_link' => 'nullable|max:12|unique:short_links,code|string',
+            'faqs' => 'nullable|array',
+            'faqs.*.question' => 'required|string|max:1250',
+            'faqs.*.answer' => 'required|string|max:1250',
         ];
     }
 }

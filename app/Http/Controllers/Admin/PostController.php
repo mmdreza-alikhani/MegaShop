@@ -78,6 +78,13 @@ class PostController extends Controller
                 'target_id' => $post->id,
             ]);
 
+            foreach ($request->faqs as $faqData) {
+                $post->faqs()->create([
+                    'question' => $faqData['question'],
+                    'answer' => $faqData['answer'],
+                ]);
+            }
+
             $post->tags()->attach($request->array('tag_ids'));
 
             DB::commit();
@@ -97,6 +104,7 @@ class PostController extends Controller
      */
     public function show(Post $post): View|Application|Factory
     {
+        $post->load('shortLink', 'tags', 'faqs');
         return view('admin.posts.show', compact('post'));
     }
 
@@ -131,6 +139,30 @@ class PostController extends Controller
                 ...$request->validated(),
                 'user_id' => auth()->id(),
             ]);
+
+            $existingFaqIds = $post->faqs()->pluck('id')->toArray();
+            $requestFaqIds = array_keys($request->faqs);
+            $removedFaqs = array_diff($existingFaqIds, $requestFaqIds);
+
+            foreach ($request->faqs as $key => $faqData) {
+                $faq = $post->faqs()->find($key);
+                $faq->update([
+                    'question' => $faqData['question'],
+                    'answer' => $faqData['answer'],
+                ]);
+            }
+            if (!empty($removedFaqs)) {
+                $post->faqs()->whereIn('id', $removedFaqs)->delete();
+            }
+
+            if ($request->has('newFaqs')) {
+                foreach ($request->newFaqs as $faqData) {
+                    $post->faqs()->create([
+                        'question' => $faqData['question'],
+                        'answer' => $faqData['answer'],
+                    ]);
+                }
+            }
 
             $post->tags()->sync($request->array('tag_ids'));
 
