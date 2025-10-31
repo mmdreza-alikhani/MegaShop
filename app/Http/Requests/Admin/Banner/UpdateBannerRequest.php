@@ -34,6 +34,7 @@ class UpdateBannerRequest extends FormRequest
             'type' => 'required',
             'button_text' => 'required|string|max:255',
             'button_link' => 'required|string|max:255',
+            'button_icon' => 'required|string|max:255',
             'priority' => 'required|integer|between:1,100',
         ];
     }

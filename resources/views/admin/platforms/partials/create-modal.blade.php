@@ -27,21 +27,21 @@
                             </select>
                         </div>
                         <div class="form-group col-12 col-lg-12">
-                            <label class="d-block mb-2 text-right" for="image">تصویر اصلی</label>
+                            <label class="d-block mb-2 text-right" for="image">تصویر:</label>
                             <div class="d-flex flex-row-reverse align-items-center border rounded p-2 imageInsertDiv" style="background-color: #f8f9fa;">
-                                                <span class="btn f-primary ml-2 px-2 imageInsertBtn" onclick="document.getElementById('image').click();">
-                                                    انتخاب فایل
-                                                </span>
+                                <span class="btn f-primary ml-2 px-2 imageInsertBtn" onclick="document.getElementById('image').click();">
+                                    انتخاب فایل
+                                </span>
                                 <span id="image-file-name" class="text-muted flex-grow-1 text-right">
-                                                    هیچ فایلی انتخاب نشده
-                                                </span>
-                                <input type="file" id="image" name="image" class="d-none" lang="fa" required>
+                                    هیچ فایلی انتخاب نشده
+                                </span>
+                                <input type="file" id="image" name="image" class="d-none" lang="fa">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                    <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
                     <button type="submit" class="btn main f-main">ایجاد</button>
                 </div>
             </div>

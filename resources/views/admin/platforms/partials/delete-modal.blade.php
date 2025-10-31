@@ -12,7 +12,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn outlined o-danger c-danger"
-                        data-dismiss="modal">بستن</button>
+                        data-dismiss="modal">بازگشت</button>
                 <form action="{{ route('admin.platforms.destroy', $platform->id) }}" method="POST" style="display: inline;">
                     @csrf
                     @method('DELETE')

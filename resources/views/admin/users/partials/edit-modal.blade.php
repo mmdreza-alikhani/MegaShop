@@ -77,7 +77,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                    <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
                     <button type="submit" class="btn main f-main">ویرایش</button>
                 </div>
             </div>

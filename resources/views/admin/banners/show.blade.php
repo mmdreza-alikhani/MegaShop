@@ -56,11 +56,11 @@
                 <div class="card shade c-grey w-100">
                     <h5 class="card-header c-primary">{{ $title }}</h5>
                     <div class="card-body row">
-                        <div class="form-group col-12 col-lg-4">
+                        <div class="form-group col-12 col-lg-6">
                             <label for="title">عنوان:*</label>
                             <input type="text" id="title" class="form-control" value="{{ $banner->title }}" disabled>
                         </div>
-                        <div class="form-group col-12 col-lg-4">
+                        <div class="form-group col-12 col-lg-6">
                             <label for="is_active">وضعیت:*</label>
                             <select class="form-control" id="is_active" disabled>
                                 <option value="1" {{ $banner->is_active == '1' ? 'selected' : '' }}>فعال</option>

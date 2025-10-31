@@ -133,7 +133,7 @@
                             <hr>
                             <div class="d-flex justify-content-between">
                                 <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
-                                <button type="submit" class="btn f-primary p-2">ادامه</button>
+                                <button type="submit" class="btn f-primary p-2">ایجاد</button>
                             </div>
                         </form>
                     </div>

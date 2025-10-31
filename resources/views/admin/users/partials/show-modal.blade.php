@@ -35,16 +35,23 @@
                     </div>
                     <div class="form-group col-12 col-lg-4">
                         <label for="phone_number-{{ $user->id }}-show">شماره تلفن:</label>
-                        <div class="input-group">
-                            <input id="phone_number-{{ $user->id }}-show" type="text" class="form-control" value="{{ $user->phone_number }}" disabled>
-                            <div class="input-group-append">
-                                <div class="input-group-text">+98</div>
-                            </div>
-                        </div>
+                        <input id="phone_number-{{ $user->id }}-show" type="text" class="form-control" value="{{ $user->formatted_phone }}" disabled>
                     </div>
                     <div class="form-group col-12 col-lg-4">
-                        <label for="created_at-{{ $user->id }}-show">تاریخ ایجاد حساب:</label>
+                        <label for="provider_name-{{ $user->id }}-show">ارائه دهنده:</label>
+                        <input id="provider_name-{{ $user->id }}-show" type="text" class="form-control" value="{{ $user->provider }}" disabled>
+                    </div>
+                    <div class="form-group col-12 col-lg-4">
+                        <label for="created_at-{{ $user->id }}-show">تاریخ ایجاد:</label>
                         <input id="created_at-{{ $user->id }}-show" type="text" class="form-control" value="{{ verta($user->created_at) }}" disabled>
+                    </div>
+                    <div class="form-group col-12 col-lg-4">
+                        <label for="updated_at-{{ $user->id }}-show">تاریخ آخرین ویرایش:</label>
+                        <input id="updated_at-{{ $user->id }}-show" type="text" class="form-control" value="{{ verta($user->updated_at) }}" disabled>
+                    </div>
+                    <div class="form-group col-12 col-lg-4">
+                        <label for="role-{{ $user->id }}-show">نقش کاربری:</label>
+                        <input id="role-{{ $user->id }}-show" type="text" class="form-control" value="{{ $user->roles()->first()?->display_name }}" disabled>
                     </div>
                     <div class="form-group col-12 col-lg-12">
                         <button class="btn btn-block text-right border border-info" type="button"
@@ -72,7 +79,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
             </div>
         </div>
     </div>

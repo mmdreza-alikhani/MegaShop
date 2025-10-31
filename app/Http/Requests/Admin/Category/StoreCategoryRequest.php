@@ -26,7 +26,6 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255|unique:posts,title',
-            'is_active' => 'required|boolean',
             'parent_id' => 'required',
             'icon' => 'nullable|string|max:255',
             'filter_attribute_ids' => 'required|array',

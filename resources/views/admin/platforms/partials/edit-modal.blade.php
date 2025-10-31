@@ -27,8 +27,14 @@
                                 <option value="0" {{ $platform->getRawOriginal('is_active') == '0' ? 'selected' : '' }}>غیرفعال</option>
                             </select>
                         </div>
-                        <div class="form-group col-12 col-lg-12">
-                            <label class="d-block mb-2 text-right" for="image-{{ $platform->id }}">تصویر جدید</label>
+                        <div class="form-group col-12 col-lg-6">
+                            <label class="d-block mb-2 text-right" for="image-{{ $platform->id }}">تصویر:</label>
+                            <img class="card-img"
+                                 src="{{ Storage::url(config('upload.platform_path') . '/') . $platform->image }}"
+                                 alt="{{ $platform->title }}-image">
+                        </div>
+                        <div class="form-group col-12 col-lg-6">
+                            <label class="d-block mb-2 text-right" for="image-{{ $platform->id }}">تصویر جدید:</label>
                             <div class="d-flex flex-row-reverse align-items-center border rounded p-2 imageInsertDiv" style="background-color: #f8f9fa;">
                                 <span class="btn f-primary ml-2 px-2 imageInsertBtn" onclick="document.getElementById('image-{{ $platform->id }}').click();">
                                     انتخاب فایل
@@ -42,7 +48,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                    <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
                     <button type="submit" class="btn main f-main">ویرایش</button>
                 </div>
             </div>

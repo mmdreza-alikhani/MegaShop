@@ -64,7 +64,7 @@ class CategoryController extends Controller
             $category = Category::create([
                 'title' => $request->input('title'),
                 'parent_id' => $request->integer('parent_id'),
-                'is_active' => $request->has('is_active'),
+                'is_active' => true,
                 'description' => $request->input('description'),
                 'icon' => $request->input('icon'),
                 'priority' => $request->priority ?? 0,

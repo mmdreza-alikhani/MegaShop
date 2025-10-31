@@ -135,7 +135,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="modal-footer">
-                                                                        <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                                                                        <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
                                                                         <button type="submit" class="btn main f-main">ویرایش</button>
                                                                     </div>
                                                                 </div>
@@ -165,7 +165,7 @@
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn outlined o-danger c-danger"
-                                                                            data-dismiss="modal">بستن</button>
+                                                                            data-dismiss="modal">بازگشت</button>
                                                                     <form action="{{ route('admin.comments.destroy', $comment->id) }}" method="POST" style="display: inline;">
                                                                         @csrf
                                                                         @method('DELETE')

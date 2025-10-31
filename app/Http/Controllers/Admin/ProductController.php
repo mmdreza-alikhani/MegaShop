@@ -96,6 +96,13 @@ class ProductController extends Controller
                 'target_id' => $product->id,
             ]);
 
+            foreach ($request->faqs as $faqData) {
+                $product->faqs()->create([
+                    'question' => $faqData['question'],
+                    'answer' => $faqData['answer'],
+                ]);
+            }
+
             $product->tags()->attach($request->input('tag_ids'));
 
             // Store Filters
@@ -124,6 +131,7 @@ class ProductController extends Controller
      */
     public function show(Product $product): Factory|Application|View
     {
+        $product->load('shortLink', 'tags', 'faqs');
         $filters = $product->filters()
             ->with('attribute')
             ->get()

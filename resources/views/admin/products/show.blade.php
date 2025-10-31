@@ -34,26 +34,30 @@
                 </div>
             </div>
 
-            <div class="row mx-1">
-                <div class="card shade c-grey w-100">
+            <div class="mx-1">
+                <div class="card shade c-grey">
                     <h5 class="card-header c-primary">{{ $title }}</h5>
-                    <div class="card-body row">
-                        <div class="form-group col-12 col-lg-4">
+                    <div class="card-body row mx-1">
+                        <div class="form-group col-12 col-lg-3">
                             <label for="title">عنوان:*</label>
                             <input type="text" id="title" class="form-control" value="{{ $product->title }}" disabled>
                         </div>
-                        <div class="form-group col-12 col-lg-4">
+                        <div class="form-group col-12 col-lg-3">
                             <label for="is_active">وضعیت:*</label>
                             <select class="form-control" id="is_active">
                                 <option value="1" {{ $product->is_active == '1' ? 'selected' : '' }}>فعال</option>
                                 <option value="0" {{ $product->is_active == '0' ? 'selected' : '' }}>غیرفعال</option>
                             </select>
                         </div>
-                        <div class="form-group col-12 col-lg-4">
+                        <div class="form-group col-12 col-lg-3">
                             <label for="brandSelect">برند:*</label>
                             <select id="brandSelect" class="form-control" data-live-search="true" disabled>
                                 <option value="{{ $product->brand_id }}" selected>{{ $product->brand->title }}</option>
                             </select>
+                        </div>
+                        <div class="form-group col-12 col-lg-3">
+                            <label>لینک کوتاه:</label>
+                            <input type="text" value="{{ $product->shortLink->code }}" class="form-control" disabled>
                         </div>
                         <div class="form-group col-12 col-lg-3">
                             <label for="platformSelect">پلتفرم:*</label>
@@ -96,7 +100,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                                        <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
                                     </div>
                                 </div>
                             </div>
@@ -105,9 +109,27 @@
                             <label for="description">توضیحات:*</label>
                             <textarea id="description" name="description" class="form-control" disabled>{{ $product->description }}</textarea>
                         </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label>لینک کوتاه:</label>
-                            <input type="text" value="{{ $product->shortLink }}" class="form-control" disabled>
+                        <div class="form-group col-12">
+                            <label for="text">سوالات متداول:</label>
+                            <div class="accordion" id="faqsAccordion">
+                                @foreach($product->faqs as $faq)
+                                    <div id="accordion" class="accordion card shade full-outlined o-primary">
+                                        <div class="card-header" id="heading-{{ $faq->id }}">
+                                            <h2 class="mb-0">
+                                                <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#collapse-{{ $faq->id }}">
+                                                    {{ $faq->question }}
+                                                </button>
+                                            </h2>
+                                        </div>
+
+                                        <div id="collapse-{{ $faq->id }}" class="collapse" aria-labelledby="heading-{{ $faq->id }}" data-parent="#faqsAccordion">
+                                            <div class="card-body">
+                                                {{ $faq->answer }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                         <div class="form-group card shade c-grey col-12">
                             <h5 class="card-header c-primary">تصاویر</h5>
@@ -137,7 +159,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group card shade c-grey col-12">
+                        <div class="form-group card shade c-primary col-12">
                             <h5 class="card-header c-primary">دسته بندی</h5>
                             <div class="card-body row">
                                 <div class="form-group col-12 text-center">
@@ -153,8 +175,8 @@
                                     <div class="row">
                                     @foreach($filters as $filter)
                                         <div class="form-group col-12 col-lg-3 my-2">
-                                            <label for="filter-">{{ $filter['title'] }}:*</label>
-                                            <input id="filter-" type="text" class="form-control" value="{{ $filter['value'] }}" disabled>
+                                            <label for="filter-{{ $filter['title'] }}">{{ $filter['title'] }}:*</label>
+                                            <input id="filter-{{ $filter['title'] }}" type="text" class="form-control" value="{{ $filter['value'] }}" disabled>
                                         </div>
                                     @endforeach
                                     </div>
@@ -165,34 +187,41 @@
                                     </h6>
                                     @foreach($variations as $variation)
                                         <div class="row">
-                                            <div class="form-group col-12 col-lg-3 my-2">
+                                            <div class="form-group col-12 col-lg-3">
                                                 <label for="value">عنوان:*</label>
                                                 <input id="value" type="text" class="form-control" value="{{ $variation['value'] }}" disabled>
                                             </div>
-                                            <div class="form-group col-12 col-lg-3 my-2">
+                                            <div class="form-group col-12 col-lg-3">
                                                 <label for="price">قیمت:*</label>
                                                 <input id="price" type="text" class="form-control" value="{{ $variation['price'] }}" disabled>
                                             </div>
-                                            <div class="form-group col-12 col-lg-3 my-2">
+                                            <div class="form-group col-12 col-lg-3">
                                                 <label for="quantity">تعداد:*</label>
                                                 <input id="quantity" type="text" class="form-control" value="{{ $variation['quantity'] }}" disabled>
                                             </div>
-                                            <div class="form-group col-12 col-lg-3 my-2">
+                                            <div class="form-group col-12 col-lg-3">
                                                 <label for="sku">شناسه عددی:*</label>
                                                 <input id="sku" type="text" class="form-control" value="{{ $variation['sku'] }}" disabled>
                                             </div>
-                                            <div class="form-group col-12 col-lg-4 my-2">
-                                                <label for="sale_price">قیمت شامل تخفیف:*</label>
-                                                <input id="sale_price" type="text" class="form-control" value="{{ $variation['sale_price'] ? number_format($variation['sale_price']) : '' }}" disabled>
-                                            </div>
-                                            <div class="form-group col-12 col-lg-4 my-2">
-                                                <label for="date_on_sale_from">شروع تخفیف:*</label>
-                                                <input id="date_on_sale_from" type="text" class="form-control" value="{{ $variation['date_on_sale_from'] ? verta($variation['date_on_sale_to']) : '' }}" disabled>
-                                            </div>
-                                            <div class="form-group col-12 col-lg-4 my-2">
-                                                <label for="date_on_sale_to">پایان تخفیف:*</label>
-                                                <input id="date_on_sale_to" type="text" class="form-control" value="{{ $variation['date_on_sale_to'] ? verta($variation['date_on_sale_to']) : '' }}" disabled>
-                                            </div>
+                                            @if($product->IsOnSale)
+                                                <div class="form-group col-12 col-lg-4">
+                                                    <label for="sale_price">قیمت شامل تخفیف:*</label>
+                                                    <input id="sale_price" type="text" class="form-control" value="{{ $variation['sale_price'] ? number_format($variation['sale_price']) : '' }}" disabled>
+                                                </div>
+                                                <div class="form-group col-12 col-lg-4">
+                                                    <label for="date_on_sale_from">شروع تخفیف:*</label>
+                                                    <input id="date_on_sale_from" type="text" class="form-control" value="{{ $variation['date_on_sale_from'] ? verta($variation['date_on_sale_to']) : '' }}" disabled>
+                                                </div>
+                                                <div class="form-group col-12 col-lg-4">
+                                                    <label for="date_on_sale_to">پایان تخفیف:*</label>
+                                                    <input id="date_on_sale_to" type="text" class="form-control" value="{{ $variation['date_on_sale_to'] ? verta($variation['date_on_sale_to']) : '' }}" disabled>
+                                                </div>
+                                            @else
+                                                <div class="alert text-dir-rtl text-right alert-third alert-shade alert-dismissible fade show"
+                                                     role="alert">
+                                                    هیچ تخفیفی وجود ندارد!
+                                                </div>
+                                            @endif
                                         </div>
                                         <hr>
                                     @endforeach

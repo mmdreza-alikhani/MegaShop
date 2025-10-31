@@ -76,6 +76,32 @@ class User extends Authenticatable
         return $this->first_name && $this->last_name && $this->phone_number && $this->email_verified_at;
     }
 
+    public function getFormattedPhoneAttribute()
+    {
+        if (empty($this->phone_number)) {
+            return 'شماره تلفنی یافت نشد!';
+        }
+
+        if (str_starts_with($this->phone_number, '09')) {
+            return $this->phone_number;
+        }
+
+        if (str_starts_with($this->phone_number, '9')) {
+            return '0' . $this->phone_number;
+        }
+
+        return $this->phone_number;
+    }
+
+    public function getProviderAttribute(): string
+    {
+        return match ($this->provider_name) {
+            'manual' => 'دستی',
+            'google' => 'گوگل حساب ',
+            default => 'نامشخص',
+        };
+    }
+
     public function rates(): HasMany
     {
         return $this->hasMany(ProductRate::class);

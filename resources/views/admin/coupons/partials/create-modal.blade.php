@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="form-group col-12 col-lg-6">
                             <label for="title">عنوان:*</label>
-                            <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}">
+                            <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}" required>
                         </div>
                         <div class="form-group col-12 col-lg-6">
                             <label for="code">کد:*</label>
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                    <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
                     <button type="submit" class="btn main f-main">ایجاد</button>
                 </div>
             </div>

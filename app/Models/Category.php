@@ -38,6 +38,7 @@ class Category extends Model
         'parent_id',
         'status',
         'is_active',
+        'priority',
     ];
     protected $casts = [
         'title' => 'string',

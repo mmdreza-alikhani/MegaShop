@@ -30,12 +30,12 @@
                                    value="{{ old('last_name') }}">
                         </div>
                         <div class="form-group col-12 col-lg-4">
-                            <label for="email">ایمیل:</label>
+                            <label for="email">ایمیل:*</label>
                             <input type="text" name="email" id="email" class="form-control"
-                                   value="{{ old('email') }}">
+                                   value="{{ old('email') }}" required>
                         </div>
                         <div class="form-group col-12 col-lg-4">
-                            <label for="password">رمز عبور:</label>
+                            <label for="password">رمز عبور:*</label>
                             <input type="password" name="password" id="password" class="form-control"
                                    value="{{ old('password') }}" required>
                         </div>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                    <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
                     <button type="submit" class="btn main f-main">ایجاد</button>
                 </div>
             </div>

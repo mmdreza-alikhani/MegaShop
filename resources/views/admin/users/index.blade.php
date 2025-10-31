@@ -85,9 +85,7 @@
                                                 {{ $user->username }}
                                             </td>
                                             <td>
-{{--                                                <img src="{{ Str::contains($user->avatar, 'https://') ? $user->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $user->avatar }}"--}}
-{{--                                                     alt="{{ $user->username }}-image" id="output" width="100" height="100"/>--}}
-                                                {{ '0' . $user->phone_number ?: 'شماره تلفن ثبت نشده!' }}
+                                                {{ $user->formatted_phone }}
                                             </td>
                                             <td>
                                                 {{ $user->email }}

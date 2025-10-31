@@ -16,12 +16,12 @@
                     @include('admin.layout.errors', ['errors' => $errors->update])
                     <div class="row">
                         <div class="form-group col-12 col-lg-6">
-                            <label for="name-{{ $role->id }}">نام:</label>
+                            <label for="name-{{ $role->id }}">نام:*</label>
                             <input type="text" name="name" id="name-{{ $role->id }}" class="form-control"
                                    value="{{ $role->name }}">
                         </div>
                         <div class="form-group col-12 col-lg-6">
-                            <label for="display_name-{{ $role->id }}">نام نمایشی:</label>
+                            <label for="display_name-{{ $role->id }}">نام نمایشی:*</label>
                             <input type="text" name="display_name" id="display_name-{{ $role->id }}" class="form-control"
                                    value="{{ $role->display_name }}">
                         </div>
@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                    <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
                     <button type="submit" class="btn main f-main">ویرایش</button>
                 </div>
             </div>

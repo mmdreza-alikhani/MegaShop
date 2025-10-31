@@ -123,6 +123,11 @@ class Product extends Model implements Cartable
         return $this->variations()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? $this->variations()->orderBy('price')->first();
     }
 
+    public function getIsOnSaleAttribute(): bool
+    {
+        return (bool)$this->variations()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first();
+    }
+
     public function filters(): HasMany
     {
         return $this->hasMany(ProductFilter::class);
@@ -155,7 +160,7 @@ class Product extends Model implements Cartable
 
     public function shortLink(): HasOne
     {
-        return $this->hasOne(ShortLink::class, 'target_id')->where('type', '=', 'p');
+        return $this->hasOne(ShortLink::class, 'target_id')->where('type', '=', 'product');
     }
 
     public function checkUserWishlist($userId): bool

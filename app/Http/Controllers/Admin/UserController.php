@@ -43,8 +43,9 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
+        dd($request->all());
         try {
             User::create(Arr::only($request->validated(), [
                 'username', 'first_name', 'last_name', 'email', 'phone_number',

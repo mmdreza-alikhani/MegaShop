@@ -16,19 +16,19 @@
                     @include('admin.layout.errors', ['errors' => $errors->update])
                     <div class="row">
                         <div class="form-group col-12 col-lg-6">
-                            <label for="name-{{ $permission->id }}">نام:</label>
+                            <label for="name-{{ $permission->id }}">نام:*</label>
                             <input type="text" name="name" id="name-{{ $permission->id }}" class="form-control"
-                                   value="{{ $permission->name }}">
+                                   value="{{ $permission->name }}" required>
                         </div>
                         <div class="form-group col-12 col-lg-6">
-                            <label for="display_name-{{ $permission->id }}">نام نمایشی:</label>
+                            <label for="display_name-{{ $permission->id }}">نام نمایشی:*</label>
                             <input type="text" name="display_name" id="display_name-{{ $permission->id }}" class="form-control"
-                                   value="{{ $permission->display_name }}">
+                                   value="{{ $permission->display_name }}" required>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                    <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
                     <button type="submit" class="btn main f-main">ویرایش</button>
                 </div>
             </div>

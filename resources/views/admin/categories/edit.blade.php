@@ -43,56 +43,59 @@
                 </div>
             </div>
 
-            <div class="row mx-1">
+            <div class="mx-1">
                 <div class="card shade c-grey w-100">
                     <h5 class="card-header c-primary">{{ $title }}</h5>
                     <div class="card-body">
                         @include('admin.layout.errors', ['errors' => $errors->update])
-                        <form action="{{ route('admin.categories.update' , ['category' => $category->id]) }}" method="POST" class="row p-3">
+                        <form class="p-3" action="{{ route('admin.categories.update' , ['category' => $category->id]) }}" method="POST">
                             @method('put')
                             @csrf
-                            <div class="form-group col-12 col-lg-4">
-                                <label for="title">عنوان:*</label>
-                                <input type="text" name="title" id="title" class="form-control" value="{{ $category->title }}" required>
+                            <div class="row">
+                                <div class="form-group col-12 col-lg-4">
+                                    <label for="title">عنوان:*</label>
+                                    <input type="text" name="title" id="title" class="form-control" value="{{ $category->title }}" required>
+                                </div>
+                                <div class="form-group col-12 col-lg-4">
+                                    <label for="parent_id">والد:*</label>
+                                    <select class="form-control" id="parent_id" name="parent_id" required>
+                                        <option value="0">بدون والد</option>
+                                        @foreach($parentCategories as $key => $value)
+                                            <option value="{{ $key }}" {{ $category->parent_id == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-12 col-lg-4">
+                                    <label for="is_active">وضعیت: *</label>
+                                    <select class="form-control" id="is_active" name="is_active" required>
+                                        <option value="1" {{ $category->is_active == 1 ? 'selected' : '' }}>فعال</option>
+                                        <option value="0" {{ $category->is_active == 0 ? 'selected' : '' }}>غیرفعال</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-12 col-lg-4">
+                                    <label for="attributeIsFilter">ویژگی های قابل فیلتر: *</label>
+                                    <select id="attributeIsFilter" class="form-control" name="filter_attribute_ids[]" data-live-search="true" required multiple>
+                                    </select>
+                                </div>
+                                <div class="form-group col-12 col-lg-4">
+                                    <label for="attributeIsVariation">ویژگی متغیر: *</label>
+                                    <select id="attributeIsVariation" class="form-control" name="variation_attribute_id" data-live-search="true" required>
+                                    </select>
+                                </div>
+                                <div class="form-group col-12 col-lg-4">
+                                    <label for="icon">آیکون:</label>
+                                    <input type="text" name="icon" id="icon" class="form-control" value="{{ $category->icon }}">
+                                </div>
+                                <div class="form-group col-12 col-lg-12">
+                                    <label for="description">توضیحات:</label>
+                                    <textarea type="text" name="description" id="description"
+                                              class="form-control">{{ $category->description }}</textarea>
+                                </div>
                             </div>
-                            <div class="form-group col-12 col-lg-4">
-                                <label for="parent_id">والد: *</label>
-                                <select class="form-control" id="parent_id" name="parent_id" required>
-                                    <option value="0">بدون والد</option>
-                                    @foreach($parentCategories as $key => $value)
-                                        <option value="{{ $key }}" {{ $category->parent_id == $key ? 'selected' : '' }}>{{ $value }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group col-12 col-lg-4">
-                                <label for="is_active">وضعیت: *</label>
-                                <select class="form-control" id="is_active" name="is_active" required>
-                                    <option value="1" {{ $category->is_active == 1 ? 'selected' : '' }}>فعال</option>
-                                    <option value="0" {{ $category->is_active == 0 ? 'selected' : '' }}>غیرفعال</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-12 col-lg-4">
-                                <label for="attributeIsFilter">ویژگی های قابل فیلتر: *</label>
-                                <select id="attributeIsFilter" class="form-control" name="filter_attribute_ids[]" data-live-search="true" required multiple>
-                                </select>
-                            </div>
-                            <div class="form-group col-12 col-lg-4">
-                                <label for="attributeIsVariation">ویژگی متغیر: *</label>
-                                <select id="attributeIsVariation" class="form-control" name="variation_attribute_id" data-live-search="true" required>
-                                </select>
-                            </div>
-                            <div class="form-group col-12 col-lg-4">
-                                <label for="icon">آیکون:</label>
-                                <input type="text" name="icon" id="icon" class="form-control" value="{{ $category->icon }}">
-                            </div>
-                            <div class="form-group col-12 col-lg-12">
-                                <label for="description">توضیحات:</label>
-                                <textarea type="text" name="description" id="description"
-                                          class="form-control">{{ $category->description }}</textarea>
-                            </div>
-                            <div class="d-flex justify-content-end gap-2">
+                            <hr>
+                            <div class="d-flex justify-content-between">
                                 <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
-                                <button type="submit" class="btn f-primary">ادامه</button>
+                                <button type="submit" class="btn f-primary p-2">ایجاد</button>
                             </div>
                         </form>
                     </div>

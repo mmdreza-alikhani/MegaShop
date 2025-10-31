@@ -12,23 +12,31 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="form-group col-12 col-lg-6">
-                        <label for="title-{{ $category->id }}">عنوان:*</label>
+                        <label for="title-{{ $category->id }}">عنوان:</label>
                         <input type="text" id="title-{{ $category->id }}" class="form-control" value="{{ $category->title }}" disabled>
                     </div>
                     <div class="form-group col-12 col-lg-6">
-                        <label for="parent_id-{{ $category->id }}">والد:*</label>
+                        <label for="parent_id-{{ $category->id }}">والد:</label>
                         <input type="text" id="parent_id-{{ $category->id }}" class="form-control" value="{{ $category->isParent() ? 'والد' : $category->parent->title }}" disabled>
                     </div>
                     <div class="form-group col-12 col-lg-6">
-                        <label for="is_active-{{ $category->id }}">وضعیت:*</label>
+                        <label for="is_active-{{ $category->id }}">وضعیت:</label>
                         <input type="text" id="is_active-{{ $category->id }}" class="form-control" value="{{ $category->is_active }}" disabled>
                     </div>
                     <div class="form-group col-12 col-lg-6">
-                        <label for="icon-{{ $category->id }}">آیکون:*</label>
+                        <label for="icon-{{ $category->id }}">آیکون:</label>
                         <input type="text" id="icon-{{ $category->id }}" class="form-control" value="{{ $category->icon }}" disabled>
                     </div>
+                    <div class="form-group col-12 col-lg-6">
+                        <label for="created_at-{{ $category->id }}">تاریخ ایجاد:</label>
+                        <input type="text" id="created_at-{{ $category->id }}" class="form-control" value="{{ verta($category->created_at) }}" disabled>
+                    </div>
+                    <div class="form-group col-12 col-lg-6">
+                        <label for="updated_at-{{ $category->id }}">تاریخ آخرین ویرایش:</label>
+                        <input type="text" id="updated_at-{{ $category->id }}" class="form-control" value="{{ verta($category->updated_at) }}" disabled>
+                    </div>
                     <div class="form-group col-12 col-lg-12">
-                        <label for="description-{{ $category->id }}">توضیحات:*</label>
+                        <label for="description-{{ $category->id }}">توضیحات:</label>
                         <textarea id="description-{{ $category->id }}" class="form-control" disabled>>{{ $category->description }}</textarea>
                     </div>
                     <div class="form-group col-12 col-lg-6">
@@ -60,7 +68,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn f-danger main" data-dismiss="modal">بستن</button>
+                <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
             </div>
         </div>
     </div>

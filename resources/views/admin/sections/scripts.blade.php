@@ -3,9 +3,9 @@
 <script src="{{ asset('/admin/js/persianumber.min.js') }}"></script>
 <script src="{{ asset('/admin/js/main.js') }}"></script>
 <script>
-    {{--window.jQuery || document.write('<script src="{{ asset('/admin/js/jquery-3.2.1.min.js') }}"><\/script>')--}}
+    window.jQuery || document.write('<script src="{{ asset('/admin/js/jquery-3.2.1.min.js') }}"><\/script>')
     $(document).ready(function () {
-        // $('body').bootstrapMaterialDesign();
+        $('body').bootstrapMaterialDesign();
         // $('.persianumber').persiaNumber();
 
     });
