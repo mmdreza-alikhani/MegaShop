@@ -57,14 +57,11 @@ Route::prefix('management')
             Route::resource('products', Admin\ProductController::class);
 
             Route::prefix('products/{product}')->name('products.')->group(function () {
-                Route::get('images/edit', [Admin\ProductController::class, 'edit'])->name('images.edit');
-                Route::post('images', [Admin\ProductController::class, 'add'])->name('images.add');
-                Route::delete('images/{image}', [Admin\ProductController::class, 'destroy'])->name('images.destroy');
-                Route::patch('images/{image}/primary', [Admin\ProductController::class, 'setPrimary'])->name('images.primary');
-
-//                Route::get('category/edit', [Admin\ProductController::class, 'editCategory'])->name('category.edit');
-//                Route::put('category', [Admin\ProductController::class, 'updateCategory'])->name('category.update');
+                Route::post('images', [Admin\ProductController::class, 'addImages'])->name('images.add');
+                Route::delete('images/{image}', [Admin\ProductController::class, 'removeImages'])->name('images.destroy');
+                Route::patch('images/{image}/primary', [Admin\ProductController::class, 'setToPrimary'])->name('images.primary');
             });
+
         });
 
         Route::middleware('permission:banners-index')->group(function () {

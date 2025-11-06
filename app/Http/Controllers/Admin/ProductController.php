@@ -283,76 +283,93 @@ class ProductController extends Controller
 
             foreach ($images as $imageName) {
                 ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => $imageName,
+                    'product_id' => '58',
+                    'image' => $imageName[0],
                 ]);
             }
 
             DB::commit();
+
+            flash()->success(config('flasher.product.add_images'));
+
         } catch (Exception $e) {
             DB::rollBack();
-            flash()->error(config('flasher.product.added_images'));
             report($e);
-            return redirect()->back();
+            flash()->error(config('flasher.product.add_images_failed'));
+            report($e);
         }
 
-        flash()->success(config('flasher.product.add_images_failed'));
-        return redirect()->back();
+        return redirect()->route('admin.products.edit', $product);
     }
 
-    public function removeImages(UploadProductNewImagesRequest $request, Product $product): RedirectResponse
+    public function removeImages(Product $product, ProductImage $image): RedirectResponse
     {
         try {
             DB::beginTransaction();
 
-            $this->fileUpload->deleteMultiple($request->images, $this->othersUploadPath);
-
-            foreach ($request->images as $imageName) {
-                ProductImage::where('product_id', $product->id)->where('image', $imageName)->delete();
+            // Check if image belongs to product
+            if ($image->product_id !== $product->id) {
+                flash()->error('تصویر متعلق به این محصول نیست');
+                return redirect()->back();
             }
 
+            // Delete file from storage
+            $this->fileUpload->delete($image->image, $this->othersUploadPath);
+
+            // Delete from database
+            $image->delete();
+
             DB::commit();
+
+            flash()->success(config('flasher.product.removed_images'));
+
         } catch (Exception $e) {
             DB::rollBack();
-            flash()->error(config('flasher.product.removed_images'));
+            flash()->error(config('flasher.product.remove_images_failed'));
             report($e);
-            return redirect()->back();
         }
 
-        flash()->success(config('flasher.product.remove_images_failed'));
-        return redirect()->back();
+        return redirect()->route('admin.products.edit', $product);
     }
 
-    public function setToPrimary(Request $request, Product $product): RedirectResponse
+    public function setToPrimary(Product $product, ProductImage $image): RedirectResponse
     {
-        $request->validate([
-            'image_id' => 'required|exists:product_images,id',
-        ]);
         try {
             DB::beginTransaction();
 
-            $image = ProductImage::find($request->image_id);
+            // Check if image belongs to product
+            if ($image->product_id !== $product->id) {
+                flash()->error('تصویر متعلق به این محصول نیست');
+                return redirect()->back();
+            }
 
+            // Create new image from old primary image
             ProductImage::create([
                 'product_id' => $product->id,
                 'image' => $product->primary_image,
             ]);
 
+            // Set new primary image
             $product->update([
                 'primary_image' => $image->image,
             ]);
 
+            // Delete the image from gallery
+            $image->delete();
+
             DB::commit();
+
+            flash()->success(config('flasher.product.set_primary_image'));
+
         } catch (Exception $e) {
             DB::rollBack();
-            flash()->error(config('flasher.product.removed_images'));
+            flash()->error(config('flasher.product.set_primary_failed'));
             report($e);
-            return redirect()->back();
         }
 
-        flash()->success(config('flasher.product.remove_images_failed'));
-        return redirect()->back();
+        return redirect()->route('admin.products.edit', $product);
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -360,51 +377,5 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function edit_category(Request $request, Product $product)
-    {
-        $categories = Category::where([['is_active', 1], ['parent_id', '!=', '0']])->get();
-
-        return view('admin.products.edit_category', compact('product', 'categories'));
-    }
-
-    public function update_category(Request $request, Product $product)
-    {
-        $request->validate([
-            'category_id' => 'required',
-            'attribute_ids' => 'required',
-            'attribute_ids.*' => 'required',
-            'variation_values' => 'required',
-            'variation_values.*.*' => 'required',
-            'variation_values.quantity.*' => 'integer',
-            'variation_values.price.*' => 'integer',
-            'variation_values.sku.*' => 'integer',
-        ]);
-        try {
-            DB::beginTransaction();
-
-            $product->update([
-                'category_id' => $request->category_id,
-            ]);
-
-            $ProductAttributeController = new ProductAttributeController;
-            $ProductAttributeController->change($request->attribute_ids, $product->id);
-
-            $category = Category::find($request->category_id);
-            $ProductVariationController = new ProductVariationController;
-            $ProductVariationController->change($request->variation_values, $category->attributes()->wherePivot('is_variation', 1)->first()->id, $product);
-
-            DB::commit();
-        } catch (Exception $ex) {
-            DB::rollBack();
-            flash()->error('مشکلی پیش آمد!', $ex->getMessage());
-
-            return redirect()->back();
-        }
-
-        flash()->success('با موفقیت دسته بندی محصول ویرایش شد.');
-
-        return redirect()->back();
     }
 }

@@ -128,34 +128,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group card shade c-grey col-12">
-                                    <h5 class="card-header c-primary">تصاویر</h5>
-                                    <div class="card shade c-grey ">
-                                        <div class="card-body">
-                                            <h4 class="text-center">تصویر اصلی</h4>
-                                            <hr>
-                                            <div class="row justify-content-center">
-                                                <div class="text-center">
-                                                    <img class="card-img img-fluid"
-                                                         src="{{ Storage::url(config('upload.product_primary_path') . '/') . $product->primary_image }}"
-                                                         alt="{{ $product->title }}-image" style="max-width: 100%; max-height: 200px; object-fit: contain;">
-                                                </div>
-                                            </div>
-                                            <h4 class="text-center mt-2">تصاویر دیگر</h4>
-                                            <hr>
-                                            <div class="row">
-                                                @foreach ($product->images as $image)
-                                                    <div class="col-12 col-md-4 text-center mb-3">
-                                                        <img class="img-fluid"
-                                                             src="{{ Storage::url(config('upload.product_others_path') . '/') . $image->image }}"
-                                                             alt="{{ $product->title }}-image"
-                                                             style="max-width: 100%; max-height: 200px; object-fit: contain;">
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group card shade c-grey col-12">
                                     <h5 class="card-header c-primary">دسته بندی</h5>
                                     <div class="card-body row">
                                         <div class="form-group col-12 text-center">
@@ -271,6 +243,87 @@
                                 <button type="submit" class="btn f-primary p-2">ویرایش</button>
                             </div>
                         </form>
+
+                        <div class="form-group card shade c-grey col-12">
+                            <h5 class="card-header c-primary">تصاویر</h5>
+                            <div class="card shade c-grey">
+                                <div class="card-body">
+                                    <!-- Add New Images Form -->
+                                    <div class="mb-4">
+                                        <h5 class="text-center">افزودن تصاویر جدید</h5>
+                                        <form action="{{ route('admin.products.images.add', $product) }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row">
+                                                <div class="form-group col-12 col-lg-9">
+                                                    <input type="file" name="images[]" class="form-control" multiple accept="image/*" required>
+                                                </div>
+                                                <div class="form-group col-12 col-lg-3">
+                                                    <button type="submit" class="btn btn-success btn-block">
+                                                        <i class="fas fa-upload"></i> آپلود تصاویر
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <hr>
+
+                                    <!-- Primary Image -->
+                                    <h4 class="text-center">تصویر اصلی</h4>
+                                    <hr>
+                                    <div class="row justify-content-center">
+                                        <div class="text-center">
+                                            <img class="card-img img-fluid"
+                                                 src="{{ Storage::url(config('upload.product_primary_path') . '/') . $product->primary_image }}"
+                                                 alt="{{ $product->title }}-image"
+                                                 style="max-width: 100%; max-height: 200px; object-fit: contain;">
+                                        </div>
+                                    </div>
+
+                                    <!-- Other Images -->
+                                    <h4 class="text-center mt-4">تصاویر دیگر</h4>
+                                    <hr>
+                                    <div class="row">
+                                        @forelse ($product->images as $image)
+                                            <div class="col-12 col-md-4 text-center mb-3">
+                                                <div class="card shade c-grey">
+                                                    <img class="img-fluid p-2"
+                                                         src="{{ Storage::url(config('upload.product_others_path') . '/') . $image->image }}"
+                                                         alt="{{ $product->title }}-image"
+                                                         style="max-width: 100%; max-height: 200px; object-fit: contain;">
+                                                    <div class="card-footer text-center">
+                                                        <!-- Set as Primary Button -->
+                                                        <form action="{{ route('admin.products.images.primary', ['product' => $product, 'image' => $image->id]) }}"
+                                                              method="POST" class="d-inline"
+                                                              onsubmit="return confirm('آیا می‌خواهید این تصویر را به عنوان تصویر اصلی تنظیم کنید؟')">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="btn btn-sm btn-primary" title="تنظیم به عنوان تصویر اصلی">
+                                                                <i class="fas fa-star"></i> اصلی
+                                                            </button>
+                                                        </form>
+
+                                                        <!-- Delete Button -->
+                                                        <form action="{{ route('admin.products.images.destroy', ['product' => $product, 'image' => $image->id]) }}"
+                                                              method="POST" class="d-inline"
+                                                              onsubmit="return confirm('آیا از حذف این تصویر مطمئن هستید؟')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-danger" title="حذف تصویر">
+                                                                <i class="fas fa-trash"></i> حذف
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div class="col-12 text-center">
+                                                <p class="text-muted">تصویری وجود ندارد</p>
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -25,8 +25,18 @@ class UploadProductNewImagesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'images' => 'required|array',
-            'images.*' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'images' => 'required|array|min:1|max:10',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'images.required' => 'لطفا حداقل یک تصویر انتخاب کنید',
+            'images.*.image' => 'فایل باید تصویر باشد',
+            'images.*.mimes' => 'فرمت تصویر باید jpeg, png, jpg, gif یا webp باشد',
+            'images.*.max' => 'حجم هر تصویر نباید بیشتر از 2 مگابایت باشد',
         ];
     }
 }

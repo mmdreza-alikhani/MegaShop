@@ -13,7 +13,7 @@ class FileUploadService
      */
     public function upload(UploadedFile $file, string $path, ?string $disk = 'public'): string
     {
-        $fileName = $this->generateFileName($file->getClientOriginalName());
+        $fileName = generateFileName($file->getClientOriginalName());
         $file->storeAs($path, $fileName, $disk);
 
         return $fileName;
@@ -101,15 +101,6 @@ class FileUploadService
 
         // آپلود فایل جدید
         return $this->upload($newFile, $path, $disk);
-    }
-
-    /**
-     * تولید نام فایل یکتا
-     */
-    private function generateFileName(string $originalName): string
-    {
-        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
-        return time() . '_' . Str::random(10) . '.' . $extension;
     }
 
     /**
