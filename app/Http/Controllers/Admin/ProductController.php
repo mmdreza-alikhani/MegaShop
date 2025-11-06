@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
+use App\Http\Requests\Admin\Product\UpdateProductRequest;
+use App\Http\Requests\Admin\Product\UploadProductNewImagesRequest;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Platform;
@@ -11,6 +13,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ShortLink;
 use App\Models\Tag;
+use App\Services\AttributeService;
 use App\Services\FileUploadService;
 use Exception;
 use Illuminate\Contracts\View\Factory;
@@ -20,11 +23,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
     protected mixed $primaryUploadPath, $othersUploadPath;
-    public function __construct(private readonly FileUploadService $fileUpload)
+    public function __construct(private readonly FileUploadService $fileUpload, private readonly AttributeService $attributeService)
     {
         $this->primaryUploadPath = config('upload.product_primary_path');
         $this->othersUploadPath = config('upload.product_others_path');
@@ -96,23 +100,33 @@ class ProductController extends Controller
                 'target_id' => $product->id,
             ]);
 
-            foreach ($request->faqs as $faqData) {
-                $product->faqs()->create([
-                    'question' => $faqData['question'],
-                    'answer' => $faqData['answer'],
-                ]);
+            if ($request->has('faqs')) {
+                foreach ($request->faqs as $faqData) {
+                    $product->faqs()->create([
+                        'question' => $faqData['question'],
+                        'answer' => $faqData['answer'],
+                    ]);
+                }
             }
 
             $product->tags()->attach($request->input('tag_ids'));
 
-            // Store Filters
-            $ProductAttributeController = new ProductAttributeController;
-            $ProductAttributeController->store($request->input('filters_value'), $product->id);
+            // Handle filters
+            if ($request->has('filters_value')) {
+                $this->attributeService->syncFilters(
+                    $product->id,
+                    $request->filters_value
+                );
+            }
 
-            // Store Variation
-            $attributeId = Category::findOrFail($request->input('category_id'))->variation()->pluck('id')->first();
-            $ProductVariationController = new ProductVariationController;
-            $ProductVariationController->store($request->input('variation_values'), $attributeId, $product->id);
+            // Handle variations
+            if ($request->has('variation_values')) {
+                $this->attributeService->syncVariations(
+                    $product->id,
+                    $product->category->variation->first()->id,
+                    $request->variation_values
+                );
+            }
 
             DB::commit();
         } catch (Exception $e) {
@@ -182,6 +196,7 @@ class ProductController extends Controller
             ->get()
             ->map(function ($attr) {
                 return [
+                    'id'    => $attr->id,
                     'value' => $attr->value,
                     'title' => $attr->attribute->title,
                 ];
@@ -191,6 +206,7 @@ class ProductController extends Controller
             ->get()
             ->map(function ($attr) {
                 return [
+                    'id' => $attr->id,
                     'title' => $attr->attribute->title,
                     'value' => $attr->value,
                     'price' => $attr->price,
@@ -208,59 +224,133 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product): RedirectResponse
+    public function update(UpdateProductRequest $request, Product $product): RedirectResponse
     {
-        //        dd($request->all());
-        $request->validate([
-            'name' => 'required',
-            'brand_id' => 'required',
-            'platform_id' => 'nullable',
-            'is_active' => 'required',
-            'tag_ids' => 'required',
-            'description' => 'required',
-            'delivery_amount' => 'required|integer',
-            'delivery_amount_per_product' => 'nullable|integer',
-            'attribute_values' => 'required',
-            'attribute_values.*' => 'required',
-            'variation_values' => 'required',
-            'variation_values.*.price' => 'required|integer',
-            'variation_values.*.quantity' => 'required|integer',
-            'variation_values.*.sku' => 'required|integer',
-            'variation_values.*.sale_price' => 'nullable|integer',
-            'variation_values.*.date_on_sale_from' => 'nullable|date',
-            'variation_values.*.date_on_sale_to' => 'nullable|date',
-        ]);
         try {
             DB::beginTransaction();
 
             $product->update([
-                'name' => $request->name,
-                'brand_id' => $request->brand_id,
-                'platform_id' => $request->platform_id,
-                'is_active' => $request->is_active,
-                'description' => $request->description,
-                'delivery_amount' => $request->delivery_amount,
-                'delivery_amount_per_product' => $request->delivery_amount_per_product,
+                ...$request->validated(),
             ]);
+
+            $existingFaqIds = $product->faqs()->pluck('id')->toArray();
+            $requestFaqIds = array_keys($request->faqs);
+            $removedFaqs = array_diff($existingFaqIds, $requestFaqIds);
+
+            foreach ($request->faqs as $key => $faqData) {
+                $faq = $product->faqs()->find($key);
+                $faq->update([
+                    'question' => $faqData['question'],
+                    'answer' => $faqData['answer'],
+                ]);
+            }
+            if (!empty($removedFaqs)) {
+                $product->faqs()->whereIn('id', $removedFaqs)->delete();
+            }
+
+            if ($request->has('newFaqs')) {
+                foreach ($request->newFaqs as $faqData) {
+                    $product->faqs()->create([
+                        'question' => $faqData['question'],
+                        'answer' => $faqData['answer'],
+                    ]);
+                }
+            }
 
             $product->tags()->sync($request->tag_ids);
 
-            $ProductAttributeController = new ProductAttributeController;
-            $ProductAttributeController->update($request->attribute_values);
-
-            $ProductVariationController = new ProductVariationController;
-            $ProductVariationController->update($request->variation_values);
+            $this->attributeService->updateFilters($request->filters_value, $product, $product->wasChanged('category_id'));
+            $this->attributeService->handleVariationsUpdate($product->id, $product->category->variation->first()->id, $request->variation_values, $request->new_variation_values);
 
             DB::commit();
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             DB::rollBack();
-            flash()->error('مشکلی پیش آمد!', $ex->getMessage());
-
+            flash()->error(config('flasher.product.update_failed'));
+            report($e);
             return redirect()->back();
         }
 
-        flash()->success('با موفقیت محصول ویرایش شد.');
+        flash()->success(config('flasher.product.updated'));
+        return redirect()->route('admin.products.edit', $product->slug);
+    }
 
+    public function addImages(UploadProductNewImagesRequest $request, Product $product): RedirectResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $images = $this->fileUpload->uploadToGallery($request->images, $this->othersUploadPath);
+
+            foreach ($images as $imageName) {
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image' => $imageName,
+                ]);
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            flash()->error(config('flasher.product.added_images'));
+            report($e);
+            return redirect()->back();
+        }
+
+        flash()->success(config('flasher.product.add_images_failed'));
+        return redirect()->back();
+    }
+
+    public function removeImages(UploadProductNewImagesRequest $request, Product $product): RedirectResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $this->fileUpload->deleteMultiple($request->images, $this->othersUploadPath);
+
+            foreach ($request->images as $imageName) {
+                ProductImage::where('product_id', $product->id)->where('image', $imageName)->delete();
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            flash()->error(config('flasher.product.removed_images'));
+            report($e);
+            return redirect()->back();
+        }
+
+        flash()->success(config('flasher.product.remove_images_failed'));
+        return redirect()->back();
+    }
+
+    public function setToPrimary(Request $request, Product $product): RedirectResponse
+    {
+        $request->validate([
+            'image_id' => 'required|exists:product_images,id',
+        ]);
+        try {
+            DB::beginTransaction();
+
+            $image = ProductImage::find($request->image_id);
+
+            ProductImage::create([
+                'product_id' => $product->id,
+                'image' => $product->primary_image,
+            ]);
+
+            $product->update([
+                'primary_image' => $image->image,
+            ]);
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            flash()->error(config('flasher.product.removed_images'));
+            report($e);
+            return redirect()->back();
+        }
+
+        flash()->success(config('flasher.product.remove_images_failed'));
         return redirect()->back();
     }
 

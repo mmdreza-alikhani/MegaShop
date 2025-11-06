@@ -57,13 +57,13 @@ Route::prefix('management')
             Route::resource('products', Admin\ProductController::class);
 
             Route::prefix('products/{product}')->name('products.')->group(function () {
-                Route::get('images/edit', [Admin\ProductImageController::class, 'edit'])->name('images.edit');
-                Route::post('images', [Admin\ProductImageController::class, 'add'])->name('images.add');
-                Route::delete('images/{image}', [Admin\ProductImageController::class, 'destroy'])->name('images.destroy');
-                Route::patch('images/{image}/primary', [Admin\ProductImageController::class, 'setPrimary'])->name('images.primary');
+                Route::get('images/edit', [Admin\ProductController::class, 'edit'])->name('images.edit');
+                Route::post('images', [Admin\ProductController::class, 'add'])->name('images.add');
+                Route::delete('images/{image}', [Admin\ProductController::class, 'destroy'])->name('images.destroy');
+                Route::patch('images/{image}/primary', [Admin\ProductController::class, 'setPrimary'])->name('images.primary');
 
-                Route::get('category/edit', [Admin\ProductController::class, 'editCategory'])->name('category.edit');
-                Route::put('category', [Admin\ProductController::class, 'updateCategory'])->name('category.update');
+//                Route::get('category/edit', [Admin\ProductController::class, 'editCategory'])->name('category.edit');
+//                Route::put('category', [Admin\ProductController::class, 'updateCategory'])->name('category.update');
             });
         });
 

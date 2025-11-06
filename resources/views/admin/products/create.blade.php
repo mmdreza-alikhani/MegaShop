@@ -167,7 +167,7 @@
                                             <hr>
                                             افزودن قیمت و موجودی برای متغیر
                                             <span id="variationTitle" class="font-weight-bold"></span>:
-                                            <div id="czContainer">
+                                            <div id="variationContainer">
                                                 <div id="first">
                                                     <div class="recordset">
                                                         <div class="row">
@@ -268,13 +268,13 @@
             selects.forEach(sel => $(sel).selectpicker({ title: $(sel).attr('title') || 'انتخاب گزینه' }));
 
             $('#attributeContainer').hide();
-            $('#czContainer').czMore();
+            $('#variationContainer').czMore();
             $('#faqsContainer').czMore();
 
             // 🔹 Dynamic filters loading on category change
             $('#categorySelect').on('changed.bs.select', function () {
                 const categoryId = $(this).val();
-                const url = `{{ url('/management/get-category-attribute/${categoryId}') }}`;
+                const url = `{{ url('/management/categories/${categoryId}/attributes') }}`;
 
                 $.get(url, function (response, status) {
                     if (status !== 'success') return alert('اتصال برقرار نشد!');
@@ -304,7 +304,7 @@
                 $('.variation-value, .variation-price, .variation-quantity, .variation-sku').removeAttr('name');
                 $('.question, .answer').removeAttr('name');
 
-                $('#czContainer .recordset').each(function (index) {
+                $('#variationContainer .recordset').each(function (index) {
                     $(this).find('.variation-value').attr('name', `variation_values[${index}][value]`);
                     $(this).find('.variation-price').attr('name', `variation_values[${index}][price]`);
                     $(this).find('.variation-quantity').attr('name', `variation_values[${index}][quantity]`);

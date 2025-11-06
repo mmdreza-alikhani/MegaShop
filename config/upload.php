@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'product_primary_path' => env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH', 'products/images/primary_images'),
-    'product_others_path' => env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH', 'products/images/other_images'),
+    'product_primary_path' => env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH', 'products/images'),
+    'product_others_path' => env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH', 'products/images'),
 
     'banner_path' => env('BANNER_IMAGE_UPLOAD_PATH', 'banners/images'),
     'platform_path' => env('PLATFORM_IMAGE_UPLOAD_PATH', 'platforms/images'),

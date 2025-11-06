@@ -36,7 +36,7 @@ class StoreProductRequest extends FormRequest
             'delivery_amount_per_product' => 'nullable|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
             'filters_value' => 'required|array',
-            'filters_value.*' => 'nullable|string|max:255',
+            'filters_value.*' => 'required|string|max:255',
             'variation_values' => 'required|array|min:1',
             'variation_values.*.value' => 'required|string|max:255',
             'variation_values.*.price' => 'required|numeric|min:0',

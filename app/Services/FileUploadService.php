@@ -51,6 +51,16 @@ class FileUploadService
         ];
     }
 
+    public function uploadToGallery(
+        array $images,
+        string $galleryPath,
+        ?string $disk = 'public'
+    ): array {
+        return [
+            $this->uploadMultiple($images, $galleryPath, $disk),
+        ];
+    }
+
     /**
      * حذف یک فایل
      */

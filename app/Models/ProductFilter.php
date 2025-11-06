@@ -21,6 +21,7 @@ class ProductFilter extends Model
         'product_id',
         'value',
         'is_active',
+        'updated_at',
     ];
     protected $casts = [
         'attribute_id' => 'integer',

@@ -161,7 +161,8 @@
                 });
             @endif
 
-            jalaliDatepicker.startWatch({time: true});
+            jalaliDatepicker.startWatch({minDate: 'today',
+                time: true});
 
             const $type = $('#type'),
                 $amount = $('#amount'),

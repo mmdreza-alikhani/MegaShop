@@ -39,6 +39,9 @@ class Product extends Model implements Cartable
         'status',
         'is_active',
         'delivery_amount',
+        'delivery_amount_per_product',
+        'question',
+        'answer',
     ];
     protected $casts = [
         'brand_id' => 'integer',
