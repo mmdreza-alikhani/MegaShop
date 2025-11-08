@@ -9,6 +9,7 @@ use Binafy\LaravelCart\Models\Cart;
 use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -91,14 +92,12 @@ function removeFromCartById(int $itemable_id, $user_id): void
     try {
         $cart = Cart::where('user_id', $user_id)->firstOrFail();
 
-        $deleted = $cart->items()
+        $cart->items()
             ->where('itemable_id', $itemable_id)
             ->where('itemable_type', 'App\Models\Product')
+            ->first()
             ->delete();
 
-        if ($deleted === 0) {
-            throw new Exception('محصول مورد نظر در سبد خرید یافت نشد یا قبلاً حذف شده است.');
-        }
     } catch (Exception $e) {
         logger()->error('خطا در حذف آیتم از سبد خرید: ' . $e->getMessage());
         throw $e;
@@ -140,7 +139,7 @@ function isCartEmpty(): bool
     }
 }
 
-function cartItems()
+function cartItems(): Collection
 {
     $cart = Cart::with('items.itemable')->firstOrCreate(['user_id' => auth()->id()]);
 
@@ -150,23 +149,44 @@ function cartItems()
         return $options['variation_id'] ?? null;
     })->filter()->unique();
 
-    // Load all variations in one query
-    $variations = ProductVariation::whereIn('id', $variationIds)->get()->keyBy('id');
+    // Load all variations in one query with their products
+    $variations = ProductVariation::with('product')
+        ->whereIn('id', $variationIds)
+        ->get()
+        ->keyBy('id');
 
-    // Map items and attach variation + options
-    return $cart->items->map(function ($item) use ($variations) {
+    // Map items and attach variation + options with validation
+    return $cart->items->map(function ($item) use ($cart, $variations) {
         $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
 
+        $variation = $variations[$options['variation_id']] ?? null;
+
+        if ($variation) {
+            $availableQty = $variation->quantity;
+
+            // Validate quantity BEFORE attaching extra properties
+            if ($item->quantity > $availableQty || $availableQty >= 0) {
+                $item->update(['quantity' => $availableQty]);
+            }
+
+            if ($availableQty <= 0) {
+                removeFromCartById($item->id, auth()->id());
+                return null; // Mark for filtering
+            }
+        } else {
+            removeFromCartById($item->id, auth()->id());
+            return null; // Mark for filtering
+        }
+
+        // NOW attach display properties AFTER all database operations
         foreach ($options as $key => $value) {
             $item->$key = $value;
         }
-
-        $item->variation = $variations[$options['variation_id']] ?? null;
+        $item->variation = $variation;
 
         return $item;
-    });
+    })->filter(); // Remove null items (deleted ones)
 }
-
 
 function isItemInCart($itemable_id): bool
 {
@@ -240,13 +260,18 @@ function cartPayingAmount(): int
     $deliveryAmount = cartDeliveryAmount();
     $couponAmount = session()->has('coupon') ? session()->get('coupon.amount') : null;
     return $totalAmount + $deliveryAmount - $couponAmount;
-//    if (session()->has('coupon')) {
-//        if (session()->get('coupon.amount') > (cartTotalAmount() + cartTotalDeliveryAmount())) {
-//            return 0;
-//        } else {
-//            return (\Cart::getTotal() + cartTotalDeliveryAmount()) - session()->get('coupon.amount');
-//        }
-//    } else {
-//        return \Cart::getTotal() + cartTotalDeliveryAmount();
-//    }
+}
+
+/**
+ * @throws ContainerExceptionInterface
+ * @throws NotFoundExceptionInterface
+ */
+function cartAmounts(): array
+{
+    return [
+        'totalAmount' => cartTotalAmount(),
+        'deliveryAmount' => cartDeliveryAmount(),
+        'couponAmount' => session()->has('coupon') ? session()->get('coupon.amount') : null,
+        'payingAmount' => cartPayingAmount()
+    ];
 }

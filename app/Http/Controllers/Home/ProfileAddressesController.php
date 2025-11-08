@@ -25,7 +25,6 @@ class ProfileAddressesController extends Controller
     {
         $user = auth()->user();
 
-        // ✅ Cache برای provinces و cities (این داده‌ها کم تغییر می‌کنن)
         $provinces = Cache::remember('provinces_list', now()->addDay(), function () {
             return Province::pluck('name', 'id');
         });
@@ -36,7 +35,6 @@ class ProfileAddressesController extends Controller
                 ->map(fn($cities) => $cities->pluck('name', 'id'));
         });
 
-        // ✅ Eager Loading برای جلوگیری از N+1 Query
         $user->load(['addresses.city', 'addresses.province']);
 
         return view('home.profile.addresses.index', compact('user', 'provinces', 'cities'));
@@ -47,14 +45,11 @@ class ProfileAddressesController extends Controller
      */
     public function store(StoreRequest $request): RedirectResponse
     {
-        // ✅ Authorization check
-        // اگه می‌خوای محدودیت تعداد آدرس داشته باشی:
         if (auth()->user()->addresses()->count() >= 10) {
             flash()->error('حداکثر تعداد آدرس‌های مجاز 10 عدد است');
             return redirect()->back();
         }
 
-        // ✅ فقط validated data رو بگیر
         UserAddress::create([
             'user_id' => auth()->id(),
             ...$request->validated()
@@ -84,10 +79,8 @@ class ProfileAddressesController extends Controller
      */
     public function destroy(UserAddress $address): RedirectResponse
     {
-        // ✅ Authorization
         $this->authorize('delete', $address);
 
-        // ✅ Soft delete در صورت نیاز
         $address->delete();
 
         flash()->success('آدرس مورد نظر با موفقیت حذف شد');

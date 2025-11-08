@@ -5,66 +5,89 @@ namespace App\Http\Controllers\Home;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\{Hash, DB};
 use Laravel\Socialite\Facades\Socialite;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Log;
+use Random\RandomException;
+use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 
 class AuthController extends Controller
 {
-//    public function login(): View|Application|Factory
-//    {
-//        return view('auth.login');
-//    }
-//
-//    public function register(): View|Application|Factory
-//    {
-//        return view('auth.register');
-//    }
-
-    public function redirectToProvider($provider): RedirectResponse
+    public function redirectToProvider(string $provider): SymfonyRedirectResponse
     {
         return Socialite::driver($provider)->redirect();
+    }
+
+    public function handleProviderCallback(Request $request, string $provider): RedirectResponse
+    {
+        try {
+            $socialiteUser = Socialite::driver($provider)->stateless()->user();
+
+            $user = DB::transaction(function () use ($socialiteUser, $provider) {
+                $user = User::where('email', $socialiteUser->getEmail())->first();
+                $isNewUser = !$user;
+
+                if ($isNewUser) {
+                    $user = $this->createUserFromSocialite($socialiteUser, $provider);
+                }
+
+                return ['user' => $user, 'isNewUser' => $isNewUser];
+            });
+
+            auth()->login($user['user']);
+            $request->session()->regenerate();
+
+            $message = $user['isNewUser']
+                ? "! {$user['user']->username} خوش اومدی"
+                : "! {$user['user']->username} خوش برگشتی";
+
+            flash()->success($message);
+
+            return redirect()->intended();
+
+        } catch (Exception $e) {
+            Log::error('Socialite authentication failed', [
+                'provider' => $provider,
+                'error' => $e->getMessage()
+            ]);
+
+            flash()->error('ورود با مشکل مواجه شد. لطفاً دوباره تلاش کنید.');
+            return redirect()->route('login');
+        }
     }
 
     /**
      * @throws RandomException
      */
-    public function handleProviderCallback(Request $request, $provider): \Illuminate\Http\RedirectResponse
+    private function createUserFromSocialite($socialiteUser, string $provider): User
     {
-        $socialiteUser = Socialite::driver($provider)->stateless()->user();
+        $baseUsername = $socialiteUser->getName() ?? $socialiteUser->getNickname() ?? 'Guest';
+        $username = $this->generateUniqueUsername($baseUsername);
 
-        $user = User::where('email', $socialiteUser->getEmail())->first();
+        return User::create([
+            'username' => $username,
+            'first_name' => $socialiteUser->user['given_name'] ?? null,
+            'last_name' => $socialiteUser->user['family_name'] ?? null,
+            'email' => $socialiteUser->getEmail(),
+            'avatar' => $socialiteUser->getAvatar(),
+            'password' => Hash::make($socialiteUser->getId()),
+            'provider_name' => $provider,
+            'email_verified_at' => Carbon::now(),
+        ]);
+    }
 
-        $string = random_int(1000, 9999999);
-
-        $duplicateUsername = User::where('username', $socialiteUser->getName())->first();
-
-        if (! $user) {
-            $user = User::create([
-                'username' => $duplicateUsername ? 'Guest-'.$string : $socialiteUser->getName(),
-                'first_name' => $socialiteUser->user['given_name'],
-                'last_name' => $socialiteUser->user['family_name'],
-                'email' => $socialiteUser->getEmail(),
-                'avatar' => $socialiteUser->getAvatar(),
-                'password' => Hash::make($socialiteUser->getId()),
-                'provider_name' => $provider,
-                'email_verified_at' => Carbon::now(),
-            ]);
-
-            $request->session()->flash('welcome', '! '.$user->username.' خوش اومدی');
+    /**
+     * @throws RandomException
+     */
+    private function generateUniqueUsername(string $baseUsername): string
+    {
+        if (!User::where('username', $baseUsername)->exists()) {
+            return $baseUsername;
         }
 
-        $request->session()->flash('welcome', '! '.$user->username.' خوش برگشتی');
-
-        auth()->loginUsingId($user->id);
-
-        flash()->success('ورود با موفقیت انجام شد!');
-
-        return redirect()->back();
-
+        return $baseUsername . '-' . random_int(1000, 9999);
     }
 }

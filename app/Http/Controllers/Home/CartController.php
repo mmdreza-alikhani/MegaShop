@@ -54,7 +54,7 @@ class CartController extends Controller
         return redirect()->back();
     }
 
-    public function clearCart(): RedirectResponse
+    public function clear(): RedirectResponse
     {
         try {
             clearCart(auth()->id());
@@ -68,7 +68,7 @@ class CartController extends Controller
 
     public function index(): View|Application|Factory
     {
-        return view('home.cart.cart');
+        return view('home.cart.index');
     }
 
     public function update(UpdateRequest $request): RedirectResponse
@@ -87,9 +87,9 @@ class CartController extends Controller
 
                 if ($quantity <= $variation->quantity) {
                     $item?->update(['quantity' => $quantity]);
-                    $successMessages[] = "محصول {$product->title} با مدل {$variation->value} با موفقیت بروزرسانی شد.";
+                    $successMessages[] = "محصول $product->title با مدل $variation->value با موفقیت بروزرسانی شد.";
                 } else {
-                    $warningMessages[] = "تعداد محصول {$product->title} با مدل {$variation->value} بیش از موجودی است.";
+                    $warningMessages[] = "تعداد محصول $product->title با مدل $variation->value بیش از موجودی است.";
                 }
 
             }
@@ -119,7 +119,7 @@ class CartController extends Controller
             return redirect()->back();
         }
 
-        $addresses = UserAddress::User($user->id)->get();
+        $addresses = UserAddress::userById($user->id)->get();
         return view('home.cart.checkout', compact('addresses'));
     }
 

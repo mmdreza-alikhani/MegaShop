@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends Controller
 {
-    public function show_category(Category $category): View|Application|Factory
+    public function index(Category $category): View|Application|Factory
     {
         Cache::clear();
         // ✅ گرفتن ID تمام دسته‌بندی‌های فرزند

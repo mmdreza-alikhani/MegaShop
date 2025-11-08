@@ -5,79 +5,69 @@
     <div class="nk-contacts-top">
         <div class="container">
             <div class="text-center">
-                @auth()
-                    @if(session()->has('welcome'))
-                        <h4>
-                            <span>
-                                {{ session('welcome') }}
-                            </span>
-                        </h4>
-                    @endif
-                @endauth
+                @if(session()->has('welcome') && auth()->check())
+                    <h4>
+                        <span>
+                            {{ session('welcome') }}
+                        </span>
+                    </h4>
+                @endif
                 <ul class="nk-contacts-icons">
-
                     <li>
                         <a href="#" data-toggle="modal" data-target="#modalSearch" class="search-btn">
                             <span class="fa fa-lg fa-search"></span>
                         </a>
                     </li>
-
                     @auth()
                         <li>
                             <a href="{{ route('home.profile.logout') }}" class="search-btn">
                                 <span class="fa fa-lg fa-sign-out"></span>
                             </a>
                         </li>
-                    @endauth
-
-                    {{--                        <li>--}}
-                    {{--                            <span class="nk-cart-toggle">--}}
-                    {{--                                <span class="fa fa-lg fa-shopping-cart"></span>--}}
-                    {{--                                @if(!Cart::isEmpty())--}}
-                    {{--                                    @if(Cart::getContent()->count() > 9)--}}
-                    {{--                                        <span class="nk-badge">+9</span>--}}
-                    {{--                                    @endif--}}
-                    {{--                                        <span class="nk-badge">{{Cart::getContent()->count()}}</span>--}}
-                    {{--                                @endif--}}
-                    {{--                            </span>--}}
-                    {{--                            <div class="nk-cart-dropdown">--}}
-
-                    {{--                                @if(Cart::isEmpty())--}}
-                    {{--                                   <div class="alert text-center">--}}
-                    {{--                                       سبد خرید شما خالی است!--}}
-                    {{--                                   </div>--}}
-                    {{--                                @else--}}
-                    {{--                                    @foreach(Cart::getContent() as $product)--}}
-                    {{--                                        <div class="nk-widget-post">--}}
-                    {{--                                            <a href="{{ route('home.products.show', ['product' => $product->associatedModel->slug]) }}" class="nk-post-image">--}}
-                    {{--                                                <img src="{{ env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH') . '/' . $product->associatedModel->primary_image }}" alt="">--}}
-                    {{--                                            </a>--}}
-                    {{--                                            <h3 class="nk-post-title text-right" style="direction: rtl">--}}
-                    {{--                                                <a href="{{ route('home.cart.remove', ['rowId' => $product->id]) }}" class="nk-cart-remove-item"><span class="ion-android-close"></span></a>--}}
-                    {{--                                                <a href="{{ route('home.products.show', ['product' => $product->associatedModel->slug]) }}">{{ $product->name }}</a>--}}
-                    {{--                                                <br>--}}
-                    {{--                                                <small>{{ \App\Models\Attribute::findOrFail($product->attributes->attribute_id)->name }}: {{ $product->attributes->value }}</small>--}}
-                    {{--                                                @if($product->attributes->is_sale)--}}
-                    {{--                                                    <br>--}}
-                    {{--                                                    <small style="color: #dd163b">درصد تخفیف: {{ round((($product->attributes->price - $product->attributes->sale_price) / $product->attributes->price) * 100) . '%' }}</small>--}}
-                    {{--                                                @endif--}}
-                    {{--                                            </h3>--}}
-                    {{--                                            <div class="nk-gap-1"></div>--}}
-                    {{--                                            <div class="nk-product-price"> {{ $product->quantity == 1 ? '' : $product->quantity . ' ' . '*' }} {{ number_format($product->price) }}</div>--}}
-                    {{--                                        </div>--}}
-                    {{--                                    @endforeach--}}
-                    {{--                                    <div class="nk-gap-2"></div>--}}
-                    {{--                                @endif--}}
-
-                    {{--                                @if(!Cart::isEmpty())--}}
-                    {{--                                    <div class="text-center">--}}
-                    {{--                                        <a href="{{ route('home.cart.index') }}" class="nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-hover-color-white">ادامه خرید</a>--}}
-                    {{--                                    </div>--}}
-                    {{--                                @endif--}}
-                    {{--                            </div>--}}
-                    {{--                        </li>--}}
-
-                    @auth()
+                        <li>
+                        <span class="nk-cart-toggle">
+                            <span class="fa fa-lg fa-shopping-cart"></span>
+                            @if(!isCartEmpty())
+                                @if(cartItems()->count() > 9)
+                                    <span class="nk-badge">+9</span>
+                                @endif
+                                <span class="nk-badge">{{ cartItems()->count() }}</span>
+                            @endif
+                        </span>
+                            <div class="nk-cart-dropdown">
+                                @if(isCartEmpty())
+                                    <div class="alert text-center">
+                                        سبد خرید شما خالی است!
+                                    </div>
+                                @else
+                                    @foreach(cartItems() as $product)
+                                        <div class="nk-widget-post">
+                                            <a href="{{ route('home.products.show', ['product' => $product->itemable->slug]) }}" class="nk-post-image">
+                                                <img src="{{ Storage::url(config('upload.product_primary_path') . '/') . '/' . $product->itemable->primary_image }}" alt="{{ $product->itemable->title }}">
+                                            </a>
+                                            <h3 class="nk-post-title text-right" style="direction: rtl">
+                                                <a href="{{ route('home.cart.remove', ['itemId' => $product->id]) }}" class="nk-cart-remove-item"><span class="ion-android-close"></span></a>
+                                                <a href="{{ route('home.products.show', ['product' => $product->itemable->slug]) }}">{{ $product->itemable->title }}</a>
+                                                <br>
+                                                <small>{{ $product->variation->attribute->title }}: {{ $product->variation->value }}</small>
+                                                @if($product->variation->is_discounted)
+                                                    <br>
+                                                    <small style="color: #dd163b">درصد تخفیف: {{ round((($product->variation->price - $product->variation->sale_price) / $product->variation->price) * 100) . '%' }}</small>
+                                                @endif
+                                            </h3>
+                                            <div class="nk-gap-1"></div>
+                                            <div class="nk-product-price"> {{ $product->quantity == 1 ? '' : $product->quantity . ' ' . '*' }} {{ number_format($product->quantity * ($product->variation->is_discounted ? $product->variation->sale_price : $product->variation->price)) }}</div>تومان
+                                        </div>
+                                    @endforeach
+                                    <div class="nk-gap-2"></div>
+                                @endif
+                                @if(!isCartEmpty())
+                                    <div class="text-center">
+                                        <a href="{{ route('home.cart.index') }}" class="nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-hover-color-white">ادامه خرید</a>
+                                    </div>
+                                @endif
+                            </div>
+                        </li>
                         <li>
                             <a href="{{ route('home.profile.info') }}">
                                 <span class="fa fa-lg fa-dashboard"></span>
@@ -90,7 +80,6 @@
                             </a>
                         </li>
                     @endauth
-
                 </ul>
             </div>
         </div>

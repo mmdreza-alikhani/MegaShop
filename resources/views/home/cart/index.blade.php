@@ -84,7 +84,7 @@
                                         </strong>
                                     </td>
                                     <td class="nk-product-cart-remove">
-                                        <a href="{{ route('home.cart.remove', ['itemable_id' => $product->itemable->id]) }}">
+                                        <a href="{{ route('home.cart.remove', ['itemId' => $product->itemable->id]) }}">
                                             <span class="ion-android-close"></span>
                                         </a>
                                     </td>
@@ -159,7 +159,7 @@
                     </div>
                     <div class="col-md-4">
                         <h3 class="nk-title h4 text-right">کد تخفیف</h3>
-                        <form action="{{ route('home.cart.coupons.check') }}" method="POST" class="nk-form">
+                        <form action="{{ route('home.cart.coupon.check') }}" method="POST" class="nk-form">
                             @csrf
                             <div class="nk-gap-1"></div>
                             <div class="row vertical-gap text-right" style="direction: rtl">

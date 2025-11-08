@@ -34,7 +34,7 @@
 
     <div class="nk-store nk-store-checkout row">
 
-        <form method="POST" class="w-100 row" action="{{ route('home.cart.payment') }}">
+        <form method="POST" class="w-100 row" action="{{ route('home.payment.process') }}">
         @csrf
             <div class="col-lg-7 col-12 text-right" style="direction: rtl">
                 <!-- START: Order Products -->
@@ -155,7 +155,7 @@
                         </div>
 
                         <div class="col-12 col-lg-4">
-                            <a id="addNewAddress" class="btn nk-btn-color-main-1 text-light" href="{{ route('home.profile.addresses.create') }}">
+                            <a id="addNewAddress" class="btn nk-btn-color-main-1 text-light" href="{{ route('home.profile.addresses.index') }}">
                                 افزودن آدرس جدید
                             </a>
                         </div>
@@ -171,7 +171,7 @@
 
                         <div class="col-lg-4">
                             <label for="addNewAddress">آدرس جدید؟ </label>
-                            <a id="addNewAddress" class="btn nk-btn-color-main-1 text-light" href="{{ route('home.profile.addresses.create') }}">
+                            <a id="addNewAddress" class="btn nk-btn-color-main-1 text-light" href="{{ route('home.profile.addresses.index') }}">
                                 افزودن آدرس جدید
                             </a>
                         </div>

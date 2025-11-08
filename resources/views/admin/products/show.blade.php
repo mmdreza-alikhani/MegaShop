@@ -105,7 +105,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group col-12 col-lg-12">
+                        <div class="form-group col-lg-12">
                             <label for="description">توضیحات:*</label>
                             <textarea id="description" name="description" class="form-control" disabled>{{ $product->description }}</textarea>
                         </div>
@@ -236,4 +236,12 @@
             </div>
         </div>
     </main>
+@endsection
+@section('scripts')
+    <script>
+        CKEDITOR.replace('description', {
+            language: 'en',
+            toolbar: []
+        });
+    </script>
 @endsection

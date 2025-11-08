@@ -147,7 +147,7 @@ Route::name('home.')->group(function () {
             Route::get('wishlist', [Home\ProfileController::class, 'wishlist'])->name('wishlist');
             Route::get('comments', [Home\ProfileController::class, 'comments'])->name('comments');
 
-            Route::resource('addresses', Home\ProfileAddressesController::class)->except(['show']);
+            Route::resource('addresses', Home\ProfileAddressesController::class)->except(['show', 'create']);
 
             Route::get('reset-password', [Home\ProfileController::class, 'resetPassword'])->name('resetPassword');
             Route::post('reset-password', [Home\ProfileController::class, 'resetPasswordCheck'])
@@ -180,8 +180,7 @@ Route::name('home.')->group(function () {
         });
     });
 
-    Route::get('categories/{category:slug}', [Home\CategoryController::class, 'show'])->name('categories.show');
-    Route::get('platforms/{platform:slug}', [Home\PlatformController::class, 'show'])->name('platforms.show');
+    Route::get('categories/{category:slug}', [Home\CategoryController::class, 'index'])->name('categories.show');
 
     // ============================================
     // Cart & Checkout
@@ -222,8 +221,3 @@ Route::name('home.')->group(function () {
         });
     });
 });
-
-// ✅ AJAX Endpoints
-Route::get('provinces/{province}/cities', [Home\ProfileAddressesController::class, 'getCitiesByProvince'])
-    ->name('provinces.cities')
-    ->middleware('throttle:60,1');
