@@ -20,7 +20,8 @@
         "php-flasher/flasher-toastr-laravel": "^2.1",
         "snapappointments/bootstrap-select": "^1.13",
         "spatie/laravel-permission": "^6.3",
-        "timehunter/laravel-google-recaptcha-v3": "~2.5"
+        "timehunter/laravel-google-recaptcha-v3": "~2.5",
+        "ext-curl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.15",

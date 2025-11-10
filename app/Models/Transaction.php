@@ -24,6 +24,7 @@ class Transaction extends Model
         'description',
         'gateway_name',
         'status',
+        'getaway_name',
     ];
     protected $casts = [
         'user_id' => 'integer',
