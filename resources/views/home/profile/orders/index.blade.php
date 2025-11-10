@@ -1,9 +1,5 @@
 @extends('home.profile.master')
 
-@php
-    $active = 'orders';
-@endphp
-
 @section('section')
     <div class="info-box m-2 h-100 w-100 row rounded" style="background-color: rgba(35,41,48,.6)">
         <table class="nk-table text-right container" style="direction: rtl">
@@ -24,7 +20,7 @@
                     <tr>
                         <td class="text-center">{{ $order->id }}</td>
                         <td class="text-center">{{ verta($order->created_at)->format('%d %B, %Y') }}</td>
-                        <td class="text-center">{{ number_format($order->paying_amount) }}</td>
+                        <td class="text-center">{{ number_format($order->paying_amount) }} <i id="tooman_icon" class="icony icony-toman"></i></td>
                         <td class="text-center">
                             <span class="badge {{ $order->getRawOriginal('payment_status') ?  'badge-success' : 'badge-danger' }}">
                                 {{ $order->payment_status }}
@@ -32,7 +28,7 @@
                         </td>
                         <td class="text-center row">
                             <div class="col-12">
-                                <a class="btn nk-btn-color-main-1 text-light" href="{{ route('home.profile.orders.showOrder', ['order' => $order->id]) }}">
+                                <a class="btn nk-btn-color-main-1 text-light" href="{{ route('home.profile.orders.show', ['order' => $order->id]) }}">
                                     <i class="fa fa-info"></i>
                                 </a>
                             </div>

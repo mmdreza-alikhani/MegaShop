@@ -15,15 +15,6 @@
         </aside>
         <div class="nk-gap"></div>
         <div class="mx-4 row" style="direction: rtl">
-            <div class="col-12 col-lg-12 text-right" style="direction: rtl">
-                <label>محصولات سفارش:</label>
-                <ul class="text-main-1 pl-20 text-right row" style="direction: rtl">
-                    @foreach($order->items as $item)
-                        <li class="col-12 col-lg-4"><a href="{{ route('home.products.show', ['product' => $item->product->slug]) }}">{{ $item->product->name }}</a> <br> <strong class="text-white">{{ $item->productVariation->value . ' - ' . $item->quantity . ' عدد' }}</strong></li>
-                    @endforeach
-                </ul>
-            </div>
-
             <div class="col-12 col-lg-4 text-right" style="direction: rtl">
                 <label>کد تخفیف استفاده شده:</label>
                 @if($order->coupon_id != null)
@@ -116,27 +107,17 @@
                     </textarea>
                 @endif
             </div>
-
-
-{{--            <div class="col-12 col-lg-4">--}}
-{{--                <label for="phoneNumber">شماره تلفن:*</label>--}}
-{{--                <div class="input-group mb-3">--}}
-{{--                    <input type="tel" class="form-control" placeholder="شماره تلفن" id="phoneNumber" value="{{ $address->phone_number }}" name="phoneNumber">--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
-{{--            <div class="col-12 col-lg-12">--}}
-{{--                <label for="address">آدرس:*</label>--}}
-{{--                <div class="input-group mb-3">--}}
-{{--                    <textarea id="address" name="address" class="form-control">{{ $address->address }}</textarea>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
-            <br><br><br><br>
-
-            <div class="col-12 col-lg-12">
-                <a class="btn btn-danger" href="{{ route('home.profile.orders') }}">بازگشت</a>
+            <div class="col-12 col-lg-12 text-right" style="direction: rtl">
+                <label>محصولات سفارش:</label>
+                <ul class="text-main-1 pl-20 text-right row" style="direction: rtl">
+                    @foreach($order->items as $item)
+                        <li class="col-12 col-lg-4"><a href="{{ route('home.products.show', ['product' => $item->product->slug]) }}">{{ $item->product->title }}</a> <br> <strong class="text-white">{{ $item->productVariation->value . ' - ' . $item->quantity . ' عدد' }}</strong></li>
+                    @endforeach
+                </ul>
             </div>
+            <hr>
+            <div class="nk-gap-2"></div>
+            <a class="btn btn-danger" href="{{ route('home.profile.orders.index') }}">بازگشت</a>
         </div>
     </div>
 @endsection

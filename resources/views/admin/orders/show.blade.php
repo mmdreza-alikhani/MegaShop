@@ -33,15 +33,14 @@
                     </div>
                 </div>
             </div>
-
             <div class="row mx-1">
                 <div class="card shade c-grey w-100">
                     <h5 class="card-header c-primary">{{ $title }}</h5>
                     <div class="card-body row">
                         <div class="form-group col-12 col-lg-3">
-                            <label>سفارش دهنده:</label>
+                            <label>کاربر:</label>
                             <br>
-                            <a href="#">
+                            <a href="{{ route('admin.users.index') . '?q=' . $order->user->username }}">
                                 {{ $order->user->username }}
                             </a>
                         </div>
@@ -119,7 +118,6 @@
                         <div class="form-group col-12 col-lg-3">
                             <label>درگاه پرداخت:</label>
                             <span class="badge badge-success">
-
                                 {{ $transaction->getaway_name }}
                             </span>
                         </div>
@@ -138,11 +136,13 @@
                         <div class="form-group card shade c-grey col-12 col-lg-12">
                             <h5 class="card-header c-primary">دکمه</h5>
                             <div class="card-body">
-                                <div class="row col-lg-12 text-right" style="direction: rtl">
-                                    <ul class="text-main-1 pl-20">
+                                <div class="col-12 text-right" style="direction: rtl">
+                                    <ul class="row text-main-1 pl-20">
                                         @foreach($order->items as $item)
-                                            <li class="col-12 col-lg-4"><a
-                                                    href="{{ route('home.products.show', ['product' => $item->product->slug]) }}">{{ $item->product->name }}</a>
+                                            <li class="col-6 col-lg-3">
+                                                <a href="{{ route('home.products.show', ['product' => $item->product->slug]) }}">
+                                                    {{ $item->product->title }}
+                                                </a>
                                                 <br>
                                                 <strong>{{ $item->productVariation->value . ' - ' . $item->quantity . ' عدد' }}</strong>
                                             </li>
