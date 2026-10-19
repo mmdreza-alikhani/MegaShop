@@ -22,15 +22,17 @@
                             <div class="nk-gap"></div>
                             <input type="password" value="" name="password" class="required form-control" placeholder="رمز عبور">
                         </div>
-                        <div class="col-md-6 text-right">
-                            ورود با اکانت گوگل:
+                        @if(config('demo.google_login_enabled'))
+                            <div class="col-md-6 text-right">
+                                ورود با اکانت گوگل:
 
-                            <div class="nk-gap"></div>
+                                <div class="nk-gap"></div>
 
-                            <a href="{{ route('home.redirectToProvider', ['provider' => 'google']) }}" class="btn btn-info btn-block">Google | <i class="fa fa-google-plus-circle"></i></a>
+                                <a href="{{ route('home.redirectToProvider', ['provider' => 'google']) }}" class="btn btn-info btn-block">Google | <i class="fa fa-google-plus-circle"></i></a>
 
-                            <div class="nk-gap-2"></div>
-                        </div>
+                                <div class="nk-gap-2"></div>
+                            </div>
+                        @endif
                     </div>
 
                     <div class="nk-gap-1"></div>

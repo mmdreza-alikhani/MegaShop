@@ -35,11 +35,17 @@ class HomeController extends Controller
 
     public function contactForm(Request $request): void
     {
-        $request->validate([
+        $rules = [
             'name' => 'required|string|min:3|max:40',
             'email' => 'required|email',
             'message' => 'required|string|min:3|max:2500',
-            'g-recaptcha-response' => [new GoogleReCaptchaV3ValidationRule('contact_us')],
-        ]);
+        ];
+
+        // در نسخه دمو reCAPTCHA غیرفعال است؛ فقط در صورت فعال بودن بررسی می‌شود
+        if (config('demo.recaptcha_enabled')) {
+            $rules['g-recaptcha-response'] = [new GoogleReCaptchaV3ValidationRule('contact_us')];
+        }
+
+        $request->validate($rules);
     }
 }

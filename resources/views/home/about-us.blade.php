@@ -65,7 +65,9 @@
                     <div class="col-md-6">
                         <input type="email" class="form-control required" name="email" placeholder="ایمیل *">
                     </div>
-                    <div id="contact_us_recaptcha"></div>
+                    @if(config('demo.recaptcha_enabled'))
+                        <div id="contact_us_recaptcha"></div>
+                    @endif
                 </div>
                 <div class="nk-gap"></div>
                 <textarea class="form-control required" name="message" rows="5" placeholder="پیام *"></textarea>
@@ -82,5 +84,7 @@
 
     <div class="nk-gap-4"></div>
 
-    {!!  GoogleReCaptchaV3::render(['contact_us_recaptcha'=>'contact_us']) !!}
+    @if(config('demo.recaptcha_enabled'))
+        {!!  GoogleReCaptchaV3::render(['contact_us_recaptcha'=>'contact_us']) !!}
+    @endif
 @endsection

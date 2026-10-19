@@ -33,7 +33,9 @@
 
 @yield('scripts')
 
-{!!  GoogleReCaptchaV3::init() !!}
+@if(config('demo.recaptcha_enabled'))
+    {!!  GoogleReCaptchaV3::init() !!}
+@endif
 
 </body>
 </html>

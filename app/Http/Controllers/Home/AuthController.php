@@ -8,7 +8,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Hash, DB};
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Log;
 use Random\RandomException;
@@ -16,9 +17,25 @@ use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse
 
 class AuthController extends Controller
 {
-    public function redirectToProvider(string $provider): SymfonyRedirectResponse
+    public function redirectToProvider(string $provider): SymfonyRedirectResponse|RedirectResponse
     {
+        // ورود با گوگل در نسخه دمو (بدون کلیدهای OAuth) غیرفعال است
+        if ($provider === 'google' && ! config('demo.google_login_enabled')) {
+            flash()->info('ورود با حساب گوگل در نسخه نمایشی غیرفعال است.');
+
+            return redirect()->back();
+        }
+
         return Socialite::driver($provider)->redirect();
+    }
+
+    /**
+     * نمایش فرم تنظیم رمز عبور جدید
+     * (به‌عنوان کنترلر ثبت شده تا route:cache در دیپلوی بدون مشکل کار کند)
+     */
+    public function showResetForm(string $token)
+    {
+        return view('auth.reset-password', ['token' => $token]);
     }
 
     public function handleProviderCallback(Request $request, string $provider): RedirectResponse
@@ -28,7 +45,7 @@ class AuthController extends Controller
 
             $user = DB::transaction(function () use ($socialiteUser, $provider) {
                 $user = User::where('email', $socialiteUser->getEmail())->first();
-                $isNewUser = !$user;
+                $isNewUser = ! $user;
 
                 if ($isNewUser) {
                     $user = $this->createUserFromSocialite($socialiteUser, $provider);
@@ -51,10 +68,11 @@ class AuthController extends Controller
         } catch (Exception $e) {
             Log::error('Socialite authentication failed', [
                 'provider' => $provider,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             flash()->error('ورود با مشکل مواجه شد. لطفاً دوباره تلاش کنید.');
+
             return redirect()->route('login');
         }
     }
@@ -84,10 +102,10 @@ class AuthController extends Controller
      */
     private function generateUniqueUsername(string $baseUsername): string
     {
-        if (!User::where('username', $baseUsername)->exists()) {
+        if (! User::where('username', $baseUsername)->exists()) {
             return $baseUsername;
         }
 
-        return $baseUsername . '-' . random_int(1000, 9999);
+        return $baseUsername.'-'.random_int(1000, 9999);
     }
 }

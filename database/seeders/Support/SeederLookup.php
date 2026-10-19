@@ -48,6 +48,13 @@ trait SeederLookup
 
     private function normalizePersianCharacters(?string $value): string
     {
-        return str_replace(['ك', 'ي', 'ى'], ['ک', 'ی', 'ی'], (string) $value);
+        $value = str_replace(['ك', 'ي', 'ى'], ['ک', 'ی', 'ی'], (string) $value);
+
+        // حذف نویسه‌های نامرئی: نیم‌فاصله (ZWNJ)، چسباننده و نشانه‌های جهت‌دهی متن
+        return str_replace(
+            ["\u{200C}", "\u{200D}", "\u{200E}", "\u{200F}", "\u{202A}", "\u{202B}", "\u{202C}", "\u{202D}", "\u{202E}"],
+            '',
+            $value
+        );
     }
 }

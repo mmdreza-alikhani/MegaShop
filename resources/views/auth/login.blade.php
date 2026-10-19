@@ -183,7 +183,9 @@
                 <a class="go text-center" href="#">رمز عبور خود را فراموش کرده اید؟</a>
                 <a class="go text-center" href="#">ورود با رمز یکبار مصرف</a>
                 <a class="fb text-center" href="{{ route('home.register') }}">ثبت نام</a>
-                <a class="go text-center" href="{{ route('home.redirectToProvider', ['provider' => 'google']) }}">ورود با اکانت گوگل</a>
+                @if(config('demo.google_login_enabled'))
+                    <a class="go text-center" href="{{ route('home.redirectToProvider', ['provider' => 'google']) }}">ورود با اکانت گوگل</a>
+                @endif
             </div>
 
         </form>

@@ -192,8 +192,10 @@
 
         <div class="options">
             <a class="go text-center" href="{{ route('home.login') }}">اکانت داری؟ورود</a>
-            <a class="fb text-center" href="#">ورود با اکانت گوگل</a>
-            <a class="go text-center" href="{{ route('home.redirectToProvider', ['provider' => 'google']) }}">ورود با اکانت گوگل</a>
+            @if(config('demo.google_login_enabled'))
+                <a class="fb text-center" href="#">ورود با اکانت گوگل</a>
+                <a class="go text-center" href="{{ route('home.redirectToProvider', ['provider' => 'google']) }}">ورود با اکانت گوگل</a>
+            @endif
         </div>
 
     </form>

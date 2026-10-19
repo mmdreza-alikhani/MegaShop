@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -23,8 +24,9 @@ class PaymentController extends Controller
             'description' => 'nullable|string|min:3',
         ]);
 
-        if ($validator->fails() || !auth()->check()) {
+        if ($validator->fails() || ! auth()->check()) {
             flash()->error('ادامه فرایند ممکن نیست!');
+
             return redirect()->back();
         }
 
@@ -37,23 +39,33 @@ class PaymentController extends Controller
 
         if (array_key_exists('error', $orderResult)) {
             flash()->error($orderResult['error']);
+
             return redirect()->back();
         }
 
         $order = $orderResult['order'];
 
+        // حالت دمو: به‌جای درگاه واقعی زرین‌پال، کاربر به شبیه‌ساز داخلی هدایت می‌شود
+        if (config('pay.driver') === 'simulated') {
+            Transaction::where('order_id', $order->id)->update([
+                'token' => 'SIMULATED-'.strtoupper(Str::random(24)),
+            ]);
+
+            return redirect()->route('home.payment.simulator', ['order' => $order->id]);
+        }
+
         // آماده‌سازی داده‌های پرداخت
         $data = [
-            "merchant_id" => config('pay.merchant_id'),
-            "amount" => $amount,
-            "currency" => "IRT", // تومان
-            "description" => $request->description ?? 'پرداخت سفارش شماره ' . $order->id,
-            "callback_url" => route('home.payment.verify'),
-            "metadata" => [
-                "mobile" => $user->phone_number,
-                "email" => $user->email,
-                "order_id" => (string) $order->id // شماره سفارش برای پیگیری
-            ]
+            'merchant_id' => config('pay.merchant_id'),
+            'amount' => $amount,
+            'currency' => 'IRT', // تومان
+            'description' => $request->description ?? 'پرداخت سفارش شماره '.$order->id,
+            'callback_url' => route('home.payment.verify'),
+            'metadata' => [
+                'mobile' => $user->phone_number,
+                'email' => $user->email,
+                'order_id' => (string) $order->id, // شماره سفارش برای پیگیری
+            ],
         ];
 
         // درخواست به زرین‌پال
@@ -69,7 +81,8 @@ class PaymentController extends Controller
             ]);
 
             // هدایت به درگاه پرداخت (sandbox برای تست)
-            $paymentUrl = config('pay.payment_url') . $authority;
+            $paymentUrl = config('pay.payment_url').$authority;
+
             return redirect()->away($paymentUrl);
         }
 
@@ -91,20 +104,23 @@ class PaymentController extends Controller
         // بررسی وضعیت پرداخت
         if ($status != 'OK') {
             flash()->error('پرداخت توسط کاربر لغو شد یا با خطا مواجه شد.');
+
             return redirect()->route('home.cart.checkout');
         }
 
         // یافتن تراکنش
         $transaction = Transaction::where('token', $authority)->first();
 
-        if (!$transaction) {
+        if (! $transaction) {
             flash()->error('تراکنش مورد نظر یافت نشد!');
+
             return redirect()->route('home.cart.index');
         }
 
         // بررسی اینکه قبلاً verify نشده باشد
         if ($transaction->status == 1) {
             flash()->info('این تراکنش قبلاً تایید شده است.');
+
             return redirect()->route('home.cart.index');
         }
 
@@ -112,9 +128,9 @@ class PaymentController extends Controller
 
         // آماده‌سازی داده‌های verify
         $data = [
-            "merchant_id" => config('pay.merchant_id'),
-            "amount" => $transaction->amount,
-            "authority" => $authority
+            'merchant_id' => config('pay.merchant_id'),
+            'amount' => $transaction->amount,
+            'authority' => $authority,
         ];
 
         // ارسال درخواست verify
@@ -134,6 +150,7 @@ class PaymentController extends Controller
 
                 if (array_key_exists('error', $updateResult)) {
                     flash()->error($updateResult['error']);
+
                     return redirect()->back();
                 }
 
@@ -141,6 +158,7 @@ class PaymentController extends Controller
                 clearCart(auth()->id());
 
                 flash()->success("پرداخت با موفقیت انجام شد. کد پیگیری: {$refId}");
+
                 return redirect()->route('home.profile.orders.index');
             }
         }
@@ -150,6 +168,77 @@ class PaymentController extends Controller
         flash()->error($errorMessage);
 
         return redirect()->route('home.profile.orders.checkout');
+    }
+
+    /**
+     * نمایش شبیه‌ساز درگاه پرداخت (فقط در حالت دمو)
+     */
+    public function simulator(Order $order)
+    {
+        if (config('pay.driver') !== 'simulated') {
+            abort(404);
+        }
+
+        if ($order->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $transaction = Transaction::where('order_id', $order->id)->firstOrFail();
+
+        if ($transaction->status == 1) {
+            flash()->info('این تراکنش قبلاً تایید شده است.');
+
+            return redirect()->route('home.profile.orders.index');
+        }
+
+        return view('home.payment.simulator', compact('order', 'transaction'));
+    }
+
+    /**
+     * تکمیل یا لغو پرداخت در شبیه‌ساز درگاه (فقط در حالت دمو)
+     */
+    public function simulate(Request $request, Order $order)
+    {
+        if (config('pay.driver') !== 'simulated') {
+            abort(404);
+        }
+
+        if ($order->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        // لغو پرداخت توسط کاربر (شبیه‌سازی بازگشت ناموفق از درگاه)
+        if ($request->input('action') === 'cancel') {
+            flash()->error('پرداخت توسط کاربر لغو شد یا با خطا مواجه شد. (شبیه‌ساز درگاه)');
+
+            return redirect()->route('home.cart.checkout');
+        }
+
+        $transaction = Transaction::where('order_id', $order->id)->firstOrFail();
+
+        if ($transaction->status == 1) {
+            flash()->info('این تراکنش قبلاً تایید شده است.');
+
+            return redirect()->route('home.profile.orders.index');
+        }
+
+        // شبیه‌سازی پاسخ موفق درگاه (تولید کد پیگیری ساختگی)
+        $refId = (string) random_int(100000000, 999999999);
+
+        $updateResult = $this->updateOrder($transaction, $refId);
+
+        if (array_key_exists('error', $updateResult)) {
+            flash()->error($updateResult['error']);
+
+            return redirect()->back();
+        }
+
+        // پاک کردن سبد خرید
+        clearCart(auth()->id());
+
+        flash()->success("پرداخت آزمایشی با موفقیت انجام شد. کد پیگیری: {$refId}");
+
+        return redirect()->route('home.profile.orders.index');
     }
 
     /**
@@ -171,7 +260,7 @@ class PaymentController extends Controller
             CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
-                'Accept: application/json'
+                'Accept: application/json',
             ],
         ]);
 
@@ -181,10 +270,10 @@ class PaymentController extends Controller
             $error = curl_error($curl);
             curl_close($curl);
 
-            \Log::error('Zarinpal CURL Error: ' . $error);
+            \Log::error('Zarinpal CURL Error: '.$error);
 
             return [
-                'errors' => ['message' => 'خطا در اتصال به درگاه پرداخت']
+                'errors' => ['message' => 'خطا در اتصال به درگاه پرداخت'],
             ];
         }
 
@@ -216,13 +305,13 @@ class PaymentController extends Controller
                 $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
                 $variationId = $options['variation_id'] ?? null;
 
-                if (!$variationId) {
+                if (! $variationId) {
                     throw new \Exception('اطلاعات محصول در سبد خرید نامعتبر است');
                 }
 
                 $variation = ProductVariation::find($variationId);
 
-                if (!$variation) {
+                if (! $variation) {
                     throw new \Exception('محصول مورد نظر یافت نشد');
                 }
 
@@ -251,7 +340,7 @@ class PaymentController extends Controller
 
         } catch (\Exception $ex) {
             DB::rollBack();
-            \Log::error('Create Order Error: ' . $ex->getMessage());
+            \Log::error('Create Order Error: '.$ex->getMessage());
 
             return ['error' => $ex->getMessage()];
         }
@@ -298,7 +387,7 @@ class PaymentController extends Controller
 
         } catch (\Exception $ex) {
             DB::rollBack();
-            \Log::error('Update Order Error: ' . $ex->getMessage());
+            \Log::error('Update Order Error: '.$ex->getMessage());
 
             return ['error' => $ex->getMessage()];
         }

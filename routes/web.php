@@ -120,9 +120,9 @@ Route::name('home.')->group(function () {
             ->middleware('throttle:10,1');
     });
 
-    Route::get('reset-password/{token}', function (string $token) {
-        return view('auth.reset-password', ['token' => $token]);
-    })->middleware(['guest', 'throttle:6,1'])->name('password.reset');
+    Route::get('reset-password/{token}', [Home\AuthController::class, 'showResetForm'])
+        ->middleware(['guest', 'throttle:6,1'])
+        ->name('password.reset');
 
     // ============================================
     // Profile Routes
@@ -217,6 +217,14 @@ Route::name('home.')->group(function () {
 
             Route::get('verify', [Home\PaymentController::class, 'verify'])
                 ->name('verify')
+                ->middleware('throttle:10,1');
+
+            // شبیه‌ساز درگاه پرداخت (فقط برای نسخه دمو)
+            Route::get('simulator/{order}', [Home\PaymentController::class, 'simulator'])
+                ->name('simulator');
+
+            Route::post('simulator/{order}', [Home\PaymentController::class, 'simulate'])
+                ->name('simulator.submit')
                 ->middleware('throttle:10,1');
         });
     });
