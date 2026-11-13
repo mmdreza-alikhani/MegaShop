@@ -10,23 +10,23 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <th class="text-center">شناسه سفارش</th>
-                    <th class="text-center">تاریخ ثبت سفارش</th>
-                    <th class="text-center">مبلغ قابل پرداخت</th>
-                    <th class="text-center">وضعیت</th>
-                    <th class="text-center">نمایش</th>
+                    <th class="text-right">شناسه سفارش</th>
+                    <th class="text-right">تاریخ ثبت سفارش</th>
+                    <th class="text-right">مبلغ قابل پرداخت</th>
+                    <th class="text-right">وضعیت</th>
+                    <th class="text-right">نمایش</th>
                 </tr>
                 @foreach($orders as $order)
                     <tr>
-                        <td class="text-center">{{ $order->id }}</td>
-                        <td class="text-center">{{ verta($order->created_at)->format('%d %B, %Y') }}</td>
-                        <td class="text-center">{{ number_format($order->paying_amount) }} <i id="tooman_icon" class="icony icony-toman"></i></td>
-                        <td class="text-center">
+                        <td class="text-right">{{ $order->id }}</td>
+                        <td class="text-right">{{ verta($order->created_at)->format('%d %B, %Y') }}</td>
+                        <td class="text-right">{{ number_format($order->paying_amount) }} <i id="tooman_icon" class="icony icony-toman"></i></td>
+                        <td class="text-right">
                             <span class="badge {{ $order->getRawOriginal('payment_status') ?  'badge-success' : 'badge-danger' }}">
                                 {{ $order->payment_status }}
                             </span>
                         </td>
-                        <td class="text-center row">
+                        <td class="text-right row">
                             <div class="col-12">
                                 <a class="btn nk-btn-color-main-1 text-light" href="{{ route('home.profile.orders.show', ['order' => $order->id]) }}">
                                     <i class="fa fa-info"></i>

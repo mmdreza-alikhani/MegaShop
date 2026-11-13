@@ -43,7 +43,7 @@
                             <img src="{{ Storage::url(config('upload.user_avatar_path') . '/') . $post->author->avatar }}" alt="{{ $post->author->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
                             <a href="#">{{ $post->author->username }}</a>
                             نوشته:
-                            <span class="text-left" style="direction: ltr">
+                            <span class="text-right" style="direction: ltr">
                                 {{ '(' . $post->updated_at->diffForHumans() . ')' }}
                             </span>
                             @can('manage-posts')

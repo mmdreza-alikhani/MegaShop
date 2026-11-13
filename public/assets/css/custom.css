@@ -2568,3 +2568,100 @@ html[data-theme="light"] .info-box .table th,
 html[data-theme="light"] .info-box .table td {
     border-color: var(--mk-border);
 }
+/* =========================================================
+   راست‌چین کردن متن‌های فارسی
+   ========================================================= */
+[dir="rtl"] body,
+[dir="rtl"] .mk-main {
+    text-align: right;
+}
+
+[dir="rtl"] .mk-empty,
+[dir="rtl"] .mk-cart-empty {
+    text-align: right;
+}
+
+[dir="rtl"] .mk-footer-bottom {
+    justify-content: flex-start;
+    text-align: right;
+}
+
+[dir="rtl"] .mk-cart-panel-head,
+[dir="rtl"] .mk-drawer-head {
+    text-align: right;
+}
+
+/* تیتر بخش‌های تم: عنوان راست، خط به سمت چپ */
+[dir="rtl"] .nk-decorated-h-2 {
+    justify-content: flex-start;
+    text-align: right;
+}
+
+[dir="rtl"] .nk-decorated-h-2 > span {
+    order: 1;
+}
+
+[dir="rtl"] .nk-decorated-h-2::before {
+    display: none;
+}
+
+[dir="rtl"] .nk-decorated-h-2::after {
+    order: 2;
+}
+
+/* جدول‌ها، فرم‌ها و پیام‌ها */
+[dir="rtl"] .table th,
+[dir="rtl"] .table td {
+    text-align: right;
+}
+
+[dir="rtl"] .table {
+    text-align: right;
+}
+
+[dir="rtl"] .alert,
+[dir="rtl"] .modal-body,
+[dir="rtl"] .nk-modal .modal-body {
+    text-align: right;
+}
+
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select,
+[dir="rtl"] .form-control {
+    text-align: right;
+}
+
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="url"],
+[dir="rtl"] input[type="number"],
+[dir="rtl"] input[type="tel"] {
+    direction: ltr;
+    text-align: right;
+}
+
+/* اجزای محصول و مقاله */
+[dir="rtl"] .nk-product-title,
+[dir="rtl"] .nk-post-title,
+[dir="rtl"] .nk-post-by,
+[dir="rtl"] .nk-post-text,
+[dir="rtl"] .nk-product-description,
+[dir="rtl"] .nk-product-meta,
+[dir="rtl"] .nk-comment-meta,
+[dir="rtl"] .nk-comment-text,
+[dir="rtl"] .nk-image-slider-content,
+[dir="rtl"] .nk-image-slider-content h3,
+[dir="rtl"] .nk-image-slider-content p,
+[dir="rtl"] .nk-news-box-item-title,
+[dir="rtl"] .nk-news-box-item-text,
+[dir="rtl"] .nk-news-box-item-date {
+    text-align: right;
+}
+
+[dir="rtl"] .nk-image-slider-content .nk-btn {
+    text-align: center;
+}
+[dir="rtl"] .nk-decorated-h-2 > span,
+[dir="rtl"] .nk-decorated-h-2 span {
+    text-align: right;
+}

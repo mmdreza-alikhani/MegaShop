@@ -50,7 +50,7 @@
                 <hr style="background-color: #293139;width: 98%;height: 1px;">
             @endif
         @empty
-            <div class="alert alert-danger text-center w-100">
+            <div class="alert alert-danger text-right w-100">
                 شما نظری ثبت نکرده اید!
             </div>
         @endforelse

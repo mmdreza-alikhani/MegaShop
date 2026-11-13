@@ -107,7 +107,7 @@
                     <div class="row vertical-gap">
                         <div class="col-md-12">
                             @if(session('status'))
-                                <div class="alert alert-secondary text-center">
+                                <div class="alert alert-secondary text-right">
                                     {{ session('status') }}
                                 </div>
                             @endif
@@ -117,7 +117,7 @@
                             <input type="email" name="email" class="form-control" placeholder="ایمیل خود را وارد کنید..">
                             <div class="nk-gap"></div>
                             @error('email')
-                                <div class="alert alert-danger text-center">
+                                <div class="alert alert-danger text-right">
                                     {{ $message }}
                                 </div>
                             @enderror

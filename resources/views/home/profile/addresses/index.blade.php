@@ -88,7 +88,7 @@
             </div>
         </aside>
         @if($user->addresses->isEmpty())
-            <div class="alert alert-danger text-center w-100">
+            <div class="alert alert-danger text-right w-100">
                 شما تا به حال آدرسی ثبت نکرده اید!
             </div>
         @else
@@ -100,17 +100,17 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <th class="text-center">عنوان</th>
-                    <th class="text-center">کد پستی</th>
-                    <th class="text-center">شماره تلفن</th>
-                    <th class="text-center">تنظیمات</th>
+                    <th class="text-right">عنوان</th>
+                    <th class="text-right">کد پستی</th>
+                    <th class="text-right">شماره تلفن</th>
+                    <th class="text-right">تنظیمات</th>
                 </tr>
                 @foreach($user->addresses as $address)
                     <tr>
-                        <td class="text-center">{{ $address->title }}</td>
-                        <td class="text-center">{{ $address->postal_code }}</td>
-                        <td class="text-center">{{ $address->phone_number }}</td>
-                        <td class="text-center row">
+                        <td class="text-right">{{ $address->title }}</td>
+                        <td class="text-right">{{ $address->postal_code }}</td>
+                        <td class="text-right">{{ $address->phone_number }}</td>
+                        <td class="text-right row">
                             <div class="col-6">
                                 <a class="btn nk-btn-color-main-1 text-light" href="#" data-toggle="modal" data-target="#editAddressModal-{{ $address->id }}">
                                     <i class="fa fa-edit"></i>

@@ -3,7 +3,7 @@
         <div class="nk-image-slider-item">
             <img src="{{ Storage::url(config('upload.banner_path') . '/') . $banner->image }}" alt="" class="nk-image-slider-img" data-thumb="{{ Storage::url(config('upload.banner_path') . '/') . $banner->image }}">
             <div class="nk-image-slider-content">
-                <h3 class="h4 text-center">{{ $banner->title }}</h3>
+                <h3 class="h4 text-right">{{ $banner->title }}</h3>
                 <span class="text-right">
                     <p class="text-white">{{ $banner->text }}</p>
                 </span>

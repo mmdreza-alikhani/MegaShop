@@ -21,7 +21,7 @@
     <!-- END: Breadcrumbs -->
     <div class="container">
         @if(isCartEmpty())
-            <div class="alert alert-danger text-center text-right" style="direction: rtl">
+            <div class="alert alert-danger text-right text-right" style="direction: rtl">
                 هیچ محصولی در سبد خرید شما وجود ندارد!
             </div>
         @else
@@ -76,7 +76,7 @@
                                     <td class="nk-product-cart-quantity">
                                         <h5 class="h6">تعداد:</h5>
                                         <div class="nk-gap-1"></div>
-                                        <div class="nk-form text-left" style="direction: ltr;width: 125%">
+                                        <div class="nk-form text-right" style="direction: ltr;width: 125%">
                                             <input type="number" class="form-control" value="{{ $product->quantity }}" min="1" max="{{ $product->available_quantity }}" name="products[{{ $product->itemable->id }}][{{ $product->variation->id }}]">
                                         </div>
                                         @if(! $product->is_available)
