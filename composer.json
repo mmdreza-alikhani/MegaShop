@@ -6,17 +6,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "artesaos/seotools": "^1.2",
         "binafy/laravel-cart": "^1.2",
         "cviebrock/eloquent-sluggable": "^12.0",
-        "ghasedak/laravel": "^2.1",
-        "guzzlehttp/guzzle": "^7.2",
         "hekmatinasser/verta": "^8.5",
         "laravel/fortify": "1.27",
         "laravel/framework": "^12.0",
         "laravel/socialite": "^5.9",
         "laravel/tinker": "^2.8",
-        "laravel/ui": "^4.4",
         "php-flasher/flasher-toastr-laravel": "^2.1",
         "snapappointments/bootstrap-select": "^1.13",
         "spatie/laravel-permission": "^6.3",
@@ -24,7 +20,6 @@
         "ext-curl": "*"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.15",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.18",

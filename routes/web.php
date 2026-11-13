@@ -151,7 +151,7 @@ Route::name('home.')->group(function () {
             Route::get('wishlist', [Home\ProfileController::class, 'wishlist'])->name('wishlist');
             Route::get('comments', [Home\ProfileController::class, 'comments'])->name('comments');
 
-            Route::resource('addresses', Home\ProfileAddressesController::class)->except(['show', 'create']);
+            Route::resource('addresses', Home\ProfileAddressesController::class)->except(['show', 'create', 'edit']);
 
             Route::get('reset-password', [Home\ProfileController::class, 'resetPassword'])->name('resetPassword');
             Route::post('reset-password', [Home\ProfileController::class, 'resetPasswordCheck'])

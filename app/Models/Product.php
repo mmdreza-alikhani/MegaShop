@@ -255,8 +255,8 @@ class Product extends Model implements Cartable
             }
         }
 
-        if ($request->filled('v')) {
-            $applyFilter('variations', 'value', $request->v);
+        if ($request->filled('variation')) {
+            $applyFilter('variations', 'value', $request->input('variation'));
         }
 
         if ($request->filled('platform')) {

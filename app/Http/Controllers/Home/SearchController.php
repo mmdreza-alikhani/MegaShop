@@ -30,6 +30,8 @@ class SearchController extends Controller
         $posts = Post::query()
             ->active()
             ->search('title', $keyword)
+            ->with('author:id,username,avatar')
+            ->withCount('comments')
             ->limit(12)
             ->get();
 

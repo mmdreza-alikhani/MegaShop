@@ -25,7 +25,7 @@ class ProductController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        $platforms = Platform::active()->orderBy('title')->pluck('title', 'id')->values();
+        $platforms = Platform::query()->active()->orderBy('title')->pluck('title', 'id')->values();
         $categories = Category::query()->active()->parents()->orderBy('title')->get(['id', 'title', 'slug']);
 
         return view('home.products.index', compact('products', 'platforms', 'categories'));
@@ -99,6 +99,18 @@ class ProductController extends Controller
             return $variation;
         });
 
+        $comments = $product->comments()
+            ->with([
+                'user:id,username,avatar',
+                'child.user:id,username,avatar',
+                'child.child.user:id,username,avatar',
+            ])
+            ->where('reply_of', 0)
+            ->latest()
+            ->get();
+
+        $commentsCount = $product->comments()->count();
+
         $relatedProducts = Product::query()
             ->active()
             ->category($product->category_id)
@@ -107,6 +119,14 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('home.products.show', compact('product', 'filters', 'variations', 'relatedProducts', 'shortLink'));
+        return view('home.products.show', compact(
+            'product',
+            'filters',
+            'variations',
+            'relatedProducts',
+            'shortLink',
+            'comments',
+            'commentsCount'
+        ));
     }
 }
