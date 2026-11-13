@@ -87,7 +87,7 @@ class CartController extends Controller
     {
         $user = auth()->user();
 
-        if (! $user->is_validated) {
+        if (! $this->hasCompleteProfile($user)) {
             flash()->warning('لطفا مشخصات خود را در حساب کاربری تکمیل کنید');
 
             return redirect()->route('home.profile.info');
@@ -131,5 +131,13 @@ class CartController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    /**
+     * تکمیل مشخصات فردی برای تسویه (نام، نام خانوادگی و موبایل).
+     */
+    private function hasCompleteProfile($user): bool
+    {
+        return (bool) ($user->first_name && $user->last_name && $user->phone_number);
     }
 }
