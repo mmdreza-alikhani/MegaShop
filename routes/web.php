@@ -102,6 +102,8 @@ Route::name('home.')->group(function () {
     Route::get('/', [Home\HomeController::class, 'index'])->name('index');
     Route::get('about-us', [Home\HomeController::class, 'aboutUs'])->name('aboutus');
 
+    Route::get('contact', [Home\HomeController::class, 'contact'])->name('contact');
+
     Route::post('contact', [Home\HomeController::class, 'contactForm'])
         ->name('contactForm')
         ->middleware('throttle:5,1');

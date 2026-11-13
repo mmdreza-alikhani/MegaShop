@@ -1,4 +1,10 @@
-@php use App\Models\Category; @endphp
+@php
+    use App\Models\Category;
+
+    // یک‌بار خواندن سبد برای کل هدر (قبلاً ۶ بار کوئری می‌زد)
+    $headerCartItems = auth()->check() ? cartItems() : collect();
+    $headerCartCount = $headerCartItems->count();
+@endphp
 <header class="nk-header nk-header-opaque">
 
     <!-- START: Top Contacts -->
@@ -27,41 +33,45 @@
                         <li>
                         <span class="nk-cart-toggle">
                             <span class="fa fa-lg fa-shopping-cart"></span>
-                            @if(!isCartEmpty())
-                                @if(cartItems()->count() > 9)
-                                    <span class="nk-badge">+9</span>
-                                @endif
-                                <span class="nk-badge">{{ cartItems()->count() }}</span>
+                            @if($headerCartCount > 0)
+                                <span class="nk-badge">{{ $headerCartCount > 9 ? '+9' : $headerCartCount }}</span>
                             @endif
                         </span>
                             <div class="nk-cart-dropdown">
-                                @if(isCartEmpty())
+                                @if($headerCartCount === 0)
                                     <div class="alert text-center">
                                         سبد خرید شما خالی است!
                                     </div>
                                 @else
-                                    @foreach(cartItems() as $product)
+                                    @foreach($headerCartItems as $product)
                                         <div class="nk-widget-post">
                                             <a href="{{ route('home.products.show', ['product' => $product->itemable->slug]) }}" class="nk-post-image">
                                                 <img src="{{ Storage::url(config('upload.product_primary_path') . '/') . '/' . $product->itemable->primary_image }}" alt="{{ $product->itemable->title }}">
                                             </a>
                                             <h3 class="nk-post-title text-right" style="direction: rtl">
-                                                <a href="{{ route('home.cart.remove', ['itemId' => $product->id]) }}" class="nk-cart-remove-item"><span class="ion-android-close"></span></a>
+                                                <form action="{{ route('home.cart.remove', ['itemId' => $product->id]) }}"
+                                                      method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn p-0 bg-transparent nk-cart-remove-item">
+                                                        <span class="ion-android-close"></span>
+                                                    </button>
+                                                </form>
                                                 <a href="{{ route('home.products.show', ['product' => $product->itemable->slug]) }}">{{ $product->itemable->title }}</a>
                                                 <br>
-                                                <small>{{ $product->variation->attribute->title }}: {{ $product->variation->value }}</small>
-                                                @if($product->variation->is_discounted)
+                                                <small>{{ $product->variation->attribute?->title }}: {{ $product->variation->value }}</small>
+                                                @if($product->variation->is_discounted && $product->variation->price > 0)
                                                     <br>
                                                     <small style="color: #dd163b">درصد تخفیف: {{ round((($product->variation->price - $product->variation->sale_price) / $product->variation->price) * 100) . '%' }}</small>
                                                 @endif
                                             </h3>
                                             <div class="nk-gap-1"></div>
-                                            <div class="nk-product-price"> {{ $product->quantity == 1 ? '' : $product->quantity . ' ' . '*' }} {{ number_format($product->quantity * ($product->variation->is_discounted ? $product->variation->sale_price : $product->variation->price)) }}</div>تومان
+                                            <div class="nk-product-price"> {{ $product->quantity == 1 ? '' : $product->quantity . ' ' . '*' }} {{ number_format($product->total_price) }}</div>تومان
                                         </div>
                                     @endforeach
                                     <div class="nk-gap-2"></div>
                                 @endif
-                                @if(!isCartEmpty())
+                                @if($headerCartCount > 0)
                                     <div class="text-center">
                                         <a href="{{ route('home.cart.index') }}" class="nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-hover-color-white">ادامه خرید</a>
                                     </div>
@@ -104,7 +114,7 @@
                     </li>
 
                     <li>
-                        <a href="{{ route('home.contactForm') }}">
+                        <a href="{{ route('home.contact') }}">
                             تماس با من
                         </a>
                     </li>
@@ -130,10 +140,7 @@
                             محصولات
                         </a>
                         <ul class="dropdown">
-                            @php
-                                $parent_categories = Category::where('parent_id', '=', 0)->get();
-                            @endphp
-                            @foreach($parent_categories as $parent_category)
+                            @foreach(Category::query()->where('parent_id', 0)->where('is_active', 1)->get() as $parent_category)
                                 <li class="nk-drop-item">
                                     <a class="text-right">
                                         {{ $parent_category->title }}
