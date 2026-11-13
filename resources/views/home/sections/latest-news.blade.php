@@ -33,7 +33,7 @@
         <div class="nano">
             <div class="nano-content">
                 @foreach($news as $item)
-                    <div class="nk-news-box-item nk-news-box-item-active">
+                    <div class="nk-news-box-item">
                         <div class="nk-news-box-item-img">
                             <img src="{{ Storage::url(config('upload.post_path') . '/' . $item->image) }}"
                                  alt="{{ $item->title }}">

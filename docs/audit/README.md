@@ -340,6 +340,42 @@
 - تایید ایمیل واقعی (ارسال لینک) وجود ندارد؛ در حالت دمو حساب‌ها با observer بلافاصله تایید می‌شوند.
 - Enums برای وضعیت سفارش/پرداخت و `PaymentGatewayInterface` (بخش اورهال) انجام نشده است.
 
+## ظاهر، کارایی و کاهش وابستگی (پاس دوم)
+
+### ظاهر و ریسپانسیو
+
+- کل فروشگاه با `lang="fa" dir="rtl"` رندر می‌شود؛ لایه اصلاحی در `public/assets/css/custom.css` رفتار تم را برای فارسی/موبایل بازنویسی می‌کند.
+- هدر بازنویسی شد: منوی مگا برای دسته‌ها، آیکون‌های واقعی، پنل کنارِ سبد خرید و کشوی موبایل.
+- فوتر بازنویسی شد: نام/شعار/تماس از `config/brand.php` (نه `env` در زمان اجرا)، آیکون‌های شبکه اجتماعی و کپی‌رایت شمسی.
+- کارت محصول و کارت مقاله از نو ساخته شدند: عنوان دو خطی، نشان تخفیف، علاقه‌مندی، قیمت و دکمه یکدست در همه گریدها.
+- صفحه‌های `/products`، دسته‌بندی و جستجو یک نوار فیلتر/مرتب‌سازی مشترک و صفحه‌بندی هم‌رنگ تم دارند.
+- اسلایدر و باکس اخبار دیگر عرض ثابت ندارند و در موبایل تک‌ستونی می‌شوند.
+
+### کارایی و کش
+
+| صفحه | قبل | بعد |
+|---|---|---|
+| صفحه اصلی | ۱۵ کوئری | ۰ کوئری (کش) — ساخت اول ۹ کوئری |
+| لیست محصولات | ۶ کوئری | ۶ کوئری (با ایندکس) |
+| صفحه محصول | ۳۱ کوئری / ۲۵۶ms | ۱۹ کوئری / ۳۵ms |
+
+- `App\Services\StorefrontCache` تکه‌های صفحه اصلی و منو را کش می‌کند؛ `App\Observers\ContentCacheObserver` با هر تغییر در محصول/مقاله/بنر/دسته/برند/پلتفرم/کوپن/نظر آن را باطل می‌کند.
+- نویسنده مقاله‌ها و تعداد نظرها eager load شدند؛ درخت نظرات محصول با کاربرانش یک‌جا لود می‌شود.
+- migration جدید `2026_11_13_000400_add_performance_indexes` ایندکس‌های `products(is_active,created_at)`، `variations(product_id,price)`، `posts(is_active,type,created_at)`، `comments(commentable_type,commentable_id)`، `orders(user_id,created_at)` و `banners(is_active,type)` را اضافه می‌کند.
+- `php artisan optimize` (config/route/view cache) روی همین پروژه تست و بدون خطا اجرا شد.
+
+### وابستگی‌ها و فایل‌های حذف‌شده
+
+- حذف از composer: `ghasedak/laravel`، `laravel/ui`، `guzzlehttp/guzzle`، `artesaos/seotools`، `barryvdh/laravel-debugbar`.
+- حذف کامل زنجیره Node/Vite (بدون هیچ `@vite` در پروژه): `package.json`، `package-lock.json`، `vite.config.js`، `resources/js`، `resources/css`، `node_modules` (~۲۵MB).
+- حذف ۲۱ ویو بی‌استفاده (شامل `home/elements` و `home/widgets` با ~۹۰KB)، ویوهای اضافی صفحه‌بندی و `public/assets/vendor/keymaster`.
+- Debugbar با `DEBUGBAR_ENABLED=false` خاموش و سپس پکیجش حذف شد؛ دیگر روی صفحات عمومی دیده نمی‌شود.
+
+### تست
+
+- `php artisan test` → **۴۹ تست / ۱۷۲ assertion** بدون خطا.
+- اسکرین‌شات خودکار دسکتاپ (۱۴۴۰px) و موبایل (۳۹۰px) با Chrome/CDP گرفته شد و عرض افقی صفحه برابر viewport است (بدون اسکرول افقی).
+
 ## تاریخچه تغییرات سند
 
 | نسخه | تاریخ | تغییر |
