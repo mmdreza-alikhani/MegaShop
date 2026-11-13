@@ -4,7 +4,94 @@
 (function () {
     'use strict';
 
-    /* نوار پیشرفت اسکرول */
+    /* ---------- تم روشن / تاریک ---------- */
+    var root = document.documentElement;
+    var themeButtons = document.querySelectorAll('[data-theme-toggle]');
+
+    function applyTheme(theme, persist) {
+        root.setAttribute('data-theme', theme);
+
+        themeButtons.forEach(function (button) {
+            button.setAttribute('aria-pressed', String(theme === 'light'));
+            button.title = theme === 'light' ? 'حالت تاریک' : 'حالت روشن';
+        });
+
+        if (persist) {
+            try {
+                localStorage.setItem('mk-theme', theme);
+            } catch (error) {
+                /* حالت خصوصی مرورگر */
+            }
+        }
+    }
+
+    applyTheme(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark', false);
+
+    themeButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            applyTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light', true);
+        });
+    });
+
+    if (window.matchMedia) {
+        var media = window.matchMedia('(prefers-color-scheme: light)');
+
+        media.addEventListener('change', function (event) {
+            var saved = null;
+
+            try {
+                saved = localStorage.getItem('mk-theme');
+            } catch (error) {
+                saved = null;
+            }
+
+            if (!saved) {
+                applyTheme(event.matches ? 'light' : 'dark', false);
+            }
+        });
+    }
+
+    /* ---------- مگا منوی دسته‌بندی‌ها ---------- */
+    document.querySelectorAll('[data-mega-root]').forEach(function (megaRoot) {
+        var parents = megaRoot.querySelectorAll('[data-mega-parent]');
+        var panels = megaRoot.querySelectorAll('[data-mega-panel]');
+
+        if (!parents.length || !panels.length) {
+            return;
+        }
+
+        function activate(key) {
+            parents.forEach(function (parent) {
+                var isActive = parent.getAttribute('data-mega-parent') === key;
+                parent.classList.toggle('is-active', isActive);
+                parent.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+
+            panels.forEach(function (panel) {
+                panel.classList.toggle('is-active', panel.getAttribute('data-mega-panel') === key);
+            });
+        }
+
+        parents.forEach(function (parent) {
+            var key = parent.getAttribute('data-mega-parent');
+
+            parent.addEventListener('mouseenter', function () {
+                activate(key);
+            });
+
+            parent.addEventListener('focus', function () {
+                activate(key);
+            });
+
+            parent.addEventListener('click', function () {
+                activate(key);
+            });
+        });
+
+        activate(parents[0].getAttribute('data-mega-parent'));
+    });
+
+    /* ---------- نوار پیشرفت اسکرول ---------- */
     var progressBar = document.querySelector('.progress-bar');
 
     if (progressBar) {
@@ -15,11 +102,8 @@
         });
     }
 
-    /* منوی موبایل و پنل سبد خرید */
+    /* ---------- منوی موبایل و پنل سبد خرید ---------- */
     var body = document.body;
-    var drawer = document.getElementById('mkDrawer');
-    var cartPanel = document.getElementById('mkCartPanel');
-    var overlay = document.getElementById('mkOverlay');
 
     function closePanels() {
         body.classList.remove('mk-drawer-open', 'mk-cart-open');
@@ -45,6 +129,7 @@
         button.addEventListener('click', closePanels);
     });
 
+    var overlay = document.getElementById('mkOverlay');
     if (overlay) {
         overlay.addEventListener('click', closePanels);
     }
@@ -55,7 +140,7 @@
         }
     });
 
-    /* تب‌های مودال ورود/ثبت‌نام */
+    /* ---------- تب‌های مودال ورود/ثبت‌نام ---------- */
     if (window.jQuery) {
         var $ = window.jQuery;
         var loginModal = $('.login-modal');
@@ -81,7 +166,7 @@
         });
     }
 
-    /* پیش‌نمایش آواتار */
+    /* ---------- پیش‌نمایش آواتار ---------- */
     window.loadFile = function (event) {
         var image = document.getElementById('output');
 

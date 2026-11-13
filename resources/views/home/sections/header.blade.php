@@ -5,11 +5,49 @@
     // یک‌بار خواندن سبد برای کل هدر
     $headerCartItems = auth()->check() ? cartItems() : collect();
     $headerCartCount = $headerCartItems->count();
+
     $headerCategories = Cache::remember(
         'header_menu_categories',
         now()->addHour(),
-        fn () => Category::query()->where('parent_id', 0)->where('is_active', 1)->with('children')->get()
+        fn () => Category::query()
+            ->where('parent_id', 0)
+            ->where('is_active', 1)
+            ->with(['children' => fn ($query) => $query->where('is_active', 1)->orderBy('title')])
+            ->orderBy('title')
+            ->get()
     );
+
+    // آیکون هر دسته بر اساس کلیدواژه‌های عنوان؛ بدون وابستگی به داده اضافی
+    $categoryIcon = function (string $title): string {
+        $map = [
+            'موبایل' => 'fa-mobile',
+            'لپ‌تاپ' => 'fa-laptop',
+            'لپ تاپ' => 'fa-laptop',
+            'تبلت' => 'fa-tablet',
+            'ساعت' => 'fa-clock-o',
+            'مچ‌بند' => 'fa-heartbeat',
+            'هدفون' => 'fa-headphones',
+            'هندزفری' => 'fa-headphones',
+            'اسپیکر' => 'fa-volume-up',
+            'کنسول' => 'fa-gamepad',
+            'بازی' => 'fa-gamepad',
+            'مانیتور' => 'fa-desktop',
+            'کیبورد' => 'fa-keyboard-o',
+            'ماوس' => 'fa-mouse-pointer',
+            'پاوربانک' => 'fa-battery-three-quarters',
+            'شارژر' => 'fa-plug',
+            'قاب' => 'fa-shield',
+            'لوازم' => 'fa-cube',
+        ];
+
+        foreach ($map as $needle => $icon) {
+            if (mb_strpos($title, $needle) !== false) {
+                return $icon;
+            }
+        }
+
+        return 'fa-th-large';
+    };
 @endphp
 <header class="mk-header">
     <div class="mk-topbar">
@@ -24,6 +62,12 @@
             </div>
 
             <div class="mk-topbar-actions">
+                <button type="button" class="mk-theme-toggle" data-theme-toggle
+                        aria-label="تغییر حالت روشن و تاریک" title="حالت روشن / تاریک">
+                    <span class="mk-theme-ico mk-theme-ico-moon"><span class="fa fa-moon-o"></span></span>
+                    <span class="mk-theme-ico mk-theme-ico-sun"><span class="fa fa-sun-o"></span></span>
+                </button>
+
                 <button type="button" class="mk-icon-btn" data-toggle="modal" data-target="#modalSearch"
                         aria-label="جستجو">
                     <span class="fa fa-lg fa-search"></span>
@@ -60,36 +104,94 @@
     <div class="mk-navbar">
         <div class="container mk-navbar-inner">
             <a href="{{ route('home.index') }}" class="mk-logo">
-                <img src="{{ asset(ltrim(config('brand.logo'), '/')) }}" alt="{{ config('brand.name') }}">
+                <img class="mk-logo-dark" src="{{ asset(ltrim(config('brand.logo'), '/')) }}"
+                     alt="{{ config('brand.name') }}">
+                <img class="mk-logo-light" src="{{ asset(ltrim(config('brand.logo_light'), '/')) }}"
+                     alt="{{ config('brand.name') }}">
             </a>
 
             <nav class="mk-nav" aria-label="منوی اصلی">
                 <a href="{{ route('home.index') }}">خانه</a>
 
-                <div class="mk-nav-dropdown">
-                    <a href="{{ route('home.products.index') }}">
+                <div class="mk-nav-dropdown" data-mega-root>
+                    <a href="{{ route('home.products.index') }}" class="mk-nav-trigger" aria-haspopup="true">
                         محصولات
-                        <span class="fa fa-angle-down"></span>
+                        <span class="fa fa-angle-down mk-nav-caret"></span>
                     </a>
+
                     <div class="mk-mega">
-                        @forelse($headerCategories as $parentCategory)
-                            <div class="mk-mega-col">
-                                <a class="mk-mega-title"
-                                   href="{{ route('home.categories.show', ['category' => $parentCategory->slug]) }}">
-                                    {{ $parentCategory->title }}
-                                </a>
-                                @foreach($parentCategory->children as $child)
-                                    <a class="mk-mega-link"
-                                       href="{{ route('home.categories.show', ['category' => $child->slug]) }}">
-                                        {{ $child->title }}
-                                    </a>
+                        <div class="mk-mega-body">
+                            <ul class="mk-mega-parents" role="tablist">
+                                @foreach($headerCategories as $index => $parentCategory)
+                                    <li>
+                                        <button type="button"
+                                                class="mk-mega-parent {{ $index === 0 ? 'is-active' : '' }}"
+                                                data-mega-parent="cat-{{ $parentCategory->id }}"
+                                                role="tab"
+                                                aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
+                                            <span class="mk-mega-ico">
+                                                <span class="fa {{ $categoryIcon($parentCategory->title) }}"></span>
+                                            </span>
+                                            <span class="mk-mega-parent-title">{{ $parentCategory->title }}</span>
+                                            @if($parentCategory->children->isNotEmpty())
+                                                <span class="mk-mega-count">{{ $parentCategory->children->count() }}</span>
+                                            @endif
+                                            <span class="fa fa-angle-left mk-mega-arrow"></span>
+                                        </button>
+                                    </li>
+                                @endforeach
+                            </ul>
+
+                            <div class="mk-mega-panels">
+                                @foreach($headerCategories as $index => $parentCategory)
+                                    <div class="mk-mega-panel {{ $index === 0 ? 'is-active' : '' }}"
+                                         data-mega-panel="cat-{{ $parentCategory->id }}"
+                                         role="tabpanel">
+                                        <div class="mk-mega-panel-head">
+                                            <div>
+                                                <span class="mk-mega-eyebrow">دسته‌بندی</span>
+                                                <h4>{{ $parentCategory->title }}</h4>
+                                            </div>
+                                            <a href="{{ route('home.categories.show', ['category' => $parentCategory->slug]) }}"
+                                               class="mk-mega-all">
+                                                مشاهده همه
+                                                <span class="fa fa-angle-left"></span>
+                                            </a>
+                                        </div>
+
+                                        @if($parentCategory->children->isNotEmpty())
+                                            <div class="mk-mega-links">
+                                                @foreach($parentCategory->children as $child)
+                                                    <a href="{{ route('home.categories.show', ['category' => $child->slug]) }}"
+                                                       class="mk-mega-link">
+                                                        {{ $child->title }}
+                                                    </a>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <div class="mk-mega-empty">
+                                                محصولات این دسته را در صفحه دسته‌بندی ببینید.
+                                            </div>
+                                        @endif
+                                    </div>
                                 @endforeach
                             </div>
-                        @empty
-                            <div class="mk-mega-col">
-                                <a class="mk-mega-link" href="{{ route('home.products.index') }}">همه محصولات</a>
-                            </div>
-                        @endforelse
+                        </div>
+
+                        <div class="mk-mega-foot">
+                            <a href="{{ route('home.products.index') }}">
+                                <span class="fa fa-th-large"></span>
+                                همه محصولات
+                            </a>
+                            <a href="{{ route('home.products.index', ['discount' => 'true']) }}">
+                                <span class="fa fa-tags"></span>
+                                محصولات تخفیف‌دار
+                            </a>
+                            <a href="{{ route('home.products.index', ['sortBy' => 'latest']) }}">
+                                <span class="fa fa-clock-o"></span>
+                                جدیدترین‌ها
+                            </a>
+                        </div>
                     </div>
                 </div>
 

@@ -11,6 +11,9 @@ return [
 
     'logo' => env('BRAND_LOGO', '/assets/images/logo.png'),
 
+    // نسخه تیره‌ی لوگو برای حالت روشن
+    'logo_light' => env('BRAND_LOGO_LIGHT', '/assets/images/logo-light.png'),
+
     'favicon' => env('BRAND_FAVICON', '/assets/images/favicon.png'),
 
     'owner_image_path' => env('BRAND_OWNER_IMAGE_PATH', 'images/owner'),

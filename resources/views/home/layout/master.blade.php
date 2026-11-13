@@ -2,6 +2,20 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="utf-8">
+    <script>
+        /* انتخاب تم قبل از رندر شدن صفحه تا پرش رنگ نداشته باشیم */
+        (function () {
+            try {
+                var forced = new URLSearchParams(window.location.search).get('mk-theme');
+                var saved = forced || localStorage.getItem('mk-theme');
+                var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+                document.documentElement.setAttribute('data-theme', saved || (prefersLight ? 'light' : 'dark'));
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <meta name="color-scheme" content="dark light">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@yield('title', 'فروشگاه') | {{ config('brand.name') }}</title>
     <meta name="description" content="@yield('meta_description', config('brand.name').' — '.config('brand.slogan'))">

@@ -3,7 +3,10 @@
         <div class="mk-footer-grid">
             <div class="mk-footer-col mk-footer-about">
                 <a href="{{ route('home.index') }}" class="mk-footer-logo">
-                    <img src="{{ asset(ltrim(config('brand.logo'), '/')) }}" alt="{{ config('brand.name') }}">
+                    <img class="mk-logo-dark" src="{{ asset(ltrim(config('brand.logo'), '/')) }}"
+                         alt="{{ config('brand.name') }}">
+                    <img class="mk-logo-light" src="{{ asset(ltrim(config('brand.logo_light'), '/')) }}"
+                         alt="{{ config('brand.name') }}">
                 </a>
                 <p>
                     {{ config('brand.name') }} — {{ config('brand.slogan') }}. خرید گوشی، لپ‌تاپ و لوازم جانبی
