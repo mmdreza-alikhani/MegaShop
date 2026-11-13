@@ -66,6 +66,7 @@ class Category extends Model
                 cache()->forget('categories');
                 cache()->forget('parent_categories');
                 cache()->forget('active_categories');
+                cache()->forget('header_menu_categories');
             });
         }
     }
@@ -89,9 +90,17 @@ class Category extends Model
         $query->where('parent_id', 0);
     }
 
-    public function getIsActiveAttribute($is_active): string
+    public function getIsActiveAttribute($is_active): bool
     {
-        return $is_active ? 'فعال' : 'غیرفعال';
+        return (bool) $is_active;
+    }
+
+    /**
+     * برچسب فارسی وضعیت برای نمایش در پنل.
+     */
+    public function getIsActiveLabelAttribute(): string
+    {
+        return $this->getRawOriginal('is_active') ? 'فعال' : 'غیرفعال';
     }
 
     public function isParent(): bool

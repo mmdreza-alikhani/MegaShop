@@ -62,7 +62,12 @@ class Coupon extends Model
 
     public function getTypeAttribute($type): string
     {
-        return $type == 'amount' ? 'مبلغی' : 'درصدی';
+        return (string) $type;
+    }
+
+    public function getTypeLabelAttribute(): string
+    {
+        return $this->getRawOriginal('type') === 'amount' ? 'مبلغی' : 'درصدی';
     }
 
     public function orders(): HasMany

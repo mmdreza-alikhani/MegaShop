@@ -106,7 +106,7 @@
                                                 {{ $coupon->code }}
                                             </td>
                                             <td>
-                                                {{ $coupon->type }}
+                                                {{ $coupon->type_label }}
                                             </td>
                                             <td>
                                                 {{ verta($coupon->expired_at) }}

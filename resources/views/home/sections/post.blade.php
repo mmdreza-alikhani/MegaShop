@@ -1,7 +1,7 @@
 <div class="col-md-6">
     <div class="nk-blog-post">
         <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="nk-post-img">
-            <img style="height: 350px" src="{{ Storage::url(config('upload.user_avatar_path') . '/') . $post->image }}" alt="{{ $post->title }}-image">
+            <img style="height: 350px" src="{{ Storage::url(config('upload.post_path') . '/' . $post->image }}" alt="{{ $post->title }}-image">
             <span class="nk-post-comments-count">{{ $post->comments->count() }}</span>
         </a>
         <div class="nk-gap"></div>
@@ -16,7 +16,7 @@
         </div>
         <div class="nk-gap"></div>
         <div class="nk-post-text text-right">
-            <p style="direction: rtl">{{ substr(strip_tags($post->text), 0 , 250) . '...' }}</p>
+            <p style="direction: rtl">{{ Str::limit(strip_tags($post->text), 250) }}</p>
         </div>
         <div class="nk-gap"></div>
         <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 nk-btn-hover-color-main-1">ادامه مطلب</a>

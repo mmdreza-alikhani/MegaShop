@@ -18,9 +18,20 @@ class SearchController extends Controller
 {
     public function search(): View|Application|Factory
     {
-        $keyword = trim(request()->input('q'));
-        $products = Product::search('title', $keyword)->get();
-        $posts = Post::search('title', $keyword)->get();
+        $keyword = trim((string) request()->input('q'));
+
+        $products = Product::query()
+            ->active()
+            ->search('title', $keyword)
+            ->withCardData()
+            ->limit(24)
+            ->get();
+
+        $posts = Post::query()
+            ->active()
+            ->search('title', $keyword)
+            ->limit(12)
+            ->get();
 
         return view('home.search.index', compact('products', 'posts', 'keyword'));
     }

@@ -143,7 +143,7 @@
                             محصولات
                         </a>
                         <ul class="dropdown">
-                            @foreach(Category::query()->where('parent_id', 0)->where('is_active', 1)->get() as $parent_category)
+                            @foreach(\Illuminate\Support\Facades\Cache::remember('header_menu_categories', now()->addHour(), fn () => Category::query()->where('parent_id', 0)->where('is_active', 1)->with('children')->get()) as $parent_category)
                                 <li class="nk-drop-item">
                                     <a class="text-right">
                                         {{ $parent_category->title }}

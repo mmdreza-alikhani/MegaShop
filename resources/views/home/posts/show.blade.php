@@ -138,7 +138,7 @@
                                             <h2 class="nk-post-title h4 text-right"><a href="{{ route('home.posts.show', ['post' => $post->slug]) }}">{{ $post->title }}</a></h2>
                                             <div class="nk-gap"></div>
                                             <div class="nk-post-text text-right">
-                                                <p style="direction: rtl">{{ substr(strip_tags($post->text), 0 , 500) . '...' }}</p>
+                                                <p style="direction: rtl">{{ Str::limit(strip_tags($post->text), 500) }}</p>
                                             </div>
                                         </div>
                                         <div class="col-md-4 col-lg-3 text-right" style="direction: rtl">

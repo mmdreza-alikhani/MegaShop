@@ -88,7 +88,7 @@
                                             </td>
                                             <td>
                                                 <span class="badge {{ $banner->getRawOriginal('is_active') ?  'badge-success' : 'badge-secondary' }}">
-                                                    {{ $banner->is_active }}
+                                                    {{ $banner->is_active_label }}
                                                 </span>
                                             </td>
                                             <td>

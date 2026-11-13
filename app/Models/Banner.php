@@ -60,8 +60,16 @@ class Banner extends Model
         $query->where('is_active', 1);
     }
 
-    public function getIsActiveAttribute($is_active): string
+    public function getIsActiveAttribute($is_active): bool
     {
-        return $is_active ? 'فعال' : 'غیرفعال';
+        return (bool) $is_active;
+    }
+
+    /**
+     * برچسب فارسی وضعیت برای نمایش در پنل.
+     */
+    public function getIsActiveLabelAttribute(): string
+    {
+        return $this->getRawOriginal('is_active') ? 'فعال' : 'غیرفعال';
     }
 }

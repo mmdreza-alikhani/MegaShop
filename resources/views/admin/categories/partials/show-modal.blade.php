@@ -21,7 +21,7 @@
                     </div>
                     <div class="form-group col-12 col-lg-6">
                         <label for="is_active-{{ $category->id }}">وضعیت:</label>
-                        <input type="text" id="is_active-{{ $category->id }}" class="form-control" value="{{ $category->is_active }}" disabled>
+                        <input type="text" id="is_active-{{ $category->id }}" class="form-control" value="{{ $category->is_active_label }}" disabled>
                     </div>
                     <div class="form-group col-12 col-lg-6">
                         <label for="icon-{{ $category->id }}">آیکون:</label>

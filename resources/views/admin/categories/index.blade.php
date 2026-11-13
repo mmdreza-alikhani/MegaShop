@@ -89,7 +89,7 @@
                                             </td>
                                             <td>
                                                 <span class="badge {{ $category->getRawOriginal('is_active') ?  'badge-success' : 'badge-secondary' }}">
-                                                    {{ $category->is_active }}
+                                                    {{ $category->is_active_label }}
                                                 </span>
                                             </td>
                                             <td>

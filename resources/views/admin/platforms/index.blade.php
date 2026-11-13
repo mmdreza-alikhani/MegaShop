@@ -106,7 +106,7 @@
                                             </td>
                                             <td>
                                                 <span class="badge {{ $platform->getRawOriginal('is_active') ?  'badge-success' : 'badge-secondary' }}">
-                                                    {{ $platform->is_active }}
+                                                    {{ $platform->is_active_label }}
                                                 </span>
                                             </td>
                                             <td>
