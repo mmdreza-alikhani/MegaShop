@@ -160,7 +160,7 @@ Route::name('home.')->group(function () {
                 ->name('verifyEmail')
                 ->middleware('throttle:3,1');
 
-            Route::get('logout', [Home\ProfileController::class, 'logout'])->name('logout');
+            Route::post('logout', Home\LogoutController::class)->name('logout');
         });
 
     Route::post('comments/{model}/{id}', [Home\CommentController::class, 'store'])

@@ -42,7 +42,14 @@
                                 @if($user->email_verified_at == null)
                                     <li><a class="verifyEmail {{ request()->is('profile/verifyEmail') ? 'active-link' : '' }}" href="{{ route('home.profile.verifyEmail') }}"> تایید ایمیل </a></li>
                                 @endif
-                                <li><a class="logout" href="{{ route('home.profile.logout') }}"> ({{ $user->username }}) نیستید؟ خروج از حساب کاربری  </a></li>
+                                <li>
+                                    <form action="{{ route('home.profile.logout') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-link p-0 logout" style="direction: rtl">
+                                            ({{ $user->username }}) نیستید؟ خروج از حساب کاربری
+                                        </button>
+                                    </form>
+                                </li>
                             </ul>
                         </div>
                     </div>

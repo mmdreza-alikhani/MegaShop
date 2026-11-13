@@ -18,7 +18,9 @@
                 @foreach($wishlist as $item)
                     <tr>
                         <td>
-                            <form action="{{ route('home.products.wishlist.remove', ['product' => $item->product]) }}" method="GET">
+                            <form action="{{ route('home.products.wishlist.remove', ['product' => $item->product]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
                                 <button class="btn btn-danger m-1" type="submit">
                                     <i class="fa fa-trash"></i>
                                 </button>

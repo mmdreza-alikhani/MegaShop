@@ -96,7 +96,21 @@
                                             <button class="nk-btn nk-btn-rounded nk-btn-color-main-1" type="submit">افزودن به سبد خرید</button>
                                         @endif
                                     @endif
-                                    <a href="{{ $product->checkUserWishlist(auth()->id()) ? route('home.products.wishlist.remove', ['product' => $product]) : route('home.products.wishlist.add', ['product' => $product]) }}" class="btn bg-transparent"><i class="fa fa-heart fa-lg {{ $product->checkUserWishlist(auth()->id()) ? 'text-danger' : 'text-light' }}"></i></a>
+                                    @php($inWishlist = auth()->check() && $product->checkUserWishlist(auth()->id()))
+                                    @auth
+                                        {{-- دکمه علاقه‌مندی با formaction ارسال می‌شود تا داخل فرم سبد، فرم تودرتو ایجاد نشود --}}
+                                        <button type="submit" formnovalidate
+                                                formaction="{{ $inWishlist ? route('home.products.wishlist.remove', ['product' => $product]) : route('home.products.wishlist.add', ['product' => $product]) }}"
+                                                formmethod="POST"
+                                                @if($inWishlist) name="_method" value="DELETE" @endif
+                                                class="btn bg-transparent" title="افزودن به علاقه‌مندی‌ها">
+                                            <i class="fa fa-heart fa-lg {{ $inWishlist ? 'text-danger' : 'text-light' }}"></i>
+                                        </button>
+                                    @else
+                                        <a href="#" data-toggle="modal" data-target="#modalLogin" class="btn bg-transparent" title="برای افزودن به علاقه‌مندی‌ها وارد شوید">
+                                            <i class="fa fa-heart fa-lg text-light"></i>
+                                        </a>
+                                    @endauth
                                 </div>
                         </form>
                         <div class="nk-gap-2"></div>

@@ -20,7 +20,15 @@ class WishList extends Model
         'user_id' => 'integer',
         'product_id' => 'integer',
     ];
-    protected $primaryKey = ['user_id', 'product_id'];
+    /**
+     * جدول کلید اصلی ترکیبی (user_id, product_id) دارد و Eloquent آرایه را
+     * پشتیبانی نمی‌کند؛ پس غیرافزایشی اعلام می‌شود تا INSERT ساده انجام شود.
+     */
+    protected $primaryKey = 'user_id';
+
+    public $incrementing = false;
+
+    protected $keyType = 'int';
 
     public function scopeUserId($query, $user_id): void
     {

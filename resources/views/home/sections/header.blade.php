@@ -26,9 +26,12 @@
                     </li>
                     @auth()
                         <li>
-                            <a href="{{ route('home.profile.logout') }}" class="search-btn">
-                                <span class="fa fa-lg fa-sign-out"></span>
-                            </a>
+                            <form action="{{ route('home.profile.logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="search-btn btn btn-link p-0" title="خروج از حساب کاربری">
+                                    <span class="fa fa-lg fa-sign-out"></span>
+                                </button>
+                            </form>
                         </li>
                         <li>
                         <span class="nk-cart-toggle">
