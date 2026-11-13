@@ -57,7 +57,7 @@
                         </div>
                         <div class="form-group col-12 col-lg-3">
                             <label>لینک کوتاه:</label>
-                            <input type="text" value="{{ $product->shortLink->code }}" class="form-control" disabled>
+                            <input type="text" value="{{ $product->shortLink?->code }}" class="form-control" disabled>
                         </div>
                         <div class="form-group col-12 col-lg-3">
                             <label for="platformSelect">پلتفرم:*</label>

@@ -37,7 +37,7 @@
                         <div class="form-group col-12 col-lg-4">
                             <label for="password">رمز عبور:*</label>
                             <input type="password" name="password" id="password" class="form-control"
-                                   value="{{ old('password') }}" required>
+                                   autocomplete="new-password" required>
                         </div>
                         <div class="form-group col-12 col-lg-4">
                             <label for="phone_number">شماره تلفن:</label>
@@ -46,6 +46,13 @@
                                        maxlength="10" class="form-control" value="{{ old('phone_number') }}">
                                 <div class="input-group-text">98+</div>
                             </div>
+                        </div>
+                        <div class="form-group col-12 col-lg-4">
+                            <label for="is_active">وضعیت:</label>
+                            <select name="is_active" id="is_active" class="form-control">
+                                <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>فعال</option>
+                                <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>غیرفعال</option>
+                            </select>
                         </div>
                     </div>
                 </div>

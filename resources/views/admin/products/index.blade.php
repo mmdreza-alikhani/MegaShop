@@ -97,7 +97,7 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                {{ $product->shortLink->code }}
+                                                {{ $product->shortLink?->code }}
                                             </td>
                                             <td>
                                                 <div class="dropdown base show">

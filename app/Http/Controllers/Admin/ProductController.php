@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Product\UpdateProductRequest;
 use App\Http\Requests\Admin\Product\UploadProductNewImagesRequest;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\OrderItem;
 use App\Models\Platform;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -23,67 +24,60 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    protected mixed $primaryUploadPath, $othersUploadPath;
-    public function __construct(private readonly FileUploadService $fileUpload, private readonly AttributeService $attributeService)
-    {
+    protected mixed $primaryUploadPath;
+
+    protected mixed $othersUploadPath;
+
+    public function __construct(
+        private readonly FileUploadService $fileUpload,
+        private readonly AttributeService $attributeService
+    ) {
         $this->primaryUploadPath = config('upload.product_primary_path');
         $this->othersUploadPath = config('upload.product_others_path');
         $this->middleware('permission:products-index', ['only' => ['index', 'show']]);
         $this->middleware('permission:products-create', ['only' => ['store', 'create']]);
-        $this->middleware('permission:products-edit', ['only' => ['update', 'edit']]);
+        $this->middleware('permission:products-edit', ['only' => ['update', 'edit', 'addImages', 'removeImages', 'setToPrimary']]);
         $this->middleware('permission:products-delete', ['only' => ['destroy']]);
     }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request): View|Application|Factory
     {
-        $query = Product::query();
-        if ($request->input('q')) {
-            $query->search('title', trim(request()->input('q')));
+        $query = Product::query()->with(['category:id,title', 'brand:id,title', 'shortLink']);
+
+        if ($request->filled('q')) {
+            $query->search('title', trim((string) $request->input('q')));
         }
-        $products = $query->latest()->with('shortLink')->paginate(15)->withQueryString();
+
+        $products = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.products.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): View|Application|Factory
     {
-        $brands = Cache::remember('roles', now()->addHour(), function () {
-            return Brand::active()->pluck('title', 'id');
-        });
-        $platforms = Cache::remember('platforms', now()->addHour(), function () {
-            return Platform::active()->pluck('title', 'id');
-        });
-        $tags = Cache::remember('tags', now()->addHour(), function () {
-            return Tag::pluck('title', 'id');
-        });
-        $categories = Cache::remember('active_categories', now()->addHour(), function () {
-            return Category::active()->pluck('title', 'id');
-        });
-
-        return view('admin.products.create', compact('brands', 'tags', 'categories', 'platforms'));
+        return view('admin.products.create', $this->formData());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreProductRequest $request): RedirectResponse
     {
         try {
             DB::beginTransaction();
 
-            $images = $this->fileUpload->uploadWithGallery($request->file('primary_image'), $request->other_images, $this->primaryUploadPath, $this->othersUploadPath);
+            $images = $this->fileUpload->uploadWithGallery(
+                $request->file('primary_image'),
+                $request->file('other_images', []),
+                $this->primaryUploadPath,
+                $this->othersUploadPath
+            );
+
+            $data = $request->validated();
+            unset($data['faqs'], $data['code'], $data['short_link'], $data['primary_image'], $data['other_images']);
 
             $product = Product::create([
-                ...$request->validated(),
+                ...$data,
                 'primary_image' => $images['primary'],
             ]);
 
@@ -95,182 +89,207 @@ class ProductController extends Controller
             }
 
             ShortLink::create([
-                'code' => $request->has('code') ? $request->string('code') : generateUniqueShortCode(),
+                'code' => $request->filled('short_link')
+                    ? $request->string('short_link')->toString()
+                    : generateUniqueShortCode(),
                 'type' => 'product',
                 'target_id' => $product->id,
             ]);
 
-            if ($request->has('faqs')) {
-                foreach ($request->faqs as $faqData) {
-                    $product->faqs()->create([
-                        'question' => $faqData['question'],
-                        'answer' => $faqData['answer'],
-                    ]);
+            foreach ($request->input('faqs', []) as $faqData) {
+                if (empty($faqData['question']) || empty($faqData['answer'])) {
+                    continue;
                 }
+
+                $product->faqs()->create([
+                    'question' => $faqData['question'],
+                    'answer' => $faqData['answer'],
+                ]);
             }
 
-            $product->tags()->attach($request->input('tag_ids'));
+            $product->tags()->sync($request->input('tag_ids', []));
 
-            // Handle filters
-            if ($request->has('filters_value')) {
-                $this->attributeService->syncFilters(
-                    $product->id,
-                    $request->filters_value
-                );
+            $this->attributeService->updateFilters(
+                $request->input('filters_value') ?: [],
+                $product,
+                true
+            );
+
+            $variationAttributeId = $this->variationAttributeId($product);
+
+            if (! $variationAttributeId && $request->filled('variation_values')) {
+                throw new Exception('دسته‌بندی انتخابی هیچ ویژگی تنوعی ندارد؛ ابتدا برای این دسته ویژگی «تنوع» تعریف کنید.');
             }
 
-            // Handle variations
-            if ($request->has('variation_values')) {
+            if ($variationAttributeId && $request->filled('variation_values')) {
                 $this->attributeService->syncVariations(
                     $product->id,
-                    $product->category->variation->first()->id,
-                    $request->variation_values
+                    $variationAttributeId,
+                    $request->input('variation_values')
                 );
             }
 
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            flash()->error(config('flasher.product.create_failed'));
             report($e);
-            return redirect()->back();
+            flash()->error(config('flasher.product.create_failed'));
+
+            return redirect()->back()->withInput();
         }
 
         flash()->success(config('flasher.product.created'));
-        return redirect()->back();
+
+        return redirect()->route('admin.products.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Product $product): Factory|Application|View
     {
         $product->load('shortLink', 'tags', 'faqs');
+
         $filters = $product->filters()
-            ->with('attribute')
+            ->with('attribute:id,title')
             ->get()
-            ->map(function ($attr) {
-                return [
-                    'value' => $attr->value,
-                    'title' => $attr->attribute->title,
-                ];
-            });
+            ->map(fn ($attribute) => [
+                'value' => $attribute->value,
+                'title' => $attribute->attribute?->title,
+            ])
+            ->filter(fn ($filter) => $filter['title'] !== null)
+            ->values();
+
         $variations = $product->variations()
-            ->with('attribute')
+            ->with('attribute:id,title')
             ->get()
-            ->map(function ($attr) {
-                return [
-                    'title' => $attr->attribute->title,
-                    'value' => $attr->value,
-                    'price' => $attr->price,
-                    'quantity' => $attr->quantity,
-                    'sku' => $attr->sku,
-                    'sale_price' => $attr->sale_price,
-                    'date_on_sale_from' => $attr->date_on_sale_from,
-                    'date_on_sale_to' => $attr->date_on_sale_to,
-                ];
-            });
+            ->map(fn ($variation) => [
+                'title' => $variation->attribute?->title,
+                'value' => $variation->value,
+                'price' => $variation->price,
+                'quantity' => $variation->quantity,
+                'sku' => $variation->sku,
+                'sale_price' => $variation->sale_price,
+                'date_on_sale_from' => $variation->date_on_sale_from,
+                'date_on_sale_to' => $variation->date_on_sale_to,
+            ]);
 
         return view('admin.products.show', compact('product', 'filters', 'variations'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Product $product): Factory|View
     {
-        $brands = Cache::remember('roles', now()->addHour(), function () {
-            return Brand::active()->pluck('title', 'id');
-        });
-        $platforms = Cache::remember('platforms', now()->addHour(), function () {
-            return Platform::active()->pluck('title', 'id');
-        });
-        $tags = Cache::remember('tags', now()->addHour(), function () {
-            return Tag::pluck('title', 'id');
-        });
-        $categories = Cache::remember('active_categories', now()->addHour(), function () {
-            return Category::active()->pluck('title', 'id');
-        });
         $filters = $product->filters()
-            ->with('attribute')
+            ->with('attribute:id,title')
             ->get()
-            ->map(function ($attr) {
-                return [
-                    'id'    => $attr->id,
-                    'value' => $attr->value,
-                    'title' => $attr->attribute->title,
-                ];
-            });
-        $variations = $product->variations()
-            ->with('attribute')
-            ->get()
-            ->map(function ($attr) {
-                return [
-                    'id' => $attr->id,
-                    'title' => $attr->attribute->title,
-                    'value' => $attr->value,
-                    'price' => $attr->price,
-                    'quantity' => $attr->quantity,
-                    'sku' => $attr->sku,
-                    'sale_price' => $attr->sale_price,
-                    'date_on_sale_from' => $attr->date_on_sale_from,
-                    'date_on_sale_to' => $attr->date_on_sale_to,
-                ];
-            });
+            ->map(fn ($attribute) => [
+                'id' => $attribute->id,
+                'value' => $attribute->value,
+                'title' => $attribute->attribute?->title,
+            ])
+            ->filter(fn ($filter) => $filter['title'] !== null)
+            ->values();
 
-        return view('admin.products.edit', compact('product', 'brands', 'tags', 'categories', 'filters', 'variations', 'platforms'));
+        $variations = $product->variations()
+            ->with('attribute:id,title')
+            ->get()
+            ->map(fn ($variation) => [
+                'id' => $variation->id,
+                'title' => $variation->attribute?->title,
+                'value' => $variation->value,
+                'price' => $variation->price,
+                'quantity' => $variation->quantity,
+                'sku' => $variation->sku,
+                'sale_price' => $variation->sale_price,
+                'date_on_sale_from' => $variation->date_on_sale_from,
+                'date_on_sale_to' => $variation->date_on_sale_to,
+            ]);
+
+        return view('admin.products.edit', [
+            ...$this->formData(),
+            'product' => $product,
+            'filters' => $filters,
+            'variations' => $variations,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateProductRequest $request, Product $product): RedirectResponse
     {
         try {
             DB::beginTransaction();
 
-            $product->update([
-                ...$request->validated(),
-            ]);
+            $data = $request->validated();
+            unset($data['faqs'], $data['newFaqs'], $data['code'], $data['short_link']);
 
-            $existingFaqIds = $product->faqs()->pluck('id')->toArray();
-            $requestFaqIds = array_keys($request->faqs);
-            $removedFaqs = array_diff($existingFaqIds, $requestFaqIds);
+            $product->update($data);
 
-            foreach ($request->faqs as $key => $faqData) {
+            // --- سوالات متداول ---
+            $existingFaqs = $product->faqs()->pluck('id')->all();
+            $requestFaqs = $request->input('faqs', []) ?: [];
+            $requestFaqIds = array_map('intval', array_keys($requestFaqs));
+
+            foreach ($requestFaqs as $key => $faqData) {
                 $faq = $product->faqs()->find($key);
+
+                if (! $faq) {
+                    continue;
+                }
+
                 $faq->update([
                     'question' => $faqData['question'],
                     'answer' => $faqData['answer'],
                 ]);
             }
-            if (!empty($removedFaqs)) {
+
+            $removedFaqs = array_diff($existingFaqs, $requestFaqIds);
+
+            if (! empty($removedFaqs)) {
                 $product->faqs()->whereIn('id', $removedFaqs)->delete();
             }
 
-            if ($request->has('newFaqs')) {
-                foreach ($request->newFaqs as $faqData) {
-                    $product->faqs()->create([
-                        'question' => $faqData['question'],
-                        'answer' => $faqData['answer'],
-                    ]);
+            foreach ($request->input('newFaqs', []) ?: [] as $faqData) {
+                if (empty($faqData['question']) || empty($faqData['answer'])) {
+                    continue;
                 }
+
+                $product->faqs()->create([
+                    'question' => $faqData['question'],
+                    'answer' => $faqData['answer'],
+                ]);
             }
 
-            $product->tags()->sync($request->tag_ids);
+            $product->tags()->sync($request->input('tag_ids', []));
 
-            $this->attributeService->updateFilters($request->filters_value, $product, $product->wasChanged('category_id'));
-            $this->attributeService->handleVariationsUpdate($product->id, $product->category->variation->first()->id, $request->variation_values, $request->new_variation_values);
+            $this->attributeService->updateFilters(
+                $request->input('filters_value') ?: [],
+                $product,
+                $product->wasChanged('category_id')
+            );
+
+            $variationAttributeId = $this->variationAttributeId($product);
+
+            if (! $variationAttributeId
+                && ($request->filled('variation_values') || $request->filled('new_variation_values'))) {
+                throw new Exception('دسته‌بندی انتخابی هیچ ویژگی تنوعی ندارد؛ ابتدا برای این دسته ویژگی «تنوع» تعریف کنید.');
+            }
+
+            if ($variationAttributeId) {
+                $this->attributeService->handleVariationsUpdate(
+                    $product->id,
+                    $variationAttributeId,
+                    $request->input('variation_values', []) ?: [],
+                    $request->input('new_variation_values', []) ?: []
+                );
+            }
 
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            flash()->error(config('flasher.product.update_failed'));
             report($e);
-            return redirect()->back();
+            flash()->error(config('flasher.product.update_failed'));
+
+            return redirect()->back()->withInput();
         }
 
         flash()->success(config('flasher.product.updated'));
+
         return redirect()->route('admin.products.edit', $product->slug);
     }
 
@@ -279,103 +298,145 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
-            $images = $this->fileUpload->uploadToGallery($request->images, $this->othersUploadPath);
+            $images = $this->fileUpload->uploadToGallery($request->file('images', []), $this->othersUploadPath);
 
             foreach ($images as $imageName) {
                 ProductImage::create([
-                    'product_id' => '58',
-                    'image' => $imageName[0],
+                    'product_id' => $product->id,
+                    'image' => $imageName,
                 ]);
             }
 
             DB::commit();
 
             flash()->success(config('flasher.product.add_images'));
-
         } catch (Exception $e) {
             DB::rollBack();
             report($e);
             flash()->error(config('flasher.product.add_images_failed'));
-            report($e);
         }
 
-        return redirect()->route('admin.products.edit', $product);
+        return redirect()->route('admin.products.edit', $product->slug);
     }
 
     public function removeImages(Product $product, ProductImage $image): RedirectResponse
     {
+        if ((int) $image->product_id !== (int) $product->id) {
+            flash()->error('تصویر متعلق به این محصول نیست');
+
+            return redirect()->back();
+        }
+
         try {
             DB::beginTransaction();
 
-            // Check if image belongs to product
-            if ($image->product_id !== $product->id) {
-                flash()->error('تصویر متعلق به این محصول نیست');
-                return redirect()->back();
-            }
-
-            // Delete file from storage
-            $this->fileUpload->delete($image->image, $this->othersUploadPath);
-
-            // Delete from database
+            $this->fileUpload->delete($this->othersUploadPath, $image->image);
             $image->delete();
 
             DB::commit();
 
             flash()->success(config('flasher.product.removed_images'));
-
         } catch (Exception $e) {
             DB::rollBack();
-            flash()->error(config('flasher.product.remove_images_failed'));
             report($e);
+            flash()->error(config('flasher.product.remove_images_failed'));
         }
 
-        return redirect()->route('admin.products.edit', $product);
+        return redirect()->route('admin.products.edit', $product->slug);
     }
 
     public function setToPrimary(Product $product, ProductImage $image): RedirectResponse
     {
+        if ((int) $image->product_id !== (int) $product->id) {
+            flash()->error('تصویر متعلق به این محصول نیست');
+
+            return redirect()->back();
+        }
+
         try {
             DB::beginTransaction();
 
-            // Check if image belongs to product
-            if ($image->product_id !== $product->id) {
-                flash()->error('تصویر متعلق به این محصول نیست');
-                return redirect()->back();
-            }
+            $oldPrimary = $product->primary_image;
 
-            // Create new image from old primary image
-            ProductImage::create([
-                'product_id' => $product->id,
-                'image' => $product->primary_image,
-            ]);
-
-            // Set new primary image
-            $product->update([
-                'primary_image' => $image->image,
-            ]);
-
-            // Delete the image from gallery
+            $product->update(['primary_image' => $image->image]);
             $image->delete();
+
+            // تصویر اصلی قبلی به گالری برمی‌گردد (اگر خالی نباشد)
+            if ($oldPrimary) {
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image' => $oldPrimary,
+                ]);
+            }
 
             DB::commit();
 
             flash()->success(config('flasher.product.set_primary_image'));
-
         } catch (Exception $e) {
             DB::rollBack();
-            flash()->error(config('flasher.product.set_primary_failed'));
             report($e);
+            flash()->error(config('flasher.product.set_primary_failed'));
         }
 
-        return redirect()->route('admin.products.edit', $product);
+        return redirect()->route('admin.products.edit', $product->slug);
     }
 
+    public function destroy(Product $product): RedirectResponse
+    {
+        // محصولی که در سفارش‌ها استفاده شده حذف نمی‌شود تا تاریخچه سفارش نشکند.
+        if (OrderItem::where('product_id', $product->id)->exists()) {
+            flash()->warning('این محصول در سفارش‌های ثبت‌شده استفاده شده و قابل حذف نیست. آن را غیرفعال کنید.');
+
+            return redirect()->back();
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $this->fileUpload->delete($this->primaryUploadPath, $product->primary_image);
+
+            foreach ($product->images()->pluck('image') as $imageName) {
+                $this->fileUpload->delete($this->othersUploadPath, $imageName);
+            }
+
+            $product->tags()->detach();
+            $product->faqs()->delete();
+            $product->filters()->delete();
+            $product->images()->delete();
+            $product->variations()->delete();
+            $product->shortLink()->delete();
+            $product->delete();
+
+            DB::commit();
+
+            flash()->success(config('flasher.product.deleted') ?? 'محصول با موفقیت حذف شد.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            report($e);
+            flash()->error(config('flasher.product.delete_failed') ?? 'حذف محصول با خطا مواجه شد.');
+        }
+
+        return redirect()->route('admin.products.index');
+    }
 
     /**
-     * Remove the specified resource from storage.
+     * داده‌های مشترک فرم ایجاد و ویرایش محصول.
      */
-    public function destroy(string $id)
+    private function formData(): array
     {
-        //
+        return [
+            'brands' => Cache::remember('product_brands', now()->addHour(), fn () => Brand::active()->pluck('title', 'id')),
+            'platforms' => Cache::remember('product_platforms', now()->addHour(), fn () => Platform::active()->pluck('title', 'id')),
+            'tags' => Cache::remember('product_tags', now()->addHour(), fn () => Tag::pluck('title', 'id')),
+            'categories' => Cache::remember('product_categories', now()->addHour(), fn () => Category::active()->pluck('title', 'id')),
+        ];
+    }
+
+    /**
+     * شناسه ویژگی «مدل/تنوع» دسته‌بندی محصول.
+     */
+    private function variationAttributeId(Product $product): ?int
+    {
+        return $product->category?->variation()->value('attributes.id');
     }
 }

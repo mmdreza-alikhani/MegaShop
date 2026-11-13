@@ -43,6 +43,18 @@
                             </div>
                         </div>
                         <div class="form-group col-12 col-lg-4">
+                            <label for="password-{{ $user->id }}">رمز عبور جدید (اختیاری):</label>
+                            <input type="password" name="password" id="password-{{ $user->id }}" class="form-control"
+                                   autocomplete="new-password" placeholder="در صورت خالی بودن تغییر نمی‌کند">
+                        </div>
+                        <div class="form-group col-12 col-lg-4">
+                            <label for="is_active-{{ $user->id }}">وضعیت:</label>
+                            <select class="form-control" id="is_active-{{ $user->id }}" name="is_active">
+                                <option value="1" {{ $user->getRawOriginal('is_active') ? 'selected' : '' }}>فعال</option>
+                                <option value="0" {{ $user->getRawOriginal('is_active') ? '' : 'selected' }}>غیرفعال</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-12 col-lg-4">
                             <label for="role">نقش کاربری:</label>
                             <select class="form-control" id="role-{{ $user->id }}" name="role">
                                 <option></option>
@@ -63,10 +75,10 @@
                                             <input type="checkbox"
                                                    value="{{ $permission->name }}"
                                                    name="{{ $permission->name }}"
-                                                   id="{{ $permission->name . '-check' }}"
+                                                   id="{{ $permission->name . '-' . $user->id . '-check' }}"
                                                    class="mr-2"
                                                 {{ in_array($permission->id, $user->getAllPermissions()->pluck('id')->toArray()) ? 'checked' : '' }}>
-                                            <label for="{{ $permission->name . '-check' }}">
+                                            <label for="{{ $permission->name . '-' . $user->id . '-check' }}">
                                                 {{ $permission->display_name }}
                                             </label>
                                         </div>

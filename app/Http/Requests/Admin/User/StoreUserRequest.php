@@ -12,9 +12,11 @@ class StoreUserRequest extends FormRequest
     public function prepareForValidation(): void
     {
         $this->merge([
-            'username' => trim(strtolower($this->input('username'))),
+            'username' => trim(strtolower((string) $this->input('username'))),
+            'phone_number' => $this->input('phone_number') ? trim((string) $this->input('phone_number')) : null,
         ]);
     }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -31,12 +33,20 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|string|unique:users,phone_number',
+            'username' => 'required|string|max:255|unique:users,username',
             'first_name' => 'nullable|string|max:255',
             'last_name' => 'nullable|string|max:255',
-            'password' => 'required|string|max:255',
+            'password' => 'required|string|min:6|max:255',
             'email' => 'required|email|max:255|unique:users,email',
-            'phone_number' => 'nullable|integer|regex:/^9\d{0,11}$/|unique:users,phone_number',
+            'phone_number' => 'nullable|string|regex:/^0?9\d{9}$/|unique:users,phone_number',
+            'is_active' => 'nullable|boolean',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'phone_number.regex' => 'شماره تلفن باید با 9 شروع شود و ۱۰ رقم باشد (مثال: 9121234567).',
         ];
     }
 }

@@ -106,14 +106,20 @@ class AttributeService
     {
         DB::transaction(function () use ($variationValues) {
             foreach ($variationValues as $variationId => $values) {
-                ProductVariation::where('id', $variationId)->update([
+                $data = [
                     'price' => $values['price'],
                     'quantity' => $values['quantity'],
                     'sku' => $values['sku'],
-                    'sale_price' => $values['sale_price'],
+                    'sale_price' => $values['sale_price'] ?? null,
                     'date_on_sale_from' => $values['date_on_sale_from'] ?? null,
                     'date_on_sale_to' => $values['date_on_sale_to'] ?? null,
-                ]);
+                ];
+
+                if (! empty($values['value'])) {
+                    $data['value'] = $values['value'];
+                }
+
+                ProductVariation::where('id', $variationId)->update($data);
             }
         });
     }

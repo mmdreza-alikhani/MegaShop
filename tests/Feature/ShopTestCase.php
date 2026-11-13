@@ -13,11 +13,20 @@ use App\Models\User;
 use App\Models\UserAddress;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 abstract class ShopTestCase extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // بین تست‌ها، کش مجوزهای Spatie باید پاک شود (دیتابیس rollback می‌شود).
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+    }
 
     /**
      * کاربر نمونه از seeder خود پروژه (بدون هاردکد کردن رمز در تست).

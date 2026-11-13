@@ -56,9 +56,8 @@ class FileUploadService
         string $galleryPath,
         ?string $disk = 'public'
     ): array {
-        return [
-            $this->uploadMultiple($images, $galleryPath, $disk),
-        ];
+        // آرایه یک‌سطحی از نام فایل‌ها (قبلاً به اشتباه تودرتو برمی‌گشت)
+        return $this->uploadMultiple($images, $galleryPath, $disk);
     }
 
     /**
