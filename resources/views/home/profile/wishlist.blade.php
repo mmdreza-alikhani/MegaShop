@@ -1,40 +1,26 @@
 @extends('home.profile.master')
 
 @section('section')
-    <div class="info-box p-4 m-2 h-100 w-100 row rounded" style="background-color: rgba(35,41,48,.6)">
-        @if($wishlist->isEmpty())
-            <div class="alert alert-danger text-center w-100 text-center" style="direction: rtl">
-                شما محصول مورد علاقه ای ندارید!
+    @php
+        $wishlistProducts = $wishlist
+            ->map(fn ($item) => $item->product)
+            ->filter()
+            ->each(fn ($product) => $product->in_wishlist = true)
+            ->values();
+    @endphp
+
+    <div class="info-box p-4 m-2 h-100 w-100 row rounded mk-panel">
+        @if($wishlistProducts->isEmpty())
+            <div class="mk-empty w-100">
+                شما محصول مورد علاقه‌ای ندارید!
+                <a href="{{ route('home.products.index') }}">مشاهده محصولات</a>
             </div>
         @else
-            <table class="table text-center">
-                <thead>
-                <tr>
-                    <th scope="col">حذف</th>
-                    <th scope="col">نام محصول</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($wishlist as $item)
-                    <tr>
-                        <td>
-                            <form action="{{ route('home.products.wishlist.remove', ['product' => $item->product]) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger m-1" type="submit">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                        <td>
-                            <a href="{{ route('home.products.show' , ['product' => $item->product->id]) }}">
-                                {{ $item->product->title }}
-                            </a>
-                        </td>
-                    </tr>
+            <div class="mk-products-grid w-100">
+                @foreach($wishlistProducts as $product)
+                    @include('home.sections.product', ['product' => $product])
                 @endforeach
-                </tbody>
-            </table>
+            </div>
         @endif
     </div>
 @endsection

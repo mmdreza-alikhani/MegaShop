@@ -2554,3 +2554,17 @@ html[data-theme="light"] .nk-post-comments-count {
     padding-inline-end: 44px;
     padding-inline-start: 10px;
 }
+/* ---------- پنل‌های صفحه پروفایل ---------- */
+html[data-theme="light"] .info-box {
+    background-color: var(--mk-bg-2) !important;
+    border: 1px solid var(--mk-border);
+}
+
+html[data-theme="light"] .info-box .table {
+    color: var(--mk-text);
+}
+
+html[data-theme="light"] .info-box .table th,
+html[data-theme="light"] .info-box .table td {
+    border-color: var(--mk-border);
+}
