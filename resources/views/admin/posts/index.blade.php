@@ -94,7 +94,7 @@
                                                 <a href="{{ url('management/users?q=') . $post->author->username }}">{{ $post->author->username }}</a>
                                             </td>
                                             <td>
-                                                {{ $post->shortLink->code }}
+                                                {{ $post->shortLink?->code }}
                                             </td>
                                             <td>
                                                 <div class="dropdown base show">

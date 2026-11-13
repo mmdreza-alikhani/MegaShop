@@ -70,7 +70,7 @@
                         </div>
                         <div class="form-group col-12 col-lg-4">
                             <label>لینک کوتاه:</label>
-                            <input type="text" value="{{ $post->shortLink->code }}" class="form-control" disabled>
+                            <input type="text" value="{{ $post->shortLink?->code }}" class="form-control" disabled>
                         </div>
                         <div class="form-group col-12 col-lg-4">
                             <label>تاریخ ایجاد:</label>
