@@ -8,10 +8,7 @@
             در تاریخ
             {{ verta($comment->updated_at)->format('%d %B، %Y') }}
             گفته:
-            <a class="btn nk-btn-color-main-1 replyBtn" data-id="{{ $comment->id }}"
-               href="{{ url()->current() }}#addComment">
-                پاسخ
-            </a>
+            <a class="mk-reply-btn replyBtn" data-id="{{ $comment->id }}" data-user="{{ $comment->user?->username ?? 'کاربر' }}" href="#addComment">پاسخ</a>
         </div>
         <div class="nk-comment-text text-right" style="direction: rtl">
             <p>{{ $comment->text }}</p>

@@ -60,6 +60,11 @@
                 @endforeach
             </div>
         </div>
+
+        <a class="mk-news-foot" href="{{ route('home.posts.index') }}">
+            <span>مشاهده همه اخبار</span>
+            <span class="fa fa-angle-left"></span>
+        </a>
     </div>
 </div>
 

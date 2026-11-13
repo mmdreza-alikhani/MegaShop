@@ -95,6 +95,11 @@
                                 @csrf
                                 <div class="nk-gap-1"></div>
                                 @include('home.sections.errors')
+
+                                <div class="mk-reply-chip d-none" id="replyToChip">
+                                        <span>در حال پاسخ به <strong id="replyToUser"></strong></span>
+                                        <button type="button" class="mk-reply-chip-cancel" id="replyChipCancel" aria-label="لغو پاسخ">&times;</button>
+                                    </div>
                                 <textarea class="form-control required" name="text" rows="5" placeholder="نظر شما *" aria-required="true"></textarea>
                                 <input type="hidden" name="replyOf" id="replyOf" value="0">
                                 <div class="nk-gap-1"></div>
@@ -102,7 +107,11 @@
                             </form>
                         </div>
                     @else
-                        <div class="alert alert-danger text-right"> برای نظر دادن ابتدا وارد شوید! </div>
+                        <div class="alert alert-danger text-right mk-login-hint">
+                                <span>برای نظر دادن ابتدا وارد شوید!</span>
+                                <button type="button" class="mk-btn mk-btn-primary mk-btn-sm"
+                                        data-toggle="modal" data-target="#modalLogin">ورود / ثبت‌نام</button>
+                            </div>
                     @endif
                     <!-- END: Reply -->
 
@@ -184,9 +193,5 @@
             feedback.classList.remove('d-none');
             setTimeout(() => feedback.classList.add('d-none'), 3000);
         }
-
-        $('.replyBtn').on('click', function (){
-            $('#replyOf').val($(this).data('id'))
-        })
     </script>
 @endsection

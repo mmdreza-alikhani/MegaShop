@@ -3480,3 +3480,200 @@ html[data-theme="light"] .mk-social a:hover {
         transition: none !important;
     }
 }
+/* =========================================================
+   دکمه پاسخ و چیپ پاسخ به کامنت
+   ========================================================= */
+.mk-reply-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 26px;
+    margin-inline-start: 8px;
+    padding: 2px 12px;
+    font-size: .72rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--mk-accent);
+    text-decoration: none;
+    vertical-align: middle;
+    background: color-mix(in srgb, var(--mk-accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--mk-accent) 40%, transparent);
+    border-radius: 999px;
+    transition: color .18s ease, background .18s ease, transform .12s ease;
+}
+
+.mk-reply-btn:hover,
+.mk-reply-btn:focus {
+    color: var(--mk-on-accent);
+    text-decoration: none;
+    background: var(--mk-accent);
+}
+
+.mk-reply-btn:active {
+    transform: scale(.95);
+}
+
+.mk-reply-chip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    font-size: .82rem;
+    color: var(--mk-text);
+    background: color-mix(in srgb, var(--mk-accent) 10%, var(--mk-bg-2));
+    border: 1px solid color-mix(in srgb, var(--mk-accent) 30%, transparent);
+    border-inline-start: 3px solid var(--mk-accent);
+    border-radius: 10px;
+}
+
+.mk-reply-chip strong {
+    color: var(--mk-accent);
+}
+
+.mk-reply-chip-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--mk-muted);
+    background: var(--mk-hover);
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.mk-reply-chip-cancel:hover {
+    color: var(--mk-on-accent);
+    background: var(--mk-accent);
+}
+
+.mk-login-hint {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.mk-btn-sm {
+    min-height: 34px;
+    padding: 0 16px;
+    font-size: .78rem;
+}
+/* =========================================================
+   تنظیم اندازه بخش‌های صفحه اصلی (اخبار و مقالات)
+   ========================================================= */
+.nk-news-box .nk-news-box-list {
+    display: flex;
+    flex-direction: column;
+    max-height: none;
+    overflow: visible;
+}
+
+.nk-news-box .nk-news-box-list .nano {
+    flex: 1 1 auto;
+}
+
+.mk-news-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding: 12px 14px;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--mk-accent);
+    border-top: 1px solid var(--mk-border);
+    transition: background .18s ease;
+}
+
+.mk-news-foot:hover {
+    color: var(--mk-accent);
+    background: var(--mk-hover);
+}
+
+/* کارت مقاله: ارتفاع یکسان حتی وقتی کارت‌ها زیر هم می‌آیند */
+.mk-post-excerpt {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+@media (max-width: 991.98px) {
+    .nk-news-box .nk-news-box-list .nk-news-box-item {
+        padding: 14px;
+    }
+}
+/* ---------- رفع جمع‌شدن ستون‌های باکس اخبار ---------- */
+.nk-news-box .nk-news-box-list,
+.nk-news-box .nk-news-box-list .nano,
+.nk-news-box .nk-news-box-list .nano-content {
+    min-width: 0;
+}
+
+/* ---------- ارتفاع یکسان کارت‌های مقاله ---------- */
+.mk-post-title {
+    min-height: 3.2em;
+}
+
+.mk-post-excerpt {
+    min-height: 5.7em;
+}
+
+.mk-post-meta {
+    flex-wrap: wrap;
+}
+/* پیام مهمان: دکمه ورود کنار متن، نه انتهای نوار */
+.mk-login-hint {
+    justify-content: flex-start;
+}
+
+.mk-login-hint .mk-btn {
+    margin-inline-start: 4px;
+}
+
+/* فاصله نام و تاریخ تا دکمه پاسخ */
+.nk-comment-meta .mk-reply-btn {
+    margin-inline-start: 10px;
+}
+/* چیپ پاسخ: چیدمان فشرده از سمت راست */
+.mk-reply-chip {
+    justify-content: flex-start;
+    gap: 10px;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.mk-reply-chip-cancel {
+    margin-inline-start: auto;
+}
+/* تقسیم یکنواخت آیتم‌های اخبار در ارتفاع ستون */
+.nk-news-box .nk-news-box-list .nano,
+.nk-news-box .nk-news-box-list .nano-content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+}
+
+.nk-news-box .nk-news-box-list .nk-news-box-item {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid var(--mk-border);
+}
+
+.nk-news-box .nk-news-box-list .nk-news-box-item:last-child {
+    border-bottom: 0;
+}
+
+.nk-news-box .nk-news-box-item-image img {
+    max-height: 210px;
+}

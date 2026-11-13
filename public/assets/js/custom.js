@@ -304,3 +304,83 @@
         initBottomNav();
     }
 })();
+/* ---------- پاسخ به کامنت (کاربر و مهمان) ---------- */
+(function () {
+    var initCommentReply = function () {
+        var cancel = document.getElementById('replyChipCancel');
+
+        window.mkOpenAuthModal = function (panel) {
+            var modal = document.getElementById('modalLogin');
+
+            if (!modal) {
+                return;
+            }
+
+            if (window.jQuery && window.jQuery.fn.modal) {
+                window.jQuery(modal).modal('show');
+            }
+
+            var tab = modal.querySelector('[data-auth-tab="' + (panel || 'login') + '"]');
+
+            if (tab) {
+                tab.click();
+            }
+        };
+
+        if (cancel) {
+            cancel.addEventListener('click', function () {
+                if (replyField) {
+                    replyField.value = '0';
+                }
+
+                if (chip) {
+                    chip.classList.add('d-none');
+                }
+            });
+        }
+
+        document.querySelectorAll('.replyBtn').forEach(function (button) {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                // المان‌ها در لحظه کلیک خوانده می‌شوند (مثلاً وقتی فرم داخل تب پنهان است)
+                var replyField = document.getElementById('replyOf');
+                var chip = document.getElementById('replyToChip');
+                var chipName = document.getElementById('replyToUser');
+
+                // مهمان: فرمی برای پاسخ وجود ندارد، مودال ورود باز می‌شود
+                if (!replyField) {
+                    window.mkOpenAuthModal('login');
+                    return;
+                }
+
+                replyField.value = button.getAttribute('data-id') || '0';
+
+                if (chip && chipName) {
+                    chipName.textContent = button.getAttribute('data-user') || 'کاربر';
+                    chip.classList.remove('d-none');
+                }
+
+                var form = replyField.form;
+                var textarea = form ? form.querySelector('textarea[name="text"]') : null;
+                var anchor = document.getElementById('addComment');
+
+                if (anchor) {
+                    anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                if (textarea) {
+                    window.setTimeout(function () {
+                        textarea.focus({ preventScroll: true });
+                    }, 320);
+                }
+            });
+        });
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCommentReply);
+    } else {
+        initCommentReply();
+    }
+})();
