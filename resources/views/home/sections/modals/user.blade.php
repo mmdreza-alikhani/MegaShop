@@ -1,173 +1,207 @@
-<div class="nk-modal modal fade" id="modalLogin" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-body login-modal">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span class="ion-android-close"></span>
+@php
+    $loginBag = $errors->getBag('login');
+    $registerBag = $errors->getBag('register');
+
+    $initialAuthTab = $registerBag->any() ? 'register' : 'login';
+    $authShouldOpen = $loginBag->any() || $registerBag->any();
+@endphp
+<div class="nk-modal modal fade mk-auth-modal" id="modalLogin" tabindex="-1" role="dialog" aria-hidden="true"
+     data-auth-initial="{{ $initialAuthTab }}" data-auth-open="{{ $authShouldOpen ? '1' : '0' }}">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content mk-auth">
+            <button type="button" class="mk-auth-close" data-dismiss="modal" aria-label="بستن">&times;</button>
+
+            <div class="mk-auth-head">
+                <span class="mk-auth-eyebrow">{{ config('brand.name') }}</span>
+                <h3>ورود یا ثبت‌نام</h3>
+                <p>برای ادامه خرید وارد شوید یا حساب بسازید.</p>
+            </div>
+
+            <div class="mk-auth-tabs" role="tablist" aria-label="ورود و ثبت‌نام">
+                <button type="button" class="mk-auth-tab {{ $initialAuthTab === 'login' ? 'is-active' : '' }}"
+                        data-auth-tab="login" role="tab"
+                        aria-selected="{{ $initialAuthTab === 'login' ? 'true' : 'false' }}">
+                    ورود
                 </button>
+                <button type="button" class="mk-auth-tab {{ $initialAuthTab === 'register' ? 'is-active' : '' }}"
+                        data-auth-tab="register" role="tab"
+                        aria-selected="{{ $initialAuthTab === 'register' ? 'true' : 'false' }}">
+                    ثبت‌نام
+                </button>
+            </div>
 
-                <h4 class="mb-0 text-right"><span class="text-main-1"></span>ورود</h4>
-                <div class="nk-gap-1"></div>
+            {{-- ورود --}}
+            <div class="mk-auth-panel {{ $initialAuthTab === 'login' ? 'is-active' : '' }}" data-auth-panel="login">
+                @include('home.sections.errors', ['errors' => $loginBag])
 
-                <div class="nk-gap-1"></div>
-                <form method="POST" action="{{ route('login.store') }}" class="nk-form text-white" style="direction: rtl">
-                    @include('home.sections.errors', ['errors' => $errors->login])
+                <form method="POST" action="{{ route('login.store') }}" class="mk-auth-form">
                     @csrf
-                    <div class="row vertical-gap">
-                        <div class="col-md-6">
-                            <p class="text-right">مشخصات خود را وارد کنید:</p>
 
-                            <input type="email" value="" name="email" class=" form-control" placeholder="ایمیل">
-
-                            <div class="nk-gap"></div>
-                            <input type="password" value="" name="password" class="required form-control" placeholder="رمز عبور">
+                    <div class="mk-field">
+                        <label for="mk-login-email">ایمیل</label>
+                        <div class="mk-field-control mk-field-ltr">
+                            <span class="fa fa-envelope-o mk-field-icon"></span>
+                            <input type="email" id="mk-login-email" class="mk-input" dir="ltr"
+                                   value="{{ old('email') }}" placeholder="name@example.com"
+                                   autocomplete="email" required name="email">
                         </div>
-                        @if(config('demo.google_login_enabled'))
-                            <div class="col-md-6 text-right">
-                                ورود با اکانت گوگل:
-
-                                <div class="nk-gap"></div>
-
-                                <a href="{{ route('home.redirectToProvider', ['provider' => 'google']) }}" class="btn btn-info btn-block">Google | <i class="fa fa-google-plus-circle"></i></a>
-
-                                <div class="nk-gap-2"></div>
-                            </div>
-                        @endif
                     </div>
 
-                    <div class="nk-gap-1"></div>
-
-                    <div class="row vertical-gap">
-                        <div class="col-md-6">
-                            <button class="nk-btn nk-btn-rounded nk-btn-color-white nk-btn-block" type="submit">
-                                    ورود
+                    <div class="mk-field">
+                        <label for="mk-login-password">رمز عبور</label>
+                        <div class="mk-field-control">
+                            <span class="fa fa-lock mk-field-icon"></span>
+                            <input type="password" id="mk-login-password" class="mk-input" placeholder="رمز عبور"
+                                   autocomplete="current-password" required name="password">
+                            <button type="button" class="mk-field-toggle" data-pass-toggle="mk-login-password"
+                                    aria-label="نمایش رمز عبور">
+                                <span class="fa fa-eye"></span>
                             </button>
                         </div>
-                        <div class="col-md-6 text-right" style="direction: rtl">
-                            <div class="mnt-5">
-                                <small><a href="#" class="forget_password">رمز عبورت رو یادت نیست؟</a></small>
-                            </div>
-                            <div class="mnt-5">
-                                <small>عضو نیستی؟</small>
-                                <small><a href="#" class="register">ثبت نام</a></small>
-                            </div>
-                        </div>
                     </div>
+
+                    <div class="mk-auth-row">
+                        <label class="mk-check">
+                            <input type="checkbox" value="1" @checked(old('remember')) name="remember">
+                            مرا به خاطر بسپار
+                        </label>
+                        <button type="button" class="mk-auth-link" data-auth-tab="forgot">
+                            رمز عبور را فراموش کردم
+                        </button>
+                    </div>
+
+                    <button type="submit" class="mk-btn mk-btn-primary mk-btn-block">ورود به حساب</button>
+
+                    @if(config('demo.google_login_enabled'))
+                        <div class="mk-auth-sep"><span>یا</span></div>
+                        <a href="{{ route('home.redirectToProvider', ['provider' => 'google']) }}"
+                           class="mk-btn mk-btn-outline mk-btn-block mk-btn-google">
+                            <span class="fa fa-google"></span>
+                            ورود با گوگل
+                        </a>
+                    @endif
                 </form>
+
+                <p class="mk-auth-foot">
+                    حساب ندارید؟
+                    <button type="button" class="mk-auth-link" data-auth-tab="register">همین حالا ثبت‌نام کنید</button>
+                </p>
             </div>
-            <div class="modal-body register-modal" style="display: none">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span class="ion-android-close"></span>
-                </button>
 
-                <h4 class="mb-0 text-right"><span class="text-main-1"> ثبت</span> نام</h4>
-                <div class="nk-gap-1"></div>
-                <form action="{{ route('register.store') }}" method="post" class="nk-form text-white" style="direction: rtl">
-                    @include('home.sections.errors', ['errors' => $errors->register])
+            {{-- ثبت‌نام --}}
+            <div class="mk-auth-panel {{ $initialAuthTab === 'register' ? 'is-active' : '' }}" data-auth-panel="register">
+                @include('home.sections.errors', ['errors' => $registerBag])
+
+                <form action="{{ route('register.store') }}" method="POST" class="mk-auth-form">
                     @csrf
-                    <div class="row vertical-gap">
-                        <div class="col-md-12">
 
-                            <p class="text-right">مشخصات خود را وارد کنید:</p>
-
-                            <input type="text" value="{{ old('username') }}" name="username" class="form-control" placeholder="نام کاربری">
-                            <div class="nk-gap"></div>
-                            <input type="email" value="{{ old('email') }}" name="email" class="form-control" placeholder="ایمیل">
-                            <div class="nk-gap"></div>
-                            <input type="password" value="{{ old('password') }}" name="password" class="form-control" placeholder="رمز عبور">
-                            <div class="nk-gap"></div>
-                            <input type="password" value="{{ old('password_confirmation') }}" name="password_confirmation" class="form-control" placeholder="تکرار رمز عبور">
-                            <div class="nk-gap"></div>
+                    <div class="mk-field">
+                        <label for="mk-register-username">نام کاربری</label>
+                        <div class="mk-field-control">
+                            <span class="fa fa-user-o mk-field-icon"></span>
+                            <input type="text" id="mk-register-username" class="mk-input"
+                                   value="{{ old('username') }}" placeholder="نام کاربری" autocomplete="username"
+                                   minlength="3" required name="username">
                         </div>
                     </div>
 
-                    <div class="nk-gap-1"></div>
-
-                    <div class="row vertical-gap">
-                        <div class="col-md-6 text-right" style="direction: rtl">
-                            <button class="back_to_login nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-block" type="button">بازگشت</button>
-                        </div>
-                        <div class="col-md-6">
-                            <button class="nk-btn nk-btn-rounded nk-btn-color-white nk-btn-block" type="submit">ثبت نام</button>
+                    <div class="mk-field">
+                        <label for="mk-register-email">ایمیل</label>
+                        <div class="mk-field-control mk-field-ltr">
+                            <span class="fa fa-envelope-o mk-field-icon"></span>
+                            <input type="email" id="mk-register-email" class="mk-input" dir="ltr"
+                                   value="{{ old('email') }}" placeholder="name@example.com"
+                                   autocomplete="email" required name="email">
                         </div>
                     </div>
+
+                    <div class="mk-field">
+                        <label for="mk-register-password">رمز عبور</label>
+                        <div class="mk-field-control">
+                            <span class="fa fa-lock mk-field-icon"></span>
+                            <input type="password" id="mk-register-password" class="mk-input"
+                                   placeholder="حداقل ۸ کاراکتر" autocomplete="new-password" minlength="8" required
+                                   name="password">
+                            <button type="button" class="mk-field-toggle" data-pass-toggle="mk-register-password"
+                                    aria-label="نمایش رمز عبور">
+                                <span class="fa fa-eye"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mk-field">
+                        <label for="mk-register-password-confirm">تکرار رمز عبور</label>
+                        <div class="mk-field-control">
+                            <span class="fa fa-lock mk-field-icon"></span>
+                            <input type="password" id="mk-register-password-confirm" class="mk-input"
+                                   placeholder="تکرار رمز عبور" autocomplete="new-password" minlength="8" required
+                                   name="password_confirmation">
+                        </div>
+                    </div>
+
+                    <label class="mk-check mk-check-terms">
+                        <input type="checkbox" required>
+                        <span>با ثبت‌نام، قوانین و شرایط فروشگاه را می‌پذیرم.</span>
+                    </label>
+
+                    <button type="submit" class="mk-btn mk-btn-primary mk-btn-block">ساخت حساب</button>
                 </form>
+
+                <p class="mk-auth-foot">
+                    قبلاً ثبت‌نام کرده‌اید؟
+                    <button type="button" class="mk-auth-link" data-auth-tab="login">وارد شوید</button>
+                </p>
             </div>
-            <div class="modal-body forget-password-modal" style="display: none">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span class="ion-android-close"></span>
-                </button>
 
-                <h4 class="mb-0 text-right"><span class="text-main-1">بازیابی </span>رمز عبور</h4>
-                <div class="nk-gap-1"></div>
+            {{-- بازیابی رمز --}}
+            <div class="mk-auth-panel" data-auth-panel="forgot">
+                @if(session('status'))
+                    <div class="alert alert-success text-right">{{ session('status') }}</div>
+                @endif
 
-                <div class="nk-gap-1"></div>
-                <form method="POST" action="{{ route('password.email') }}" class="nk-form text-white" style="direction: rtl">
+                @error('email')
+                    <div class="alert alert-danger text-right">{{ $message }}</div>
+                @enderror
+
+                <form method="POST" action="{{ route('password.email') }}" class="mk-auth-form">
                     @csrf
-                    <div class="row vertical-gap">
-                        <div class="col-md-12">
-                            @if(session('status'))
-                                <div class="alert alert-secondary text-right">
-                                    {{ session('status') }}
-                                </div>
-                            @endif
 
-                            <p class="text-right">ایمیل خود را وارد کنید:</p>
+                    <p class="mk-auth-hint">
+                        ایمیل حساب خود را وارد کنید؛ لینک بازیابی برایتان ارسال می‌شود.
+                    </p>
 
-                            <input type="email" name="email" class="form-control" placeholder="ایمیل خود را وارد کنید..">
-                            <div class="nk-gap"></div>
-                            @error('email')
-                                <div class="alert alert-danger text-right">
-                                    {{ $message }}
-                                </div>
-                            @enderror
+                    <div class="mk-field">
+                        <label for="mk-forgot-email">ایمیل</label>
+                        <div class="mk-field-control mk-field-ltr">
+                            <span class="fa fa-envelope-o mk-field-icon"></span>
+                            <input type="email" id="mk-forgot-email" class="mk-input" dir="ltr"
+                                   value="{{ old('email') }}" placeholder="name@example.com"
+                                   autocomplete="email" required name="email">
                         </div>
                     </div>
 
-                    <div class="nk-gap-1"></div>
-
-                    <div class="row vertical-gap">
-                        <div class="col-md-6 text-right" style="direction: rtl">
-                            <button class="back_to_login nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-block" type="button">بازگشت</button>
-                        </div>
-                        <div class="col-md-6">
-                            <button class="nk-btn nk-btn-rounded nk-btn-color-white nk-btn-block" type="submit">ادامه</button>
-                        </div>
-                    </div>
+                    <button type="submit" class="mk-btn mk-btn-primary mk-btn-block">ارسال لینک بازیابی</button>
+                    <button type="button" class="mk-btn mk-btn-outline mk-btn-block" data-auth-tab="login">
+                        بازگشت به ورود
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-@section('scripts')
-    @if($errors->hasBag('login'))
-        <script>
-            $(function() {
-                $('#modalLogin').modal({
-                    show: true
-                });
-            });
-        </script>
-    @endif
-    @if($errors->hasBag('register'))
-        <script>
-            $(function() {
-                $('#modalLogin').modal({
-                    show: true
-                });
-            });
-            $(function() {
-                $(".register-modal").css("display", "block");
-                $(".login-modal").css("display", "none");
-            });
-        </script>
-    @endif
-    @if(session('status'))
-        @php
-            flash()->flash("success", session('status'), [], 'موفقیت آمیز');
-        @endphp
-    @endif
-@endsection
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modal = document.getElementById('modalLogin');
 
+            if (!modal || !window.jQuery) {
+                return;
+            }
 
+            if (modal.getAttribute('data-auth-open') === '1') {
+                window.jQuery('#modalLogin').modal('show');
+            }
+        });
+    </script>
+@endpush

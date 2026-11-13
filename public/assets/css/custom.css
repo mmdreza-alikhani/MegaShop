@@ -2665,3 +2665,294 @@ html[data-theme="light"] .info-box .table td {
 [dir="rtl"] .nk-decorated-h-2 span {
     text-align: right;
 }
+/* =========================================================
+   مودال ورود و ثبت‌نام
+   ========================================================= */
+.mk-auth-modal .modal-dialog {
+    max-width: 430px;
+    margin: 40px auto;
+}
+
+.mk-auth-modal .modal-content.mk-auth {
+    position: relative;
+    padding: 26px;
+    color: var(--mk-text);
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 18px;
+    box-shadow: var(--mk-shadow);
+    overflow: hidden;
+}
+
+.mk-auth-close {
+    position: absolute;
+    top: 12px;
+    inset-inline-start: 14px;
+    width: 32px;
+    height: 32px;
+    font-size: 1.3rem;
+    line-height: 1;
+    color: var(--mk-muted);
+    background: var(--mk-hover);
+    border: 0;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: color .15s ease, background .15s ease;
+}
+
+.mk-auth-close:hover {
+    color: var(--mk-heading);
+    background: var(--mk-bg-3);
+}
+
+.mk-auth-head {
+    padding-inline-end: 30px;
+}
+
+.mk-auth-eyebrow {
+    display: inline-block;
+    margin-bottom: 6px;
+    font-size: .72rem;
+    letter-spacing: .06em;
+    color: var(--mk-accent);
+}
+
+.mk-auth-head h3 {
+    margin: 0 0 6px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--mk-heading);
+}
+
+.mk-auth-head p {
+    margin: 0;
+    font-size: .84rem;
+    color: var(--mk-muted);
+}
+
+.mk-auth-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 5px;
+    margin: 20px 0;
+    background: var(--mk-bg-3);
+    border-radius: 12px;
+}
+
+.mk-auth-tab {
+    padding: 9px 10px;
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--mk-muted);
+    background: transparent;
+    border: 0;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+}
+
+.mk-auth-tab:hover {
+    color: var(--mk-heading);
+}
+
+.mk-auth-tab.is-active {
+    color: var(--mk-heading);
+    background: var(--mk-bg-2);
+    box-shadow: var(--mk-shadow-soft);
+}
+
+.mk-auth-panel {
+    display: none;
+}
+
+.mk-auth-panel.is-active {
+    display: block;
+    animation: mk-auth-in .18s ease both;
+}
+
+@keyframes mk-auth-in {
+    from {
+        transform: translateY(4px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.mk-auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mk-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: .8rem;
+    color: var(--mk-muted);
+}
+
+.mk-field-control {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.mk-field-icon {
+    position: absolute;
+    inset-inline-start: 13px;
+    font-size: .9rem;
+    color: var(--mk-muted);
+    pointer-events: none;
+}
+
+.mk-field-control .mk-input {
+    height: 44px;
+    padding-inline-start: 38px;
+    padding-inline-end: 40px;
+}
+
+.mk-field-toggle {
+    position: absolute;
+    inset-inline-end: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    color: var(--mk-muted);
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.mk-field-toggle:hover,
+.mk-field-toggle.is-visible {
+    color: var(--mk-accent);
+    background: var(--mk-hover);
+}
+
+.mk-auth-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.mk-auth-link {
+    padding: 0;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--mk-accent);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.mk-auth-link:hover {
+    text-decoration: underline;
+}
+
+.mk-auth-foot {
+    margin: 16px 0 0;
+    font-size: .82rem;
+    color: var(--mk-muted);
+    text-align: right;
+}
+
+.mk-auth-hint {
+    margin: 0 0 4px;
+    font-size: .82rem;
+    line-height: 1.9;
+    color: var(--mk-muted);
+}
+
+.mk-check-terms {
+    align-items: flex-start;
+    font-size: .78rem;
+    line-height: 1.8;
+}
+
+.mk-check-terms input {
+    margin-top: 3px;
+}
+
+.mk-auth-sep {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: .75rem;
+    color: var(--mk-muted);
+}
+
+.mk-auth-sep::before,
+.mk-auth-sep::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--mk-border);
+}
+
+.mk-btn-google {
+    gap: 8px;
+}
+
+.mk-auth-modal .alert {
+    padding: 9px 12px;
+    font-size: .82rem;
+    border-radius: 10px;
+}
+
+@media (max-width: 479.98px) {
+    .mk-auth-modal .modal-dialog {
+        margin: 16px auto;
+    }
+
+    .mk-auth-modal .modal-content.mk-auth {
+        padding: 20px;
+        border-radius: 14px;
+    }
+}
+/* ---------- ریزتنظیمات فرم ورود ---------- */
+.mk-auth-head {
+    padding-inline-start: 34px;
+    padding-inline-end: 0;
+}
+
+.mk-field-ltr .mk-field-icon {
+    left: 13px;
+    right: auto;
+}
+
+.mk-field-ltr .mk-input {
+    padding-left: 38px;
+    padding-right: 14px;
+}
+/* ---------- فوکوس ملایم و اسکرول مودال در صفحه‌های کوتاه ---------- */
+.mk-auth-form .mk-input:focus {
+    border-color: var(--mk-accent);
+    box-shadow: 0 0 0 3px rgba(221, 22, 59, .10);
+}
+
+.mk-auth-modal .modal-content.mk-auth {
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+@media (max-width: 575.98px) {
+    .mk-auth-modal .modal-content.mk-auth {
+        max-height: calc(100vh - 24px);
+    }
+}
+/* دکمه‌ها و نشان‌های روی پس‌زمینه قرمز همیشه متن روشن دارند */
+html[data-theme="light"] .mk-btn-primary,
+html[data-theme="light"] .mk-btn-primary:hover,
+html[data-theme="light"] .mk-card-badge,
+html[data-theme="light"] .mk-badge,
+html[data-theme="light"] .mk-pagination li.is-active > span,
+html[data-theme="light"] .mk-social a:hover {
+    color: var(--mk-on-accent);
+}

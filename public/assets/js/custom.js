@@ -187,32 +187,67 @@
         }
     });
 
-    /* ---------- تب‌های مودال ورود/ثبت‌نام ---------- */
-    if (window.jQuery) {
-        var $ = window.jQuery;
-        var loginModal = $('.login-modal');
-        var registerModal = $('.register-modal');
-        var forgetModal = $('.forget-password-modal');
+    /* ---------- مودال ورود / ثبت‌نام ---------- */
+    var authModal = document.getElementById('modalLogin');
 
-        $('.forget_password').on('click', function () {
-            registerModal.hide();
-            loginModal.hide();
-            forgetModal.show();
+    if (authModal) {
+        var authPanels = authModal.querySelectorAll('[data-auth-panel]');
+        var authTabs = authModal.querySelectorAll('.mk-auth-tab');
+
+        var showAuthPanel = function (name) {
+            authPanels.forEach(function (panel) {
+                panel.classList.toggle('is-active', panel.getAttribute('data-auth-panel') === name);
+            });
+
+            authTabs.forEach(function (tab) {
+                var key = tab.getAttribute('data-auth-tab');
+                var active = key === name || (name === 'forgot' && key === 'login');
+                tab.classList.toggle('is-active', active);
+                tab.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+
+            var field = authModal.querySelector('[data-auth-panel="' + name + '"] input:not([type="hidden"])');
+
+            if (field) {
+                window.setTimeout(function () {
+                    field.focus();
+                }, 150);
+            }
+        };
+
+        authModal.querySelectorAll('[data-auth-tab]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                showAuthPanel(button.getAttribute('data-auth-tab'));
+            });
         });
 
-        $('.back_to_login').on('click', function () {
-            forgetModal.hide();
-            registerModal.hide();
-            loginModal.show();
+        authModal.querySelectorAll('[data-pass-toggle]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var input = document.getElementById(button.getAttribute('data-pass-toggle'));
+
+                if (!input) {
+                    return;
+                }
+
+                var reveal = input.type === 'password';
+                input.type = reveal ? 'text' : 'password';
+                button.classList.toggle('is-visible', reveal);
+                button.setAttribute('aria-label', reveal ? 'مخفی کردن رمز عبور' : 'نمایش رمز عبور');
+            });
         });
 
-        $('.register').on('click', function () {
-            forgetModal.hide();
-            loginModal.hide();
-            registerModal.show();
-        });
+        // وقتی مودال باز شد، تب فعال سرور حفظ شود
+        if (window.jQuery) {
+            window.jQuery('#modalLogin').on('shown.bs.modal', function () {
+                var active = authModal.querySelector('.mk-auth-panel.is-active');
+                var field = active ? active.querySelector('input:not([type="hidden"])') : null;
+
+                if (field) {
+                    field.focus();
+                }
+            });
+        }
     }
-
     /* ---------- پیش‌نمایش آواتار ---------- */
     window.loadFile = function (event) {
         var image = document.getElementById('output');

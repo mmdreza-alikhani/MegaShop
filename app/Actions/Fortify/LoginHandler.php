@@ -28,6 +28,15 @@ class LoginHandler
 
         $user = User::where('email', $request->email)->first();
 
+        // حساب‌های غیرفعال اجازه ورود ندارند.
+        if ($user && ! (int) $user->getRawOriginal('is_active')) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => __('حساب کاربری شما غیرفعال است. با پشتیبانی تماس بگیرید.'),
+            ])->errorBag('login');
+        }
+
         session()->flash('welcome', '! '.$user->username.' خوش اومدی');
 
         return Auth::user();
