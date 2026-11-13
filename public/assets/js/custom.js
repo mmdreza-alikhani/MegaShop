@@ -139,14 +139,18 @@
         activate(parents[0].getAttribute('data-mega-parent'));
     });
     /* ---------- نوار پیشرفت اسکرول ---------- */
-    var progressBar = document.querySelector('.progress-bar');
+    var progressBar = document.getElementById('mkScrollProgress');
 
     if (progressBar) {
-        window.addEventListener('scroll', function () {
+        var updateProgress = function () {
             var scrollable = document.documentElement.scrollHeight - window.innerHeight;
             var percent = scrollable > 0 ? (window.pageYOffset / scrollable) * 100 : 0;
-            progressBar.style.width = percent + '%';
-        });
+            progressBar.style.width = Math.min(100, Math.max(0, percent)) + '%';
+        };
+
+        window.addEventListener('scroll', updateProgress, { passive: true });
+        window.addEventListener('resize', updateProgress);
+        updateProgress();
     }
 
     /* ---------- منوی موبایل و پنل سبد خرید ---------- */
@@ -164,13 +168,12 @@
         });
     }
 
-    var cartToggle = document.querySelector('.mk-cart-toggle');
-    if (cartToggle) {
-        cartToggle.addEventListener('click', function () {
+    document.querySelectorAll('.mk-cart-toggle').forEach(function (toggle) {
+        toggle.addEventListener('click', function () {
             body.classList.toggle('mk-cart-open');
             body.classList.remove('mk-drawer-open');
         });
-    }
+    });
 
     document.querySelectorAll('.mk-drawer-close, .mk-cart-close').forEach(function (button) {
         button.addEventListener('click', closePanels);

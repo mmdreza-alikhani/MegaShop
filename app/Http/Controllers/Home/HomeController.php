@@ -16,13 +16,14 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use TimeHunter\LaravelGoogleReCaptchaV3\Validations\GoogleReCaptchaV3ValidationRule;
 
 class HomeController extends Controller
 {
     public function index(StorefrontCache $cache): View|Application|Factory
     {
-        $data = $cache->rememberHome(function () {
+        $build = function (): array {
             return [
                 'banners' => Banner::query()
                     ->active()
@@ -56,7 +57,17 @@ class HomeController extends Controller
                     ->get(),
                 'platforms' => Platform::query()->active()->get(),
             ];
-        });
+        };
+
+        $data = $cache->rememberHome($build);
+
+        // اگر کش خالی/ناقص بود (مثلاً هنگام اجرای دستورات روی دیتابیس دیگر) دوباره ساخته می‌شود.
+        $hasContent = ! empty($data['products']) || ! empty($data['news']) || ! empty($data['banners']);
+
+        if (! $hasContent) {
+            Cache::forget(StorefrontCache::HOME);
+            $data = $build();
+        }
 
         // وضعیت علاقه‌مندی هر کاربر مختص خودش است و در کش ذخیره نمی‌شود.
         $data['products'] = $this->withWishlistState($data['products']);

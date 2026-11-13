@@ -1,44 +1,41 @@
-<div class="nk-modal modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h4 class="mb-0 text-right">جستجو</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span class="ion-android-close"></span>
-                </button>
-                <div class="nk-gap-1"></div>
-                <form id="generalSearch" action="{{ route('home.search') }}" method="GET" class="nk-form nk-form-style-1">
-                    <input type="text"
-                           name="q"
-                           class="form-control"
-                           placeholder="جستجو در محصولات..."
-                           value="{{ request('q') }}"
-                           minlength="2"
-                           required
-                           autofocus>
-                </form>
+<div class="nk-modal modal fade mk-search-modal" id="modalSearch" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content mk-search">
+            <button type="button" class="mk-search-close" data-dismiss="modal" aria-label="بستن">&times;</button>
+
+            <h3>جستجو در {{ config('brand.name') }}</h3>
+            <p class="mk-search-sub">نام محصول، برند یا دسته‌بندی را وارد کنید.</p>
+
+            <form action="{{ route('home.search') }}" method="GET" class="mk-search-form">
+                <span class="fa fa-search mk-search-icon"></span>
+                <input type="text" name="q" class="mk-input" placeholder="مثلاً: گوشی سامسونگ"
+                       value="{{ request('q') }}" minlength="2" required autocomplete="off">
+                <button type="submit" class="mk-btn mk-btn-primary">جستجو</button>
+            </form>
+
+            <div class="mk-search-hints">
+                <span>جستجوهای پرطرفدار:</span>
+                <a href="{{ route('home.search', ['q' => 'iPhone']) }}">iPhone</a>
+                <a href="{{ route('home.search', ['q' => 'سامسونگ']) }}">سامسونگ</a>
+                <a href="{{ route('home.search', ['q' => 'شیائومی']) }}">شیائومی</a>
+                <a href="{{ route('home.search', ['q' => 'لپ‌تاپ']) }}">لپ‌تاپ</a>
+                <a href="{{ route('home.search', ['q' => 'هدفون']) }}">هدفون</a>
             </div>
         </div>
     </div>
 </div>
 
-{{-- JavaScript برای بهبود تجربه کاربری --}}
 @push('scripts')
     <script>
-        let searchModal = $('#modalSearch');
-        $(document).ready(function() {
-            searchModal.on('shown.bs.modal', function () {
-                $(this).find('input[name="q"]').focus();
-            });
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!window.jQuery) {
+                return;
+            }
 
-            searchModal.on('hidden.bs.modal', function () {
-                $(this).find('input[name="q"]').val('');
-            });
+            var $ = window.jQuery;
 
-            $('#modalSearch input[name="q"]').on('keypress', function(e) {
-                if (e.which === 13) {
-                    $(this).closest('form').submit();
-                }
+            $('#modalSearch').on('shown.bs.modal', function () {
+                $(this).find('input[name="q"]').trigger('focus').select();
             });
         });
     </script>

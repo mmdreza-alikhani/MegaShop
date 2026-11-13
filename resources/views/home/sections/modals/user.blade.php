@@ -12,7 +12,6 @@
             <button type="button" class="mk-auth-close" data-dismiss="modal" aria-label="بستن">&times;</button>
 
             <div class="mk-auth-head">
-                <span class="mk-auth-eyebrow">{{ config('brand.name') }}</span>
                 <h3>ورود یا ثبت‌نام</h3>
                 <p>برای ادامه خرید وارد شوید یا حساب بسازید.</p>
             </div>

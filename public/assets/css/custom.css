@@ -2956,3 +2956,354 @@ html[data-theme="light"] .mk-pagination li.is-active > span,
 html[data-theme="light"] .mk-social a:hover {
     color: var(--mk-on-accent);
 }
+/* =========================================================
+   نوار پیشرفت اسکرول، هدر چسبان و نوار پایین موبایل
+   ========================================================= */
+.mk-scroll-progress {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 2100;
+    height: 3px;
+    background: transparent;
+    pointer-events: none;
+}
+
+.mk-scroll-progress > span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(to left, var(--mk-accent), var(--mk-accent-2));
+    transition: width .08s linear;
+}
+
+.mk-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* در موبایل دکمه‌های هدر به نوار پایین منتقل می‌شوند */
+.mk-bottom-nav {
+    display: none;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 950;
+    grid-template-columns: repeat(5, 1fr);
+    background: var(--mk-bg-2);
+    border-top: 1px solid var(--mk-border);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, .18);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.mk-bottom-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 9px 4px 10px;
+    font-size: .68rem;
+    font-weight: 600;
+    color: var(--mk-muted);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.mk-bottom-item > .fa {
+    font-size: 1.05rem;
+    line-height: 1;
+}
+
+.mk-bottom-item:hover,
+.mk-bottom-item.is-active {
+    color: var(--mk-accent);
+}
+
+.mk-bottom-item.is-active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 22px;
+    height: 2px;
+    background: var(--mk-accent);
+    border-radius: 0 0 2px 2px;
+}
+
+.mk-bottom-badge {
+    position: absolute;
+    top: 4px;
+    inset-inline-start: 50%;
+    margin-inline-start: 6px;
+    min-width: 16px;
+    padding: 0 4px;
+    font-size: .6rem;
+    line-height: 16px;
+    color: var(--mk-on-accent);
+    text-align: center;
+    background: var(--mk-accent);
+    border-radius: 9px;
+}
+
+@media (max-width: 991.98px) {
+    .mk-bottom-nav {
+        display: grid;
+    }
+
+    .mk-topbar-only {
+        display: none !important;
+    }
+
+    .mk-main {
+        padding-bottom: 74px;
+    }
+
+    .mk-footer {
+        padding-bottom: 84px;
+    }
+
+    .mk-header .mk-navbar {
+        border-bottom-width: 1px;
+    }
+
+    .mk-logo img {
+        max-height: 38px;
+    }
+}
+
+/* =========================================================
+   مودال جستجو
+   ========================================================= */
+.mk-search-modal .modal-dialog {
+    max-width: 620px;
+    margin: 50px auto;
+}
+
+.mk-search-modal .modal-content.mk-search {
+    position: relative;
+    padding: 24px;
+    color: var(--mk-text);
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 16px;
+    box-shadow: var(--mk-shadow);
+}
+
+.mk-search-close {
+    position: absolute;
+    top: 12px;
+    inset-inline-start: 14px;
+    width: 30px;
+    height: 30px;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--mk-muted);
+    background: var(--mk-hover);
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.mk-search-close:hover {
+    color: var(--mk-heading);
+    background: var(--mk-bg-3);
+}
+
+.mk-search h3 {
+    padding-inline-end: 34px;
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--mk-heading);
+}
+
+.mk-search-sub {
+    margin: 0 0 16px;
+    font-size: .82rem;
+    color: var(--mk-muted);
+}
+
+.mk-search-form {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mk-search-form .mk-input {
+    height: 48px;
+    padding-inline-start: 44px;
+}
+
+.mk-search-icon {
+    position: absolute;
+    inset-inline-start: 15px;
+    font-size: .95rem;
+    color: var(--mk-muted);
+    pointer-events: none;
+}
+
+.mk-search-form .mk-btn {
+    flex: 0 0 auto;
+    height: 48px;
+    padding-inline: 22px;
+}
+
+.mk-search-hints {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    font-size: .78rem;
+    color: var(--mk-muted);
+}
+
+.mk-search-hints a {
+    padding: 4px 12px;
+    color: var(--mk-text);
+    background: var(--mk-chip);
+    border-radius: 20px;
+}
+
+.mk-search-hints a:hover {
+    color: var(--mk-on-accent);
+    background: var(--mk-accent);
+}
+
+@media (max-width: 575.98px) {
+    .mk-search-modal .modal-dialog {
+        margin: 14px auto;
+    }
+
+    .mk-search-modal .modal-content.mk-search {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .mk-search-form {
+        flex-wrap: wrap;
+    }
+
+    .mk-search-form .mk-input {
+        flex: 1 1 100%;
+    }
+
+    .mk-search-form .mk-btn {
+        width: 100%;
+    }
+
+    .mk-search-icon {
+        top: 15px;
+    }
+}
+/* overflow: clip جای hidden تا position: sticky هدر شکسته نشود */
+@supports (overflow: clip) {
+    html,
+    body {
+        overflow-x: clip;
+    }
+}
+/* ---------- جمع‌وجور کردن هدر و اخبار در موبایل ---------- */
+@media (max-width: 991.98px) {
+    .mk-topbar-inner {
+        min-height: 38px;
+    }
+
+    .mk-navbar-inner {
+        min-height: 56px;
+        gap: 10px;
+    }
+
+    .mk-logo img {
+        max-height: 34px;
+    }
+
+    .nk-news-box {
+        min-height: 0;
+    }
+}
+/* ---------- ریزتنظیم مودال جستجو ---------- */
+.mk-search h3 {
+    padding-inline-start: 34px;
+    padding-inline-end: 0;
+}
+
+.mk-search-close {
+    top: 14px;
+    inset-inline-start: 16px;
+    width: 34px;
+    height: 34px;
+    font-size: 1.35rem;
+    background: var(--mk-bg-3);
+}
+/* ---------- نوار ابزار محصولات در موبایل: دو ستونه ---------- */
+@media (max-width: 575.98px) {
+    .mk-toolbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .mk-toolbar .mk-search {
+        grid-column: 1 / -1;
+        flex-wrap: nowrap;
+    }
+
+    .mk-toolbar .mk-search .mk-btn {
+        width: auto;
+        padding-inline: 14px;
+    }
+
+    .mk-toolbar .mk-select {
+        grid-column: 1;
+        width: 100%;
+        flex: none;
+    }
+
+    .mk-toolbar > .mk-btn {
+        grid-column: 2;
+        width: auto;
+        padding-inline: 16px;
+    }
+
+    .mk-toolbar .mk-check {
+        grid-column: 1 / -1;
+    }
+}
+/* ---------- چیدمان قطعی نوار ابزار در موبایل ---------- */
+@media (max-width: 575.98px) {
+    .mk-toolbar .mk-search {
+        grid-row: 1;
+    }
+
+    .mk-toolbar .mk-select {
+        grid-row: 2;
+    }
+
+    .mk-toolbar > .mk-btn {
+        grid-row: 2;
+    }
+
+    .mk-toolbar .mk-check {
+        grid-row: 3;
+    }
+
+    .mk-toolbar .mk-search .mk-btn {
+        width: auto;
+        height: 44px;
+        padding-inline: 12px;
+        font-size: .8rem;
+    }
+
+    .mk-toolbar .mk-search .mk-input,
+    .mk-toolbar .mk-select {
+        height: 44px;
+    }
+}

@@ -37,6 +37,10 @@
 </head>
 <body>
 
+<div class="mk-scroll-progress" aria-hidden="true">
+    <span id="mkScrollProgress"></span>
+</div>
+
 @include('home.sections.header')
 
 <main class="mk-main">
