@@ -75,6 +75,46 @@ class Order extends Model
         return $payment_type;
     }
 
+    /** برچسب فارسی وضعیت سفارش (بدون دستکاری مقدار خام). */
+    public static function statusLabel(?int $status): string
+    {
+        return match ($status) {
+            -1 => 'لغو شده',
+            0 => 'در انتظار پرداخت',
+            1 => 'پرداخت شده / در حال پردازش',
+            2 => 'ارسال شده',
+            3 => 'تحویل شده',
+            default => 'نامشخص',
+        };
+    }
+
+    /** وضعیت‌های قابل انتخاب در پنل. */
+    public static function statuses(): array
+    {
+        return [
+            -1 => 'لغو شده',
+            0 => 'در انتظار پرداخت',
+            1 => 'پرداخت شده / در حال پردازش',
+            2 => 'ارسال شده',
+            3 => 'تحویل شده',
+        ];
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return self::statusLabel((int) $this->getRawOriginal('status'));
+    }
+
+    public function getPaymentStatusLabelAttribute(): string
+    {
+        return $this->getRawOriginal('payment_status') ? 'پرداخت شده' : 'پرداخت نشده';
+    }
+
+    public function histories(): HasMany
+    {
+        return $this->hasMany(OrderStatusHistory::class);
+    }
+
     public function address(): BelongsTo
     {
         return $this->belongsTo(UserAddress::class);

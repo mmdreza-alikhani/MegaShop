@@ -86,6 +86,8 @@ Route::prefix('management')
 
         Route::middleware('permission:orders-index')->group(function () {
             Route::resource('orders', Admin\OrderController::class)->only(['index', 'show']);
+            Route::patch('orders/{order}/status', [Admin\OrderController::class, 'updateStatus'])
+                ->name('orders.status');
         });
     });
 

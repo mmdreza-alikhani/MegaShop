@@ -63,9 +63,10 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">شناسه سفارش</th>
-                                        <th scope="col">توکن</th>
+                                        <th scope="col">کد پیگیری</th>
                                         <th scope="col">مبلغ قابل پرداخت</th>
                                         <th scope="col">وضعیت پرداخت</th>
+                                        <th scope="col">وضعیت سفارش</th>
                                         <th scope="col">تنظیمات</th>
                                     </tr>
                                     </thead>
@@ -76,18 +77,21 @@
                                                 {{ $orders->firstItem() + $key }}
                                             </th>
                                             <td>
-                                                {{ $order->red_id }}
+                                                {{ $order->id }}
                                             </td>
                                             <td>
-                                                {{ $order->transaction->token }}
+                                                {{ $order->transaction?->ref_id ?? '—' }}
                                             </td>
                                             <td>
                                                 {{ number_format($order->paying_amount) . 'تومان' }}
                                             </td>
                                             <td>
                                                 <span class="badge {{ $order->getRawOriginal('payment_status') ?  'badge-success' : 'badge-danger' }}">
-                                                    {{ $order->payment_status }}
+                                                    {{ $order->payment_status_label }}
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-info">{{ $order->status_label }}</span>
                                             </td>
                                             <td>
                                                 <div class="dropdown base show">

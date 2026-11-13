@@ -68,7 +68,7 @@
                         <div class="form-group col-12 col-lg-3">
                             <label>توکن سفارش:</label>
                             <p>
-                                {{ $transaction->token }}
+                                {{ $transaction?->token ?? '—' }}
                             </p>
                         </div>
                         <div class="form-group col-12 col-lg-3">
@@ -107,18 +107,18 @@
                         <div class="form-group col-12 col-lg-3">
                             <label>وضعیت پرداخت:</label>
                             <span class="badge {{ $order->getRawOriginal('payment_status') ?  'badge-success' : 'badge-danger' }}">
-                                {{ $order->payment_status }}
+                                {{ $order->payment_status_label }}
                             </span>
                             @if($order->getRawOriginal('payment_status') == 1)
                                 <p>
-                                    {{ $transaction->ref_id }}
+                                    {{ $transaction?->ref_id }}
                                 </p>
                             @endif
                         </div>
                         <div class="form-group col-12 col-lg-3">
                             <label>درگاه پرداخت:</label>
                             <span class="badge badge-success">
-                                {{ $transaction->getaway_name }}
+                                {{ $transaction?->gateway_name ?? '—' }}
                             </span>
                         </div>
                         <div class="form-group col-12 col-lg-12">
@@ -133,6 +133,57 @@
                                 </textarea>
                             @endif
                         </div>
+                        <div class="form-group col-12 col-lg-12">
+                            <h5 class="card-header c-primary">تغییر وضعیت سفارش</h5>
+                            <form action="{{ route('admin.orders.status', ['order' => $order]) }}" method="POST"
+                                  class="row mt-2">
+                                @csrf
+                                @method('PATCH')
+                                <div class="col-lg-4">
+                                    <label for="status">وضعیت جدید:</label>
+                                    <select name="status" id="status" class="form-control">
+                                        @foreach($statuses as $value => $label)
+                                            <option value="{{ $value }}" @selected((int) $order->getRawOriginal('status') === $value)>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label for="note">توضیح (اختیاری):</label>
+                                    <input type="text" name="note" id="note" class="form-control" maxlength="255">
+                                </div>
+                                <div class="col-lg-2 d-flex align-items-end">
+                                    <button type="submit" class="btn f-main w-100">ثبت</button>
+                                </div>
+                            </form>
+
+                            @if($order->histories->isNotEmpty())
+                                <table class="table table-sm mt-3">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>از وضعیت</th>
+                                        <th>به وضعیت</th>
+                                        <th>کاربر</th>
+                                        <th>توضیح</th>
+                                        <th>تاریخ</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($order->histories as $history)
+                                        <tr>
+                                            <th>{{ $loop->iteration }}</th>
+                                            <td>{{ \App\Models\Order::statusLabel($history->from_status) }}</td>
+                                            <td>{{ $history->status_label }}</td>
+                                            <td>{{ $history->user?->username ?? '—' }}</td>
+                                            <td>{{ $history->note ?? '—' }}</td>
+                                            <td>{{ verta($history->created_at)->format('%d %B, %Y - H:i') }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+                        </div>
+
                         <div class="form-group card shade c-grey col-12 col-lg-12">
                             <h5 class="card-header c-primary">دکمه</h5>
                             <div class="card-body">
