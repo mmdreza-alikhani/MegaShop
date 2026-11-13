@@ -28,10 +28,10 @@ class UpdateCategoryRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255|unique:categories,title,'.$this->route('category')->id,
-            'is_active' => 'required|boolean',
-            'parent_id' => 'required',
+            'is_active' => 'nullable|boolean',
+            'parent_id' => 'nullable|integer|min:0',
             'icon' => 'nullable|string|max:255',
-            'filter_attribute_ids' => 'required|array',
+            'filter_attribute_ids' => 'nullable|array',
             'filter_attribute_ids.*' => 'required|exists:attributes,id|distinct',
             'variation_attribute_id' => 'required|exists:attributes,id',
         ];

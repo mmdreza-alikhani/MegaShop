@@ -43,7 +43,7 @@ class CategoryController extends Controller
     public function create(): View|Application|Factory
     {
         $parentCategories = Cache::remember('parent_categories', now()->addHour(), function () {
-            return Category::whereNull('parent_id')->pluck('title', 'id');
+            return Category::query()->parents()->pluck('title', 'id');
         });
 
         $attributes = Cache::remember('attributes', now()->addHour(), function () {
@@ -64,10 +64,9 @@ class CategoryController extends Controller
             $category = Category::create([
                 'title' => $request->input('title'),
                 'parent_id' => $request->integer('parent_id'),
-                'is_active' => true,
+                'is_active' => $request->boolean('is_active', true),
                 'description' => $request->input('description'),
                 'icon' => $request->input('icon'),
-                'priority' => $request->priority ?? 0,
             ]);
 
             CategoryAttribute::create([
@@ -76,7 +75,7 @@ class CategoryController extends Controller
                 'type' => 'variation',
             ]);
 
-            foreach ($request->input('filter_attribute_ids') as $attribute_id) {
+            foreach ($request->input('filter_attribute_ids', []) as $attribute_id) {
                 CategoryAttribute::create([
                     'category_id' => $category->id,
                     'attribute_id' => $attribute_id,
@@ -103,7 +102,7 @@ class CategoryController extends Controller
     {
         $category->load(['variation', 'filters']);
         $parentCategories = Cache::remember('parent_categories', now()->addHour(), function () {
-            return Category::whereNull('parent_id')->pluck('title', 'id');
+            return Category::query()->parents()->pluck('title', 'id');
         });
 
         $attributes = Cache::remember('attributes', now()->addHour(), function () {
@@ -122,10 +121,19 @@ class CategoryController extends Controller
         try {
             DB::beginTransaction();
 
+            $parentId = (int) $request->input('parent_id', 0);
+
+            // والد نمی‌تواند خود دسته یا یکی از زیرشاخه‌هایش باشد.
+            if ($parentId !== 0 && in_array($parentId, $category->getAllDescendantIds(), true)) {
+                flash()->error('دسته والد انتخاب‌شده معتبر نیست.');
+
+                return redirect()->back();
+            }
+
             $category->update([
                 'title' => $request->input('title'),
-                'parent_id' => $request->input('parent_id'),
-                'is_active' => $request->input('is_active'),
+                'parent_id' => $parentId,
+                'is_active' => $request->boolean('is_active'),
                 'description' => $request->input('description'),
                 'icon' => $request->input('icon'),
             ]);
@@ -138,7 +146,7 @@ class CategoryController extends Controller
                 'type' => 'variation',
             ]);
 
-            foreach ($request->input('filter_attribute_ids') as $attribute_id) {
+            foreach ($request->input('filter_attribute_ids', []) as $attribute_id) {
                 CategoryAttribute::create([
                     'category_id' => $category->id,
                     'attribute_id' => $attribute_id,
@@ -164,11 +172,14 @@ class CategoryController extends Controller
     public function destroy(Category $category): RedirectResponse
     {
         try {
-            if ($category->children()->count() > 0 && $category->products()->count() > 0) {
-                flash()->warning('دسته بندی غیرقابل حذف است!');
+            // اگر دسته فرزند یا محصول دارد، حذف انجام نمی‌شود (جلوگیری از حذف آبشاری).
+            if ($category->children()->exists() || $category->products()->exists()) {
+                flash()->warning('این دسته‌بندی دارای زیردسته یا محصول است و قابل حذف نیست.');
+
                 return redirect()->back();
             }
 
+            $category->attributes()->detach();
             $category->delete();
 
             flash()->success(config('flasher.category.deleted'));
