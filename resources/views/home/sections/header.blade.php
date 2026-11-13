@@ -1,204 +1,198 @@
 @php
     use App\Models\Category;
+    use Illuminate\Support\Facades\Cache;
 
-    // یک‌بار خواندن سبد برای کل هدر (قبلاً ۶ بار کوئری می‌زد)
+    // یک‌بار خواندن سبد برای کل هدر
     $headerCartItems = auth()->check() ? cartItems() : collect();
     $headerCartCount = $headerCartItems->count();
+    $headerCategories = Cache::remember(
+        'header_menu_categories',
+        now()->addHour(),
+        fn () => Category::query()->where('parent_id', 0)->where('is_active', 1)->with('children')->get()
+    );
 @endphp
-<header class="nk-header nk-header-opaque">
-
-    <!-- START: Top Contacts -->
-    <div class="nk-contacts-top">
-        <div class="container">
-            <div class="text-center">
-                @if(session()->has('welcome') && auth()->check())
-                    <h4>
-                        <span>
-                            {{ session('welcome') }}
-                        </span>
-                    </h4>
-                @endif
-                <ul class="nk-contacts-icons">
-                    <li>
-                        <a href="#" data-toggle="modal" data-target="#modalSearch" class="search-btn">
-                            <span class="fa fa-lg fa-search"></span>
-                        </a>
-                    </li>
-                    @auth()
-                        <li>
-                            <form action="{{ route('home.profile.logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="search-btn btn btn-link p-0" title="خروج از حساب کاربری">
-                                    <span class="fa fa-lg fa-sign-out"></span>
-                                </button>
-                            </form>
-                        </li>
-                        <li>
-                        <span class="nk-cart-toggle">
-                            <span class="fa fa-lg fa-shopping-cart"></span>
-                            @if($headerCartCount > 0)
-                                <span class="nk-badge">{{ $headerCartCount > 9 ? '+9' : $headerCartCount }}</span>
-                            @endif
-                        </span>
-                            <div class="nk-cart-dropdown">
-                                @if($headerCartCount === 0)
-                                    <div class="alert text-center">
-                                        سبد خرید شما خالی است!
-                                    </div>
-                                @else
-                                    @foreach($headerCartItems as $product)
-                                        <div class="nk-widget-post">
-                                            <a href="{{ route('home.products.show', ['product' => $product->itemable->slug]) }}" class="nk-post-image">
-                                                <img src="{{ Storage::url(config('upload.product_primary_path') . '/') . '/' . $product->itemable->primary_image }}" alt="{{ $product->itemable->title }}">
-                                            </a>
-                                            <h3 class="nk-post-title text-right" style="direction: rtl">
-                                                <form action="{{ route('home.cart.remove', ['itemId' => $product->id]) }}"
-                                                      method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn p-0 bg-transparent nk-cart-remove-item">
-                                                        <span class="ion-android-close"></span>
-                                                    </button>
-                                                </form>
-                                                <a href="{{ route('home.products.show', ['product' => $product->itemable->slug]) }}">{{ $product->itemable->title }}</a>
-                                                <br>
-                                                <small>{{ $product->variation->attribute?->title }}: {{ $product->variation->value }}</small>
-                                                @if($product->variation->is_discounted && $product->variation->price > 0)
-                                                    <br>
-                                                    <small style="color: #dd163b">درصد تخفیف: {{ round((($product->variation->price - $product->variation->sale_price) / $product->variation->price) * 100) . '%' }}</small>
-                                                @endif
-                                            </h3>
-                                            <div class="nk-gap-1"></div>
-                                            <div class="nk-product-price"> {{ $product->quantity == 1 ? '' : $product->quantity . ' ' . '*' }} {{ number_format($product->total_price) }}</div>تومان
-                                        </div>
-                                    @endforeach
-                                    <div class="nk-gap-2"></div>
-                                @endif
-                                @if($headerCartCount > 0)
-                                    <div class="text-center">
-                                        <a href="{{ route('home.cart.index') }}" class="nk-btn nk-btn-rounded nk-btn-color-main-1 nk-btn-hover-color-white">ادامه خرید</a>
-                                    </div>
-                                @endif
-                            </div>
-                        </li>
-                        <li>
-                            <a href="{{ route('home.profile.info') }}">
-                                <span class="fa fa-lg fa-dashboard"></span>
-                            </a>
-                        </li>
-                    @else
-                        <li>
-                            <a href="#" data-toggle="modal" data-target="#modalLogin">
-                                <span class="fa fa-lg fa-user"></span>
-                            </a>
-                        </li>
-                    @endauth
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- END: Top Contacts -->
-
-    <!-- START: Navbar -->
-    <nav class="nk-navbar nk-navbar-top nk-navbar-sticky nk-navbar-autohide">
-        <div class="container-fluid">
-            <div class="nk-nav-table">
-
-                <a href="{{ route('home.index') }}" class="nk-nav-logo">
-                    <img src="{{ env('HORIZONTAL_LOGO_PATH') }}" alt="MegaShop" width="220">
+<header class="mk-header">
+    <div class="mk-topbar">
+        <div class="container mk-topbar-inner">
+            <div class="mk-topbar-info">
+                <a href="tel:{{ config('brand.phone') }}">
+                    <span class="fa fa-phone"></span>
+                    {{ config('brand.phone') }}
                 </a>
-
-                <ul class="nk-nav nk-nav-right d-none d-lg-table-cell" data-nav-mobile="#nk-nav-mobile">
-
-                    <li>
-                        <a href="{{ route('home.aboutus') }}">
-                            درباره من
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{{ route('home.contact') }}">
-                            تماس با من
-                        </a>
-                    </li>
-
-                    @auth
-                        @if(auth()->user()->getAllPermissions()->isNotEmpty())
-                            <li>
-                                <a href="{{ route('admin.panel') }}">
-                                    ادمین پنل
-                                </a>
-                            </li>
-                        @endif
-                    @endauth
-
-                    <li>
-                        <a href="{{ route('home.posts.index') }}">
-                            مقالات
-                        </a>
-                    </li>
-
-                    <li class="nk-drop-item">
-                        <a href="#">
-                            محصولات
-                        </a>
-                        <ul class="dropdown">
-                            @foreach(\Illuminate\Support\Facades\Cache::remember('header_menu_categories', now()->addHour(), fn () => Category::query()->where('parent_id', 0)->where('is_active', 1)->with('children')->get()) as $parent_category)
-                                <li class="nk-drop-item">
-                                    <a class="text-right">
-                                        {{ $parent_category->title }}
-                                    </a>
-                                    <ul class="dropdown">
-                                        @foreach($parent_category->children as $children)
-                                            <li>
-                                                <a href="{{ route('home.categories.show', ['category' => $children->slug]) }}"
-                                                   class="text-right">
-                                                    {{ $children->title }}
-                                                </a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </li>
-                </ul>
-
-                <ul class="nk-nav nk-nav-right nk-nav-icons">
-
-                    <li class="single-icon d-lg-none">
-                        <a href="#" class="no-link-effect" data-nav-toggle="#nk-nav-mobile">
-                            <span class="nk-icon-burger">
-                                <span class="nk-t-1"></span>
-                                <span class="nk-t-2"></span>
-                                <span class="nk-t-3"></span>
-                            </span>
-                        </a>
-                    </li>
-                </ul>
+                <span class="mk-topbar-sep"></span>
+                <span class="mk-topbar-slogan">{{ config('brand.slogan') }}</span>
             </div>
-        </div>
-        <div class="progress">
-            <div class="progress-bar"></div>
-        </div>
-    </nav>
-    <!-- END: Navbar -->
 
-</header>
+            <div class="mk-topbar-actions">
+                <button type="button" class="mk-icon-btn" data-toggle="modal" data-target="#modalSearch"
+                        aria-label="جستجو">
+                    <span class="fa fa-lg fa-search"></span>
+                </button>
 
-<!--START: Navbar Mobile-->
-<div id="nk-nav-mobile" class="nk-navbar nk-navbar-side nk-navbar-right-side nk-navbar-overlay-content d-lg-none">
-    <div class="nano">
-        <div class="nano-content">
-            <a href="index.html" class="nk-nav-logo">
-                <img src="/assets/images/logo.png" alt="" width="120">
-            </a>
-            <div class="nk-navbar-mobile-content">
-                <ul class="nk-nav text-right">
-                    <!-- Here will be inserted menu from [data-mobile-menu="#nk-nav-mobile"] -->
-                </ul>
+                @auth
+                    <button type="button" class="mk-icon-btn mk-cart-toggle" aria-label="سبد خرید">
+                        <span class="fa fa-lg fa-shopping-cart"></span>
+                        @if($headerCartCount > 0)
+                            <span class="mk-badge">{{ $headerCartCount > 9 ? '۹+' : $headerCartCount }}</span>
+                        @endif
+                    </button>
+
+                    <a href="{{ route('home.profile.info') }}" class="mk-icon-btn" aria-label="حساب کاربری">
+                        <span class="fa fa-lg fa-user"></span>
+                    </a>
+
+                    <form action="{{ route('home.profile.logout') }}" method="POST" class="mk-inline-form">
+                        @csrf
+                        <button type="submit" class="mk-icon-btn" aria-label="خروج" title="خروج از حساب">
+                            <span class="fa fa-lg fa-sign-out"></span>
+                        </button>
+                    </form>
+                @else
+                    <button type="button" class="mk-icon-btn" data-toggle="modal" data-target="#modalLogin"
+                            aria-label="ورود و ثبت‌نام">
+                        <span class="fa fa-lg fa-user"></span>
+                    </button>
+                @endauth
             </div>
         </div>
     </div>
-</div>
-<!-- END: Navbar Mobile -->
+
+    <div class="mk-navbar">
+        <div class="container mk-navbar-inner">
+            <a href="{{ route('home.index') }}" class="mk-logo">
+                <img src="{{ asset(ltrim(config('brand.logo'), '/')) }}" alt="{{ config('brand.name') }}">
+            </a>
+
+            <nav class="mk-nav" aria-label="منوی اصلی">
+                <a href="{{ route('home.index') }}">خانه</a>
+
+                <div class="mk-nav-dropdown">
+                    <a href="{{ route('home.products.index') }}">
+                        محصولات
+                        <span class="fa fa-angle-down"></span>
+                    </a>
+                    <div class="mk-mega">
+                        @forelse($headerCategories as $parentCategory)
+                            <div class="mk-mega-col">
+                                <a class="mk-mega-title"
+                                   href="{{ route('home.categories.show', ['category' => $parentCategory->slug]) }}">
+                                    {{ $parentCategory->title }}
+                                </a>
+                                @foreach($parentCategory->children as $child)
+                                    <a class="mk-mega-link"
+                                       href="{{ route('home.categories.show', ['category' => $child->slug]) }}">
+                                        {{ $child->title }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        @empty
+                            <div class="mk-mega-col">
+                                <a class="mk-mega-link" href="{{ route('home.products.index') }}">همه محصولات</a>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <a href="{{ route('home.posts.index') }}">مقالات</a>
+                <a href="{{ route('home.aboutus') }}">درباره ما</a>
+                <a href="{{ route('home.contact') }}">تماس با ما</a>
+
+                @auth
+                    @if(auth()->user()->getAllPermissions()->isNotEmpty())
+                        <a href="{{ route('admin.panel') }}" class="mk-nav-admin">پنل مدیریت</a>
+                    @endif
+                @endauth
+            </nav>
+
+            <button type="button" class="mk-burger" aria-label="منو">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="mk-drawer" id="mkDrawer">
+        <div class="mk-drawer-head">
+            <span>منو</span>
+            <button type="button" class="mk-drawer-close" aria-label="بستن">&times;</button>
+        </div>
+        <nav class="mk-drawer-nav">
+            <a href="{{ route('home.index') }}">خانه</a>
+            <a href="{{ route('home.products.index') }}">همه محصولات</a>
+            @foreach($headerCategories as $parentCategory)
+                <a class="mk-drawer-group"
+                   href="{{ route('home.categories.show', ['category' => $parentCategory->slug]) }}">
+                    {{ $parentCategory->title }}
+                </a>
+                @foreach($parentCategory->children as $child)
+                    <a class="mk-drawer-sub"
+                       href="{{ route('home.categories.show', ['category' => $child->slug]) }}">
+                        {{ $child->title }}
+                    </a>
+                @endforeach
+            @endforeach
+            <a href="{{ route('home.posts.index') }}">مقالات</a>
+            <a href="{{ route('home.aboutus') }}">درباره ما</a>
+            <a href="{{ route('home.contact') }}">تماس با ما</a>
+            @auth
+                <a href="{{ route('home.profile.info') }}">حساب کاربری</a>
+                <form action="{{ route('home.profile.logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="mk-drawer-logout">خروج از حساب</button>
+                </form>
+            @else
+                <button type="button" class="mk-drawer-login" data-toggle="modal" data-target="#modalLogin">
+                    ورود / ثبت‌نام
+                </button>
+            @endauth
+        </nav>
+    </div>
+    <div class="mk-overlay" id="mkOverlay"></div>
+
+    @auth
+        <div class="mk-cart-panel" id="mkCartPanel">
+            <div class="mk-cart-panel-head">
+                <span>سبد خرید ({{ $headerCartCount }})</span>
+                <button type="button" class="mk-cart-close" aria-label="بستن">&times;</button>
+            </div>
+
+            @if($headerCartCount === 0)
+                <div class="mk-cart-empty">سبد خرید شما خالی است!</div>
+            @else
+                <div class="mk-cart-list">
+                    @foreach($headerCartItems as $cartItem)
+                        <div class="mk-cart-row">
+                            <a href="{{ route('home.products.show', ['product' => $cartItem->itemable->slug]) }}"
+                               class="mk-cart-thumb">
+                                <img src="{{ Storage::url(config('upload.product_primary_path') . '/' . $cartItem->itemable->primary_image) }}"
+                                     alt="{{ $cartItem->itemable->title }}">
+                            </a>
+                            <div class="mk-cart-info">
+                                <a href="{{ route('home.products.show', ['product' => $cartItem->itemable->slug]) }}">
+                                    {{ Str::limit($cartItem->itemable->title, 42) }}
+                                </a>
+                                <small>
+                                    {{ $cartItem->variation->attribute?->title }}:
+                                    {{ $cartItem->variation->value }}
+                                </small>
+                                <div class="mk-cart-meta">
+                                    <span>{{ $cartItem->quantity }} × {{ number_format($cartItem->unit_price) }}</span>
+                                    <strong>{{ number_format($cartItem->total_price) }} تومان</strong>
+                                </div>
+                            </div>
+                            <form action="{{ route('home.cart.remove', ['itemId' => $cartItem->id]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="mk-cart-remove" aria-label="حذف">&times;</button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="mk-cart-panel-foot">
+                    <a href="{{ route('home.cart.index') }}" class="mk-btn mk-btn-outline">مشاهده سبد</a>
+                    <a href="{{ route('home.cart.checkout') }}" class="mk-btn mk-btn-primary">تسویه حساب</a>
+                </div>
+            @endif
+        </div>
+    @endauth
+</header>

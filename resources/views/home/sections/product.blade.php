@@ -4,64 +4,74 @@
     $inWishlist = (bool) ($product->in_wishlist ?? false);
     $ratingValue = (int) round($product->rates_avg_rate ?? 0);
     $productUrl = route('home.products.show', ['product' => $product->slug]);
+    $isAvailable = $cardPrice !== null && (int) $cardPrice->quantity > 0;
+    $discountPercent = $isDiscounted && $cardPrice->price > 0
+        ? (int) round((($cardPrice->price - $cardPrice->sale_price) / $cardPrice->price) * 100)
+        : 0;
 @endphp
-<div class="col-md-6">
-    <div class="nk-product-cat">
-        <div class="nk-product-cont col-8">
-            <h3 class="nk-product-title h5 text-right" style="direction: rtl">
-                <a href="{{ $productUrl }}">{{ $product->title }}</a>
-                @auth
-                    <form class="d-inline"
-                          action="{{ $inWishlist ? route('home.products.wishlist.remove', ['product' => $product->slug]) : route('home.products.wishlist.add', ['product' => $product->slug]) }}"
-                          method="POST">
-                        @csrf
-                        @if($inWishlist)
-                            @method('DELETE')
-                        @endif
-                        <button type="submit" class="btn bg-transparent" title="افزودن به علاقه‌مندی‌ها">
-                            <i class="fa fa-heart fa-lg {{ $inWishlist ? 'text-danger' : 'text-light' }}"></i>
-                        </button>
-                    </form>
-                @else
-                    <a href="#" data-toggle="modal" data-target="#modalLogin" class="btn bg-transparent"
-                       title="برای افزودن به علاقه‌مندی‌ها وارد شوید">
-                        <i class="fa fa-heart fa-lg text-light"></i>
-                    </a>
-                @endauth
-            </h3>
-            <div class="nk-gap-1"></div>
 
-            <div class="nk-product-rating"
-                 data-rating-stars="5"
-                 data-rating-value="{{ $ratingValue }}"
-                 data-rating-color="#dd163b"
-                 data-rating-readonly="true">
-            </div>
+<article class="mk-product-card">
+    <a href="{{ $productUrl }}" class="mk-card-media">
+        <img src="{{ Storage::url(config('upload.product_primary_path') . '/' . $product->primary_image) }}"
+             alt="{{ $product->title }}" loading="lazy">
 
-            <div class="nk-product-price text-right" style="direction: rtl">
-                @if($cardPrice === null)
-                    <div class="nk-product-price text-right"><span>ناموجود</span></div>
-                @elseif($isDiscounted)
-                    <div class="nk-product-price text-right">
-                        <span style="text-decoration: line-through;opacity: .5">{{ number_format($cardPrice->price) }}</span>
-                        <span class="ms-3">تومان</span>
-                    </div>
-                    <div class="nk-product-price text-right" style="margin-right: 20px;margin-top: 5px">
-                        <span style="color: #dd163b">{{ number_format($cardPrice->sale_price) }}</span>
-                        <span class="ms-3">تومان</span>
-                    </div>
-                @else
-                    <div class="nk-product-price text-right">
-                        <span>{{ number_format($cardPrice->price) }}</span>
-                        <span class="ms-3">تومان</span>
-                    </div>
-                @endif
-            </div>
-            <a href="{{ $productUrl }}" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 nk-btn-hover-color-main-1">مشخصات</a>
+        @if($discountPercent > 0)
+            <span class="mk-card-badge">{{ $discountPercent }}٪ تخفیف</span>
+        @elseif(! $isAvailable)
+            <span class="mk-card-badge">ناموجود</span>
+        @endif
+    </a>
+
+    @auth
+        <form action="{{ $inWishlist ? route('home.products.wishlist.remove', ['product' => $product->slug]) : route('home.products.wishlist.add', ['product' => $product->slug]) }}"
+              method="POST" class="mk-card-wish-form">
+            @csrf
+            @if($inWishlist)
+                @method('DELETE')
+            @endif
+            <button type="submit" class="mk-card-wish {{ $inWishlist ? 'is-active' : '' }}"
+                    title="{{ $inWishlist ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها' }}">
+                <span class="fa fa-heart"></span>
+            </button>
+        </form>
+    @else
+        <button type="button" class="mk-card-wish" data-toggle="modal" data-target="#modalLogin"
+                title="برای افزودن به علاقه‌مندی‌ها وارد شوید">
+            <span class="fa fa-heart"></span>
+        </button>
+    @endauth
+
+    <div class="mk-card-body">
+        <a href="{{ $productUrl }}" class="mk-card-title" title="{{ $product->title }}">{{ $product->title }}</a>
+
+        <div class="mk-card-meta">
+            @if($product->brand)
+                <span>{{ $product->brand->title }}</span>
+            @endif
+            <span class="mk-card-stars">
+                @for($i = 1; $i <= 5; $i++)
+                    <span class="fa fa-star{{ $i <= $ratingValue ? '' : '-o' }}"></span>
+                @endfor
+            </span>
         </div>
-        <a class="nk-product-image col-4" style="height: 160px;" href="{{ $productUrl }}">
-            <img src="{{ Storage::url(config('upload.product_primary_path') . '/' . $product->primary_image) }}"
-                 alt="{{ $product->title }}">
-        </a>
+
+        <div class="mk-card-prices">
+            @if($cardPrice === null)
+                <span class="mk-card-out">ناموجود</span>
+            @elseif($isDiscounted)
+                <span class="mk-card-old-price">{{ number_format($cardPrice->price) }}</span>
+                <span class="mk-card-price">
+                    {{ number_format($cardPrice->sale_price) }}
+                    <small>تومان</small>
+                </span>
+            @else
+                <span class="mk-card-price">
+                    {{ number_format($cardPrice->price) }}
+                    <small>تومان</small>
+                </span>
+            @endif
+        </div>
+
+        <a href="{{ $productUrl }}" class="mk-card-cta">مشخصات و خرید</a>
     </div>
-</div>
+</article>

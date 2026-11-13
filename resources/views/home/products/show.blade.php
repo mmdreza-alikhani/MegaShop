@@ -164,7 +164,7 @@
                             <a class="nav-link {{ count($errors->store) > 0 ? '' : 'active'}} " id="description" href="#tab-description" role="tab" data-toggle="tab">توضیحات</a>
                         </li>
                         <li class="nav-item mx-1">
-                            <a class="nav-link {{ count($errors->store) > 0 ? 'active' : ''}} " id="reviews" href="#tab-reviews" role="tab" data-toggle="tab">نظرات ({{ $product->comments()->count() }})</a>
+                            <a class="nav-link {{ count($errors->store) > 0 ? 'active' : ''}} " id="reviews" href="#tab-reviews" role="tab" data-toggle="tab">نظرات ({{ $commentsCount }})</a>
                         </li>
                     </ul>
 
@@ -219,12 +219,12 @@
 
                             <div class="nk-gap-3"></div>
 
-                            <h3 class="nk-decorated-h-2"><span><span class="text-main-1">{{ $product->comments->count() }}</span> نظر</span></h3>
+                            <h3 class="nk-decorated-h-2"><span><span class="text-main-1">{{ $commentsCount }}</span> نظر</span></h3>
 
                             <div class="nk-gap"></div>
 
                             <div class="nk-comments">
-                                @include('home.sections.comments' , ['comments' => $product->comments->where('reply_of', 0)])
+                                @include('home.sections.comments', ['comments' => $comments])
                             </div>
 
                             <div class="clearfix"></div>

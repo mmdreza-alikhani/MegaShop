@@ -1,24 +1,35 @@
-<div class="col-md-6">
-    <div class="nk-blog-post">
-        <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="nk-post-img">
-            <img style="height: 350px" src="{{ Storage::url(config('upload.post_path') . '/' . $post->image) }}" alt="{{ $post->title }}-image">
-            <span class="nk-post-comments-count">{{ $post->comments->count() }}</span>
+<div class="col-md-6 col-lg-4">
+<article class="mk-post-card">
+    <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="mk-post-media">
+        <img src="{{ Storage::url(config('upload.post_path') . '/' . $post->image) }}"
+             alt="{{ $post->title }}" loading="lazy">
+        @if(($post->comments_count ?? 0) > 0)
+            <span class="mk-post-comments">
+                <span class="fa fa-comments"></span>
+                {{ $post->comments_count }}
+            </span>
+        @endif
+    </a>
+
+    <div class="mk-post-body">
+        <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="mk-post-title">
+            {{ $post->title }}
         </a>
-        <div class="nk-gap"></div>
-        <h2 class="nk-post-title h4 text-right" style="direction: rtl"><a href="{{ route('home.posts.show', ['post' => $post->slug]) }}">{{ $post->title }}</a></h2>
-        <div class="nk-post-by text-right">
-            نوشته:
-            <span class="text-left" style="direction: ltr">
-                            {{ '(' . $post->updated_at->diffForHumans() . ')' }}
-                        </span>
-            <a href="#">{{ $post->author->username }}</a>
-            <img src="{{ Storage::url(config('upload.user_avatar_path') . '/') . $post->author->avatar }}" alt="{{ $post->author->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
+
+        <div class="mk-post-meta">
+            <img src="{{ Storage::url(config('upload.user_avatar_path') . '/' . ($post->author?->avatar ?? 'avatar.png')) }}"
+                 alt="{{ $post->author?->username }}" class="mk-post-avatar" loading="lazy">
+            <span>{{ $post->author?->username ?? 'مگاشاپ' }}</span>
+            <span class="mk-post-dot">•</span>
+            <span>{{ verta($post->updated_at)->format('%d %B %Y') }}</span>
         </div>
-        <div class="nk-gap"></div>
-        <div class="nk-post-text text-right">
-            <p style="direction: rtl">{{ Str::limit(strip_tags($post->text), 250) }}</p>
-        </div>
-        <div class="nk-gap"></div>
-        <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 nk-btn-hover-color-main-1">ادامه مطلب</a>
+
+        <p class="mk-post-excerpt">{{ Str::limit(strip_tags($post->text), 220) }}</p>
+
+        <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="mk-post-more">
+            ادامه مطلب
+            <span class="fa fa-angle-left"></span>
+        </a>
     </div>
+</article>
 </div>

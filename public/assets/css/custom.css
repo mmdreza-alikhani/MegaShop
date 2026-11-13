@@ -1,74 +1,1541 @@
-/* PLACE YOU CUSTOM STYLES IN THIS FILE */
+/* =========================================================
+   مگاشاپ — لایه اصلاحی ظاهر (RTL + ریسپانسیو)
+   این فایل بعد از main.css بارگذاری می‌شود و رفتار پیش‌فرض تم را اصلاح می‌کند.
+   ========================================================= */
+
+:root {
+    --mk-bg: #1a1c1d;
+    --mk-bg-2: #232930;
+    --mk-bg-3: #293139;
+    --mk-border: #2f3944;
+    --mk-accent: #dd163b;
+    --mk-accent-2: #a51d2a;
+    --mk-text: #e9edf2;
+    --mk-muted: #9aa7b4;
+    --mk-radius: 12px;
+}
+
+/* ---------- پایه ---------- */
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
+    background-color: var(--mk-bg);
+    color: var(--mk-text);
+}
+
+body ::selection {
+    background: var(--mk-accent);
+    color: #fff;
+}
+
+.mk-main {
+    position: relative;
+    z-index: 1;
+}
+
+img {
+    max-width: 100%;
+}
+
+a {
+    transition: color .15s ease;
+}
+
+/* اسکرول‌بار */
 body::-webkit-scrollbar {
     width: .75em;
 }
 
 body::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .5);
 }
 
 body::-webkit-scrollbar-thumb {
-    background-color: #dd163b;
+    background-color: var(--mk-accent);
     border-radius: 20px;
 }
 
-.progress{
+/* نوار پیشرفت بالای صفحه */
+.progress {
     direction: rtl;
     width: 100%;
-    height: 5px;
+    height: 3px;
     background-color: transparent;
     position: absolute;
-    bottom: 0
+    bottom: 0;
 }
 
-.progress-bar{
+.progress-bar {
     height: 100%;
     overflow: hidden;
-    background: linear-gradient(to right, rgb(165, 29, 42), rgb(26, 28, 29));
+    background: linear-gradient(to left, var(--mk-accent), var(--mk-accent-2));
 }
 
 .active-link {
-    color: #dd163b!important;
+    color: var(--mk-accent) !important;
 }
-.profile-pic {
-    color: transparent;
-    transition: all 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+/* ---------- هدر ---------- */
+.mk-header {
     position: relative;
-    transition: all 0.3s ease;
+    z-index: 1000;
+    background: linear-gradient(180deg, rgba(26, 28, 29, .96), rgba(26, 28, 29, .82));
+    backdrop-filter: blur(6px);
 }
-.profile-pic input {
+
+.mk-topbar {
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+    font-size: .82rem;
+    color: var(--mk-muted);
+}
+
+.mk-topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 44px;
+}
+
+.mk-topbar-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.mk-topbar-info a {
+    color: var(--mk-muted);
+}
+
+.mk-topbar-info a:hover {
+    color: #fff;
+}
+
+.mk-topbar-sep {
+    width: 1px;
+    height: 14px;
+    background: rgba(255, 255, 255, .12);
+}
+
+.mk-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.mk-icon-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    color: var(--mk-text);
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.mk-icon-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .08);
+}
+
+.mk-badge {
+    position: absolute;
+    top: 1px;
+    inset-inline-start: 2px;
+    min-width: 17px;
+    padding: 0 4px;
+    font-size: .65rem;
+    line-height: 17px;
+    color: #fff;
+    text-align: center;
+    background: var(--mk-accent);
+    border-radius: 10px;
+}
+
+.mk-navbar {
+    border-bottom: 2px solid var(--mk-border);
+    background: rgba(26, 28, 29, .92);
+}
+
+.mk-navbar-inner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-height: 74px;
+}
+
+.mk-logo img {
+    display: block;
+    width: auto;
+    max-height: 48px;
+}
+
+.mk-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-inline-start: 26px;
+    margin-inline-end: auto;
+}
+
+.mk-nav > a,
+.mk-nav-dropdown > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--mk-text);
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+.mk-nav > a:hover,
+.mk-nav-dropdown > a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .06);
+}
+
+.mk-nav-admin {
+    color: var(--mk-accent) !important;
+}
+
+.mk-nav-dropdown {
+    position: relative;
+}
+
+.mk-nav-dropdown .ion-ios-arrow-down {
+    font-size: .7rem;
+    opacity: .7;
+}
+
+.mk-mega {
+    position: absolute;
+    top: calc(100% + 8px);
+    inset-inline-start: 0;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 18px 26px;
+    width: min(860px, 86vw);
+    padding: 20px;
+    background: #1f242b;
+    border: 1px solid var(--mk-border);
+    border-top: 3px solid var(--mk-accent);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 22px 50px rgba(0, 0, 0, .55);
+    /* display:none تا پنل بسته، عرضی به صفحه اضافه نکند */
     display: none;
 }
-.profile-pic img {
-    position: absolute;
-    object-fit: cover;
-    width: 165px;
-    height: 165px;
-    box-shadow: 0 0 10px 0 rgba(255, 255, 255, .35);
-    border-radius: 100px;
-    z-index: 0;
+
+.mk-nav-dropdown:hover .mk-mega,
+.mk-nav-dropdown:focus-within .mk-mega {
+    display: grid;
 }
-.profile-pic .-label {
+
+.mk-mega-title {
+    display: block;
+    margin-bottom: 8px;
+    font-size: .9rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.mk-mega-link {
+    display: block;
+    padding: 4px 0;
+    font-size: .84rem;
+    color: var(--mk-muted);
+}
+
+.mk-mega-link:hover {
+    color: var(--mk-accent);
+}
+
+.mk-burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    width: 42px;
+    height: 42px;
+    padding: 10px;
+    margin-inline-start: auto;
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid var(--mk-border);
+    border-radius: 10px;
     cursor: pointer;
-    height: 165px;
-    width: 165px;
 }
-.profile-pic:hover .-label {
+
+.mk-burger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+}
+
+/* کشوی موبایل */
+.mk-drawer {
+    position: fixed;
+    top: 0;
+    inset-inline-end: 0;
+    z-index: 1200;
+    width: min(320px, 86vw);
+    height: 100vh;
+    overflow-y: auto;
+    background: #171a1e;
+    border-inline-start: 1px solid var(--mk-border);
+    transform: translateX(105%);
+    transition: transform .22s ease;
+}
+
+html[dir="rtl"] .mk-drawer {
+    transform: translateX(-105%);
+}
+
+.mk-drawer-open .mk-drawer {
+    transform: translateX(0);
+}
+
+.mk-drawer-head {
     display: flex;
-    justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, .8);
-    z-index: 10000;
-    color: #fafafa;
-    transition: background-color 0.2s ease-in-out;
-    border-radius: 100px;
-    margin-bottom: 0;
+    justify-content: space-between;
+    padding: 16px 18px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--mk-border);
 }
-.profile-pic span {
+
+.mk-drawer-close,
+.mk-cart-close {
+    padding: 0;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--mk-muted);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.mk-drawer-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+.mk-drawer-nav > a,
+.mk-drawer-login,
+.mk-drawer-logout {
+    display: block;
+    width: 100%;
+    padding: 12px 18px;
+    font-size: .95rem;
+    color: var(--mk-text);
+    text-align: right;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .04);
+    cursor: pointer;
+}
+
+.mk-drawer-nav > a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .05);
+}
+
+.mk-drawer-group {
+    font-weight: 700;
+    color: #fff !important;
+}
+
+.mk-drawer-sub {
+    padding-inline-start: 32px !important;
+    font-size: .85rem !important;
+    color: var(--mk-muted) !important;
+}
+
+.mk-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    background: rgba(0, 0, 0, .6);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s ease, visibility .2s;
+}
+
+.mk-drawer-open .mk-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* پنل سبد خرید */
+.mk-cart-panel {
+    position: fixed;
+    top: 0;
+    inset-inline-end: 0;
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    width: min(380px, 92vw);
+    height: 100vh;
+    background: #171a1e;
+    border-inline-start: 1px solid var(--mk-border);
+    transform: translateX(105%);
+    transition: transform .22s ease;
+}
+
+html[dir="rtl"] .mk-cart-panel {
+    transform: translateX(-105%);
+}
+
+.mk-cart-open .mk-cart-panel {
+    transform: translateX(0);
+}
+
+.mk-cart-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--mk-border);
+}
+
+.mk-cart-empty {
+    padding: 40px 18px;
+    color: var(--mk-muted);
+    text-align: center;
+}
+
+.mk-cart-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.mk-cart-row {
+    display: grid;
+    grid-template-columns: 64px 1fr 24px;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, .05);
+}
+
+.mk-cart-thumb img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.mk-cart-info a {
+    display: block;
+    font-size: .86rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.mk-cart-info small {
+    display: block;
+    color: var(--mk-muted);
+}
+
+.mk-cart-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+    font-size: .8rem;
+    color: var(--mk-muted);
+}
+
+.mk-cart-meta strong {
+    color: #fff;
+}
+
+.mk-cart-remove {
+    width: 24px;
+    height: 24px;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--mk-muted);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.mk-cart-remove:hover {
+    color: var(--mk-accent);
+}
+
+.mk-cart-panel-foot {
+    display: flex;
+    gap: 10px;
+    padding: 16px;
+    border-top: 1px solid var(--mk-border);
+}
+
+/* ---------- دکمه‌ها ---------- */
+.mk-btn {
     display: inline-flex;
-    padding: 0.2em;
-    height: 2em;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    font-size: .9rem;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    background: var(--mk-bg-3);
+    border: 1px solid var(--mk-border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.mk-btn:hover {
+    color: #fff;
+    background: #333d49;
+}
+
+.mk-btn-primary {
+    background: var(--mk-accent);
+    border-color: var(--mk-accent);
+}
+
+.mk-btn-primary:hover {
+    background: var(--mk-accent-2);
+    border-color: var(--mk-accent-2);
+}
+
+.mk-btn-outline {
+    background: transparent;
+}
+
+.mk-btn-block {
+    width: 100%;
+}
+
+/* ---------- فوتر ---------- */
+.mk-footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 60px;
+    padding: 46px 0 18px;
+    color: var(--mk-muted);
+    background: #131517;
+    border-top: 1px solid var(--mk-border);
+}
+
+.mk-footer-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+    gap: 34px;
+}
+
+.mk-footer-logo img {
+    max-height: 44px;
+    margin-bottom: 14px;
+}
+
+.mk-footer-about p {
+    font-size: .86rem;
+    line-height: 1.9;
+}
+
+.mk-footer h4 {
+    margin-bottom: 14px;
+    font-size: .95rem;
+    color: #fff;
+}
+
+.mk-footer ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.mk-footer-col ul li {
+    margin-bottom: 8px;
+}
+
+.mk-footer-col ul a {
+    font-size: .86rem;
+    color: var(--mk-muted);
+}
+
+.mk-footer-col ul a:hover {
+    color: var(--mk-accent);
+}
+
+.mk-footer-contact p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: .86rem;
+}
+
+.mk-social {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.mk-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: #cfd8e3;
+    background: rgba(255, 255, 255, .05);
+    border: 1px solid var(--mk-border);
+    border-radius: 50%;
+}
+
+.mk-social a:hover {
+    color: #fff;
+    background: var(--mk-accent);
+    border-color: var(--mk-accent);
+}
+
+.mk-footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding-top: 18px;
+    margin-top: 30px;
+    font-size: .8rem;
+    border-top: 1px solid rgba(255, 255, 255, .06);
+}
+
+.mk-footer-sep {
+    opacity: .4;
+}
+
+/* ---------- کارت محصول ---------- */
+.mk-product-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 14px;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: var(--mk-radius);
+    transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+.mk-product-card:hover {
+    border-color: rgba(221, 22, 59, .55);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, .35);
+}
+
+.mk-card-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #1b2026;
+    border-radius: 10px;
+}
+
+.mk-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform .25s ease;
+}
+
+.mk-product-card:hover .mk-card-media img {
+    transform: scale(1.05);
+}
+
+.mk-card-badge {
+    position: absolute;
+    top: 8px;
+    inset-inline-start: 8px;
+    padding: 2px 8px;
+    font-size: .72rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--mk-accent);
+    border-radius: 6px;
+}
+
+.mk-card-wish-form {
+    position: absolute;
+    top: 22px;
+    inset-inline-end: 22px;
+    z-index: 2;
+    margin: 0;
+}
+
+.mk-inline-form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.mk-card-wish {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #dbe3ec;
+    background: rgba(0, 0, 0, .45);
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.mk-card-wish:hover {
+    background: rgba(0, 0, 0, .7);
+}
+
+.mk-card-wish.is-active {
+    color: var(--mk-accent);
+}
+
+.mk-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 12px;
+}
+
+.mk-card-title {
+    display: -webkit-box;
+    min-height: 2.6em;
+    overflow: hidden;
+    font-size: .92rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: #fff;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.mk-card-title:hover {
+    color: var(--mk-accent);
+}
+
+.mk-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: .78rem;
+    color: var(--mk-muted);
+}
+
+.mk-card-stars {
+    color: #f5b301;
+    letter-spacing: 1px;
+}
+
+.mk-card-prices {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: auto;
+}
+
+.mk-card-old-price {
+    font-size: .8rem;
+    color: #8b98a6;
+    text-decoration: line-through;
+}
+
+.mk-card-price {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.mk-card-price small {
+    font-size: .72rem;
+    font-weight: 400;
+    color: var(--mk-muted);
+}
+
+.mk-section-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 34px 0 18px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.mk-section-title::after {
+    content: ";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to left, var(--mk-border), transparent);
+}
+
+.mk-card-out {
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--mk-accent);
+}
+
+.mk-card-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 9px 12px;
+    font-size: .85rem;
+    font-weight: 600;
+    color: #fff;
+    background: #2f3944;
+    border-radius: 9px;
+}
+
+.mk-card-cta:hover {
+    color: #fff;
+    background: var(--mk-accent);
+}
+
+/* ---------- صفحه لیست محصولات ---------- */
+.mk-page-head {
+    padding: 22px 0 10px;
+}
+
+.mk-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+    font-size: .85rem;
+    color: var(--mk-muted);
+    list-style: none;
+}
+
+.mk-breadcrumb a {
+    color: var(--mk-muted);
+}
+
+.mk-breadcrumb a:hover {
+    color: var(--mk-accent);
+}
+
+.mk-breadcrumb li + li::before {
+    content: "‹";
+    margin-inline-end: 8px;
+    color: #59636f;
+}
+
+.mk-page-title {
+    margin: 10px 0 0;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.mk-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    margin-bottom: 18px;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: var(--mk-radius);
+}
+
+.mk-search {
+    display: flex;
+    flex: 1 1 240px;
+    gap: 8px;
+}
+
+.mk-input,
+.mk-select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: .88rem;
+    color: #fff;
+    background: #1b2026;
+    border: 1px solid var(--mk-border);
+    border-radius: 9px;
+}
+
+.mk-input:focus,
+.mk-select:focus {
+    border-color: var(--mk-accent);
+    outline: 0;
+}
+
+.mk-select {
+    flex: 0 1 180px;
+    width: auto;
+}
+
+.mk-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .85rem;
+    color: var(--mk-muted);
+    cursor: pointer;
+}
+
+.mk-check input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--mk-accent);
+}
+
+.mk-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 16px;
+}
+
+.mk-empty {
+    padding: 42px 18px;
+    text-align: center;
+    color: var(--mk-muted);
+    background: var(--mk-bg-2);
+    border: 1px dashed var(--mk-border);
+    border-radius: var(--mk-radius);
+}
+
+/* سایدبار */
+.mk-side-card {
+    padding: 16px;
+    margin-bottom: 16px;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: var(--mk-radius);
+}
+
+.mk-side-card h3 {
+    padding-bottom: 10px;
+    margin: 0 0 12px;
+    font-size: 1rem;
+    color: #fff;
+    border-bottom: 1px solid var(--mk-border);
+}
+
+.mk-side-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.mk-side-list li + li {
+    margin-top: 8px;
+}
+
+.mk-side-list a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: .88rem;
+    color: var(--mk-muted);
+}
+
+.mk-side-list a:hover,
+.mk-side-list a.active {
+    color: var(--mk-accent);
+}
+
+/* صفحه‌بندی */
+.mk-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 0;
+    margin: 26px 0 0;
+    list-style: none;
+}
+
+.mk-pagination li > a,
+.mk-pagination li > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    font-size: .88rem;
+    color: var(--mk-text);
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 9px;
+}
+
+.mk-pagination li > a:hover {
+    color: #fff;
+    border-color: var(--mk-accent);
+}
+
+.mk-pagination li.is-active > span {
+    color: #fff;
+    background: var(--mk-accent);
+    border-color: var(--mk-accent);
+}
+
+.mk-pagination li.is-disabled > span {
+    opacity: .45;
+}
+
+/* ---------- اسلایدر و باکس اخبار ---------- */
+.nk-image-slider {
+    height: auto;
+    aspect-ratio: 16 / 6;
+    min-height: 220px;
+    border-radius: var(--mk-radius);
+    overflow: hidden;
+}
+
+.nk-image-slider .nk-image-slider-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nk-image-slider .nk-image-slider-content {
+    inset-inline-end: 0;
+    inset-inline-start: auto;
+    width: 320px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, .82), rgba(0, 0, 0, .62));
+}
+
+.nk-image-slider .nk-image-slider-content .nk-image-slider-content-inner {
+    padding: 22px;
+}
+
+.nk-image-slider-content h3 {
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+}
+
+.nk-image-slider-content p {
+    font-size: .84rem;
+    line-height: 1.9;
+}
+
+.nk-news-box .nano,
+.nk-news-box .nano-content {
+    position: static;
+    height: auto;
+    overflow: visible;
+}
+
+.nk-news-box {
+    height: auto;
+    min-height: 360px;
+    border-radius: var(--mk-radius);
+    overflow: hidden;
+}
+
+.nk-news-box .nk-news-box-list,
+.nk-news-box .nk-news-box-each-info {
+    height: auto;
+    min-height: 360px;
+}
+
+.nk-news-box .nk-news-box-each-info {
+    float: right;
+}
+
+.nk-news-box .nk-news-box-list {
+    float: left;
+}
+
+.nk-news-box .nk-news-box-item-image img {
+    width: 100%;
+    max-height: 230px;
+    object-fit: cover;
+}
+
+.nk-news-box .nk-news-box-item-full-img {
+    display: none;
+}
+
+/* ---------- تیتر بخش‌ها ---------- */
+.nk-decorated-h-2 {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 8px 0 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.nk-decorated-h-2::before,
+.nk-decorated-h-2::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to left, transparent, var(--mk-border), transparent);
+}
+
+.nk-decorated-h-2 > span {
+    order: 2;
+    text-align: center;
+}
+
+.nk-decorated-h-2::before {
+    order: 1;
+}
+
+.nk-decorated-h-2::after {
+    order: 3;
+}
+
+/* ---------- ویجت‌های پروفایل / فرم‌ها ---------- */
+.nk-form .form-control,
+.form-control {
+    color: #fff;
+    background-color: #1b2026;
+    border-color: var(--mk-border);
+}
+
+.form-control:focus {
+    color: #fff;
+    background-color: #1b2026;
+    border-color: var(--mk-accent);
+    box-shadow: 0 0 0 .15rem rgba(221, 22, 59, .18);
+}
+
+.nk-table {
+    color: var(--mk-text);
+}
+
+/* ---------- جدول‌های ریسپانسیو ---------- */
+.mk-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- ریزاصلاحات ---------- */
+.nk-gap-3 {
+    height: 45px;
+}
+
+.nk-gap-2 {
+    height: 30px;
+}
+
+.text-muted {
+    color: var(--mk-muted) !important;
+}
+
+/* ---------- ریسپانسیو ---------- */
+@media (max-width: 1199.98px) {
+    .mk-footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .mk-nav {
+        display: none;
+    }
+
+    .mk-burger {
+        display: flex;
+    }
+
+    .mk-navbar-inner {
+        min-height: 64px;
+    }
+
+    .mk-logo img {
+        max-height: 42px;
+    }
+
+    .nk-image-slider {
+        aspect-ratio: 16 / 9;
+    }
+
+    .nk-image-slider .nk-image-slider-content {
+        width: 100%;
+        inset-inline-end: 0;
+        inset-inline-start: 0;
+        bottom: 0;
+        top: auto;
+    }
+
+    .nk-news-box .nk-news-box-each-info,
+    .nk-news-box .nk-news-box-list {
+        float: none;
+        width: 100%;
+    }
+
+    .nk-news-box .nk-news-box-each-info {
+        display: none;
+    }
+
+    .nk-news-box {
+        min-height: 0;
+    }
+
+    .nk-news-box .nk-news-box-list {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .mk-topbar-slogan,
+    .mk-topbar-sep {
+        display: none;
+    }
+
+    .mk-products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .mk-product-card {
+        padding: 10px;
+    }
+
+    .mk-card-title {
+        font-size: .84rem;
+    }
+
+    .mk-card-price {
+        font-size: .95rem;
+    }
+
+    .mk-footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .mk-page-title {
+        font-size: 1.25rem;
+    }
+
+    .nk-image-slider {
+        aspect-ratio: 4 / 5;
+        min-height: 0;
+    }
+
+    .nk-image-slider .nk-image-slider-content {
+        padding: 0;
+    }
+
+    .nk-image-slider-content h3 {
+        font-size: .95rem;
+    }
+
+    .nk-image-slider-content p {
+        font-size: .8rem;
+    }
+}
+
+@media (max-width: 479.98px) {
+    .mk-products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+}
+
+@media (max-width: 359.98px) {
+    .mk-products-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- کارت مقاله ---------- */
+.mk-post-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: var(--mk-radius);
+    transition: border-color .18s ease, transform .18s ease;
+}
+
+.mk-post-card:hover {
+    border-color: rgba(221, 22, 59, .5);
+    transform: translateY(-2px);
+}
+
+.mk-post-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #1b2026;
+}
+
+.mk-post-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .25s ease;
+}
+
+.mk-post-card:hover .mk-post-media img {
+    transform: scale(1.04);
+}
+
+.mk-post-comments {
+    position: absolute;
+    top: 10px;
+    inset-inline-start: 10px;
+    padding: 2px 8px;
+    font-size: .75rem;
+    color: #fff;
+    background: rgba(0, 0, 0, .6);
+    border-radius: 8px;
+}
+
+.mk-post-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+}
+
+.mk-post-title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: #fff;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.mk-post-title:hover {
+    color: var(--mk-accent);
+}
+
+.mk-post-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .78rem;
+    color: var(--mk-muted);
+}
+
+.mk-post-avatar {
+    width: 26px;
+    height: 26px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.mk-post-dot {
+    opacity: .5;
+}
+
+.mk-post-excerpt {
+    margin: 0;
+    font-size: .85rem;
+    line-height: 1.9;
+    color: var(--mk-muted);
+}
+
+.mk-post-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--mk-accent);
+}
+
+/* برچسب دسته روی تصویر خبر باید درون کادر بماند */
+.nk-news-box .nk-news-box-item-image {
+    position: relative;
+}
+
+.mk-nav {
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+}
+/* ---------- اصلاح چیدمان اخبار ---------- */
+.nk-news-box {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 0;
+    height: auto;
+}
+
+.nk-news-box .nk-news-box-each-info,
+.nk-news-box .nk-news-box-list {
+    float: none;
+    width: auto;
+    min-height: 0;
+}
+
+.nk-news-box .nk-news-box-list {
+    overflow-y: auto;
+    max-height: 460px;
+    border-inline-end: 1px solid var(--mk-border);
+}
+
+.nk-news-box .nano,
+.nk-news-box .nano-content {
+    position: static;
+    height: auto;
+    overflow: visible;
+}
+
+.nk-news-box .nk-news-box-item {
+    padding: 14px;
+}
+
+.nk-news-box .nk-news-box-item-img {
+    display: none;
+}
+
+.nk-news-box .nk-news-box-item-categories {
+    display: inline-block;
+    margin-bottom: 6px;
+}
+
+.nk-news-box .nk-news-box-item-title {
+    margin: 6px 0;
+    font-size: .95rem;
+    line-height: 1.6;
+}
+
+.nk-news-box .nk-news-box-item-text p {
+    margin: 0;
+    font-size: .8rem;
+    line-height: 1.8;
+    color: var(--mk-muted);
+}
+
+/* ---------- اسلایدر ---------- */
+.nk-image-slider .nk-image-slider-content {
+    inset-inline-start: 0;
+    inset-inline-end: auto;
+}
+
+.nk-image-slider .nk-image-slider-thumbs {
+    display: none;
+}
+
+@media (max-width: 991.98px) {
+    .nk-news-box {
+        grid-template-columns: 1fr;
+    }
+
+    .nk-news-box .nk-news-box-list {
+        max-height: none;
+        border-inline-end: 0;
+    }
+}
+/* =========================================================
+   بازنویسی نهایی برای موبایل (باید بعد از همه قواعد بیاید)
+   ========================================================= */
+@media (max-width: 991.98px) {
+    .mk-nav {
+        display: none;
+    }
+
+    .mk-burger {
+        display: flex;
+    }
+
+    .nk-news-box {
+        display: block;
+    }
+
+    .nk-news-box .nk-news-box-list {
+        max-height: none;
+        overflow: visible;
+        border-inline-end: 0;
+    }
+
+    .nk-news-box .nk-news-box-each-info {
+        display: none;
+    }
+
+    .nk-image-slider {
+        aspect-ratio: 16 / 9;
+        min-height: 0;
+    }
+
+    .nk-image-slider .nk-image-slider-content {
+        width: 100%;
+        inset-inline-start: 0;
+        inset-inline-end: 0;
+        top: auto;
+        bottom: 0;
+    }
+
+    .mk-footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .mk-products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .mk-project-card,
+    .mk-product-card {
+        padding: 10px;
+    }
+
+    .mk-footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mk-topbar-slogan,
+    .mk-topbar-sep {
+        display: none;
+    }
+
+    .mk-page-title {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 479.98px) {
+    .mk-products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+}
+
+@media (max-width: 359.98px) {
+    .mk-products-grid {
+        grid-template-columns: 1fr;
+    }
 }

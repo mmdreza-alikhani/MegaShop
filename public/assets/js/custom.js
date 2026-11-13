@@ -1,66 +1,92 @@
-const progress = document.querySelector('.progress-bar')
+/* =========================================================
+   مگاشاپ — اسکریپت‌های رابط کاربری
+   ========================================================= */
+(function () {
+    'use strict';
 
-window.addEventListener('scroll', ()=>{
-    const winScroll = window.pageYOffset;
-    const height = document.documentElement.scrollHeight - window.innerHeight;
-    const scrolled = (winScroll/height) * 100;
-    progress.style.width = `${scrolled}%`
-})
+    /* نوار پیشرفت اسکرول */
+    var progressBar = document.querySelector('.progress-bar');
 
-const login_modal = $(".login-modal")
-const forget_password_modal = $(".forget-password-modal")
-const register_modal = $(".register-modal")
+    if (progressBar) {
+        window.addEventListener('scroll', function () {
+            var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+            var percent = scrollable > 0 ? (window.pageYOffset / scrollable) * 100 : 0;
+            progressBar.style.width = percent + '%';
+        });
+    }
 
-$(".forget_password").click(function () {
-    register_modal.hide()
-    login_modal.hide()
-    forget_password_modal.show()
-})
-$(".back_to_login").click(function () {
-    forget_password_modal.hide()
-    register_modal.hide()
-    login_modal.show()
-})
-$(".register").click(function () {
-    forget_password_modal.hide()
-    login_modal.hide()
-    register_modal.show()
-})
+    /* منوی موبایل و پنل سبد خرید */
+    var body = document.body;
+    var drawer = document.getElementById('mkDrawer');
+    var cartPanel = document.getElementById('mkCartPanel');
+    var overlay = document.getElementById('mkOverlay');
 
-// window.toPersianNum = function (num, dontTrim) {
-//
-//     var i = 0,
-//
-//         dontTrim = dontTrim || false,
-//
-//         num = dontTrim ? num.toString() : num.toString().trim(),
-//         len = num.length,
-//
-//         res = '',
-//         pos,
-//
-//         persianNumbers = typeof persianNumber == 'undefined' ?
-//             ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'] :
-//             persianNumbers;
-//
-//     for (; i < len; i++)
-//         if ((pos = persianNumbers[num.charAt(i)]))
-//             res += pos;
-//         else
-//             res += num.charAt(i);
-//
-//     return res;
-// }
+    function closePanels() {
+        body.classList.remove('mk-drawer-open', 'mk-cart-open');
+    }
 
-// $("#ratingStars").rating({
-//     "half":true,
-//     "color":"#dd163b",
-//     "click": function (e) {
-//         console.log(e); // {stars: 3, event: E.Event}
-//         alert(e.stars); // 3
-//     }
-// });
-var loadFile = function (event) {
-    var image = document.getElementById("output");
-    image.src = URL.createObjectURL(event.target.files[0]);
-};
+    var burger = document.querySelector('.mk-burger');
+    if (burger) {
+        burger.addEventListener('click', function () {
+            body.classList.toggle('mk-drawer-open');
+            body.classList.remove('mk-cart-open');
+        });
+    }
+
+    var cartToggle = document.querySelector('.mk-cart-toggle');
+    if (cartToggle) {
+        cartToggle.addEventListener('click', function () {
+            body.classList.toggle('mk-cart-open');
+            body.classList.remove('mk-drawer-open');
+        });
+    }
+
+    document.querySelectorAll('.mk-drawer-close, .mk-cart-close').forEach(function (button) {
+        button.addEventListener('click', closePanels);
+    });
+
+    if (overlay) {
+        overlay.addEventListener('click', closePanels);
+    }
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closePanels();
+        }
+    });
+
+    /* تب‌های مودال ورود/ثبت‌نام */
+    if (window.jQuery) {
+        var $ = window.jQuery;
+        var loginModal = $('.login-modal');
+        var registerModal = $('.register-modal');
+        var forgetModal = $('.forget-password-modal');
+
+        $('.forget_password').on('click', function () {
+            registerModal.hide();
+            loginModal.hide();
+            forgetModal.show();
+        });
+
+        $('.back_to_login').on('click', function () {
+            forgetModal.hide();
+            registerModal.hide();
+            loginModal.show();
+        });
+
+        $('.register').on('click', function () {
+            forgetModal.hide();
+            loginModal.hide();
+            registerModal.show();
+        });
+    }
+
+    /* پیش‌نمایش آواتار */
+    window.loadFile = function (event) {
+        var image = document.getElementById('output');
+
+        if (image && event.target.files && event.target.files[0]) {
+            image.src = URL.createObjectURL(event.target.files[0]);
+        }
+    };
+})();
