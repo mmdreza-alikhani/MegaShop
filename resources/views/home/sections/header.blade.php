@@ -1,21 +1,58 @@
 @php
     use App\Models\Category;
+    use App\Models\Product;
     use Illuminate\Support\Facades\Cache;
 
     // یک‌بار خواندن سبد برای کل هدر
     $headerCartItems = auth()->check() ? cartItems() : collect();
     $headerCartCount = $headerCartItems->count();
 
-    $headerCategories = Cache::remember(
-        'header_menu_categories',
-        now()->addHour(),
-        fn () => Category::query()
+    $menuKey = 'header_menu_categories';
+
+    $buildMenu = function (): array {
+        $categories = Category::query()
             ->where('parent_id', 0)
             ->where('is_active', 1)
             ->with(['children' => fn ($query) => $query->where('is_active', 1)->orderBy('title')])
             ->orderBy('title')
-            ->get()
-    );
+            ->get();
+
+        $counts = Product::query()
+            ->where('is_active', 1)
+            ->selectRaw('category_id, count(*) as total')
+            ->groupBy('category_id')
+            ->pluck('total', 'category_id');
+
+        $totals = $categories->mapWithKeys(fn ($root) => [
+            $root->id => (int) ($counts[$root->id] ?? 0)
+                + $root->children->sum(fn ($child) => (int) ($counts[$child->id] ?? 0)),
+        ]);
+
+        return [
+            'categories' => $categories
+                ->sortByDesc(fn ($root) => $totals[$root->id] ?? 0)
+                ->values(),
+            'totals' => $totals->all(),
+            'counts' => $counts->all(),
+        ];
+    };
+
+    try {
+        $menu = Cache::remember($menuKey, now()->addHour(), $buildMenu);
+
+        // اگر کش خالی/ناقص بود (مثلاً هنگام اجرای دستورات روی دیتابیس دیگر)، دوباره ساخته می‌شود.
+        if (empty($menu['categories']) || $menu['categories']->isEmpty()) {
+            Cache::forget($menuKey);
+            $menu = $buildMenu();
+        }
+    } catch (\Throwable $e) {
+        report($e);
+        $menu = $buildMenu();
+    }
+
+    $headerCategories = $menu['categories'];
+    $categoryTotals = $menu['totals'];
+    $categoryCounts = $menu['counts'];
 
     // آیکون هر دسته بر اساس کلیدواژه‌های عنوان؛ بدون وابستگی به داده اضافی
     $categoryIcon = function (string $title): string {
@@ -114,7 +151,8 @@
                 <a href="{{ route('home.index') }}">خانه</a>
 
                 <div class="mk-nav-dropdown" data-mega-root>
-                    <a href="{{ route('home.products.index') }}" class="mk-nav-trigger" aria-haspopup="true">
+                    <a href="{{ route('home.products.index') }}" class="mk-nav-trigger"
+                       aria-haspopup="true" aria-expanded="false">
                         محصولات
                         <span class="fa fa-angle-down mk-nav-caret"></span>
                     </a>
@@ -133,9 +171,7 @@
                                                 <span class="fa {{ $categoryIcon($parentCategory->title) }}"></span>
                                             </span>
                                             <span class="mk-mega-parent-title">{{ $parentCategory->title }}</span>
-                                            @if($parentCategory->children->isNotEmpty())
-                                                <span class="mk-mega-count">{{ $parentCategory->children->count() }}</span>
-                                            @endif
+                                            <span class="mk-mega-count">{{ $categoryTotals[$parentCategory->id] ?? 0 }}</span>
                                             <span class="fa fa-angle-left mk-mega-arrow"></span>
                                         </button>
                                     </li>
@@ -151,6 +187,9 @@
                                             <div>
                                                 <span class="mk-mega-eyebrow">دسته‌بندی</span>
                                                 <h4>{{ $parentCategory->title }}</h4>
+                                                <span class="mk-mega-total">
+                                                    {{ $categoryTotals[$parentCategory->id] ?? 0 }} محصول
+                                                </span>
                                             </div>
                                             <a href="{{ route('home.categories.show', ['category' => $parentCategory->slug]) }}"
                                                class="mk-mega-all">
@@ -164,7 +203,8 @@
                                                 @foreach($parentCategory->children as $child)
                                                     <a href="{{ route('home.categories.show', ['category' => $child->slug]) }}"
                                                        class="mk-mega-link">
-                                                        {{ $child->title }}
+                                                        <span>{{ $child->title }}</span>
+                                                        <span class="mk-mega-link-count">{{ $categoryCounts[$child->id] ?? 0 }}</span>
                                                     </a>
                                                 @endforeach
                                             </div>
@@ -173,6 +213,12 @@
                                                 محصولات این دسته را در صفحه دسته‌بندی ببینید.
                                             </div>
                                         @endif
+
+                                        <a class="mk-mega-panel-cta"
+                                           href="{{ route('home.categories.show', ['category' => $parentCategory->slug]) }}">
+                                            مشاهده همه محصولات {{ $parentCategory->title }}
+                                            <span class="fa fa-angle-left"></span>
+                                        </a>
                                     </div>
                                 @endforeach
                             </div>
@@ -224,6 +270,7 @@
                 <a class="mk-drawer-group"
                    href="{{ route('home.categories.show', ['category' => $parentCategory->slug]) }}">
                     {{ $parentCategory->title }}
+                    <span class="mk-drawer-count">{{ $categoryTotals[$parentCategory->id] ?? 0 }}</span>
                 </a>
                 @foreach($parentCategory->children as $child)
                     <a class="mk-drawer-sub"

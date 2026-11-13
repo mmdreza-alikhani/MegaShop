@@ -2189,7 +2189,7 @@ html[data-theme="light"] .mk-footer-logo .mk-logo-light {
 
 .mk-mega {
     position: absolute;
-    top: calc(100% + 6px);
+    top: 100%;
     left: 50%;
     right: auto;
     transform: translateX(-50%);
@@ -2349,4 +2349,208 @@ html[data-theme="light"] .nk-post-comments-count {
     .mk-toolbar > .mk-btn {
         flex: 1 1 100%;
     }
+}
+/* ---------- رفتار باز ماندن مگا منو ---------- */
+.mk-nav-dropdown.is-open .mk-mega {
+    display: block;
+}
+
+.mk-mega::before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: 0;
+    right: 0;
+    height: 12px;
+}
+
+.mk-nav-trigger[aria-expanded="true"] .mk-nav-caret {
+    transform: rotate(180deg);
+}
+
+.mk-nav-caret {
+    transition: transform .18s ease;
+}
+
+/* ---------- داده‌های منو ---------- */
+.mk-mega-total {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: .76rem;
+    color: var(--mk-muted);
+}
+
+.mk-mega-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.mk-mega-link-count {
+    min-width: 24px;
+    padding: 1px 7px;
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--mk-muted);
+    text-align: center;
+    background: var(--mk-bg-3);
+    border-radius: 20px;
+}
+
+.mk-mega-link:hover .mk-mega-link-count {
+    color: var(--mk-on-accent);
+    background: var(--mk-accent);
+}
+
+.mk-drawer-count {
+    float: left;
+    min-width: 24px;
+    padding: 1px 7px;
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--mk-muted);
+    text-align: center;
+    background: var(--mk-bg-3);
+    border-radius: 20px;
+}
+/* ---------- چیدمان دقیق‌تر پنل مگا منو ---------- */
+.mk-mega-body {
+    min-height: 256px;
+}
+
+.mk-mega-panel-head {
+    justify-content: flex-start;
+    align-items: center;
+    gap: 14px;
+}
+
+.mk-mega-panel-head > div {
+    min-width: 0;
+}
+
+.mk-mega-all {
+    margin-inline-start: 0;
+}
+
+.mk-mega-links {
+    align-content: start;
+    gap: 4px 14px;
+}
+
+.mk-mega-link {
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 7px 8px;
+}
+
+.mk-mega-link > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mk-mega-link-count {
+    flex: 0 0 auto;
+    min-width: 20px;
+    padding: 0 6px;
+    font-size: .68rem;
+    line-height: 18px;
+    background: var(--mk-bg-3);
+}
+
+.mk-mega-parent .mk-mega-count {
+    margin-inline-start: auto;
+}
+
+.mk-mega-arrow {
+    margin-inline-start: 2px;
+}
+/* ---------- سرصفحه و انتهای پنل ---------- */
+.mk-mega-panel-head {
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.mk-mega-all {
+    margin-inline-start: 0;
+}
+
+.mk-mega-panel.is-active {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.mk-mega-panels {
+    display: flex;
+    flex-direction: column;
+}
+
+.mk-mega-panel-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    align-self: flex-start;
+    margin-top: auto;
+    padding: 9px 16px;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--mk-accent);
+    background: var(--mk-chip);
+    border-radius: 10px;
+    transition: background .15s ease, color .15s ease;
+}
+
+.mk-mega-panel-cta:hover {
+    color: var(--mk-on-accent);
+    background: var(--mk-accent);
+}
+
+.mk-mega-link {
+    justify-content: space-between;
+}
+
+.mk-mega-link > span:first-child {
+    flex: 1;
+}
+.mk-mega-panel-cta {
+    align-self: stretch;
+    justify-content: center;
+    margin-top: auto;
+    padding: 10px 14px;
+}
+/* ---------- چیدمان قطعی لینک‌های زیردسته ---------- */
+.mk-mega-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 10px;
+    width: 100%;
+}
+
+.mk-mega-link {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    padding-inline-end: 44px;
+    text-align: start;
+}
+
+.mk-mega-link-count {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 8px;
+    transform: translateY(-50%);
+    min-width: 22px;
+}
+.mk-mega-link-count {
+    inset-inline-start: auto;
+    inset-inline-end: 8px;
+}
+
+.mk-mega-link {
+    padding-inline-end: 44px;
+    padding-inline-start: 10px;
 }

@@ -55,6 +55,54 @@
     document.querySelectorAll('[data-mega-root]').forEach(function (megaRoot) {
         var parents = megaRoot.querySelectorAll('[data-mega-parent]');
         var panels = megaRoot.querySelectorAll('[data-mega-panel]');
+        var trigger = megaRoot.querySelector('.mk-nav-trigger');
+        var closeTimer = null;
+
+        function setExpanded(state) {
+            if (trigger) {
+                trigger.setAttribute('aria-expanded', state ? 'true' : 'false');
+            }
+        }
+
+        function openMenu() {
+            window.clearTimeout(closeTimer);
+            megaRoot.classList.add('is-open');
+            setExpanded(true);
+        }
+
+        function scheduleClose() {
+            window.clearTimeout(closeTimer);
+            closeTimer = window.setTimeout(function () {
+                megaRoot.classList.remove('is-open');
+                setExpanded(false);
+            }, 280);
+        }
+
+        // باز ماندن هنگام جابه‌جایی بین دکمه و پنل
+        megaRoot.addEventListener('mouseenter', openMenu);
+        megaRoot.addEventListener('mouseleave', scheduleClose);
+        megaRoot.addEventListener('focusin', openMenu);
+        megaRoot.addEventListener('focusout', function (event) {
+            if (!megaRoot.contains(event.relatedTarget)) {
+                scheduleClose();
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!megaRoot.contains(event.target)) {
+                window.clearTimeout(closeTimer);
+                megaRoot.classList.remove('is-open');
+                setExpanded(false);
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                window.clearTimeout(closeTimer);
+                megaRoot.classList.remove('is-open');
+                setExpanded(false);
+            }
+        });
 
         if (!parents.length || !panels.length) {
             return;
@@ -90,7 +138,6 @@
 
         activate(parents[0].getAttribute('data-mega-parent'));
     });
-
     /* ---------- نوار پیشرفت اسکرول ---------- */
     var progressBar = document.querySelector('.progress-bar');
 

@@ -240,11 +240,11 @@
             <div class="nk-gap-3"></div>
             <h3 class="nk-decorated-h-2"><span><span class="text-main-1">محصولات</span> مرتبط</span></h3>
             <div class="nk-gap"></div>
-            <div class="row">
-                @foreach($relatedProducts as $relatedProduct)
-                    @include('home.sections.product', ['product' => $relatedProduct])
-                @endforeach
-            </div>
+            <div class="mk-products-grid">
+    @foreach($relatedProducts as $relatedProduct)
+        @include('home.sections.product', ['product' => $relatedProduct])
+    @endforeach
+</div>
             <div class="nk-gap"></div>
         </div>
 
