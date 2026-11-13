@@ -83,6 +83,17 @@
 
         return 'fa-th-large';
     };
+
+
+    // آیتم فعال نوار پایین صفحه
+    $navActive = match (true) {
+        request()->routeIs('home.index') => 'home',
+        request()->routeIs('home.products.*', 'home.categories.*') => 'products',
+        request()->routeIs('home.search') => 'search',
+        request()->routeIs('home.cart.*', 'home.payment.*') => 'cart',
+        request()->routeIs('home.profile.*') => 'account',
+        default => '',
+    };
 @endphp
 <header class="mk-header">
     <div class="mk-topbar">
@@ -305,46 +316,65 @@
 
 <div class="mk-overlay" id="mkOverlay"></div>
 
-<nav class="mk-bottom-nav" aria-label="دسترسی سریع">
-    <a href="{{ route('home.index') }}" class="mk-bottom-item {{ request()->routeIs('home.index') ? 'is-active' : '' }}">
-        <span class="fa fa-home"></span>
-        <span>خانه</span>
+<nav class="mk-bottom-nav" aria-label="دسترسی سریع" data-bottom-nav>
+    <a href="{{ route('home.index') }}"
+       class="mk-bottom-item {{ $navActive === 'home' ? 'is-active' : '' }}"
+       data-bottom-item>
+        <span class="mk-bottom-glow" aria-hidden="true"></span>
+        <span class="mk-bottom-icon"><span class="fa fa-home"></span></span>
+        <span class="mk-bottom-label">خانه</span>
     </a>
 
     <a href="{{ route('home.products.index') }}"
-       class="mk-bottom-item {{ request()->routeIs('home.products.*', 'home.categories.*') ? 'is-active' : '' }}">
-        <span class="fa fa-th-large"></span>
-        <span>محصولات</span>
+       class="mk-bottom-item {{ $navActive === 'products' ? 'is-active' : '' }}"
+       data-bottom-item>
+        <span class="mk-bottom-glow" aria-hidden="true"></span>
+        <span class="mk-bottom-icon"><span class="fa fa-th-large"></span></span>
+        <span class="mk-bottom-label">محصولات</span>
     </a>
 
-    <button type="button" class="mk-bottom-item" data-toggle="modal" data-target="#modalSearch">
-        <span class="fa fa-search"></span>
-        <span>جستجو</span>
+    <button type="button"
+            class="mk-bottom-item {{ $navActive === 'search' ? 'is-active' : '' }}"
+            data-bottom-item data-toggle="modal" data-target="#modalSearch">
+        <span class="mk-bottom-glow" aria-hidden="true"></span>
+        <span class="mk-bottom-icon"><span class="fa fa-search"></span></span>
+        <span class="mk-bottom-label">جستجو</span>
     </button>
 
     @auth
-        <button type="button" class="mk-bottom-item mk-cart-toggle">
-            <span class="fa fa-shopping-cart"></span>
-            <span>سبد</span>
-            @if($headerCartCount > 0)
-                <span class="mk-bottom-badge">{{ $headerCartCount > 9 ? '۹+' : $headerCartCount }}</span>
-            @endif
+        <button type="button"
+                class="mk-bottom-item mk-cart-toggle {{ $navActive === 'cart' ? 'is-active' : '' }}"
+                data-bottom-item>
+            <span class="mk-bottom-glow" aria-hidden="true"></span>
+            <span class="mk-bottom-icon">
+                <span class="fa fa-shopping-cart"></span>
+                @if($headerCartCount > 0)
+                    <span class="mk-bottom-badge">{{ $headerCartCount > 9 ? '۹+' : $headerCartCount }}</span>
+                @endif
+            </span>
+            <span class="mk-bottom-label">سبد</span>
         </button>
 
         <a href="{{ route('home.profile.info') }}"
-           class="mk-bottom-item {{ request()->routeIs('home.profile.*') ? 'is-active' : '' }}">
-            <span class="fa fa-user"></span>
-            <span>حساب من</span>
+           class="mk-bottom-item {{ $navActive === 'account' ? 'is-active' : '' }}"
+           data-bottom-item>
+            <span class="mk-bottom-glow" aria-hidden="true"></span>
+            <span class="mk-bottom-icon"><span class="fa fa-user"></span></span>
+            <span class="mk-bottom-label">حساب من</span>
         </a>
     @else
-        <button type="button" class="mk-bottom-item" data-toggle="modal" data-target="#modalLogin">
-            <span class="fa fa-shopping-cart"></span>
-            <span>سبد</span>
+        <button type="button" class="mk-bottom-item" data-bottom-item
+                data-toggle="modal" data-target="#modalLogin">
+            <span class="mk-bottom-glow" aria-hidden="true"></span>
+            <span class="mk-bottom-icon"><span class="fa fa-shopping-cart"></span></span>
+            <span class="mk-bottom-label">سبد</span>
         </button>
 
-        <button type="button" class="mk-bottom-item" data-toggle="modal" data-target="#modalLogin">
-            <span class="fa fa-user"></span>
-            <span>ورود</span>
+        <button type="button" class="mk-bottom-item" data-bottom-item
+                data-toggle="modal" data-target="#modalLogin">
+            <span class="mk-bottom-glow" aria-hidden="true"></span>
+            <span class="mk-bottom-icon"><span class="fa fa-user"></span></span>
+            <span class="mk-bottom-label">ورود</span>
         </button>
     @endauth
 </nav>

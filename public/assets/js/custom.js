@@ -260,3 +260,47 @@
         }
     };
 })();
+/* ---------- جزیره نوار پایین صفحه ---------- */
+(function () {
+    var initBottomNav = function () {
+        var nav = document.querySelector('[data-bottom-nav]');
+
+        if (!nav) {
+            return;
+        }
+
+        var lastScroll = window.pageYOffset;
+
+        var onScroll = function () {
+            var current = window.pageYOffset;
+
+            if (current > 160 && current > lastScroll + 8) {
+                nav.classList.add('is-hidden');
+            } else if (current < lastScroll - 8 || current <= 160) {
+                nav.classList.remove('is-hidden');
+            }
+
+            lastScroll = current;
+        };
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        nav.addEventListener('click', function (event) {
+            var item = event.target.closest('[data-bottom-item]');
+
+            if (!item || item.tagName !== 'A' || !item.getAttribute('href')) {
+                return;
+            }
+
+            nav.querySelectorAll('.mk-bottom-item').forEach(function (element) {
+                element.classList.toggle('is-active', element === item);
+            });
+        });
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBottomNav);
+    } else {
+        initBottomNav();
+    }
+})();
