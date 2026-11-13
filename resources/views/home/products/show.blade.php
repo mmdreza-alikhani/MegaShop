@@ -51,13 +51,13 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        @if(!is_null($variations))
+                        @if($variations->isNotEmpty())
                             @if(isItemInCart($product->id))
                                 <div class="alert alert-secondary text-right">!محصول داخل سبد خرید شماست</div>
                             @else
                                 <form action="{{ route('home.cart.add') }}" method="POST" class="nk-product-addtocart">
                                     @csrf
-                                    <label style="display: flex;justify-content: flex-end" for="variationSelect">{{ $variations->first()['title'] }} را انتخاب کنید</label>
+                                    <label style="display: flex;justify-content: flex-end" for="variationSelect">{{ $variations->first()['title'] ?? 'مدل' }} را انتخاب کنید</label>
                                     <select class="form-control" id="variationSelect" style="direction: rtl;height: 35px" name="variation_id">
                                         @foreach($variations as $variation)
                                             <option value="{{ $variation['id'] }}">{{ $variation['value'] }}</option>
@@ -87,7 +87,7 @@
                             <div id="variationPrice"></div>
                             <div class="nk-gap-1"></div>
                                 <div class="input-group w-100">
-                                    @if(!is_null($variations))
+                                    @if($variations->isNotEmpty())
                                         @if(isItemInCart($product->id))
                                             <button class="nk-btn nk-btn-rounded nk-btn-color-main-1" disabled>.از قبل به سبد خرید اضافه شده</button>
                                         @else
@@ -105,7 +105,7 @@
                         <!-- START: Meta -->
                         <div class="nk-product-meta text-right" style="direction: rtl">
                             <div><strong>شناسه محصول:</strong> <span id="ProductSku"></span></div>
-                            <div><strong>برند</strong>: <a href="#">{{ $product->brand->title }}</a></div>
+                            <div><strong>برند</strong>: <a href="#">{{ $product->brand?->title ?? 'نامشخص' }}</a></div>
                             <div><strong>دسته بندی</strong>: <a href="{{ route('home.categories.show', ['category' => $product->category->slug]) }}">{{ $product->category->title }}</a> </div>
                             <div><strong>برچسب ها</strong>:
                                 @foreach($product->tags as $tag)

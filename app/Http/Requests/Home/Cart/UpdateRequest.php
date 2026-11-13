@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests\Home\Cart;
 
-use App\Models\ProductVariation;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\ValidationException;
 
 class UpdateRequest extends FormRequest
 {
@@ -28,28 +26,8 @@ class UpdateRequest extends FormRequest
     {
         return [
             'products' => 'required|array|min:1',
-            'products.*' => 'required|array|distinct|min:1',
-            'products.*.*' => 'required|distinct|min:1'
+            'products.*' => 'required|array|min:1',
+            'products.*.*' => 'required|integer|min:1',
         ];
     }
-
-    public function withValidator($validator): void
-    {
-        $validator->after(/**
-         * @throws ValidationException
-         */ function ($validator) {
-            $variationId = $this->input('variation_id');
-            $quantity = $this->integer('quantity');
-
-            $productVariation = ProductVariation::find($variationId);
-
-            if ($productVariation && $quantity > $productVariation->quantity) {
-                flash()->warning('تعداد محصولات انتخابی بیش از حد مجاز است!');
-                throw ValidationException::withMessages([
-                    'quantity' => 'تعداد محصولات انتخابی بیش از حد مجاز است!',
-                ]);
-            }
-        });
-    }
-
 }

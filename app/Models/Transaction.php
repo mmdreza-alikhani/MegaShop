@@ -20,11 +20,11 @@ class Transaction extends Model
         'order_id',
         'amount',
         'ref_id',
+        'card_pan',
         'token',
         'description',
         'gateway_name',
         'status',
-        'getaway_name',
     ];
     protected $casts = [
         'user_id' => 'integer',

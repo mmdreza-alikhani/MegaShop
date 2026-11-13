@@ -16,26 +16,23 @@ class CategoryController extends Controller
 {
     public function index(Category $category): View|Application|Factory
     {
-        Cache::clear();
         // ✅ گرفتن ID تمام دسته‌بندی‌های فرزند
         $categoryIds = $category->getAllDescendantIds();
 
         // ✅ محصولات
         $products = Product::query()
+            ->active()
             ->whereIn('category_id', $categoryIds)
             ->filter()
             ->search('title', request('q'))
-            ->with(['category:id,title', 'brand:id,title'])
-            ->paginate(10);
+            ->withCardData()
+            ->paginate(10)
+            ->withQueryString();
 
         // ✅ Platforms
-        $platforms = Cache::remember('platforms_list', now()->addHour(), fn() =>
-            Platform::pluck('title', 'id')
-        );
+        $platforms = Platform::query()->orderBy('title')->pluck('title', 'id');
 
-        $brands = Cache::remember('brands_list', now()->addHour(), fn() =>
-            Brand::pluck('title', 'id')
-        );
+        $brands = Brand::query()->orderBy('title')->pluck('title', 'id');
 
         // ✅ فیلترهای مرج شده (بدون تکرار)
 //        $filters = $category->getMergedFilters();

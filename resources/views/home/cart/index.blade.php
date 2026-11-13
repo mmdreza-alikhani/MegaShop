@@ -25,6 +25,11 @@
                 هیچ محصولی در سبد خرید شما وجود ندارد!
             </div>
         @else
+            @if(cartService()->hasUnavailableItems())
+                <div class="alert alert-warning text-right" style="direction: rtl">
+                    برخی محصولات سبد خرید شما موجود نیستند. لطفاً آن‌ها را حذف کنید یا تعداد را کاهش دهید.
+                </div>
+            @endif
             <div class="nk-store nk-store-cart">
                 <form action="{{ route('home.cart.update') }}" method="POST">
                     @csrf
@@ -39,8 +44,8 @@
                                         <a href="{{ route('home.products.show', ['product' => $product->itemable->slug]) }}"
                                            class="nk-image-box-1 nk-post-image">
                                             <img
-                                                src="{{ Storage::url(config('upload.product_primary_path') . '/') . '/' . $product->itemable->primary_image }}"
-                                                width="115" alt="">
+                                                src="{{ Storage::url(config('upload.product_primary_path') . '/' . $product->itemable->primary_image) }}"
+                                                width="115" alt="{{ $product->itemable->title }}">
                                         </a>
                                     </td>
                                     <td class="nk-product-cart-title">
@@ -61,7 +66,7 @@
                                             {{ number_format($product->variation->price) }}
                                             <i id="tooman_icon" class="icony icony-toman"></i>
                                         </strong>
-                                        @if($product->variation->is_discounted)
+                                        @if($product->variation->is_discounted && $product->variation->price > 0)
                                             <small style="color: #dd163b">
                                                 درصد تخفیف:
                                                 {{ round((($product->variation->price - $product->variation->sale_price) / $product->variation->price) * 100) . '%' }}
@@ -72,21 +77,31 @@
                                         <h5 class="h6">تعداد:</h5>
                                         <div class="nk-gap-1"></div>
                                         <div class="nk-form text-left" style="direction: ltr;width: 125%">
-                                            <input type="number" class="form-control" value="{{ $product->quantity }}" min="1" max="{{ $product->variation->quantity }}" name="products[{{ $product->itemable->id }}][{{ $product->variation->id }}]]">
+                                            <input type="number" class="form-control" value="{{ $product->quantity }}" min="1" max="{{ $product->available_quantity }}" name="products[{{ $product->itemable->id }}][{{ $product->variation->id }}]">
                                         </div>
+                                        @if(! $product->is_available)
+                                            <small style="color: #dd163b">ناموجود</small>
+                                        @elseif($product->is_quantity_adjusted)
+                                            <small style="color: #dd163b">تعداد تا موجودی انبار ({{ $product->available_quantity }}) کاهش یافت</small>
+                                        @endif
                                     </td>
                                     <td class="nk-product-cart-total">
                                         <h5 class="h6">قیمت کل:</h5>
                                         <div class="nk-gap-1"></div>
                                         <strong>
-                                            {{ number_format($product->quantity * ($product->variation->is_discounted ? $product->variation->sale_price : $product->variation->price)) }}
+                                            {{ number_format($product->total_price) }}
                                             <i id="tooman_icon" class="icony icony-toman"></i>
                                         </strong>
                                     </td>
                                     <td class="nk-product-cart-remove">
-                                        <a href="{{ route('home.cart.remove', ['itemId' => $product->itemable->id]) }}">
-                                            <span class="ion-android-close"></span>
-                                        </a>
+                                        <form action="{{ route('home.cart.remove', ['itemId' => $product->id]) }}"
+                                              method="POST" class="cart-remove-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn p-0 bg-transparent" title="حذف از سبد خرید">
+                                                <span class="ion-android-close"></span>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -96,8 +111,13 @@
                     <div class="nk-gap-1"></div>
                     <button class="nk-btn nk-btn-rounded nk-btn-color-white float-right" type="submit">ثبت تغییرات
                     </button>
-                    <a href="{{ route('home.cart.clear') }}"
-                       class="nk-btn nk-btn-rounded nk-btn-color-main-1 float-right mr-3">حذف سبد خرید</a>
+                </form>
+
+                <form action="{{ route('home.cart.clear') }}" method="POST"
+                      class="float-right mr-3" onsubmit="return confirm('سبد خرید خالی شود؟');">
+                    @csrf
+                    @method('DELETE')
+                    <button class="nk-btn nk-btn-rounded nk-btn-color-main-1" type="submit">حذف سبد خرید</button>
                 </form>
 
                 <div class="clearfix"></div>

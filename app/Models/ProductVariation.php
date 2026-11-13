@@ -30,7 +30,6 @@ class ProductVariation extends Model
         'sale_price',
         'date_on_sale_from',
         'date_on_sale_to',
-        'is_active'
     ];
     protected $casts = [
         'attribute_id' => 'integer',

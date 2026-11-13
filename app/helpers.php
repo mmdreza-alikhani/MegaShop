@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Coupon;
+use App\Services\CartService;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariation;
@@ -84,194 +85,117 @@ function generateUniqueShortCode(int $length = 6): string
 
 // Cart
 
-/**
- * @throws Exception
- */
-function removeFromCartById(int $itemable_id, $user_id): void
+function cartService(): CartService
 {
-    try {
-        $cart = Cart::where('user_id', $user_id)->firstOrFail();
-
-        $cart->items()
-            ->where('itemable_id', $itemable_id)
-            ->where('itemable_type', 'App\Models\Product')
-            ->first()
-            ->delete();
-
-    } catch (Exception $e) {
-        logger()->error('خطا در حذف آیتم از سبد خرید: ' . $e->getMessage());
-        throw $e;
-    }
-}
-
-/**
- * @throws Exception
- */
-function clearCart($user_id): void
-{
-    try {
-        $cart = Cart::where('user_id', $user_id)->firstOrFail();
-        if (!$cart) {
-            throw new Exception('سبد خرید یافت نشد یا قبلاً حذف شده است.');
-        }else{
-            $cart->delete();
-            $cart->items()->delete();
-        }
-
-    } catch (Exception $e) {
-        logger()->error('خطا در حذف سبد خرید: ' . $e->getMessage());
-        throw $e;
-    }
-}
-
-function isCartEmpty(): bool
-{
-    if (auth()->check()) {
-        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
-
-        if (!$cart) {
-            return true;
-        }
-
-        return $cart->items->isEmpty();
-    }else{
-        return false;
-    }
+    return app(CartService::class);
 }
 
 function cartItems(): Collection
 {
-    $cart = Cart::with('items.itemable')->firstOrCreate(['user_id' => auth()->id()]);
+    return cartService()->items();
+}
 
-    // Collect all variation_ids from options
-    $variationIds = $cart->items->map(function ($item) {
-        $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
-        return $options['variation_id'] ?? null;
-    })->filter()->unique();
-
-    // Load all variations in one query with their products
-    $variations = ProductVariation::with('product')
-        ->whereIn('id', $variationIds)
-        ->get()
-        ->keyBy('id');
-
-    // Map items and attach variation + options with validation
-    return $cart->items->map(function ($item) use ($cart, $variations) {
-        $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
-
-        $variation = $variations[$options['variation_id']] ?? null;
-
-        if ($variation) {
-            $availableQty = $variation->quantity;
-
-            // Validate quantity BEFORE attaching extra properties
-            if ($item->quantity > $availableQty || $availableQty >= 0) {
-                $item->update(['quantity' => $availableQty]);
-            }
-
-            if ($availableQty <= 0) {
-                removeFromCartById($item->id, auth()->id());
-                return null; // Mark for filtering
-            }
-        } else {
-            removeFromCartById($item->id, auth()->id());
-            return null; // Mark for filtering
-        }
-
-        // NOW attach display properties AFTER all database operations
-        foreach ($options as $key => $value) {
-            $item->$key = $value;
-        }
-        $item->variation = $variation;
-
-        return $item;
-    })->filter(); // Remove null items (deleted ones)
+function isCartEmpty(): bool
+{
+    return cartService()->isEmpty();
 }
 
 function isItemInCart($itemable_id): bool
 {
-    if (auth()->check()) {
-        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
-        $existingItem = $cart->items()
-            ->where('itemable_id', $itemable_id)
-            ->first();
+    return cartService()->has((int) $itemable_id);
+}
 
-        return $existingItem !== null;
-    }else{
-        return false;
+function cartTotalAmount(): int
+{
+    return cartService()->totalAmount();
+}
+
+function cartDeliveryAmount(): int
+{
+    return cartService()->deliveryAmount();
+}
+
+/**
+ * مبلغ کد تخفیف اعمال‌شده (یا null اگر کوپنی در session نیست).
+ */
+function cartCouponAmount(): ?int
+{
+    return cartService()->couponAmount();
+}
+
+function cartPayingAmount(): int
+{
+    return cartService()->payingAmount();
+}
+
+function cartAmounts(): array
+{
+    return cartService()->amounts();
+}
+
+/**
+ * حذف یک خط سبد خرید بر اساس شناسه خود ردیف سبد (cart_items.id).
+ *
+ * @throws Exception
+ */
+function removeFromCartById(int $cartItemId, $user_id = null): void
+{
+    try {
+        cartService()->remove($cartItemId);
+    } catch (Exception $e) {
+        logger()->error('خطا در حذف آیتم از سبد خرید: '.$e->getMessage());
+        throw $e;
     }
 }
 
-function cartTotalAmount(): float|int
+/**
+ * @throws Exception
+ */
+function clearCart($user_id = null): void
 {
-    $cartTotalSaleAmount = 0;
-    foreach (cartItems() as $item) {
-        $options = json_decode($item->options, true);
-        $variation = ProductVariation::find($options['variation_id'])->first();
-        $cartTotalSaleAmount += $item->quantity * $variation->best_price;
+    try {
+        cartService()->clear();
+    } catch (Exception $e) {
+        logger()->error('خطا در حذف سبد خرید: '.$e->getMessage());
+        throw $e;
     }
-
-    return $cartTotalSaleAmount;
-}
-
-function cartDeliveryAmount()
-{
-    $cartDeliveryAmount = 0;
-    foreach (cartItems() as $item) {
-        $product = Product::find($item->itemable_id)->first();
-        if ($product->delivery_amount != null) {
-            $cartDeliveryAmount += $product->delivery_amount;
-        }
-    }
-    return $cartDeliveryAmount;
 }
 
 function checkCoupon($code): array
 {
     $coupon = Coupon::where('code', $code)->isAvailable()->first();
+
     if ($coupon == null) {
         session()->forget('coupon');
 
         return ['error' => 'کد تخفیف وارد شده صحیح نمیباشد!'];
     }
+
     if (Order::where('user_id', auth()->id())->where('coupon_id', $coupon->id)->where('payment_status', 1)->exists()) {
         session()->forget('coupon');
 
         return ['error' => 'شما قبلا از این کد تخفیف استفاده کرده اید!'];
     }
-    if ($coupon->getRawOriginal('type') == 'amount') {
-        session()->put('coupon', ['code' => $coupon->code, 'id' => $coupon->id, 'amount' => $coupon->amount]);
-    } else {
-        $totalAmount = cartTotalAmount();
-        $amount = min((($totalAmount * $coupon->percentage) / 100), $coupon->max_percentage_amount);
-        session()->put('coupon', ['code' => $coupon->code, 'id' => $coupon->id, 'amount' => $amount]);
+
+    $totalAmount = cartTotalAmount();
+
+    if ($totalAmount <= 0) {
+        session()->forget('coupon');
+
+        return ['error' => 'سبد خرید شما خالی است!'];
     }
 
+    if ($coupon->getRawOriginal('type') == 'amount') {
+        $amount = min((int) $coupon->amount, $totalAmount);
+    } else {
+        $amount = (int) (($totalAmount * $coupon->percentage) / 100);
+
+        if ($coupon->max_percentage_amount) {
+            $amount = min($amount, (int) $coupon->max_percentage_amount);
+        }
+    }
+
+    session()->put('coupon', ['code' => $coupon->code, 'id' => $coupon->id, 'amount' => $amount]);
+
     return ['success' => 'کد تخفیف برای شما اعمال شد'];
-}
-
-/**
- * @throws ContainerExceptionInterface
- * @throws NotFoundExceptionInterface
- */
-function cartPayingAmount(): int
-{
-    $totalAmount = cartTotalAmount();
-    $deliveryAmount = cartDeliveryAmount();
-    $couponAmount = session()->has('coupon') ? session()->get('coupon.amount') : null;
-    return $totalAmount + $deliveryAmount - $couponAmount;
-}
-
-/**
- * @throws ContainerExceptionInterface
- * @throws NotFoundExceptionInterface
- */
-function cartAmounts(): array
-{
-    return [
-        'totalAmount' => cartTotalAmount(),
-        'deliveryAmount' => cartDeliveryAmount(),
-        'couponAmount' => session()->has('coupon') ? session()->get('coupon.amount') : null,
-        'payingAmount' => cartPayingAmount()
-    ];
 }

@@ -5,11 +5,7 @@ namespace App\Http\Controllers\Home;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Home\Cart\AddRequest;
 use App\Http\Requests\Home\Cart\UpdateRequest;
-use App\Models\Product;
-use App\Models\ProductVariation;
 use App\Models\UserAddress;
-use Binafy\LaravelCart\Models\Cart;
-use Binafy\LaravelCart\Models\CartItem;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -21,34 +17,34 @@ class CartController extends Controller
 {
     public function add(AddRequest $request): RedirectResponse
     {
-        $productVariation = ProductVariation::findOrFail($request->input('variation_id'));
+        $result = cartService()->add(
+            $request->integer('product_id'),
+            $request->integer('variation_id'),
+            $request->integer('quantity')
+        );
 
-        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
-        $cartItem = new CartItem([
-            'itemable_id'   => $request->integer('product_id'),
-            'itemable_type' => Product::class,
-            'quantity'      => $request->integer('quantity'),
-            'options'       => json_encode([
-                'variation_id'    => $request->integer('variation_id'),
-            ]),
-        ]);
-
-        if ($request->integer('quantity') <= $productVariation->quantity) {
-            $cart->items()->save($cartItem);
-            flash()->success('با موفقیت به سبد خرید شما اضافه شد!');
+        if ($result['status'] === 'success') {
+            flash()->success($result['message']);
+        } elseif ($result['status'] === 'warning') {
+            flash()->warning($result['message']);
         } else {
-            flash()->warning('تعداد بیش از حد مجاز است!');
+            flash()->error($result['message']);
         }
+
         return redirect()->back();
     }
 
-    public function remove($itemable_id): RedirectResponse
+    /**
+     * حذف یک خط سبد خرید بر اساس شناسه ردیف سبد (cart_items.id).
+     */
+    public function remove(int $itemId): RedirectResponse
     {
         try {
-            removeFromCartById($itemable_id, auth()->id());
+            cartService()->remove($itemId);
             flash()->success('محصول مورد نظر با موفقیت از سبد خرید حذف شد!');
         } catch (Exception $e) {
-            flash()->error('خطا در حذف محصول از سبد خرید: ' . $e->getMessage());
+            report($e);
+            flash()->error('خطا در حذف محصول از سبد خرید!');
         }
 
         return redirect()->back();
@@ -57,10 +53,11 @@ class CartController extends Controller
     public function clear(): RedirectResponse
     {
         try {
-            clearCart(auth()->id());
-            flash()->success('سبد خرید با حذف شد!');
+            cartService()->clear();
+            flash()->success('سبد خرید با موفقیت خالی شد!');
         } catch (Exception $e) {
-            flash()->error('خطا در حذف سبد خرید: ' . $e->getMessage());
+            report($e);
+            flash()->error('خطا در حذف سبد خرید!');
         }
 
         return redirect()->back();
@@ -73,53 +70,43 @@ class CartController extends Controller
 
     public function update(UpdateRequest $request): RedirectResponse
     {
-        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
-        $successMessages = $warningMessages = [];
+        $result = cartService()->updateQuantities($request->input('products', []));
 
-        foreach ($request->input('products') as $productId => $variations) {
-            foreach ($variations as $variationId => $quantity) {
-                $product = Product::findOrFail($productId);
-                $variation = ProductVariation::findOrFail($variationId);
-                $item = $cart->items()
-                    ->where('itemable_id', $productId)
-                    ->whereJsonContains('options->variation_id', $variationId)
-                    ->first();
-
-                if ($quantity <= $variation->quantity) {
-                    $item?->update(['quantity' => $quantity]);
-                    $successMessages[] = "محصول $product->title با مدل $variation->value با موفقیت بروزرسانی شد.";
-                } else {
-                    $warningMessages[] = "تعداد محصول $product->title با مدل $variation->value بیش از موجودی است.";
-                }
-
-            }
+        foreach ($result['success'] as $message) {
+            flash()->success($message);
         }
 
-        foreach ($successMessages as $msg) {
-            flash()->success($msg);
-        }
-        foreach ($warningMessages as $msg) {
-            flash()->warning($msg);
+        foreach ($result['warning'] as $message) {
+            flash()->warning($message);
         }
 
         return redirect()->back();
-
     }
 
     public function checkout(): View|Application|Factory|RedirectResponse
     {
         $user = auth()->user();
-        if (!$user->is_validated) {
+
+        if (! $user->is_validated) {
             flash()->warning('لطفا مشخصات خود را در حساب کاربری تکمیل کنید');
+
             return redirect()->route('home.profile.info');
         }
 
         if (isCartEmpty()) {
             flash()->warning('سبد خرید شما خالی است!');
-            return redirect()->back();
+
+            return redirect()->route('home.cart.index');
+        }
+
+        if (cartService()->hasUnavailableItems()) {
+            flash()->warning('برخی از محصولات سبد خرید شما موجود نیستند. لطفا سبد خرید را اصلاح کنید.');
+
+            return redirect()->route('home.cart.index');
         }
 
         $addresses = UserAddress::userById($user->id)->get();
+
         return view('home.cart.checkout', compact('addresses'));
     }
 
@@ -131,16 +118,18 @@ class CartController extends Controller
 
         if (! auth()->check()) {
             flash()->warning('لطفا وارد حساب خود شوید!');
+
             return redirect()->back();
         }
 
         $result = checkCoupon($request->input('code'));
+
         if (array_key_exists('error', $result)) {
             flash()->warning($result['error']);
         } else {
             flash()->success($result['success']);
-
         }
+
         return redirect()->back();
     }
 }

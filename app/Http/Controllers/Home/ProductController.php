@@ -3,39 +3,52 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Platform;
 use App\Models\Product;
 use App\Models\ShortLink;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(): View|Application|Factory
+    public function index(Request $request): View|Application|Factory
     {
-        $products = Product::latest()->paginate(10);
-        $platforms = Platform::pluck('title', 'id');
-//        $filters = $category->filters()->with('filterValues')->get();
-//        $variation = $category->variation()->with('variationValues')->first();
+        $products = Product::query()
+            ->active()
+            ->whereHas('variations')
+            ->search('title', trim((string) $request->input('q')))
+            ->filter()
+            ->withCardData()
+            ->paginate(12)
+            ->withQueryString();
 
-        return view('home.products.index', compact('products', 'platforms'));
+        $platforms = Platform::active()->orderBy('title')->pluck('title', 'id')->values();
+        $categories = Category::query()->active()->parents()->orderBy('title')->get(['id', 'title', 'slug']);
+
+        return view('home.products.index', compact('products', 'platforms', 'categories'));
     }
+
     public function show(Product $product): View|Application|Factory
     {
-        $shortLink = ShortLink::where('type', 'product')->where('target_id', $product->id)->pluck('code')->first();
-        $filters = $product->filters()
-            ->with('attribute')
-            ->get()
-            ->map(function ($attr) {
-                return [
-                    'title' => $attr->attribute->title,
-                    'value' => $attr->value,
-                ];
-            });
+        abort_unless((bool) $product->getRawOriginal('is_active'), 404);
 
-        $variationsRaw = $product->variations()
-            ->available(4)
+        $shortLink = ShortLink::where('type', 'product')->where('target_id', $product->id)->value('code');
+
+        $filters = $product->filters()
+            ->with('attribute:id,title')
+            ->get()
+            ->map(fn ($attr) => [
+                'title' => $attr->attribute?->title,
+                'value' => $attr->value,
+            ])
+            ->filter(fn ($filter) => $filter['title'] !== null)
+            ->values();
+
+        $mapped = $product->variations()
+            ->available(1)
             ->with(['attribute:id,title'])
             ->select([
                 'id',
@@ -48,52 +61,51 @@ class ProductController extends Controller
                 'date_on_sale_from',
                 'date_on_sale_to',
             ])
-            ->get();
+            ->get()
+            ->map(function ($variation) {
+                $now = now();
 
-        $mapped = $variationsRaw->map(function ($attr) {
-            $now = now();
+                $hasActiveSale = $variation->sale_price !== null
+                    && $variation->date_on_sale_from !== null
+                    && $variation->date_on_sale_to !== null
+                    && $now->between($variation->date_on_sale_from, $variation->date_on_sale_to);
 
-            $hasSalePrice = $attr->sale_price !== null;
-            $hasStartDate = $attr->date_on_sale_from !== null;
-            $hasEndDate = $attr->date_on_sale_to !== null;
-
-            $isWithinRange = $hasStartDate && $hasEndDate &&
-                $now->between($attr->date_on_sale_from, $attr->date_on_sale_to);
-
-            $isExpired = ! $hasSalePrice || ! $hasStartDate || ! $hasEndDate || ! $isWithinRange;
-
-            $effectivePrice = ! $isExpired ? $attr->sale_price : $attr->price;
-
-            return [
-                'id' => $attr->id,
-                'title' => $attr->attribute->title,
-                'value' => $attr->value,
-                'price' => $attr->price,
-                'quantity' => $attr->quantity,
-                'sku' => $attr->sku,
-                'sale_price' => $attr->sale_price,
-                'date_on_sale_from' => $attr->date_on_sale_from,
-                'date_on_sale_to' => $attr->date_on_sale_to,
-                'is_expired' => $isExpired,
-                'effective_price' => $effectivePrice,
-            ];
-        });
+                return [
+                    'id' => $variation->id,
+                    'title' => $variation->attribute?->title,
+                    'value' => $variation->value,
+                    'price' => $variation->price,
+                    'quantity' => $variation->quantity,
+                    'sku' => $variation->sku,
+                    'sale_price' => $variation->sale_price,
+                    'date_on_sale_from' => $variation->date_on_sale_from,
+                    'date_on_sale_to' => $variation->date_on_sale_to,
+                    'is_expired' => ! $hasActiveSale,
+                    'effective_price' => $hasActiveSale ? $variation->sale_price : $variation->price,
+                ];
+            });
 
         $lowestEffective = $mapped->min('effective_price');
 
-        $cheapest = $mapped
-            ->filter(fn ($v) => $v['effective_price'] === $lowestEffective)
-            ->sortByDesc('has_active_sale') // Sale gets priority
-            ->first();
+        $cheapestId = $mapped
+            ->filter(fn ($variation) => $lowestEffective !== null && $variation['effective_price'] === $lowestEffective)
+            ->sortBy('effective_price')
+            ->value('id');
 
-        $variations = $mapped->map(function ($v) use ($cheapest) {
-            $v['is_cheapest'] = $v['id'] === $cheapest['id'];
-            unset($v['effective_price'], $v['has_active_sale']);
+        $variations = $mapped->map(function ($variation) use ($cheapestId) {
+            $variation['is_cheapest'] = $variation['id'] === $cheapestId;
+            unset($variation['effective_price']);
 
-            return $v;
+            return $variation;
         });
 
-        $relatedProducts = Product::active()->category($product->category_id)->take(4)->get();
+        $relatedProducts = Product::query()
+            ->active()
+            ->category($product->category_id)
+            ->whereKeyNot($product->id)
+            ->withCardData()
+            ->take(4)
+            ->get();
 
         return view('home.products.show', compact('product', 'filters', 'variations', 'relatedProducts', 'shortLink'));
     }

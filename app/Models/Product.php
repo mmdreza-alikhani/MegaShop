@@ -40,8 +40,6 @@ class Product extends Model implements Cartable
         'is_active',
         'delivery_amount',
         'delivery_amount_per_product',
-        'question',
-        'answer',
     ];
     protected $casts = [
         'brand_id' => 'integer',
@@ -50,13 +48,19 @@ class Product extends Model implements Cartable
         'status' => 'integer',
         'is_active' => 'boolean',
         'delivery_amount' => 'integer',
+        'delivery_amount_per_product' => 'integer',
     ];
     protected $attributes = [
         'status' => '1',
         'is_active' => 0,
         'delivery_amount' => 0,
+        'delivery_amount_per_product' => 0,
     ];
-    protected $appends = ['best_selling_price'];
+
+    /** قیمت نمایشی کارت محصول؛ در هر نمونه فقط یک‌بار محاسبه می‌شود. */
+    private ?ProductVariation $cardPriceCache = null;
+
+    private bool $cardPriceResolved = false;
 
     protected static function boot(): void
     {
@@ -121,14 +125,39 @@ class Product extends Model implements Cartable
         return $this->belongsTo(Category::class);
     }
 
-    public function getBestSellingPriceAttribute()
+    public function getBestSellingPriceAttribute(): ?ProductVariation
     {
-        return $this->variations()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first() ?? $this->variations()->orderBy('price')->first();
+        if ($this->cardPriceResolved) {
+            return $this->cardPriceCache;
+        }
+
+        $this->cardPriceResolved = true;
+
+        $variations = $this->relationLoaded('variations')
+            ? $this->variations
+            : $this->variations()->get();
+
+        if ($variations->isEmpty()) {
+            return $this->cardPriceCache = null;
+        }
+
+        $now = Carbon::now();
+
+        $onSale = $variations
+            ->filter(fn (ProductVariation $variation) => $variation->sale_price !== null
+                && $variation->date_on_sale_from !== null
+                && $variation->date_on_sale_to !== null
+                && $variation->date_on_sale_from <= $now
+                && $variation->date_on_sale_to >= $now)
+            ->sortBy('sale_price')
+            ->first();
+
+        return $this->cardPriceCache = $onSale ?? $variations->sortBy('price')->first();
     }
 
     public function getIsOnSaleAttribute(): bool
     {
-        return (bool)$this->variations()->where('sale_price', '!=', null)->where('date_on_sale_from', '<', Carbon::now())->where('date_on_sale_to', '>', Carbon::now())->orderBy('sale_price')->first();
+        return (bool) ($this->best_selling_price?->is_discounted);
     }
 
     public function filters(): HasMany
@@ -168,7 +197,33 @@ class Product extends Model implements Cartable
 
     public function checkUserWishlist($userId): bool
     {
-        return $this->hasMany(WishList::class)->where('user_id', $userId)->exists();
+        if (! $userId) {
+            return false;
+        }
+
+        if ($this->relationLoaded('wishlists')) {
+            return $this->wishlists->isNotEmpty();
+        }
+
+        return $this->wishlists()->where('user_id', $userId)->exists();
+    }
+
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(WishList::class);
+    }
+
+    /**
+     * داده‌های لازم برای کارت محصول را در یک کوئری می‌گیرد (بدون N+1).
+     */
+    public function scopeWithCardData($query): void
+    {
+        $query->with([
+            'variations' => fn ($q) => $q->orderBy('price'),
+            'brand:id,title',
+        ])
+            ->withAvg('rates as rates_avg_rate', 'rate')
+            ->withExists(['wishlists as in_wishlist' => fn ($q) => $q->where('user_id', auth()->id())]);
     }
 
     public function scopeFilter($query)
