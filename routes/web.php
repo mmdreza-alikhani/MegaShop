@@ -23,7 +23,7 @@ Route::prefix('management')
 
         Route::post('ckeditor/upload', [Admin\CKEditorController::class, 'upload'])
             ->name('ckeditor.upload')
-            ->middleware('throttle:60,1');
+            ->middleware(['throttle:60,1', 'permission:products-edit|posts-edit|banners-edit|categories-edit']);
 
         Route::middleware('permission:users-index')->group(function () {
             Route::resource('users', Admin\UserController::class)->only(['index', 'store', 'update']);

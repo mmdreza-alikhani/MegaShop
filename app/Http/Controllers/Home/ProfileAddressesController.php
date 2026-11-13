@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Home\Profile\Address\StoreRequest;
 use App\Http\Requests\Home\Profile\Address\UpdateRequest;
 use App\Models\City;
+use App\Models\Order;
 use App\Models\Province;
 use App\Models\UserAddress;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -80,6 +81,13 @@ class ProfileAddressesController extends Controller
     public function destroy(UserAddress $address): RedirectResponse
     {
         $this->authorize('delete', $address);
+
+        // آدرسی که در سفارش‌ها استفاده شده حذف نمی‌شود تا تاریخچه سفارش از دست نرود.
+        if (Order::where('address_id', $address->id)->exists()) {
+            flash()->warning('این آدرس در سفارش‌های ثبت‌شده استفاده شده و قابل حذف نیست.');
+
+            return redirect()->back();
+        }
 
         $address->delete();
 
