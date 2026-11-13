@@ -1,0 +1,100 @@
+name: megashop
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  app:
+    build:
+      context: .
+      target: app
+      args:
+        INSTALL_DEV: "true"
+    image: megashop/app:latest
+    container_name: megashop-app
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      RUN_MIGRATIONS: "true"
+      SEED_IF_EMPTY: "true"
+    volumes:
+      - storage_data:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', 9000) ? 0 : 1);"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 120s
+    logging: *default-logging
+
+  web:
+    build:
+      context: .
+      target: web
+    image: megashop/web:latest
+    container_name: megashop-web
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    volumes:
+      - storage_data:/var/www/html/storage:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/favicon.ico || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging: *default-logging
+
+  db:
+    image: mysql:8.4
+    container_name: megashop-db
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: megashop
+      MYSQL_USER: megashop
+      MYSQL_PASSWORD: megashop_secret
+      MYSQL_ROOT_PASSWORD: root_secret
+      TZ: Asia/Tehran
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "${DB_FORWARD_PORT:-3307}:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    logging: *default-logging
+
+  adminer:
+    image: adminer:4
+    container_name: megashop-adminer
+    restart: unless-stopped
+    profiles: ["tools"]
+    ports:
+      - "${ADMINER_PORT:-8081}:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      db:
+        condition: service_healthy
+    logging: *default-logging
+
+volumes:
+  db_data:
+  storage_data:
