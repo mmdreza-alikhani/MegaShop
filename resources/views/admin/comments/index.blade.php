@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="d-flex m-1 align-items-center justify-content-between">
-                <form action="{{ route('admin.comments.search') }}" method="GET" class="m-0 p-0">
+                <form action="{{ route('admin.comments.index') }}" method="GET" class="m-0 p-0">
                     <div class="input-group">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary c-primary" type="submit">
@@ -96,16 +96,27 @@
                                                     </a>
                                                     <div class="dropdown-menu">
                                                         <button data-target="#reviewCommentModal-{{ $comment->id }}" data-toggle="modal" type="button" class="dropdown-item">بررسی</button>
+                                                        <form method="POST" action="{{ route('admin.comments.approve', ['comment' => $comment->id]) }}">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="dropdown-item">تایید</button>
+                                                        </form>
+                                                        <form method="POST" action="{{ route('admin.comments.reject', ['comment' => $comment->id]) }}">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="dropdown-item">رد</button>
+                                                        </form>
+                                                        <button data-target="#deleteCommentModal-{{ $comment->id }}" data-toggle="modal" type="button" class="dropdown-item">حذف</button>
                                                     </div>
                                                     <div class="modal w-lg fade light rtl" id="reviewCommentModal-{{ $comment->id }}" tabindex="-1" role="dialog">
                                                         <div class="modal-dialog" role="document">
                                                             <form method="post" action="{{ route('admin.comments.toggle', ['comment' => $comment->id]) }}">
-                                                                @method('put')
+                                                                @method('PATCH')
                                                                 @csrf
                                                                 <div class="modal-content card shade">
                                                                     <div class="modal-header">
                                                                         <h5 class="modal-title" id="exampleModalLabel">
-                                                                            بررسی نظر: {{ $comment->user->username }}
+                                                                            بررسی نظر: {{ $comment->user?->username }}
                                                                         </h5>
                                                                         <button type="button" class="close" data-dismiss="modal">
                                                                             <span>&times;</span>
@@ -155,7 +166,7 @@
                                                         <div class="modal-dialog" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title">حذف برند: {{ $comment->title }}</h5>
+                                                                    <h5 class="modal-title">حذف نظر: {{ $comment->user?->username }}</h5>
                                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                         <span aria-hidden="true">&times;</span>
                                                                     </button>
