@@ -3,13 +3,13 @@
     <div class="container-fluid side-bar-container">
         <header class="pb-0">
             <a class="navbar-brand">
-                <object class="side-logo" data="{{ asset('/assets/images/logo.png') }}">
-                </object>
+                <img class="side-logo" src="{{ asset('/assets/images/logo.png') }}" alt="مگاشاپ"
+                     onerror="this.onerror=null;this.src='{{ asset('assets/images/logo-light.png') }}'">
             </a>
         </header>
         <li class="side a-collapse short m-2 pr-1 pl-1">
             <a href="{{ route('admin.panel') }}"
-               class="side-item {{ request()->routeIs('management') ? 'selected' : '' }}">
+               class="side-item {{ request()->routeIs('admin.panel') ? 'selected' : '' }}">
                 <i class="fas fa-tachometer-alt mr-1"></i>صفحه اصلی
             </a>
         </li>
@@ -218,5 +218,18 @@
                 </div>
             </ul>
         @endcan
+        <div class="mk-admin-side-foot">
+            <a href="{{ route('home.index') }}" class="mk-admin-side-link">
+                <i class="fas fa-store"></i>
+                <span>فروشگاه</span>
+            </a>
+            <form action="{{ route('home.profile.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="mk-admin-side-link is-danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>خروج</span>
+                </button>
+            </form>
+        </div>
     </div>
 </div>

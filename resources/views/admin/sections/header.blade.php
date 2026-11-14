@@ -19,21 +19,19 @@
 </style>
 <header class="bmd-layout-header ">
     <div class="navbar navbar-light bg-faded animate__animated animate__fadeInDown">
-        @can('comments-toggle')
             <button class="navbar-toggler animate__animated animate__wobble animate__delay-2s" type="button"
                     data-toggle="drawer" data-target="#dw-s1">
                 <span class="navbar-toggler-icon"></span>
             </button>
-        @endcan
         <ul class="nav navbar-nav p-0">
             <li class="nav-item">
                 <div class="dropdown">
                     <button class="btn  dropdown-toggle m-0" type="button" id="dropdownMenu3" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <i class="far fa-bell fa-lg"></i>
-                        <span class="badge badge-pill badge-warning animate__animated animate__flash animate__repeat-3 animate__slower animate__delay-2s">
-                            {{ $pendingComments }}
-                        </span>
+                        @if($pendingComments > 0)
+                        <span class="badge badge-pill badge-warning">{{ $pendingComments }}</span>
+                        @endif
                     </button>
                     <div class="dropdown-menu dropdown-menu-right custom-dropdown">
                         @if($pendingComments > 0)
@@ -47,7 +45,9 @@
                 </div>
             </li>
             <li class="nav-item">
-                <img src="{{ Storage::url(config('upload.user_avatar_path') . '/') . auth()->user()->avatar }}" alt="your avatar" class="rounded-circle screen-user-profile">
+                <img src="{{ Storage::url(config('upload.user_avatar_path') . '/') . auth()->user()->avatar }}"
+                     onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar-placeholder.svg') }}'"
+                     alt="{{ auth()->user()->username }}" class="rounded-circle screen-user-profile">
             </li>
             <li class="nav-item">
                 <div class="dropdown">
@@ -60,10 +60,17 @@
                             <i class="fas fa-moon fa-sm c-main mr-2"></i>
                             حالت شب
                         </button>
-                        <a href="{{ route('home.index') }}" class="dropdown-item" type="button">
+                                                <a href="{{ route('home.index') }}" class="dropdown-item" type="button">
                             <i class="fas fa-undo fa-sm c-main mr-2"></i>
                             بازگشت به سایت
                         </a>
+                        <form action="{{ route('home.profile.logout') }}" method="POST" class="m-0">
+                            @csrf
+                            <button type="submit" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt fa-sm c-main mr-2"></i>
+                                خروج از حساب
+                            </button>
+                        </form>
                     </div>
                 </div>
             </li>

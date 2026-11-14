@@ -31,7 +31,7 @@
             </div>
             <div class="row m-1 mb-2">
                 <div class="col-xl-3 col-md-6 col-sm-6 p-2">
-                    <div class="box-card text-right mini animate__animated animate__flipInY"><i class="fab far fa-chart-bar b-first" aria-hidden="true"></i>
+                    <div class="box-card text-right mini"><i class="fas fa-users b-first" aria-hidden="true"></i>
                         <span class="mb-1 c-first">تعداد کاربران</span>
                         <span>{{ $usersCount }} کاربر </span>
                         <p class="mt-3 mb-1 text-right"><i class="far fas fa-wallet mr-1 c-first"></i> در حال
@@ -39,30 +39,52 @@
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6 col-sm-6 p-2">
-                    <div class="box-card text-right mini animate__animated animate__flipInY"><i class="fab far fa-clock b-second" aria-hidden="true"></i>
+                    <div class="box-card text-right mini"><i class="fas fa-shopping-bag b-second" aria-hidden="true"></i>
                         <span class="mb-1 c-second">تعداد سفارشات</span>
                         <span>{{ $ordersCount }} سفارش </span>
-                        <p class="mt-3 mb-1 text-right"><i class="far fas fa-wifi mr-1 c-second"></i>در حال پیشرفت
+                        <p class="mt-3 mb-1 text-right"><i class="far fa-credit-card mr-1 c-second"></i> سفارش‌های ثبت‌شده
                         </p>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6 col-sm-6 p-2">
-                    <div class="box-card text-right mini animate__animated animate__flipInY"><i class="fab far fa-comments b-third" aria-hidden="true"></i>
+                    <div class="box-card text-right mini"><i class="fas fa-box-open b-third" aria-hidden="true"></i>
                         <span class="mb-1 c-third">تعداد محصولات</span>
                         <span>{{ $productsCount }} محصول </span>
-                        <p class="mt-3 mb-1 text-right"><i class="fab fa-whatsapp mr-1 c-third"></i>در حال پیشرفت
+                        <p class="mt-3 mb-1 text-right"><i class="far fa-check-circle mr-1 c-third"></i> محصولات فعال
                         </p>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6 col-sm-6 p-2">
-                    <div class="box-card text-right mini animate__animated animate__flipInY   "><i class="fab far fa-gem b-forth" aria-hidden="true"></i>
+                    <div class="box-card text-right mini   "><i class="fas fa-newspaper b-forth" aria-hidden="true"></i>
                         <span class="mb-1 c-forth">تعداد مقالات</span>
                         <span>{{ $postsCount }} مقاله </span>
-                        <p class="mt-3 mb-1 text-right"><i class="fab fa-bluetooth mr-1 c-forth"></i>در حال پیشرفت
+                        <p class="mt-3 mb-1 text-right"><i class="far fa-file-alt mr-1 c-forth"></i> مقالات منتشرشده
                         </p>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div class="row m-1 mb-2">
+                <div class="col-12 p-2">
+                    <div class="mk-admin-quick">
+                        <a href="{{ route('admin.products.index') }}">
+                            <i class="fas fa-box-open"></i>
+                            <span>مدیریت محصولات</span>
+                        </a>
+                        <a href="{{ route('admin.orders.index') }}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>سفارش‌های جدید</span>
+                        </a>
+                        <a href="{{ route('admin.comments.index') }}">
+                            <i class="fas fa-comments"></i>
+                            <span>نظرات در انتظار</span>
+                        </a>
+                        <a href="{{ route('home.index') }}" target="_blank" rel="noopener">
+                            <i class="fas fa-store"></i>
+                            <span>مشاهده فروشگاه</span>
+                        </a>
+                    </div>
+                </div>
+            </div>        </div>
     </main>
 @endsection

@@ -125,4 +125,33 @@ var mixedChart = new Chart(mixChart, {
   },
   options: {}
 });
+/* ---------- موبایل: کشوی منو به صورت overlay باز شود ---------- */
+(function () {
+    var syncDrawer = function () {
+        var container = document.querySelector('.bmd-layout-container');
 
+        if (!container) {
+            return;
+        }
+
+        if (window.innerWidth < 992) {
+            if (container.classList.contains('bmd-drawer-in')) {
+                container.classList.remove('bmd-drawer-in');
+                container.classList.add('bmd-drawer-out');
+            }
+        } else if (!container.classList.contains('bmd-drawer-in')) {
+            container.classList.remove('bmd-drawer-out');
+            container.classList.add('bmd-drawer-in');
+        }
+    };
+
+    // بعد از مقدار‌دهی bootstrapMaterialDesign اجرا شود
+    window.addEventListener('load', function () {
+        window.setTimeout(syncDrawer, 60);
+    });
+
+    window.addEventListener('resize', syncDrawer);
+    document.addEventListener('drawer.bmd', function () {
+        window.setTimeout(syncDrawer, 60);
+    });
+})();

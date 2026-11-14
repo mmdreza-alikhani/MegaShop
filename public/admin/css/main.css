@@ -2671,3 +2671,634 @@ body.dark {
 .mk-admin-loader-grid i {
     animation-name: mk-admin-pixel-strong;
 }
+/* =========================================================
+   لایه مدرن پنل مدیریت (light + dark)
+   ========================================================= */
+:root {
+    --adm-bg: #f4f6fa;
+    --adm-surface: #ffffff;
+    --adm-surface-2: #f8fafc;
+    --adm-border: #e3e9f1;
+    --adm-text: #1f2733;
+    --adm-muted: #6b7785;
+    --adm-accent: #dd163b;
+    --adm-accent-soft: rgba(221, 22, 59, .1);
+    --adm-radius: 14px;
+    --adm-shadow: 0 8px 24px rgba(16, 24, 40, .06);
+}
+
+body.dark {
+    --adm-bg: #0f1419;
+    --adm-surface: #171d24;
+    --adm-surface-2: #1c232b;
+    --adm-border: #262f3a;
+    --adm-text: #e7edf4;
+    --adm-muted: #93a1b1;
+    --adm-accent: #ff3d63;
+    --adm-accent-soft: rgba(255, 61, 99, .14);
+    --adm-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+}
+
+body {
+    background: var(--adm-bg);
+    color: var(--adm-text);
+}
+
+/* ---------- هدر ---------- */
+.bmd-layout-header {
+    padding: 14px 16px 0;
+}
+
+.avam-container .navbar.navbar-light {
+    padding: 8px 14px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+}
+
+.avam-container .navbar.navbar-light .btn,
+.avam-container .navbar.navbar-light .nav-link {
+    color: var(--adm-text);
+}
+
+.navbar-toggler {
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+    background: var(--adm-surface-2);
+}
+
+.screen-user-profile {
+    width: 38px;
+    height: 38px;
+    object-fit: cover;
+    border: 2px solid var(--adm-border);
+}
+
+/* ---------- سایدبار ---------- */
+#dw-s1.bmd-layout-drawer,
+.animated #dw-s1.bmd-layout-drawer {
+    background: var(--adm-surface);
+    border-inline-end: 1px solid var(--adm-border);
+    color: var(--adm-text);
+    box-shadow: none;
+}
+
+.side-bar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 14px 10px 10px;
+}
+
+.side-logo {
+    max-height: 42px;
+    width: auto;
+}
+
+.side-comment {
+    margin: 16px 10px 6px;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .4px;
+    color: var(--adm-muted);
+    text-transform: uppercase;
+}
+
+#dw-s1 .side-item > a,
+#dw-s1 .side-item a,
+#dw-s1 .ul-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    margin: 2px 0;
+    font-size: .82rem;
+    color: var(--adm-text);
+    border-radius: 10px;
+    transition: background .16s ease, color .16s ease;
+}
+
+#dw-s1 .side-item a:hover,
+#dw-s1 .ul-text:hover {
+    background: var(--adm-surface-2);
+}
+
+#dw-s1 .side-item.selected > a,
+#dw-s1 .side-item.selected a {
+    color: var(--adm-accent);
+    font-weight: 700;
+    background: var(--adm-accent-soft);
+    box-shadow: inset 3px 0 0 var(--adm-accent);
+}
+
+#dw-s1 .side-item a > .fas,
+#dw-s1 .side-item a > .far,
+#dw-s1 .ul-text > .fas {
+    color: inherit;
+    opacity: .8;
+}
+
+/* فوتر سایدبار */
+.mk-admin-side-foot {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--adm-border);
+}
+
+.mk-admin-side-link {
+    display: inline-flex;
+    flex: 1 1 0;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 6px;
+    font-size: .76rem;
+    font-weight: 600;
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.mk-admin-side-foot form {
+    display: flex;
+    flex: 1 1 0;
+    margin: 0;
+}
+
+.mk-admin-side-link:hover {
+    border-color: var(--adm-accent);
+    color: var(--adm-accent);
+}
+
+.mk-admin-side-link.is-danger:hover {
+    background: var(--adm-accent-soft);
+}
+
+/* ---------- محتوا ---------- */
+.bmd-layout-content {
+    padding: 18px 16px 30px;
+}
+
+.page-header h3,
+.page-header .h3 {
+    font-weight: 800;
+    color: var(--adm-text);
+}
+
+.page-header .breadcrumb {
+    background: transparent;
+    margin-bottom: 0;
+}
+
+.page-header .breadcrumb-item,
+.page-header .breadcrumb-item a {
+    color: var(--adm-muted);
+}
+
+.page-header .breadcrumb-item.active {
+    color: var(--adm-accent);
+}
+
+/* ---------- کارت‌ها ---------- */
+.box-card {
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+    transition: transform .18s ease, border-color .18s ease;
+}
+
+.box-card:hover {
+    border-color: color-mix(in srgb, var(--adm-accent) 35%, var(--adm-border));
+    transform: translateY(-2px);
+}
+
+.box-card.mini {
+    min-height: 150px;
+}
+
+.box-card .b-first,
+.box-card .b-second,
+.box-card .b-third,
+.box-card .b-fourth {
+    border-radius: 12px;
+}
+
+/* ---------- جدول‌ها ---------- */
+.table {
+    background: var(--adm-surface);
+    color: var(--adm-text);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table thead th {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--adm-muted);
+    background: var(--adm-surface-2);
+    border-bottom: 1px solid var(--adm-border);
+}
+
+.table td,
+.table th {
+    border-color: var(--adm-border);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background: var(--adm-accent-soft);
+}
+
+.card,
+.card-body {
+    background: var(--adm-surface);
+    border-color: var(--adm-border);
+    border-radius: var(--adm-radius);
+}
+
+/* ---------- فرم‌ها ---------- */
+.form-control,
+.custom-select,
+.custom-file-label {
+    color: var(--adm-text);
+    background: var(--adm-surface);
+    border-color: var(--adm-border);
+}
+
+.form-control:focus,
+.custom-select:focus {
+    color: var(--adm-text);
+    background: var(--adm-surface);
+    border-color: var(--adm-accent);
+    box-shadow: 0 0 0 .15rem rgba(221, 22, 59, .14);
+}
+
+.form-control::placeholder {
+    color: var(--adm-muted);
+}
+
+label {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--adm-muted);
+}
+
+/* ---------- دکمه‌ها ---------- */
+.btn-info,
+.btn-info:not(:disabled):not(.disabled):active {
+    background-color: var(--adm-accent);
+    border-color: var(--adm-accent);
+    color: #fff;
+}
+
+.btn-info:hover {
+    background-color: #c4122f;
+    border-color: #c4122f;
+}
+
+.btn-outline-info {
+    color: var(--adm-accent);
+    border-color: var(--adm-accent);
+}
+
+.btn-outline-info:hover {
+    background: var(--adm-accent);
+    border-color: var(--adm-accent);
+}
+
+/* ---------- پنل‌های داخل صفحات ---------- */
+.bg-faded,
+.bmd-layout-drawer.bg-faded {
+    background: var(--adm-surface);
+}
+
+.modal-content {
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--adm-border);
+}
+
+/* هدر جدول‌های قدیمی */
+.breadcrumb-header {
+    margin-bottom: 6px;
+}
+
+@media (max-width: 767.98px) {
+    .bmd-layout-header {
+        padding: 10px 10px 0;
+    }
+
+    .bmd-layout-content {
+        padding: 12px 10px 26px;
+    }
+
+    .box-card.mini {
+        min-height: 130px;
+    }
+}
+/* ---------- اصلاح چیدمان هدر در موبایل ---------- */
+@media (max-width: 991.98px) {
+    :not(.bmd-drawer-out).bmd-drawer-in.bmd-drawer-f-l > .bmd-layout-header {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .bmd-layout-header {
+        padding: 10px 10px 0;
+    }
+
+    .avam-container .navbar.navbar-light {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 10px;
+    }
+
+    .avam-container .navbar.navbar-light .nav.navbar-nav {
+        margin-inline-start: auto;
+    }
+
+    .screen-user-profile {
+        width: 30px;
+        height: 30px;
+    }
+
+    .custom-dropdown {
+        width: min(320px, calc(100vw - 24px)) !important;
+    }
+
+    .bmd-layout-content {
+        padding: 12px 8px 26px;
+    }
+
+    .page-header-title h3 {
+        font-size: 1rem;
+    }
+}
+/* ---------- هدر تمام‌عرض در موبایل (override قطعی) ---------- */
+@media (max-width: 991.98px) {
+    .bmd-layout-container > .bmd-layout-header,
+    .bmd-layout-container.bmd-drawer-in > .bmd-layout-header,
+    .bmd-layout-header {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 10px 10px 0 !important;
+    }
+}
+/* ---------- محتوای تمام‌عرض در موبایل ---------- */
+@media (max-width: 991.98px) {
+    :not(.bmd-drawer-out).bmd-drawer-in.bmd-drawer-f-l > .bmd-layout-content,
+    .bmd-drawer-f-l > .bmd-layout-content,
+    .bmd-layout-content {
+        width: 100% !important;
+        margin: 0 !important;
+        padding-right: 10px !important;
+        padding-left: 10px !important;
+    }
+
+    .bmd-layout-content .container-fluid {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
+/* ---------- کشوی منو در موبایل (overlay مستقل) ---------- */
+@media (max-width: 991.98px) {
+    .bmd-layout-container > .bmd-layout-content,
+    .bmd-layout-content {
+        width: 100% !important;
+        margin: 0 !important;
+        transform: none !important;
+        padding: 12px 10px 26px !important;
+    }
+
+    .bmd-layout-container > .bmd-layout-content {
+        transition: none !important;
+    }
+
+    #dw-s1.bmd-layout-drawer {
+        position: fixed !important;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 260px !important;
+        max-width: 84vw;
+        z-index: 1060;
+        transform: translateX(105%) !important;
+        transition: transform .26s cubic-bezier(.22, .61, .36, 1) !important;
+        box-shadow: none;
+        overflow-y: auto;
+    }
+
+    body.mk-admin-drawer-open #dw-s1.bmd-layout-drawer {
+        transform: none !important;
+        box-shadow: -18px 0 40px rgba(0, 0, 0, .28);
+    }
+
+    body.mk-admin-drawer-open::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 1050;
+        background: rgba(8, 10, 14, .5);
+    }
+}
+/* ---------- جدول‌ها و فرم‌ها در موبایل ---------- */
+@media (max-width: 991.98px) {
+    .bmd-layout-content table.table,
+    .bmd-layout-content .nk-table {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .bmd-layout-content .input-group,
+    .bmd-layout-content .bmd-form-group,
+    .bmd-layout-content .form-control,
+    .bmd-layout-content .custom-select {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .bmd-layout-content .input-group {
+        margin-inline: 0 !important;
+    }
+}
+/* ---------- اصلاح کارت‌های آماری ---------- */
+.box-card {
+    position: relative;
+    overflow: hidden;
+    padding: 20px 22px;
+}
+
+.box-card > i {
+    position: absolute;
+    top: 14px;
+    right: auto;
+    inset-inline-end: 16px;
+    z-index: 0;
+    font-size: 42px;
+    line-height: 1;
+    opacity: .16;
+    transform: none;
+}
+
+.box-card:hover > i {
+    transform: scale(1.08);
+}
+
+.box-card > span,
+.box-card > p {
+    position: relative;
+    z-index: 1;
+    display: block;
+}
+
+.box-card span:first-of-type {
+    font-size: .8rem;
+    line-height: 1.6;
+    font-weight: 700;
+}
+
+.box-card span:last-of-type {
+    margin-top: 4px;
+    font-size: 1.55rem;
+    font-weight: 800;
+    line-height: 1.4;
+    color: var(--adm-text);
+}
+
+.box-card > p {
+    margin-top: 10px !important;
+    font-size: .74rem;
+    color: var(--adm-muted);
+}
+
+/* ---------- سایدبار: لوگو، فلش و بج ---------- */
+.rtl .navbar-brand .side-logo {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 40px;
+    margin: 0 auto;
+    padding: 4px 0 0;
+}
+
+#dw-s1 .ul-text .arrow {
+    margin-inline-start: auto;
+    font-size: .7rem;
+    opacity: .55;
+}
+
+#dw-s1 .ul-text .badge {
+    margin-inline-start: auto;
+}
+
+#dw-s1 .side-item-container {
+    padding-inline-start: 8px;
+}
+
+/* ---------- دسترسی سریع داشبورد ---------- */
+.mk-admin-quick {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.mk-admin-quick a {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 14px 16px;
+    font-size: .84rem;
+    font-weight: 600;
+    color: var(--adm-text);
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+    transition: border-color .18s ease, transform .18s ease, color .18s ease;
+}
+
+.mk-admin-quick a:hover {
+    color: var(--adm-accent);
+    border-color: var(--adm-accent);
+    transform: translateY(-2px);
+}
+
+.mk-admin-quick i {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    font-size: .95rem;
+    color: var(--adm-accent);
+    background: var(--adm-accent-soft);
+    border-radius: 10px;
+}
+
+@media (max-width: 1199.98px) {
+    .mk-admin-quick {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .mk-admin-quick {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+/* دسترسی سریع: چیدمان قطعی افقی */
+.mk-admin-quick a {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-height: 62px;
+    padding: 12px 14px !important;
+    white-space: nowrap;
+}
+
+.mk-admin-quick a > span {
+    flex: 1 1 auto;
+    font-size: .82rem;
+    text-align: right;
+}
+/* دسترسی سریع: چیدمان گرید (مقاوم در برابر override) */
+.mk-admin-quick a {
+    display: grid !important;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    min-height: 60px;
+    padding: 12px 14px !important;
+}
+
+.mk-admin-quick a > i {
+    width: 34px;
+    height: 34px;
+    margin: 0 !important;
+}
+
+.mk-admin-quick a > span {
+    display: block;
+    font-size: .82rem;
+    line-height: 1.6;
+    text-align: right;
+    white-space: normal;
+}
