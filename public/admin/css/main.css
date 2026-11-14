@@ -2584,3 +2584,90 @@ body.dark {
     transition: opacity 0.5s ease-out;
     pointer-events: none;
 }
+
+/* =========================================================
+   لودر گیمینگ مینیمال پنل مدیریت
+   ========================================================= */
+#preloader {
+    background: #0b0d10;
+}
+
+.mk-admin-loader {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    color: #8b96a5;
+}
+
+.mk-admin-loader-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    width: 52px;
+    height: 52px;
+}
+
+.mk-admin-loader-grid i {
+    display: block;
+    background: #dd163b;
+    border-radius: 2px;
+    opacity: .16;
+    transform: scale(.85);
+    animation: mk-admin-pixel 1.2s ease-in-out infinite;
+}
+
+.mk-admin-loader-grid i:nth-child(1) { animation-delay: 0s; }
+.mk-admin-loader-grid i:nth-child(2) { animation-delay: .09s; }
+.mk-admin-loader-grid i:nth-child(3) { animation-delay: .18s; }
+.mk-admin-loader-grid i:nth-child(4) { animation-delay: .09s; }
+.mk-admin-loader-grid i:nth-child(5) { animation-delay: .18s; }
+.mk-admin-loader-grid i:nth-child(6) { animation-delay: .27s; }
+.mk-admin-loader-grid i:nth-child(7) { animation-delay: .18s; }
+.mk-admin-loader-grid i:nth-child(8) { animation-delay: .27s; }
+.mk-admin-loader-grid i:nth-child(9) { animation-delay: .36s; }
+
+@keyframes mk-admin-pixel {
+    0%, 70%, 100% {
+        opacity: .16;
+        transform: scale(.85);
+    }
+
+    35% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.mk-admin-loader-label {
+    font-size: .95rem;
+    font-weight: 600;
+    letter-spacing: -.2px;
+}
+.mk-admin-loader-label {
+    color: #9aa6b4;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.mk-admin-loader-grid i {
+    opacity: .26;
+}
+
+@keyframes mk-admin-pixel-strong {
+    0%, 70%, 100% {
+        opacity: .22;
+        transform: scale(.85);
+    }
+
+    35% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 12px rgba(221, 22, 59, .55);
+    }
+}
+
+.mk-admin-loader-grid i {
+    animation-name: mk-admin-pixel-strong;
+}

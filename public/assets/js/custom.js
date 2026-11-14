@@ -384,3 +384,58 @@
         initCommentReply();
     }
 })();
+/* ---------- لودینگ گیمینگ: فرم‌ها و تصاویر ---------- */
+(function () {
+    var initLoadingStates = function () {
+        // ۱) دکمه ارسال فرم‌ها
+        document.addEventListener('submit', function (event) {
+            var form = event.target;
+
+            if (!form || form.tagName !== 'FORM' || form.dataset.noLoader !== undefined) {
+                return;
+            }
+
+            if (form.dataset.submitting === '1') {
+                event.preventDefault();
+                return;
+            }
+
+            form.dataset.submitting = '1';
+
+            window.setTimeout(function () {
+                delete form.dataset.submitting;
+            }, 12000);
+
+            var button = form.querySelector('button[type="submit"], button:not([type])');
+
+            if (button) {
+                button.classList.add('is-loading');
+                button.setAttribute('aria-busy', 'true');
+            }
+        }, true);
+
+        // ۲) شیم لودینگ برای تصاویر کارت‌ها
+        document.querySelectorAll('img[loading="lazy"]').forEach(function (image) {
+            var box = image.closest('.mk-card-media, .mk-post-media, .mk-news-media, .mk-news-thumb');
+
+            if (!box || image.complete) {
+                return;
+            }
+
+            box.classList.add('is-loading');
+
+            var stop = function () {
+                box.classList.remove('is-loading');
+            };
+
+            image.addEventListener('load', stop, { once: true });
+            image.addEventListener('error', stop, { once: true });
+        });
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initLoadingStates);
+    } else {
+        initLoadingStates();
+    }
+})();

@@ -4789,3 +4789,224 @@ html[data-theme="light"] .mk-social a:hover {
         var(--mk-border-strong, #3a444f) 45%,
         transparent 100%);
 }
+/* =========================================================
+   لودر گیمینگ مینیمال (پیکسلی)
+   ========================================================= */
+.mk-loader {
+    --mk-loader-size: 30px;
+    --mk-loader-color: var(--mk-accent, #dd163b);
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    color: var(--mk-muted, #8b96a5);
+}
+
+.mk-loader-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    width: var(--mk-loader-size);
+    height: var(--mk-loader-size);
+}
+
+.mk-loader-grid i {
+    display: block;
+    background: var(--mk-loader-color);
+    border-radius: 1px;
+    opacity: .16;
+    transform: scale(.85);
+    animation: mk-pixel-wave 1.2s ease-in-out infinite;
+}
+
+/* موج قطری پیکسل‌ها */
+.mk-loader-grid i:nth-child(1) { animation-delay: 0s; }
+.mk-loader-grid i:nth-child(2) { animation-delay: .09s; }
+.mk-loader-grid i:nth-child(3) { animation-delay: .18s; }
+.mk-loader-grid i:nth-child(4) { animation-delay: .09s; }
+.mk-loader-grid i:nth-child(5) { animation-delay: .18s; }
+.mk-loader-grid i:nth-child(6) { animation-delay: .27s; }
+.mk-loader-grid i:nth-child(7) { animation-delay: .18s; }
+.mk-loader-grid i:nth-child(8) { animation-delay: .27s; }
+.mk-loader-grid i:nth-child(9) { animation-delay: .36s; }
+
+@keyframes mk-pixel-wave {
+    0%, 70%, 100% {
+        opacity: .16;
+        transform: scale(.85);
+    }
+
+    35% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.mk-loader-label {
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: -.2px;
+}
+
+.mk-loader--sm {
+    --mk-loader-size: 16px;
+    gap: 0;
+}
+
+.mk-loader--sm .mk-loader-grid {
+    gap: 2px;
+}
+
+.mk-loader--lg {
+    --mk-loader-size: 46px;
+    gap: 14px;
+}
+
+.mk-loader--lg .mk-loader-grid {
+    gap: 4px;
+}
+
+.mk-loader--lg .mk-loader-label {
+    font-size: .92rem;
+}
+
+.mk-loader--inline {
+    flex-direction: row;
+    gap: 10px;
+}
+
+.mk-loader--overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    display: flex;
+    background: rgba(10, 12, 15, .86);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* ---------- بازخورد لودینگ روی دکمه‌ها ---------- */
+.mk-btn.is-loading,
+.nk-btn.is-loading {
+    position: relative;
+    padding-inline-start: 42px;
+    pointer-events: none;
+    opacity: .9;
+}
+
+.mk-btn.is-loading::after,
+.nk-btn.is-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 18px;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    background: currentColor;
+    border-radius: 1px;
+    box-shadow: 9px 0 0 currentColor, 18px 0 0 currentColor;
+    animation: mk-btn-dots .85s steps(1, end) infinite;
+}
+
+@keyframes mk-btn-dots {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 9px 0 0 rgba(255, 255, 255, .35), 18px 0 0 rgba(255, 255, 255, .35);
+    }
+
+    33% {
+        opacity: .55;
+        box-shadow: 9px 0 0 currentColor, 18px 0 0 rgba(255, 255, 255, .35);
+    }
+
+    66% {
+        box-shadow: 9px 0 0 rgba(255, 255, 255, .35), 18px 0 0 currentColor;
+    }
+}
+
+/* ---------- شیم لودینگ تصاویر ---------- */
+.mk-card-media.is-loading,
+.mk-post-media.is-loading,
+.mk-news-media.is-loading,
+.mk-news-thumb.is-loading {
+    background-color: var(--mk-bg-3);
+    background-image: linear-gradient(100deg,
+        rgba(255, 255, 255, .02) 30%,
+        rgba(255, 255, 255, .08) 50%,
+        rgba(255, 255, 255, .02) 70%);
+    background-size: 220% 100%;
+    animation: mk-shimmer 1.3s linear infinite;
+}
+
+@keyframes mk-shimmer {
+    from {
+        background-position: 130% 0;
+    }
+
+    to {
+        background-position: -130% 0;
+    }
+}
+
+/* ---------- اسپینر قالب ---------- */
+.nk-loading-spinner {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+}
+
+.nk-loading-spinner > i {
+    display: block;
+    width: 7px;
+    height: 7px;
+    background: var(--mk-accent, #dd163b);
+    border: 0;
+    border-radius: 1px;
+    box-shadow: -11px 0 0 rgba(221, 22, 59, .45), 11px 0 0 rgba(221, 22, 59, .45);
+    animation: mk-spinner-bounce .9s ease-in-out infinite;
+}
+
+@keyframes mk-spinner-bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mk-loader-grid i,
+    .nk-loading-spinner > i,
+    .mk-btn.is-loading::after {
+        animation-duration: 2.4s;
+    }
+
+    .mk-card-media.is-loading,
+    .mk-post-media.is-loading,
+    .mk-news-media.is-loading,
+    .mk-news-thumb.is-loading {
+        animation: none;
+    }
+}
+/* خوانایی بیشتر پیکسل‌ها در حالت سکون */
+.mk-loader-grid i {
+    opacity: .28;
+}
+
+@keyframes mk-pixel-wave {
+    0%, 70%, 100% {
+        opacity: .22;
+        transform: scale(.85);
+    }
+
+    35% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 10px color-mix(in srgb, var(--mk-accent, #dd163b) 55%, transparent);
+    }
+}
