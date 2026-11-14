@@ -21,9 +21,9 @@
                 </div>
                 <div class="mk-dash-actions">
                     @can('users-create')
-                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#createUserModal">
+                        <a href="{{ route('admin.users.create') }}" class="btn btn-info btn-sm">
                             <i class="fas fa-user-plus mr-1"></i> کاربر جدید
-                        </button>
+                        </a>
                     @endcan
                     <a href="{{ route('admin.roles.index') }}" class="btn btn-outline-info btn-sm">
                         <i class="fas fa-shield-alt mr-1"></i> گروه‌های کاربری
@@ -189,12 +189,10 @@
                                                     </button>
                                                 @endcan
                                                 @can('users-edit')
-                                                    <button type="button" class="dropdown-item"
-                                                            data-target="#editUserModal-{{ $user->id }}"
-                                                            data-toggle="modal" data-dismiss="modal">
+                                                    <a class="dropdown-item" href="{{ route('admin.users.edit', ['user' => $user->id]) }}">
                                                         <i class="fas fa-pen"></i>
                                                         <span>ویرایش</span>
-                                                    </button>
+                                                    </a>
                                                 @endcan
                                                 <a class="dropdown-item" href="{{ route('admin.orders.index', ['q' => $user->username]) }}">
                                                     <i class="fas fa-receipt"></i>
@@ -221,12 +219,10 @@
                     @include('admin.users.partials.show-modal', ['user' => $user])
                 @endcan
                 @can('users-edit')
-                    @include('admin.users.partials.edit-modal', ['user' => $user, 'roles' => $roles])
                 @endcan
             @endforeach
 
             @can('users-create')
-                @include('admin.users.partials.create-modal', ['roles' => $roles])
             @endcan
         </div>
     </main>

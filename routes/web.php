@@ -27,6 +27,12 @@ Route::prefix('management')
 
         Route::middleware('permission:users-index')->group(function () {
             Route::resource('users', Admin\UserController::class)->only(['index', 'store', 'update']);
+            Route::get('users/create', [Admin\UserController::class, 'create'])
+                ->name('users.create')
+                ->middleware('permission:users-create');
+            Route::get('users/{user}/edit', [Admin\UserController::class, 'edit'])
+                ->name('users.edit')
+                ->middleware('permission:users-edit');
             Route::resource('permissions', Admin\PermissionController::class)->only(['index', 'store', 'update']);
             Route::resource('roles', Admin\RoleController::class)->only(['index', 'store', 'update']);
         });

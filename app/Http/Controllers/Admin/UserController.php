@@ -74,6 +74,27 @@ class UserController extends Controller
     }
 
     /**
+     * فرم ساخت کاربر در صفحه مستقل.
+     */
+    public function create(): View|Application|Factory
+    {
+        $roles = Role::all();
+        $permissions = Permission::all();
+
+        return view('admin.users.create', compact('roles', 'permissions'));
+    }
+
+    /**
+     * فرم ویرایش کاربر در صفحه مستقل.
+     */
+    public function edit(User $user): View|Application|Factory
+    {
+        $roles = Role::all();
+        $permissions = Permission::all();
+
+        return view('admin.users.edit', compact('user', 'roles', 'permissions'));
+    }
+    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreUserRequest $request): RedirectResponse
@@ -101,7 +122,7 @@ class UserController extends Controller
             return redirect()->back()->withInput();
         }
 
-        return redirect()->back();
+        return redirect()->route('admin.users.index');
     }
 
     /**

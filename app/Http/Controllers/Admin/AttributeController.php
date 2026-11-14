@@ -27,13 +27,22 @@ class AttributeController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $query = Attribute::query();
+        $query = Attribute::query()->withCount(['filterValues', 'variationValues']);
+
         if ($request->input('q')) {
-            $query->search('title', trim(request()->input('q')));
+            $query->search('title', trim((string) $request->input('q')));
         }
+
         $attributes = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.attributes.index', compact('attributes'));
+        $stats = [
+            'total' => Attribute::count(),
+            'filter' => Attribute::has('filterValues')->count(),
+            'variation' => Attribute::has('variationValues')->count(),
+            'unused' => Attribute::has('filterValues', '=', 0)->has('variationValues', '=', 0)->count(),
+        ];
+
+        return view('admin.attributes.index', compact('attributes', 'stats'));
     }
 
     /**
