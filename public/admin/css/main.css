@@ -5192,3 +5192,36 @@ body.dark {
 .mk-field > small {
     margin-top: 0 !important;
 }
+/* =========================================================
+   منوهای کشویی ردیف‌های آخر: بریده نشوند و به بالا باز شوند
+   ========================================================= */
+@media (min-width: 992px) {
+    .mk-adm-table-wrap,
+    .mk-adm-table-wrap table.table {
+        overflow: visible;
+    }
+}
+
+.mk-adm-drop.is-up > .mk-adm-dropdown {
+    top: auto;
+    bottom: calc(100% + 10px);
+    transform: translateY(8px) scale(.96);
+    transform-origin: bottom left;
+}
+
+.mk-adm-drop.is-up.is-open > .mk-adm-dropdown {
+    transform: translateY(0) scale(1);
+}
+
+@media (max-width: 991.98px) {
+    .mk-adm-drop.is-up > .mk-adm-dropdown {
+        top: 74px;
+        bottom: auto;
+        transform: translateY(-10px) scale(.98);
+        transform-origin: top center;
+    }
+
+    .mk-adm-drop.is-up.is-open > .mk-adm-dropdown {
+        transform: none;
+    }
+}
