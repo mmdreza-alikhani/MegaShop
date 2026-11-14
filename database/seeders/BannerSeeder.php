@@ -15,6 +15,35 @@ class BannerSeeder extends Seeder
     {
         $banners = [
             [
+                'code' => 'banner-laptop-week',
+                'title' => 'هفته لپ‌تاپ و کامپیوتر',
+                'text' => 'تا ۳۰٪ تخفیف روی لپ‌تاپ، مانیتور و قطعات کامپیوتر',
+                'button_text' => 'مشاهده لپ‌تاپ‌ها',
+                'button_link' => '/categories/لپ-تاپ-و-کامپیوتر',
+                'priority' => '05',
+                'latin' => 'LAPTOP WEEK',
+                'subtitle' => 'UP TO 30% OFF',
+            ],
+            [
+                'code' => 'banner-audio-days',
+                'title' => 'روزهای صوتی',
+                'text' => 'هدفون، هندزفری و اسپیکر با قیمت ویژه این هفته',
+                'button_text' => 'خرید محصولات صوتی',
+                'button_link' => '/categories/صوتی-و-تصویری',
+                'priority' => '06',
+                'latin' => 'AUDIO DAYS',
+                'subtitle' => 'HEADPHONES & SPEAKERS',
+            ],
+            [
+                'code' => 'banner-gaming-zone',
+                'title' => 'منطقه گیمینگ',
+                'text' => 'کنسول، دسته بازی و لوازم جانبی گیمینگ',
+                'button_text' => 'ورود به گیمینگ',
+                'button_link' => '/categories/کنسول-و-بازی',
+                'priority' => '07',
+                'latin' => 'GAMING ZONE',
+                'subtitle' => 'CONSOLES & ACCESSORIES',
+            ],            [
                 'code' => 'banner-mobile-fest',
                 'title' => 'جشنواره پایان فصل موبایل',
                 'text' => 'تا ۲۵٪ تخفیف روی پرچم‌داران اپل و سامسونگ؛ فرصت محدود است!',

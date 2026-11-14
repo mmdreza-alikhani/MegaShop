@@ -28,7 +28,8 @@ class HomeController extends Controller
                 'banners' => Banner::query()
                     ->active()
                     ->where('type', 'main/top-slider')
-                    ->limit(4)
+                    ->orderBy('priority')
+                    ->limit(6)
                     ->get(),
                 'articles' => Post::query()
                     ->active()
