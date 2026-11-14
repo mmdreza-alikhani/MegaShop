@@ -1,9 +1,10 @@
 @extends('home.profile.master')
 
 @section('section')
-    <div class="info-box p-5 m-3 h-100 w-100 row rounded" style="background-color: rgba(35,41,48,.6);direction: rtl">
+    <div class="mk-panel">
+        <header class="mk-panel-head"><div><h2>آدرس‌های من</h2><p>آدرس‌های ارسال سفارش را مدیریت کنید.</p></div></header>
         <div class="w-100">
-            <a href="#" data-toggle="modal" data-target="#createAddressModal" class="btn text-white h-auto nk-btn-color-info d-block w-25" style="margin: 0 auto">
+            <a href="#" data-toggle="modal" data-target="#createAddressModal" class="mk-btn mk-btn-primary" style="margin: 0 auto 16px; display: inline-flex">
                 ثبت آدرس جدید
             </a>
         </div>
@@ -80,17 +81,8 @@
                 </div>
             </div>
         </div>
-        <aside class="nk-sidebar nk-sidebar-right nk-sidebar-sticky">
-            <div class="nk-widget nk-widget-highlighted" style="direction: rtl">
-                <ul class="nk-breadcrumbs text-right px-3" style="direction: rtl">
-                    <li><span style="font-size: 24px">آدرس ها:</span></li>
-                </ul>
-            </div>
-        </aside>
         @if($user->addresses->isEmpty())
-            <div class="alert alert-danger text-right w-100">
-                شما تا به حال آدرسی ثبت نکرده اید!
-            </div>
+            <div class="mk-empty"><span class="fa fa-map-marker"></span><p>هنوز آدرسی ثبت نکرده‌اید.</p></div>
         @else
             <table class="nk-table text-right container" style="direction: rtl">
                 <thead>

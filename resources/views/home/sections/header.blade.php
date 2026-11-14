@@ -316,7 +316,7 @@
 
 <div class="mk-overlay" id="mkOverlay"></div>
 
-<nav class="mk-bottom-nav" aria-label="دسترسی سریع" data-bottom-nav>
+<nav class="mk-bottom-nav {{ auth()->check() && auth()->user()->getAllPermissions()->isNotEmpty() ? 'has-admin' : '' }}" aria-label="دسترسی سریع" data-bottom-nav>
     <a href="{{ route('home.index') }}"
        class="mk-bottom-item {{ $navActive === 'home' ? 'is-active' : '' }}"
        data-bottom-item>
@@ -362,6 +362,15 @@
             <span class="mk-bottom-icon"><span class="fa fa-user"></span></span>
             <span class="mk-bottom-label">حساب من</span>
         </a>
+        @if(auth()->user()->getAllPermissions()->isNotEmpty())
+            <a href="{{ route('admin.panel') }}"
+               class="mk-bottom-item"
+               data-bottom-item>
+                <span class="mk-bottom-glow" aria-hidden="true"></span>
+                <span class="mk-bottom-icon"><span class="fa fa-dashboard"></span></span>
+                <span class="mk-bottom-label">مدیریت</span>
+            </a>
+        @endif
     @else
         <button type="button" class="mk-bottom-item" data-bottom-item
                 data-toggle="modal" data-target="#modalLogin">

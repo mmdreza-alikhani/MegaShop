@@ -1,7 +1,7 @@
 @foreach($comments as $comment)
     <div class="nk-comment text-right" style="direction: rtl">
         <div class="nk-comment-meta text-right">
-            <img src="{{ Str::contains($comment->user->avatar, 'https://') ? $comment->user->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $comment->user->avatar }}" alt="{{ $comment->user->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover"> <span style="color: #dd163b">{{ $comment->user->username }} </span>
+            <img src="{{ Str::contains($comment->user->avatar, 'https://') ? $comment->user->avatar : Storage::url(config('upload.user_avatar_path') . '/' . $comment->user->avatar) }}" onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar-placeholder.svg') }}'" alt="{{ $comment->user->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover"> <span style="color: #dd163b">{{ $comment->user->username }} </span>
             در تاریخ
             {{ verta($comment->updated_at)->format('%d %B، %Y') }}
             گفته:

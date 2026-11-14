@@ -3895,3 +3895,458 @@ html[data-theme="light"] .mk-social a:hover {
         font-size: 1.2rem;
     }
 }
+/* شش ستون وقتی کاربر مدیر است */
+.mk-bottom-nav.has-admin {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+@media (max-width: 420px) {
+    .mk-bottom-nav.has-admin .mk-bottom-item {
+        font-size: .58rem;
+    }
+
+    .mk-bottom-nav.has-admin .mk-bottom-icon {
+        width: 28px;
+    }
+}
+
+/* =========================================================
+   پروفایل کاربری
+   ========================================================= */
+.mk-profile {
+    display: grid;
+    grid-template-columns: 274px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.mk-profile-side {
+    position: sticky;
+    top: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mk-profile-card {
+    padding: 20px 18px;
+    text-align: center;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 16px;
+}
+
+.mk-profile-avatar {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 12px;
+}
+
+.mk-profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--mk-bg-3);
+    border: 2px solid var(--mk-border);
+    border-radius: 50%;
+}
+
+.mk-profile-admin {
+    position: absolute;
+    bottom: -6px;
+    inset-inline-start: 50%;
+    padding: 2px 9px;
+    font-size: .62rem;
+    font-weight: 700;
+    color: var(--mk-on-accent);
+    white-space: nowrap;
+    background: var(--mk-accent);
+    border-radius: 10px;
+    transform: translateX(50%);
+}
+
+.mk-profile-name {
+    display: block;
+    font-size: .98rem;
+    font-weight: 700;
+    color: var(--mk-heading);
+}
+
+.mk-profile-username {
+    display: block;
+    margin-top: 3px;
+    font-size: .78rem;
+    color: var(--mk-muted);
+}
+
+.mk-profile-email {
+    display: block;
+    margin-top: 6px;
+    overflow: hidden;
+    font-size: .74rem;
+    color: var(--mk-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mk-profile-nav {
+    padding: 6px;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 16px;
+}
+
+.mk-profile-nav a,
+.mk-profile-nav button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    font-size: .85rem;
+    font-weight: 500;
+    color: var(--mk-text);
+    text-align: right;
+    background: transparent;
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.mk-profile-nav a > .fa,
+.mk-profile-nav button > .fa {
+    width: 18px;
+    font-size: .95rem;
+    color: var(--mk-muted);
+    text-align: center;
+}
+
+.mk-profile-nav a:hover,
+.mk-profile-nav button:hover {
+    background: var(--mk-hover);
+}
+
+.mk-profile-nav a.is-active {
+    font-weight: 700;
+    color: var(--mk-accent);
+    background: color-mix(in srgb, var(--mk-accent) 12%, transparent);
+}
+
+.mk-profile-nav a.is-active > .fa {
+    color: var(--mk-accent);
+}
+
+.mk-profile-nav .mk-profile-logout {
+    color: #ef6b6b;
+}
+
+.mk-profile-nav .mk-profile-logout:hover {
+    background: rgba(239, 107, 107, .12);
+}
+
+.mk-profile-main {
+    min-width: 0;
+}
+
+.mk-panel {
+    padding: 20px;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 16px;
+}
+
+.mk-panel + .mk-panel {
+    margin-top: 14px;
+}
+
+.mk-panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--mk-border);
+}
+
+.mk-panel-head h2 {
+    margin: 0;
+    font-size: 1.02rem;
+    font-weight: 800;
+    color: var(--mk-heading);
+}
+
+.mk-panel-head p {
+    margin: 0;
+    font-size: .78rem;
+    color: var(--mk-muted);
+}
+
+.mk-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.mk-form-grid .mk-field {
+    margin: 0;
+}
+
+.mk-form-grid .mk-field-full {
+    grid-column: 1 / -1;
+}
+
+.mk-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    grid-column: 1 / -1;
+    margin-top: 6px;
+}
+
+.mk-avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    background: var(--mk-bg-3);
+    border: 1px dashed var(--mk-border);
+    border-radius: 12px;
+}
+
+.mk-avatar-row img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.mk-avatar-row strong {
+    display: block;
+    font-size: .85rem;
+    color: var(--mk-heading);
+}
+
+.mk-avatar-row small {
+    display: block;
+    margin-top: 2px;
+    font-size: .74rem;
+    color: var(--mk-muted);
+}
+
+.mk-table-wrap {
+    overflow-x: auto;
+}
+
+.mk-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    font-size: .72rem;
+    font-weight: 700;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.mk-status.is-ok {
+    color: #3ddc84;
+    background: rgba(61, 220, 132, .12);
+}
+
+.mk-status.is-bad {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, .12);
+}
+
+.mk-status.is-wait {
+    color: #f4b740;
+    background: rgba(244, 183, 64, .12);
+}
+
+@media (max-width: 991.98px) {
+    .mk-profile {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mk-profile-side {
+        position: static;
+    }
+
+    .mk-profile-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        text-align: right;
+    }
+
+    .mk-profile-avatar {
+        flex: 0 0 auto;
+        width: 60px;
+        height: 60px;
+        margin: 0;
+    }
+
+    .mk-profile-name,
+    .mk-profile-username,
+    .mk-profile-email {
+        text-align: right;
+    }
+
+    .mk-profile-nav {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        scrollbar-width: thin;
+    }
+
+    .mk-profile-nav a,
+    .mk-profile-nav button {
+        width: auto;
+        white-space: nowrap;
+        background: var(--mk-bg-3);
+    }
+
+    .mk-profile-nav form {
+        display: contents;
+    }
+
+    .mk-profile-nav .mk-profile-logout {
+        background: rgba(239, 107, 107, .1);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .mk-form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mk-panel {
+        padding: 16px;
+    }
+}
+/* ---------- لیست سفارش‌ها ---------- */
+.mk-panel-count {
+    font-size: .75rem;
+    color: var(--mk-muted);
+    background: var(--mk-chip);
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.mk-orders {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mk-order-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: var(--mk-bg-3);
+    border: 1px solid var(--mk-border);
+    border-radius: 12px;
+    transition: border-color .18s ease, transform .18s ease;
+}
+
+.mk-order-card:hover {
+    border-color: color-mix(in srgb, var(--mk-accent) 45%, var(--mk-border));
+    transform: translateY(-1px);
+}
+
+.mk-order-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.mk-order-id {
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--mk-heading);
+}
+
+.mk-order-date {
+    font-size: .76rem;
+    color: var(--mk-muted);
+}
+
+.mk-order-date > .fa {
+    margin-inline-end: 4px;
+}
+
+.mk-order-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.mk-order-total {
+    font-size: .92rem;
+    font-weight: 700;
+    color: var(--mk-heading);
+}
+
+.mk-order-total small {
+    font-size: .7rem;
+    font-weight: 500;
+    color: var(--mk-muted);
+}
+
+.mk-pagination-wrap {
+    margin-top: 16px;
+}
+
+.mk-empty {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    padding: 36px 16px;
+    text-align: center;
+    color: var(--mk-muted);
+}
+
+.mk-empty > .fa {
+    font-size: 1.8rem;
+    color: var(--mk-border-strong);
+}
+
+.mk-empty p {
+    margin: 0;
+    font-size: .88rem;
+}
+
+@media (max-width: 575.98px) {
+    .mk-order-card {
+        align-items: stretch;
+    }
+
+    .mk-order-meta {
+        justify-content: space-between;
+        width: 100%;
+    }
+}
+/* پنهان کردن اسکرول‌بار افقی نوار پروفایل در موبایل */
+@media (max-width: 991.98px) {
+    .mk-profile-nav {
+        scrollbar-width: none;
+    }
+
+    .mk-profile-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mk-profile-card .mk-profile-avatar img {
+        border-width: 2px;
+    }
+}

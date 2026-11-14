@@ -13,6 +13,7 @@
 <article class="mk-product-card">
     <a href="{{ $productUrl }}" class="mk-card-media">
         <img src="{{ Storage::url(config('upload.product_primary_path') . '/' . $product->primary_image) }}"
+             onerror="this.onerror=null;this.src='{{ asset('assets/images/media-placeholder.svg') }}'"
              alt="{{ $product->title }}" loading="lazy">
 
         @if($discountPercent > 0)

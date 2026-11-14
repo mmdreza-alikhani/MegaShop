@@ -9,7 +9,8 @@
             ->values();
     @endphp
 
-    <div class="info-box p-4 m-2 h-100 w-100 row rounded mk-panel">
+    <div class="mk-panel">
+        <header class="mk-panel-head"><div><h2>علاقه‌مندی‌ها</h2><p>محصولاتی که برای بعد ذخیره کرده‌اید.</p></div></header>
         @if($wishlistProducts->isEmpty())
             <div class="mk-empty w-100">
                 شما محصول مورد علاقه‌ای ندارید!

@@ -1,52 +1,98 @@
 @extends('home.profile.master')
 
 @section('section')
-    <div class="info-box p-4 m-2 h-100 w-100 row rounded" style="background-color: rgba(35,41,48,.6)">
-        <form method="POST" action="{{ route('home.profile.update') }}" class="w-100 row p-5" enctype="multipart/form-data">
+    <div class="mk-panel">
+        <header class="mk-panel-head">
+            <div>
+                <h2>مشخصات کاربری</h2>
+                <p>اطلاعات حساب خود را کامل و به‌روز نگه دارید.</p>
+            </div>
+            <span class="mk-status is-ok">
+                <span class="fa fa-check"></span>
+                <span style="margin-inline-start:6px">{{ $user->email_verified_at ? 'ایمیل تایید شده' : 'ایمیل تایید نشده' }}</span>
+            </span>
+        </header>
+
+        <form method="POST" action="{{ route('home.profile.update') }}" enctype="multipart/form-data">
             @csrf
-            <div class="col-12 col-lg-6" style="display: flex;justify-content: center">
-                <div class="profile-pic" style="max-width: fit-content;display: flex;justify-content: center;align-items: center">
-                    <label class="-label" for="file">
-                        <span class="glyphicon glyphicon-camera"></span>
-                        <span style="display: none;max-width: fit-content">تغییر پروفایل</span>
+            <input type="hidden" name="user_id" value="{{ $user->id }}">
+
+            @include('home.sections.errors', ['errors' => $errors->updateProfile])
+
+            <div class="mk-avatar-row">
+                <img src="{{ Storage::url(config('upload.user_avatar_path') . '/' . ($user->avatar ?: 'avatar.png')) }}"
+                     onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar-placeholder.svg') }}'"
+                     alt="{{ $user->username }}">
+                <div>
+                    <strong>تصویر پروفایل</strong>
+                    <small>در صورت انتخاب نکردن فایل، تصویر فعلی حفظ می‌شود.</small>
+                    <label class="mk-btn mk-btn-outline mk-btn-sm" for="avatar" style="margin-top:8px">
+                        انتخاب تصویر
                     </label>
-                    <input id="file" type="file" onchange="loadFile(event)" name="avatar"/>
-                    <img src="{{ Storage::url(config('upload.user_avatar_path') . '/') . $user->avatar }}" alt="{{ $user->username }}-image" id="output" width="200" />
+                    <input id="avatar" type="file" name="avatar" accept="image/*" hidden>
                 </div>
             </div>
-            <div class="col-12 col-lg-6 text-right" style="direction: rtl">
-                @include('home.sections.errors', ['errors' => $errors->updateProfile])
-                <input type="hidden" value="{{ $user->id }}" name="user_id">
-                <label for="username">نام کاربری:</label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="نام کاربری" id="username" value="{{ $user->username }}" name="username">
-                </div>
-                <label for="first_name">نام:(ترجیحا به فارسی)</label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="نام" id="first_name" value="{{ $user->first_name }}" name="first_name">
-                </div>
-                <label for="last_name">نام خانوادگی:(ترجیحا به فارسی)</label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="نام خانوادگی" id="last_name" value="{{ $user->last_name }}" name="last_name">
-                </div>
-                <label for="phone_number">شماره تلفن:</label>
-                <div class="input-group mb-3">
-                    <input type="tel" class="form-control" minlength="10" maxlength="10" placeholder="9121234567" id="phone_number" value="{{ $user->phone_number }}" name="phone_number">
-                    <div class="input-group-append">
-                        <span class="input-group-text">+98</span>
+
+            <div class="mk-form-grid">
+                <div class="mk-field">
+                    <label for="username">نام کاربری</label>
+                    <div class="mk-field-control">
+                        <span class="fa fa-user-o mk-field-icon"></span>
+                        <input type="text" id="username" name="username" class="mk-input"
+                               value="{{ old('username', $user->username) }}" placeholder="نام کاربری" required>
                     </div>
                 </div>
-                <label for="last_name">ایمیل:</label>
-                @if($user->email_verified_at == null)
-                    <i class="fa fa-times-circle text-danger">ایمیل شما تایید نشده!</i>
-                @else
-                    <i class="fa fa-check-circle text-success"></i>
-                @endif
-                <div class="input-group mb-3">
-                    <input type="email" class="form-control" placeholder="example@gmail.com" id="email" value="{{ $user->email }}" name="email">
+
+                <div class="mk-field">
+                    <label for="email">ایمیل</label>
+                    <div class="mk-field-control mk-field-ltr">
+                        <span class="fa fa-envelope-o mk-field-icon"></span>
+                        <input type="email" id="email" name="email" class="mk-input" dir="ltr"
+                               value="{{ old('email', $user->email) }}" placeholder="name@example.com" required>
+                    </div>
                 </div>
-                <hr>
-                <button class="btn btn-success w-100" type="submit">ثبت</button>
+
+                <div class="mk-field">
+                    <label for="first_name">نام</label>
+                    <div class="mk-field-control">
+                        <span class="fa fa-id-card-o mk-field-icon"></span>
+                        <input type="text" id="first_name" name="first_name" class="mk-input"
+                               value="{{ old('first_name', $user->first_name) }}" placeholder="نام">
+                    </div>
+                </div>
+
+                <div class="mk-field">
+                    <label for="last_name">نام خانوادگی</label>
+                    <div class="mk-field-control">
+                        <span class="fa fa-id-card-o mk-field-icon"></span>
+                        <input type="text" id="last_name" name="last_name" class="mk-input"
+                               value="{{ old('last_name', $user->last_name) }}" placeholder="نام خانوادگی">
+                    </div>
+                </div>
+
+                <div class="mk-field">
+                    <label for="phone_number">شماره موبایل</label>
+                    <div class="mk-field-control mk-field-ltr">
+                        <span class="fa fa-mobile mk-field-icon"></span>
+                        <input type="tel" id="phone_number" name="phone_number" class="mk-input" dir="ltr"
+                               value="{{ old('phone_number', $user->phone_number) }}"
+                               placeholder="9121234567" minlength="10" maxlength="10">
+                    </div>
+                </div>
+
+                <div class="mk-field">
+                    <label for="member_since">تاریخ عضویت</label>
+                    <div class="mk-field-control">
+                        <span class="fa fa-calendar mk-field-icon"></span>
+                        <input type="text" id="member_since" class="mk-input" disabled
+                               value="{{ verta($user->created_at)->format('%d %B %Y') }}">
+                    </div>
+                </div>
+
+                <div class="mk-form-actions">
+                    <button type="submit" class="mk-btn mk-btn-primary">ذخیره تغییرات</button>
+                    <a href="{{ route('home.profile.resetPassword') }}" class="mk-btn mk-btn-outline">تغییر رمز عبور</a>
+                </div>
             </div>
         </form>
     </div>

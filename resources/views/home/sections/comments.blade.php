@@ -2,6 +2,7 @@
     <div class="nk-comment text-right" style="direction: rtl">
         <div class="nk-comment-meta text-right">
             <img src="{{ Storage::url(config('upload.user_avatar_path') . '/' . ($comment->user?->avatar ?? 'avatar.png')) }}"
+                 onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar-placeholder.svg') }}'"
                  alt="{{ $comment->user?->username }}" class="rounded-circle"
                  style="width: 50px;height: 50px;object-fit: cover" loading="lazy">
             <span style="color: #dd163b">{{ $comment->user?->username ?? 'کاربر' }}</span>

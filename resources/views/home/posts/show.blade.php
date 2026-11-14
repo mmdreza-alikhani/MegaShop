@@ -133,41 +133,12 @@
                     <div class="nk-gap-2"></div>
                     <h3 class="nk-decorated-h-2"><span><span class="text-main-1">مقالات</span> مشابه</span></h3>
                     <div class="nk-gap"></div>
-                    <div class="row">
-                        @forelse($related as $post)
-                            <div class="col-md-6">
-                                <div class="nk-blog-post">
-                                    <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="nk-post-img">
-                                        <img src="{{ env('POST_IMAGE_UPLOAD_PATH') . '/' . $post->primary_image }}" alt="{{ $post->name }}-image">
-                                        <span class="nk-post-comments-count">4</span>
-                                    </a>
-                                    <div class="nk-gap-2"></div>
-                                    <div class="row vertical-gap" style="direction: rtl">
-                                        <div class="col-md-8 col-lg-9">
-                                            <h2 class="nk-post-title h4 text-right"><a href="{{ route('home.posts.show', ['post' => $post->slug]) }}">{{ $post->title }}</a></h2>
-                                            <div class="nk-gap"></div>
-                                            <div class="nk-post-text text-right">
-                                                <p style="direction: rtl">{{ Str::limit(strip_tags($post->text), 500) }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-lg-3 text-right" style="direction: rtl">
-                                            <div class="nk-post-by">
-                                                <img src="{{ Str::contains($post->author->avatar, 'https://') ? $post->author->avatar : env('USER_AVATAR_UPLOAD_PATH') . '/' . $post->author->avatar }}" alt="{{ $post->author->username }}-image" class="rounded-circle" style="width: 50px;height: 50px;object-fit: cover">
-                                                نوشته
-                                                <a href="#">{{ $post->author->username }}</a>
-                                                در تاریخ
-                                                <br>  {{ removeTimeFromDate(verta($post->updated_at)) }}
-                                            </div>
-                                            <div class="nk-gap-3"></div>
-                                            <div class="text-right">
-                                                <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 nk-btn-hover-color-main-1 w-100">ادامه مطلب</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                        @endforelse
+                    <div class="mk-blog-grid">
+                        <div class="row">
+                            @foreach($related as $post)
+                                @include('home.sections.post', ['post' => $post])
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,7 +1,8 @@
 @extends('home.profile.master')
 
 @section('section')
-    <div class="info-box p-4 m-2 h-100 w-100 row rounded">
+    <div class="mk-panel">
+        <header class="mk-panel-head"><div><h2>تایید ایمیل</h2><p>لینک تایید به ایمیل شما ارسال می‌شود.</p></div></header>
         <form method="POST" action="{{ route('verification.send') }}" class="w-100 row p-5">
             @csrf
             <div class="col-12 col-lg-12 text-right row" style="direction: rtl">

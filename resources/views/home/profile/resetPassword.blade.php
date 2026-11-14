@@ -1,7 +1,8 @@
 @extends('home.profile.master')
 
 @section('section')
-    <div class="info-box p-4 m-2 h-100 w-100 row rounded">
+    <div class="mk-panel">
+        <header class="mk-panel-head"><div><h2>تغییر رمز عبور</h2><p>برای امنیت بیشتر، رمز قوی انتخاب کنید.</p></div></header>
         <form method="POST" action="{{ route('home.profile.resetPasswordCheck') }}" class="w-100 row p-5" enctype="multipart/form-data">
         @csrf
             <div class="col-12 col-lg-12 text-right" style="direction: rtl">

@@ -1,61 +1,91 @@
 @extends('home.layout.master')
 
-@section('title')
-    {{ $user->username }}
-@endsection
+@section('title', 'حساب کاربری')
 
 @section('content')
+    @php
+        $user = $user ?? auth()->user();
+        $fullName = trim(($user->first_name ?? '').' '.($user->last_name ?? ''));
+        $isAdmin = auth()->user()->getAllPermissions()->isNotEmpty();
+        $avatarUrl = Storage::url(config('upload.user_avatar_path') . '/' . ($user->avatar ?: 'avatar.png'));
+
+        $navItems = [
+            ['route' => 'home.profile.info', 'active' => request()->routeIs('home.profile.info'), 'icon' => 'fa-user-o', 'label' => 'مشخصات کاربری'],
+            ['route' => 'home.profile.orders.index', 'active' => request()->routeIs('home.profile.orders.*'), 'icon' => 'fa-shopping-cart', 'label' => 'سفارش‌ها'],
+            ['route' => 'home.profile.wishlist', 'active' => request()->routeIs('home.profile.wishlist'), 'icon' => 'fa-heart-o', 'label' => 'علاقه‌مندی‌ها'],
+            ['route' => 'home.profile.comments', 'active' => request()->routeIs('home.profile.comments'), 'icon' => 'fa-comment-o', 'label' => 'نظرات من'],
+            ['route' => 'home.profile.addresses.index', 'active' => request()->routeIs('home.profile.addresses.*'), 'icon' => 'fa-map-marker', 'label' => 'آدرس‌ها'],
+            ['route' => 'home.profile.resetPassword', 'active' => request()->routeIs('home.profile.resetPassword'), 'icon' => 'fa-lock', 'label' => 'تغییر رمز عبور'],
+        ];
+    @endphp
+
+    <div class="nk-gap-2"></div>
+
     <div class="container">
-        <div class="nk-gap-2"></div>
-        <div class="row vertical-gap">
-            <div class="nk-gap-1"></div>
-            <div class="container my-3">
-                <ul class="nk-breadcrumbs text-right" style="direction: rtl">
-                    <li><a href="{{ route('home.index') }}">خانه</a></li>
-                    <li><span class="fa fa-angle-left"></span></li>
-                    <li><a href="#">پروفایل</a></li>
-                    <li><span class="fa fa-angle-left"></span></li>
-                    <li><span>{{ $user->username }}</span></li>
-                </ul>
-            </div>
-            <div class="nk-gap-1"></div>
-            <div class="col-lg-9">
-                <div class="row vertical-gap">
-                    @yield('section')
-                </div>
-                <div class="nk-gap-3"></div>
-            </div>
-            <div class="col-lg-3">
-                <aside class="nk-sidebar nk-sidebar-right nk-sidebar-sticky">
-                    <div class="nk-widget nk-widget-highlighted" style="direction: rtl">
-                        <ul class="nk-breadcrumbs text-right px-3" style="direction: rtl;background-color: #293139">
-                            <li><span style="font-size: 24px">تنظیمات:</span></li>
-                        </ul>
-                        <div class="nk-widget-content">
-                            <ul class="nk-widget-categories text-right" style="direction: rtl">
-                                <li><a class="info {{ request()->is('profile/info') || request()->is('profile') ? 'active-link' : '' }}" href="{{ route('home.profile.info') }}"> مشخصات کاربری </a></li>
-                                <li><a class="purchasesHistory {{ request()->is('profile/orders') ? 'active-link' : '' }}" href="{{ route('home.profile.orders.index') }}"> تاریخچه خرید ها </a></li>
-                                <li><a class="wishlist {{ request()->is('profile/wishlist') ? 'active-link' : '' }}" href="{{ route('home.profile.wishlist') }}"> علاقه مندیها </a></li>
-                                <li><a class="comments {{ request()->is('profile/comments') ? 'active-link' : '' }}" href="{{ route('home.profile.comments') }}"> وضعیت کامنت ها </a></li>
-                                <li><a class="addresses {{ request()->is('profile/addresses') ? 'active-link' : '' }}" href="{{ route('home.profile.addresses.index') }}"> آدرس ها </a></li>
-                                <li><a class="resetPassword {{ request()->is('profile/resetPassword') ? 'active-link' : '' }}" href="{{ route('home.profile.resetPassword') }}"> تغییر کلمه عبور </a></li>
-                                @if($user->email_verified_at == null)
-                                    <li><a class="verifyEmail {{ request()->is('profile/verifyEmail') ? 'active-link' : '' }}" href="{{ route('home.profile.verifyEmail') }}"> تایید ایمیل </a></li>
-                                @endif
-                                <li>
-                                    <form action="{{ route('home.profile.logout') }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-link p-0 logout" style="direction: rtl">
-                                            ({{ $user->username }}) نیستید؟ خروج از حساب کاربری
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
+        <nav class="mk-breadcrumb" aria-label="مسیر صفحه">
+            <a href="{{ route('home.index') }}">خانه</a>
+            <span class="fa fa-angle-left"></span>
+            <a href="{{ route('home.profile.info') }}">حساب کاربری</a>
+            <span class="fa fa-angle-left"></span>
+            <span>{{ $user->username }}</span>
+        </nav>
+
+        <div class="mk-profile">
+            <aside class="mk-profile-side">
+                <div class="mk-profile-card">
+                    <div class="mk-profile-avatar">
+                        <img src="{{ $avatarUrl }}"
+                             onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar-placeholder.svg') }}'"
+                             alt="{{ $user->username }}">
+                        @if($isAdmin)
+                            <span class="mk-profile-admin">مدیر</span>
+                        @endif
                     </div>
-                </aside>
-            </div>
+                    <div>
+                        <strong class="mk-profile-name">{{ $fullName !== '' ? $fullName : $user->username }}</strong>
+                        <span class="mk-profile-username">{{ '@'.$user->username }}</span>
+                        <span class="mk-profile-email" title="{{ $user->email }}">{{ $user->email }}</span>
+                    </div>
+                </div>
+
+                <nav class="mk-profile-nav" aria-label="بخش‌های حساب کاربری">
+                    @foreach($navItems as $item)
+                        <a href="{{ route($item['route']) }}" class="{{ $item['active'] ? 'is-active' : '' }}">
+                            <span class="fa {{ $item['icon'] }}"></span>
+                            <span>{{ $item['label'] }}</span>
+                        </a>
+                    @endforeach
+
+                    @if($isAdmin)
+                        <a href="{{ route('admin.panel') }}">
+                            <span class="fa fa-dashboard"></span>
+                            <span>پنل مدیریت</span>
+                        </a>
+                    @endif
+
+                    @if($user->email_verified_at === null)
+                        <a href="{{ route('home.profile.verifyEmail') }}"
+                           class="{{ request()->routeIs('home.profile.verifyEmail') ? 'is-active' : '' }}">
+                            <span class="fa fa-envelope-o"></span>
+                            <span>تایید ایمیل</span>
+                        </a>
+                    @endif
+
+                    <form action="{{ route('home.profile.logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="mk-profile-logout">
+                            <span class="fa fa-sign-out"></span>
+                            <span>خروج از حساب</span>
+                        </button>
+                    </form>
+                </nav>
+            </aside>
+
+            <section class="mk-profile-main">
+                @yield('section')
+            </section>
         </div>
     </div>
+
     <div class="nk-gap-2"></div>
 @endsection

@@ -2,6 +2,7 @@
 <article class="mk-post-card">
     <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" class="mk-post-media">
         <img src="{{ Storage::url(config('upload.post_path') . '/' . $post->image) }}"
+             onerror="this.onerror=null;this.src='{{ asset('assets/images/media-placeholder.svg') }}'"
              alt="{{ $post->title }}" loading="lazy">
         @if(($post->comments_count ?? 0) > 0)
             <span class="mk-post-comments">
@@ -18,6 +19,7 @@
 
         <div class="mk-post-meta">
             <img src="{{ Storage::url(config('upload.user_avatar_path') . '/' . ($post->author?->avatar ?? 'avatar.png')) }}"
+             onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar-placeholder.svg') }}'"
                  alt="{{ $post->author?->username }}" class="mk-post-avatar" loading="lazy">
             <span>{{ $post->author?->username ?? 'مگاشاپ' }}</span>
             <span class="mk-post-dot">•</span>

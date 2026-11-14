@@ -5,7 +5,8 @@
 @endphp
 
 @section('section')
-    <div class="info-box p-5 m-2 h-100 w-100 row rounded" style="background-color: rgba(35,41,48,.6);direction: rtl">
+    <div class="mk-panel">
+        <header class="mk-panel-head"><div><h2>جزئیات سفارش</h2><p>اطلاعات کامل سفارش و اقلام آن.</p></div></header>
         <aside class="nk-sidebar nk-sidebar-right nk-sidebar-sticky">
             <div class="nk-widget nk-widget-highlighted" style="direction: rtl">
                 <ul class="nk-breadcrumbs text-right px-3" style="direction: rtl">

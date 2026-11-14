@@ -1,42 +1,57 @@
 @extends('home.profile.master')
 
 @section('section')
-    <div class="info-box m-2 h-100 w-100 row rounded" style="background-color: rgba(35,41,48,.6)">
-        <table class="nk-table text-right container" style="direction: rtl">
-                <thead>
-                <tr>
-                    <th colspan="5">تمامی سفارشات</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th class="text-right">شناسه سفارش</th>
-                    <th class="text-right">تاریخ ثبت سفارش</th>
-                    <th class="text-right">مبلغ قابل پرداخت</th>
-                    <th class="text-right">وضعیت</th>
-                    <th class="text-right">نمایش</th>
-                </tr>
+    <div class="mk-panel">
+        <header class="mk-panel-head">
+            <div>
+                <h2>سفارش‌های من</h2>
+                <p>وضعیت پرداخت و جزئیات هر سفارش را اینجا ببینید.</p>
+            </div>
+            <span class="mk-panel-count">{{ $orders->total() }} سفارش</span>
+        </header>
+
+        @if($orders->isEmpty())
+            <div class="mk-empty">
+                <span class="fa fa-shopping-cart"></span>
+                <p>هنوز سفارشی ثبت نکرده‌اید.</p>
+                <a href="{{ route('home.products.index') }}" class="mk-btn mk-btn-primary">شروع خرید</a>
+            </div>
+        @else
+            <div class="mk-orders">
                 @foreach($orders as $order)
-                    <tr>
-                        <td class="text-right">{{ $order->id }}</td>
-                        <td class="text-right">{{ verta($order->created_at)->format('%d %B, %Y') }}</td>
-                        <td class="text-right">{{ number_format($order->paying_amount) }} <i id="tooman_icon" class="icony icony-toman"></i></td>
-                        <td class="text-right">
-                            <span class="badge {{ $order->getRawOriginal('payment_status') ?  'badge-success' : 'badge-danger' }}">
+                    @php($isPaid = (bool) $order->getRawOriginal('payment_status'))
+                    <div class="mk-order-card">
+                        <div class="mk-order-main">
+                            <span class="mk-order-id">سفارش #{{ $order->id }}</span>
+                            <span class="mk-order-date">
+                                <span class="fa fa-calendar"></span>
+                                {{ verta($order->created_at)->format('%d %B %Y') }}
+                            </span>
+                        </div>
+
+                        <div class="mk-order-meta">
+                            <span class="mk-status {{ $isPaid ? 'is-ok' : 'is-bad' }}">
                                 {{ $order->payment_status }}
                             </span>
-                        </td>
-                        <td class="text-right row">
-                            <div class="col-12">
-                                <a class="btn nk-btn-color-main-1 text-light" href="{{ route('home.profile.orders.show', ['order' => $order->id]) }}">
-                                    <i class="fa fa-info"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
+
+                            <span class="mk-order-total">
+                                {{ number_format($order->paying_amount) }}
+                                <small>تومان</small>
+                            </span>
+
+                            <a href="{{ route('home.profile.orders.show', ['order' => $order->id]) }}"
+                               class="mk-btn mk-btn-outline mk-btn-sm">
+                                جزئیات
+                                <span class="fa fa-angle-left"></span>
+                            </a>
+                        </div>
+                    </div>
                 @endforeach
-                </tbody>
-        </table>
-        {{ $orders->links() }}
+            </div>
+
+            <div class="mk-pagination-wrap">
+                {{ $orders->links() }}
+            </div>
+        @endif
     </div>
 @endsection

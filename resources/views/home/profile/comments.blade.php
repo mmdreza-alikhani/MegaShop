@@ -2,7 +2,8 @@
 @extends('home.profile.master')
 
 @section('section')
-    <div class="info-box p-5 m-2 h-100 w-100 row rounded" style="background-color: rgba(35,41,48,.6)">
+    <div class="mk-panel">
+        <header class="mk-panel-head"><div><h2>نظرات من</h2><p>همه نظرهایی که برای محصولات و مقالات ثبت کرده‌اید.</p></div></header>
         @forelse($comments as $comment)
             <div class="nk-comment w-100 m-5">
                 <div class="nk-comment-meta text-right" style="direction: rtl">
