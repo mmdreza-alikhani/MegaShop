@@ -14,6 +14,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionController extends Controller
 {
@@ -28,13 +29,27 @@ class PermissionController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $query = Permission::query();
-        if ($request->input('q')) {
-            $query->search('display_name', trim(request()->input('q')));
-        }
-        $permissions = $query->latest()->paginate(15)->withQueryString();
+        $query = Permission::query()->withCount('roles');
 
-        return view('admin.permissions.index', compact('permissions'));
+        if ($request->filled('q')) {
+            $like = '%'.trim((string) $request->input('q')).'%';
+
+            $query->where(function ($sub) use ($like) {
+                $sub->where('name', 'like', $like)
+                    ->orWhere('display_name', 'like', $like);
+            });
+        }
+
+        $permissions = $query->latest()->paginate(20)->withQueryString();
+
+        $stats = [
+            'permissions' => Permission::count(),
+            'roles' => Role::count(),
+            'used' => Permission::has('roles')->count(),
+            'unused' => Permission::has('roles', '=', 0)->count(),
+        ];
+
+        return view('admin.permissions.index', compact('permissions', 'stats'));
     }
 
     public function store(StorePermissionRequest $request): RedirectResponse

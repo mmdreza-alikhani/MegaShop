@@ -4906,3 +4906,128 @@ body.dark {
 #dw-s1 header.pb-0 {
     padding: 0 6px 8px;
 }
+/* ---------- دکمه‌های فرم: اندازه و رنگ یکدست ---------- */
+.mk-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.mk-form-actions .btn,
+.mk-form-actions a.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 132px;
+    height: 42px;
+    padding: 0 18px;
+    font-size: .82rem;
+    font-weight: 700;
+    line-height: 1;
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+.mk-form-actions .btn-info {
+    color: #fff;
+    background: var(--adm-accent);
+    border: 1px solid var(--adm-accent);
+}
+
+.mk-form-actions .btn-info:hover {
+    background: #c4122f;
+    border-color: #c4122f;
+}
+
+.mk-form-actions .btn-light {
+    color: var(--adm-muted);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+}
+
+.mk-form-actions .btn-light:hover {
+    color: var(--adm-text);
+    background: var(--adm-surface);
+    border-color: var(--adm-text);
+}
+
+/* ---------- بدون اسکرول داخل مودال ---------- */
+.mk-adm-modal .modal-content {
+    overflow: visible;
+}
+
+.mk-adm-modal .mk-adm-modal-body {
+    max-height: none;
+    overflow: visible;
+}
+
+.mk-adm-modal .modal-dialog {
+    margin: 1.75rem auto;
+}
+
+/* ---------- هم‌ترازی فیلدها ---------- */
+.mk-form-grid {
+    align-items: start;
+}
+
+.mk-field {
+    display: grid;
+    grid-template-rows: 20px 40px auto;
+    gap: 5px;
+    align-content: start;
+}
+
+.mk-field > label {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin: 0;
+    line-height: 20px;
+}
+
+.mk-field > small {
+    margin: 0;
+    line-height: 1.4;
+    min-height: 0;
+}
+
+.mk-field > .mk-input-group,
+.mk-field > .form-control {
+    height: 40px;
+}
+
+.mk-field-hint {
+    font-size: .66rem;
+    font-weight: 500;
+    color: var(--adm-muted);
+}
+
+/* ---------- کاربر/نقش: چیپ‌ها ---------- */
+.mk-perm-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-width: 320px;
+}
+
+.mk-perm-chip {
+    padding: 2px 8px;
+    font-size: .66rem;
+    color: var(--adm-muted);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 20px;
+}
+
+.mk-perm-more {
+    font-size: .66rem;
+    color: var(--adm-accent);
+}
+
+.mk-role-name {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .72rem;
+    color: var(--adm-muted);
+}

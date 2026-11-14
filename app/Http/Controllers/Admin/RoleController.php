@@ -29,13 +29,28 @@ class RoleController extends Controller
     public function index(Request $request): View|Application|Factory
     {
         $permissions = Permission::all();
-        $query = Role::query();
-        if ($request->input('q')) {
-            $query->search('title', trim(request()->input('q')));
-        }
-        $roles = $query->latest()->with('permissions')->paginate(15)->withQueryString();
 
-        return view('admin.roles.index', compact('roles', 'permissions'));
+        $query = Role::query()->with('permissions')->withCount('users');
+
+        if ($request->filled('q')) {
+            $like = '%'.trim((string) $request->input('q')).'%';
+
+            $query->where(function ($sub) use ($like) {
+                $sub->where('name', 'like', $like)
+                    ->orWhere('display_name', 'like', $like);
+            });
+        }
+
+        $roles = $query->latest()->paginate(15)->withQueryString();
+
+        $stats = [
+            'roles' => Role::count(),
+            'permissions' => Permission::count(),
+            'staff' => \App\Models\User::whereHas('roles')->count(),
+            'empty' => Role::has('permissions', '=', 0)->count(),
+        ];
+
+        return view('admin.roles.index', compact('roles', 'permissions', 'stats'));
     }
 
     public function store(StoreRoleRequest $request): RedirectResponse
