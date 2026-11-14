@@ -4,6 +4,38 @@
 
     $pendingComments = Comment::where('status', '1')->count();
     $pendingOrders = Order::where('status', 0)->count();
+
+    // جستجوی هدر روی همان بخش فعلی اعمال می‌شود
+    $currentRoute = request()->route()?->getName() ?? '';
+    $sectionAliases = [
+        'admin.users' => 'admin.users.index',
+        'admin.roles' => 'admin.roles.index',
+        'admin.permissions' => 'admin.permissions.index',
+        'admin.attributes' => 'admin.attributes.index',
+        'admin.categories' => 'admin.categories.index',
+        'admin.brands' => 'admin.brands.index',
+        'admin.platforms' => 'admin.platforms.index',
+        'admin.products' => 'admin.products.index',
+        'admin.coupons' => 'admin.coupons.index',
+        'admin.orders' => 'admin.orders.index',
+        'admin.posts' => 'admin.posts.index',
+        'admin.tags' => 'admin.tags.index',
+        'admin.banners' => 'admin.banners.index',
+        'admin.comments' => 'admin.comments.index',
+    ];
+
+    $searchAction = route('admin.products.index');
+
+    foreach ($sectionAliases as $prefix => $routeName) {
+        if (str_starts_with($currentRoute, $prefix)) {
+            $searchAction = route($routeName);
+            break;
+        }
+    }
+
+    if (str_ends_with($currentRoute, '.index')) {
+        $searchAction = url()->current();
+    }
 @endphp
 
 <header class="bmd-layout-header">
@@ -20,7 +52,7 @@
             </div>
         </div>
 
-        <form class="mk-adm-search" action="{{ route('admin.products.index') }}" method="GET" role="search">
+        <form class="mk-adm-search" action="{{ $searchAction }}" method="GET" role="search">
             <i class="fas fa-search" aria-hidden="true"></i>
             <input type="search" name="q" value="{{ request('q') }}" placeholder="جستجوی محصول…"
                    aria-label="جستجوی محصول">

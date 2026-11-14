@@ -7,12 +7,7 @@
                      onerror="this.onerror=null;this.src='{{ asset('assets/images/logo-light.png') }}'">
             </a>
         </header>
-
-        <div class="mk-adm-side-search">
-            <i class="fas fa-filter" aria-hidden="true"></i>
-            <input type="search" placeholder="جستجوی منو…" aria-label="جستجوی منو" data-adm-side-filter>
-        </div>
-        <li class="side a-collapse short m-2 pr-1 pl-1" data-adm-nav-item>
+<li class="side a-collapse short m-2 pr-1 pl-1" data-adm-nav-item>
             <a href="{{ route('admin.panel') }}"
                class="side-item {{ request()->routeIs('admin.panel') ? 'selected' : '' }}">
                 <i class="fas fa-tachometer-alt mr-1"></i>صفحه اصلی

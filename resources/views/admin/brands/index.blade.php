@@ -42,18 +42,7 @@
                     </div>
                     @include('admin.brands.partials.create-modal')
                 @endcan
-                <form action="#" method="GET" class="m-0 p-0">
-                    <div class="input-group">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary c-primary" type="submit">
-                                <i class="fab fas fa-search"></i>
-                            </button>
-                        </div>
-                        <input type="text" class="form-control" placeholder="جستجو"
-                               style="width: 300px"
-                               value="{{ request('q') }}" name="q" required>
-                    </div>
-                </form>
+                
             </div>
             <div class="row m-1">
                 <div class="col-12 p-2">

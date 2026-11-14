@@ -24,18 +24,53 @@ class UserController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $query = User::query()->with('roles:id,name,display_name');
+        $query = User::query()
+            ->with('roles:id,name,display_name')
+            ->withCount('orders');
 
         if ($request->filled('q')) {
-            $query->search('username', trim((string) $request->input('q')));
+            $like = '%'.trim((string) $request->input('q')).'%';
+
+            $query->where(function ($sub) use ($like) {
+                $sub->where('username', 'like', $like)
+                    ->orWhere('email', 'like', $like)
+                    ->orWhere('first_name', 'like', $like)
+                    ->orWhere('last_name', 'like', $like)
+                    ->orWhere('phone_number', 'like', $like);
+            });
         }
 
-        $users = $query->latest()->paginate(15)->withQueryString();
+        if ($role = $request->input('role')) {
+            $query->whereHas('roles', fn ($roles) => $roles->where('name', $role));
+        }
+
+        $status = $request->input('status');
+
+        if ($status === 'active') {
+            $query->where('is_active', 1);
+        } elseif ($status === 'inactive') {
+            $query->where('is_active', 0);
+        }
+
+        match ($request->input('sort')) {
+            'oldest' => $query->oldest(),
+            'orders' => $query->orderByDesc('orders_count'),
+            default => $query->latest(),
+        };
+
+        $users = $query->paginate(15)->withQueryString();
+
+        $stats = [
+            'total' => User::count(),
+            'active' => User::where('is_active', 1)->count(),
+            'staff' => User::whereHas('roles')->count(),
+            'new' => User::where('created_at', '>=', now()->startOfMonth())->count(),
+        ];
 
         $roles = Cache::remember('admin_roles', now()->addHour(), fn () => Role::all());
         $permissions = Cache::remember('admin_permissions', now()->addHour(), fn () => Permission::all());
 
-        return view('admin.users.index', compact('users', 'roles', 'permissions'));
+        return view('admin.users.index', compact('users', 'roles', 'permissions', 'stats'));
     }
 
     /**
