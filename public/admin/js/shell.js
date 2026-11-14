@@ -109,3 +109,64 @@
         window.setTimeout(syncDrawer, 60);
     });
 })();
+/* ---------- منوهای کشویی هدر (بدون وابستگی به بوت‌استرپ) ---------- */
+(function () {
+    var drops = Array.prototype.slice.call(document.querySelectorAll('[data-adm-drop]'));
+
+    if (!drops.length) {
+        return;
+    }
+
+    var closeDrop = function (drop) {
+        drop.classList.remove('is-open');
+
+        var trigger = drop.querySelector('[data-adm-drop-trigger]');
+
+        if (trigger) {
+            trigger.setAttribute('aria-expanded', 'false');
+        }
+    };
+
+    var closeAll = function (except) {
+        drops.forEach(function (drop) {
+            if (drop !== except) {
+                closeDrop(drop);
+            }
+        });
+    };
+
+    drops.forEach(function (drop) {
+        var trigger = drop.querySelector('[data-adm-drop-trigger]');
+
+        if (!trigger) {
+            return;
+        }
+
+        trigger.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            var willOpen = !drop.classList.contains('is-open');
+
+            closeAll(drop);
+            drop.classList.toggle('is-open', willOpen);
+            trigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('[data-adm-drop]')) {
+            closeAll(null);
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeAll(null);
+        }
+    });
+
+    window.addEventListener('resize', function () {
+        closeAll(null);
+    });
+})();

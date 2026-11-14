@@ -4121,3 +4121,262 @@ body.dark .mk-adm-theme-light {
 body.dark {
     background: var(--adm-bg);
 }
+
+/* =========================================================
+   منوهای کشویی هدر: انیمیشن و جلوگیری از خروج از صفحه
+   ========================================================= */
+.mk-adm-drop {
+    position: relative;
+}
+
+.mk-adm-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    inset-inline-end: 0;
+    z-index: 1200;
+    min-width: 236px;
+    max-width: min(330px, calc(100vw - 20px));
+    padding: 6px;
+    overflow: hidden;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 14px;
+    box-shadow: 0 18px 40px rgba(16, 24, 40, .2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(.96);
+    transform-origin: top left;
+    transition: opacity .18s ease,
+        transform .22s cubic-bezier(.22, .61, .36, 1),
+        visibility .18s linear;
+}
+
+.mk-adm-drop.is-open > .mk-adm-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.mk-adm-dropdown-user {
+    min-width: 240px;
+}
+
+.mk-adm-dropdown .dropdown-item {
+    width: 100%;
+    text-align: right;
+    background: transparent;
+    border: 0;
+}
+
+.mk-adm-dropdown .dropdown-divider {
+    margin: 6px 4px;
+    border-color: var(--adm-border);
+}
+
+/* سرچ هدر: اندازه ثابت و متعادل */
+.mk-adm-search {
+    width: 100%;
+    max-width: 380px;
+    height: 40px;
+    margin-inline: auto;
+    padding: 0 4px 0 12px;
+}
+
+.mk-adm-search input {
+    height: 100%;
+    font-size: .82rem;
+}
+
+.mk-adm-search-btn {
+    height: 32px;
+    padding: 0 14px;
+    line-height: 32px;
+}
+
+@media (max-width: 1199.98px) {
+    .mk-adm-search {
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .mk-adm-search {
+        max-width: 100%;
+        height: 40px;
+    }
+
+    .mk-adm-dropdown {
+        position: fixed;
+        top: 74px;
+        right: 10px;
+        left: 10px;
+        inset-inline-end: auto;
+        max-width: none;
+        transform: translateY(-10px) scale(.98);
+    }
+
+    .mk-adm-drop.is-open > .mk-adm-dropdown {
+        transform: none;
+    }
+
+    .mk-adm-dropdown .dropdown-item {
+        padding: 10px;
+    }
+}
+/* ---------- اصلاح قطعی سرچ هدر و چیدمان موبایل ---------- */
+.mk-adm-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mk-adm-search input {
+    flex: 1 1 0%;
+    width: auto;
+    min-width: 0;
+}
+
+.mk-adm-search > i {
+    flex: 0 0 auto;
+}
+
+.mk-adm-search-btn {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 991.98px) {
+    .mk-adm-header {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "start actions"
+            "search search";
+        row-gap: 10px;
+        padding-bottom: 10px;
+    }
+
+    .mk-adm-header-start {
+        grid-area: start;
+    }
+
+    .mk-adm-header-actions {
+        grid-area: actions;
+        justify-self: end;
+    }
+
+    .mk-adm-search {
+        grid-area: search;
+        grid-column: auto;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+    }
+}
+/* ---------- سرچ هدر: چیدمان فلکس (قطعی) ---------- */
+.mk-adm-search {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+}
+
+.mk-adm-search input {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-width: 0;
+}
+
+@media (max-width: 991.98px) {
+    .mk-adm-header {
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        grid-template-columns: none;
+        grid-template-areas: none;
+    }
+
+    .mk-adm-header-start {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .mk-adm-header-actions {
+        flex: 0 0 auto;
+        margin-inline-start: auto;
+    }
+
+    .mk-adm-search {
+        flex: 1 0 100%;
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+    }
+}
+/* ---------- سرچ هدر: گرید قطعی ---------- */
+.mk-adm-search {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.mk-adm-search input {
+    width: 100% !important;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 991.98px) {
+    .bmd-layout-header {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 8px 10px !important;
+    }
+
+    .mk-adm-header {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 10px !important;
+        box-sizing: border-box;
+    }
+
+    .mk-adm-header-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        max-width: 100%;
+    }
+
+    .mk-adm-search {
+        flex: 1 0 100%;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .mk-adm-quick-btn {
+        display: none;
+    }
+}
+/* ---------- هدر موبایل: شکستن خط قطعی ---------- */
+@media (max-width: 991.98px) {
+    .mk-adm-header {
+        flex-wrap: wrap !important;
+    }
+
+    .mk-adm-header-start {
+        flex: 1 1 120px;
+        min-width: 120px;
+    }
+
+    .mk-adm-header-actions {
+        flex: 0 1 auto;
+    }
+
+    .mk-adm-search {
+        flex: 1 0 100%;
+    }
+}

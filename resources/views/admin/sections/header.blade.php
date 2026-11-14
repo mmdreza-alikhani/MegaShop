@@ -47,16 +47,17 @@
                 <i class="fas fa-sun mk-adm-theme-light" aria-hidden="true"></i>
             </button>
 
-            <div class="dropdown">
-                <button class="mk-adm-icon-btn" type="button" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false" title="اعلان‌ها">
-                    <i class="far fa-bell"></i>
+            {{-- اعلان‌ها --}}
+            <div class="mk-adm-drop" data-adm-drop>
+                <button type="button" class="mk-adm-icon-btn" data-adm-drop-trigger
+                        aria-haspopup="true" aria-expanded="false" aria-label="اعلان‌ها" title="اعلان‌ها">
+                    <i class="far fa-bell" aria-hidden="true"></i>
                     @if($pendingComments > 0)
                         <em class="mk-adm-count is-alert">{{ $pendingComments }}</em>
                     @endif
                 </button>
 
-                <div class="dropdown-menu dropdown-menu-right mk-adm-dropdown">
+                <div class="mk-adm-dropdown" data-adm-drop-menu>
                     <div class="mk-adm-dropdown-head">اعلان‌ها</div>
 
                     <a class="dropdown-item" href="{{ route('admin.comments.index') }}">
@@ -70,9 +71,10 @@
                 </div>
             </div>
 
-            <div class="dropdown mk-adm-user">
-                <button class="mk-adm-user-btn" type="button" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
+            {{-- منوی کاربر --}}
+            <div class="mk-adm-drop" data-adm-drop>
+                <button type="button" class="mk-adm-user-btn" data-adm-drop-trigger
+                        aria-haspopup="true" aria-expanded="false">
                     <img src="{{ Storage::url(config('upload.user_avatar_path') . '/' . auth()->user()->avatar) }}"
                          onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar-placeholder.svg') }}'"
                          alt="{{ auth()->user()->username }}">
@@ -80,7 +82,7 @@
                     <i class="fas fa-angle-down" aria-hidden="true"></i>
                 </button>
 
-                <div class="dropdown-menu dropdown-menu-right mk-adm-dropdown">
+                <div class="mk-adm-dropdown mk-adm-dropdown-user" data-adm-drop-menu>
                     <div class="mk-adm-dropdown-head">{{ auth()->user()->first_name ?: auth()->user()->username }}</div>
 
                     <a class="dropdown-item" href="{{ route('home.profile.info') }}">
