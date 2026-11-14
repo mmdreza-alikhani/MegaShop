@@ -194,3 +194,48 @@
         window.jQuery(document).on('show.bs.modal', closeEveryDrop);
     }
 })();
+/* ---------- جهت باز شدن منوهای کشویی (پایین/بالا) ---------- */
+(function () {
+    var positionDrop = function (drop) {
+        var menu = drop.querySelector('[data-adm-drop-menu]');
+
+        if (!menu) {
+            return;
+        }
+
+        drop.classList.remove('is-up');
+
+        if (window.innerWidth < 992) {
+            return;
+        }
+
+        var trigger = drop.getBoundingClientRect();
+        var menuHeight = menu.offsetHeight;
+        var spaceBelow = window.innerHeight - trigger.bottom;
+        var spaceAbove = trigger.top;
+
+        if (spaceBelow < menuHeight + 16 && spaceAbove > spaceBelow) {
+            drop.classList.add('is-up');
+        }
+    };
+
+    document.addEventListener('click', function (event) {
+        var trigger = event.target.closest('[data-adm-drop-trigger]');
+
+        if (!trigger) {
+            return;
+        }
+
+        var drop = trigger.closest('[data-adm-drop]');
+
+        if (drop) {
+            window.setTimeout(function () {
+                positionDrop(drop);
+            }, 0);
+        }
+    }, true);
+
+    window.addEventListener('resize', function () {
+        document.querySelectorAll('[data-adm-drop].is-open').forEach(positionDrop);
+    });
+})();
