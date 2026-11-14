@@ -4858,3 +4858,51 @@ body.dark {
         padding: 14px;
     }
 }
+/* =========================================================
+   سایدبار: دکمه‌ها تمام‌عرض و هم‌اندازه
+   ========================================================= */
+#dw-s1 .side-bar-container {
+    padding: 12px 8px 16px !important;
+}
+
+#dw-s1 .side-item,
+#dw-s1 .side.a-collapse li.side-item,
+.rtl #dw-s1 .side.a-collapse li.side-item,
+#dw-s1 > .container-fluid > li.side {
+    margin: 3px 0 !important;
+    padding: 0 !important;
+    width: 100%;
+}
+
+#dw-s1 .ul-text,
+#dw-s1 .side-item > a,
+#dw-s1 .side-item a,
+#dw-s1 li.side > a.side-item {
+    width: 100% !important;
+    min-height: 42px;
+    padding: 11px 14px !important;
+    box-sizing: border-box;
+}
+
+/* زیرمنوها هم تمام‌عرض‌اند؛ تورفتگی با پدینگ متن انجام می‌شود */
+#dw-s1 .side-item-container,
+.rtl #dw-s1 .side-item-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+}
+
+#dw-s1 .side-item-container .side-item a {
+    min-height: 38px;
+    padding: 9px 14px 9px 30px !important;
+    font-size: .78rem;
+}
+
+/* برچسب گروه‌ها و آیتم اصلی هم هم‌تراز شوند */
+#dw-s1 p.side-comment {
+    margin: 16px 6px 6px;
+}
+
+#dw-s1 header.pb-0 {
+    padding: 0 6px 8px;
+}
