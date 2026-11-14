@@ -100,6 +100,11 @@ class HomeController extends Controller
         return view('home.about-us');
     }
 
+    public function terms(): View|Application|Factory
+    {
+        return view('home.terms');
+    }
+
     public function contact(): View|Application|Factory
     {
         return view('home.contact');

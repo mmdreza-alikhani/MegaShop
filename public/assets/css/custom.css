@@ -3677,3 +3677,221 @@ html[data-theme="light"] .mk-social a:hover {
 .nk-news-box .nk-news-box-item-image img {
     max-height: 210px;
 }
+/* =========================================================
+   اصلاح خط تیترهای تزئینی (فاصله از متن) و عکس خبر
+   ========================================================= */
+/* خط از کنار متن پررنگ شروع می‌شود و در انتها محو می‌شود */
+.nk-decorated-h-2::after {
+    background: linear-gradient(to left,
+        var(--mk-border) 0,
+        var(--mk-border) 55%,
+        transparent 100%);
+}
+
+.nk-decorated-h-2::before {
+    background: linear-gradient(to right,
+        var(--mk-border) 0,
+        var(--mk-border) 55%,
+        transparent 100%);
+}
+
+.nk-decorated-h-2 {
+    gap: 10px;
+}
+
+/* عکس خبر نباید به ستون لیست اخبار برسد */
+.nk-news-box .nk-news-box-each-info .nk-news-box-item-image {
+    margin-right: 0;
+    margin-left: 0;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.nk-news-box .nk-news-box-each-info .nk-news-box-item-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 210px;
+    object-fit: cover;
+}
+
+/* جداکننده واضح بین ستون خبر و ستون لیست */
+.nk-news-box .nk-news-box-each-info {
+    border-left-color: var(--mk-border);
+}
+
+.nk-news-box .nk-news-box-list {
+    border-inline-end: 0;
+}
+/* متن تیتر به اندازه خودش باشد و خط بلافاصله کنارش شروع شود */
+[dir="rtl"] .nk-decorated-h-2 > span {
+    flex: 0 0 auto;
+    width: auto;
+    text-align: right;
+}
+
+[dir="rtl"] .nk-decorated-h-2 {
+    gap: 10px;
+}
+/* =========================================================
+   صفحه قوانین و مقررات
+   ========================================================= */
+.mk-terms-page {
+    max-width: 940px;
+}
+
+.mk-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: .82rem;
+    color: var(--mk-muted);
+}
+
+.mk-breadcrumb a {
+    color: var(--mk-muted);
+}
+
+.mk-breadcrumb a:hover {
+    color: var(--mk-accent);
+}
+
+.mk-terms-head {
+    padding: 26px;
+    margin-bottom: 16px;
+    background:
+        radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--mk-accent) 14%, transparent), transparent 60%),
+        var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 18px;
+}
+
+.mk-terms-badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 3px 12px;
+    font-size: .7rem;
+    font-weight: 700;
+    color: var(--mk-accent);
+    background: color-mix(in srgb, var(--mk-accent) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--mk-accent) 35%, transparent);
+    border-radius: 20px;
+}
+
+.mk-terms-head h1 {
+    margin: 0 0 10px;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--mk-heading);
+}
+
+.mk-terms-head p {
+    margin: 0;
+    font-size: .88rem;
+    line-height: 2;
+    color: var(--mk-muted);
+}
+
+.mk-terms-meta {
+    margin-top: 12px;
+    font-size: .75rem;
+    color: var(--mk-muted);
+}
+
+.mk-terms-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.mk-terms-card {
+    padding: 20px;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 16px;
+}
+
+.mk-terms-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    margin-bottom: 10px;
+    font-size: .75rem;
+    font-weight: 800;
+    color: var(--mk-on-accent);
+    background: var(--mk-accent);
+    border-radius: 8px;
+}
+
+.mk-terms-card h2 {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--mk-heading);
+}
+
+.mk-terms-card p {
+    margin: 0 0 8px;
+    font-size: .84rem;
+    line-height: 2;
+    color: var(--mk-muted);
+}
+
+.mk-terms-card p:last-child {
+    margin-bottom: 0;
+}
+
+.mk-terms-list {
+    padding-inline-start: 18px;
+    margin: 0;
+    font-size: .84rem;
+    line-height: 2;
+    color: var(--mk-muted);
+}
+
+.mk-terms-note {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 14px 16px;
+    font-size: .82rem;
+    line-height: 1.9;
+    color: var(--mk-text);
+    background: var(--mk-chip);
+    border: 1px dashed var(--mk-border-strong);
+    border-radius: 14px;
+}
+
+.mk-terms-note strong {
+    color: var(--mk-accent);
+}
+
+.mk-terms-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.mk-check-terms a {
+    color: var(--mk-accent);
+    font-weight: 700;
+}
+
+@media (max-width: 767.98px) {
+    .mk-terms-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mk-terms-head {
+        padding: 18px;
+    }
+
+    .mk-terms-head h1 {
+        font-size: 1.2rem;
+    }
+}

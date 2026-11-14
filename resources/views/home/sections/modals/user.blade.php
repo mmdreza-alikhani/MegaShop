@@ -139,8 +139,11 @@
                     </div>
 
                     <label class="mk-check mk-check-terms">
-                        <input type="checkbox" required>
-                        <span>با ثبت‌نام، قوانین و شرایط فروشگاه را می‌پذیرم.</span>
+                        <input type="checkbox" name="terms" value="1" required @checked(old('terms'))>
+                        <span>
+                            <a href="{{ route('home.terms') }}" target="_blank" rel="noopener">قوانین و مقررات</a>
+                            را خوانده‌ام و می‌پذیرم.
+                        </span>
                     </label>
 
                     <button type="submit" class="mk-btn mk-btn-primary mk-btn-block">ساخت حساب</button>

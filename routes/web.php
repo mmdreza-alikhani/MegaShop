@@ -103,6 +103,7 @@ Route::name('home.')->group(function () {
 
     Route::get('/', [Home\HomeController::class, 'index'])->name('index');
     Route::get('about-us', [Home\HomeController::class, 'aboutUs'])->name('aboutus');
+    Route::get('terms', [Home\HomeController::class, 'terms'])->name('terms');
 
     Route::get('contact', [Home\HomeController::class, 'contact'])->name('contact');
 

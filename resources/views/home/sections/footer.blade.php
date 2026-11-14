@@ -30,6 +30,7 @@
                     <li><a href="{{ route('home.products.index') }}">همه محصولات</a></li>
                     <li><a href="{{ route('home.posts.index') }}">مقالات</a></li>
                     <li><a href="{{ route('home.aboutus') }}">درباره ما</a></li>
+                    <li><a href="{{ route('home.terms') }}">قوانین و مقررات</a></li>
                     <li><a href="{{ route('home.contact') }}">تماس با ما</a></li>
                 </ul>
             </div>

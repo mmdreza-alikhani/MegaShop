@@ -41,6 +41,7 @@ class AuthModalTest extends ShopTestCase
             'username' => $user->username,
             'email' => 'another-'.uniqid().'@example.com',
             'password_confirmation' => Str::random(12),
+            'terms' => 1,
         ];
         $payload['password'] = $payload['password_confirmation'];
 

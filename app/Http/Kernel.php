@@ -5,6 +5,7 @@ namespace App\Http;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckUserAuthentication;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\EnsureTermsAccepted;
 use App\Http\Middleware\HasAnyPermission;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -63,7 +64,8 @@ class Kernel extends HttpKernel
             StartSession::class,
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
-            SubstituteBindings::class
+            SubstituteBindings::class,
+            EnsureTermsAccepted::class
         ],
 
         'api' => [

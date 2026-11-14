@@ -19,6 +19,7 @@ class RegistrationTest extends ShopTestCase
             'email' => $username.'@example.com',
             'password' => $secret,
             'password_confirmation' => $secret,
+            'terms' => 1,
         ])->assertRedirect();
 
         $user = User::where('username', $username)->firstOrFail();
