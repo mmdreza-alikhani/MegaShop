@@ -5031,3 +5031,164 @@ body.dark {
     font-size: .72rem;
     color: var(--adm-muted);
 }
+/* =========================================================
+   فرم‌ها: چیدمان قطعی (لیبل بالای فیلد، هم‌تراز)
+   ========================================================= */
+.mk-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 16px;
+    align-items: start;
+}
+
+.mk-field {
+    display: flex !important;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    grid-template-rows: none;
+}
+
+.mk-field > label {
+    position: static !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: .78rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: var(--adm-text) !important;
+    text-align: right;
+    transform: none !important;
+}
+
+.mk-field > label em {
+    font-style: normal;
+    color: var(--adm-accent);
+}
+
+.mk-field > .form-control,
+.mk-field > select.form-control,
+.mk-field > .mk-input-group {
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 42px;
+}
+
+.mk-field > .form-control[disabled] {
+    color: var(--adm-muted);
+    background: var(--adm-surface);
+}
+
+.mk-field > small {
+    margin: 0 !important;
+    font-size: .7rem;
+    line-height: 1.5;
+    color: var(--adm-muted);
+}
+
+.mk-input-group {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+}
+
+.mk-input-group .form-control {
+    flex: 1 1 auto;
+    height: 100% !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.mk-input-prefix {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    height: 100%;
+    padding: 0 12px;
+    font-size: .74rem;
+    color: var(--adm-muted);
+    background: var(--adm-surface);
+    border-inline-end: 1px solid var(--adm-border);
+}
+
+/* دکمه‌های فرم پایین صفحه */
+.mk-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--adm-border);
+}
+
+.mk-adm-panel {
+    padding: 22px;
+}
+
+@media (max-width: 575.98px) {
+    .mk-form-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+}
+/* ---------- قطعی‌سازی فاصله و ارتفاع فیلدها ---------- */
+.mk-field {
+    row-gap: 6px !important;
+}
+
+.mk-field > label {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.mk-field > .form-control,
+.mk-field > select,
+.mk-field > .mk-input-group {
+    height: 42px !important;
+    min-height: 42px !important;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    box-sizing: border-box;
+}
+
+.mk-field > select.form-control {
+    padding-right: 12px !important;
+}
+
+.mk-field > .form-control {
+    padding-right: 12px !important;
+    padding-left: 12px !important;
+}
+/* ---------- حذف فضای لیبل شناور متریال داخل فیلدهای ما ---------- */
+.mk-field .bmd-form-group {
+    width: 100% !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.mk-field .bmd-form-group > .form-control,
+.mk-field .bmd-form-group > select {
+    height: 42px !important;
+    min-height: 42px !important;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.mk-field .bmd-form-group label,
+.mk-field .bmd-form-group > label.bmd-label-floating {
+    display: none !important;
+}
+
+.mk-field > .bmd-form-group + small,
+.mk-field > small {
+    margin-top: 0 !important;
+}
