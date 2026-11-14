@@ -12,6 +12,18 @@
 </head>
 
 <body class="rtl persianumber">
+<script>
+    (function () {
+        try {
+            var saved = localStorage.getItem('adm-theme') || localStorage.getItem('theme') || 'light';
+            if (saved === 'dark') {
+                document.body.classList.add('dark');
+            }
+        } catch (e) {
+            /* localStorage در دسترس نیست */
+        }
+    })();
+</script>
 @include('admin.sections.preloading')
 <div class="bmd-layout-container bmd-drawer-f-l avam-container animated bmd-drawer-in">
     @include('admin.sections.header')
@@ -19,31 +31,10 @@
     @yield('content')
 </div>
 
+@include('admin.sections.footer')
 @include('admin.sections.scripts')
 @yield('scripts')
 
-{{-- موبایل: کشوی منو به صورت overlay ساده --}}
-<script>
-    document.addEventListener('click', function (event) {
-        var toggle = event.target.closest('[data-toggle="drawer"]');
 
-        if (toggle) {
-            event.preventDefault();
-            event.stopPropagation();
-            document.body.classList.toggle('mk-admin-drawer-open');
-            return;
-        }
-
-        if (document.body.classList.contains('mk-admin-drawer-open') && !event.target.closest('#dw-s1')) {
-            document.body.classList.remove('mk-admin-drawer-open');
-        }
-    });
-
-    window.addEventListener('resize', function () {
-        if (window.innerWidth > 991) {
-            document.body.classList.remove('mk-admin-drawer-open');
-        }
-    });
-</script>
 </body>
 </html>

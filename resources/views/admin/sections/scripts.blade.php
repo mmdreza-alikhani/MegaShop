@@ -19,3 +19,4 @@
 <script src="{{ asset('/admin/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('/admin/js/bootstrap-material-design.js') }}"></script>
 <script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+<script src="{{ asset('/admin/js/shell.js') }}"></script>

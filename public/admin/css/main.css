@@ -3728,3 +3728,396 @@ label {
         height: 140px;
     }
 }
+/* =========================================================
+   هدر، سایدبار و فوتر بازطراحی‌شده
+   ========================================================= */
+.mk-adm-header {
+    display: grid;
+    grid-template-columns: auto minmax(180px, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    min-height: 58px;
+}
+
+.mk-adm-header-start {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    min-width: 0;
+}
+
+.mk-adm-page-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.mk-adm-page-title strong {
+    overflow: hidden;
+    font-size: .92rem;
+    font-weight: 800;
+    color: var(--adm-text);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mk-adm-page-title span {
+    font-size: .66rem;
+    color: var(--adm-muted);
+}
+
+/* جستجوی سریع */
+.mk-adm-search {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 4px 4px 4px 10px;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+}
+
+.mk-adm-search > i {
+    font-size: .8rem;
+    color: var(--adm-muted);
+}
+
+.mk-adm-search input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 6px 4px;
+    font-size: .8rem;
+    color: var(--adm-text);
+    background: transparent;
+    border: 0;
+    outline: none;
+}
+
+.mk-adm-search input::placeholder {
+    color: var(--adm-muted);
+}
+
+.mk-adm-search-btn {
+    padding: 6px 12px;
+    font-size: .74rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--adm-accent);
+    border: 0;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.mk-adm-search-btn:hover {
+    background: #c4122f;
+}
+
+/* اکشن‌ها */
+.mk-adm-header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.mk-adm-quick-btn {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: .76rem;
+    font-weight: 700;
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+    white-space: nowrap;
+    transition: color .16s ease, border-color .16s ease, background .16s ease;
+}
+
+.mk-adm-quick-btn:hover {
+    color: var(--adm-accent);
+    border-color: var(--adm-accent);
+    background: var(--adm-surface);
+}
+
+.mk-adm-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: .62rem;
+    font-style: normal;
+    font-weight: 700;
+    color: #fff;
+    background: var(--adm-accent);
+    border-radius: 20px;
+}
+
+.mk-adm-count.is-alert {
+    background: #e0a800;
+}
+
+.mk-adm-icon-btn {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: color .16s ease, border-color .16s ease;
+}
+
+.mk-adm-icon-btn:hover {
+    color: var(--adm-accent);
+    border-color: var(--adm-accent);
+}
+
+.mk-adm-icon-btn > .mk-adm-count {
+    position: absolute;
+    top: -5px;
+    inset-inline-end: -5px;
+}
+
+/* آیکون تم */
+.mk-adm-theme-light {
+    display: none;
+}
+
+body.dark .mk-adm-theme-dark {
+    display: none;
+}
+
+body.dark .mk-adm-theme-light {
+    display: block;
+}
+
+/* کاربر */
+.mk-adm-user-btn {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 4px 10px 4px 4px;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.mk-adm-user-btn img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 9px;
+}
+
+.mk-adm-user-name {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--adm-text);
+}
+
+.mk-adm-user-btn > .fa-angle-down {
+    font-size: .65rem;
+    color: var(--adm-muted);
+}
+
+.mk-adm-dropdown {
+    min-width: 232px;
+    padding: 6px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+    box-shadow: var(--adm-shadow);
+}
+
+.mk-adm-dropdown-head {
+    padding: 8px 10px;
+    font-size: .7rem;
+    font-weight: 700;
+    color: var(--adm-muted);
+}
+
+.mk-adm-dropdown .dropdown-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    font-size: .78rem;
+    color: var(--adm-text);
+    border-radius: 8px;
+}
+
+.mk-adm-dropdown .dropdown-item:hover {
+    color: var(--adm-accent);
+    background: var(--adm-accent-soft);
+}
+
+.mk-adm-dropdown .dropdown-item.is-danger:hover {
+    color: #d64545;
+    background: rgba(214, 69, 69, .12);
+}
+
+/* ---------- جستجوی منو در سایدبار ---------- */
+.mk-adm-side-search {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin: 10px 4px 6px;
+    padding: 6px 10px;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+}
+
+.mk-adm-side-search > i {
+    font-size: .72rem;
+    color: var(--adm-muted);
+}
+
+.mk-adm-side-search input {
+    width: 100%;
+    font-size: .76rem;
+    color: var(--adm-text);
+    background: transparent;
+    border: 0;
+    outline: none;
+}
+
+#dw-s1 .side-bar-container {
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+/* ---------- فوتر ---------- */
+.mk-adm-footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 900;
+    padding-left: 250px;
+    background: var(--adm-surface);
+    border-top: 1px solid var(--adm-border);
+    transition: padding-left .2s ease;
+}
+
+.mk-adm-footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+    padding: 6px 18px;
+    font-size: .72rem;
+    color: var(--adm-muted);
+}
+
+.mk-adm-footer-brand {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.mk-adm-footer-brand > .fa-gamepad {
+    color: var(--adm-accent);
+}
+
+.mk-adm-footer-brand small {
+    font-size: .68rem;
+}
+
+.mk-adm-footer-links {
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.mk-adm-footer-links a {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    color: var(--adm-muted);
+    font-weight: 600;
+}
+
+.mk-adm-footer-links a:hover {
+    color: var(--adm-accent);
+}
+
+.mk-adm-footer-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: .6rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--adm-accent);
+    border-radius: 20px;
+}
+
+.mk-adm-footer-version {
+    font-size: .68rem;
+}
+
+/* فضای لازم برای فوتر ثابت */
+.bmd-layout-content {
+    padding-bottom: 64px;
+}
+
+@media (max-width: 991.98px) {
+    .mk-adm-header {
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+    }
+
+    .mk-adm-search {
+        order: 3;
+        grid-column: 1 / -1;
+    }
+
+    .mk-adm-page-title span,
+    .mk-adm-quick-btn span,
+    .mk-adm-user-name {
+        display: none;
+    }
+
+    .mk-adm-quick-btn {
+        padding: 8px 10px;
+    }
+
+    .mk-adm-header-actions {
+        gap: 6px;
+    }
+
+    .mk-adm-footer {
+        padding-left: 0;
+    }
+
+    .mk-adm-footer-inner {
+        justify-content: center;
+        padding: 6px 10px;
+    }
+
+    .mk-adm-footer-links {
+        gap: 10px;
+    }
+
+    .bmd-layout-content {
+        padding-bottom: 74px;
+    }
+}
+/* پس‌زمینه دارک با توکن جدید */
+body.dark {
+    background: var(--adm-bg);
+}
