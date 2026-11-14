@@ -4535,3 +4535,326 @@ body.dark {
 .mk-adm-pagination {
     margin-top: 14px;
 }
+/* =========================================================
+   سایدبار: بازنویسی قطعی (حذف رفتارهای قالب)
+   ========================================================= */
+#dw-s1 .side-item a i,
+.rtl #dw-s1 .side-item a i {
+    transform: none !important;
+}
+
+#dw-s1 .side-item.selected a i {
+    display: inline-block !important;
+}
+
+#dw-s1 .side-item.selected,
+#dw-s1 .side-item.selected a {
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    color: inherit !important;
+    font-family: inherit !important;
+}
+
+#dw-s1 .side.a-collapse li.side-item,
+.rtl #dw-s1 .side.a-collapse li.side-item {
+    padding: 0 !important;
+    margin: 2px 8px !important;
+}
+
+#dw-s1 .side.a-collapse .arrow,
+.rtl #dw-s1 .side.a-collapse .arrow,
+.rtl #dw-s1 .short.side.a-collapse .arrow {
+    float: none !important;
+    padding: 0 !important;
+    margin: 0 0 0 0 !important;
+    transform: none !important;
+    transition: transform .2s ease;
+}
+
+#dw-s1 .short.side.a-collapse .arrow,
+.rtl #dw-s1 .short.side.a-collapse .arrow {
+    transform: rotate(-90deg) !important;
+}
+
+/* ردیف‌ها */
+#dw-s1 .ul-text,
+#dw-s1 .side-item > a,
+#dw-s1 .side-item a {
+    display: flex !important;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    font-size: .82rem;
+    font-weight: 500;
+    color: var(--adm-text) !important;
+    text-decoration: none;
+    white-space: nowrap;
+    border-radius: 10px;
+    transition: background .16s ease, color .16s ease;
+}
+
+#dw-s1 .ul-text {
+    font-weight: 700;
+    color: var(--adm-text) !important;
+}
+
+#dw-s1 .ul-text > .fas,
+#dw-s1 .ul-text > .far,
+#dw-s1 .side-item a > .fas,
+#dw-s1 .side-item a > .far {
+    flex: 0 0 18px;
+    width: 18px;
+    text-align: center;
+    opacity: .85;
+}
+
+#dw-s1 .ul-text > .arrow,
+#dw-s1 .side-item a > .badge {
+    flex: 0 0 auto;
+    margin-inline-start: auto !important;
+    font-size: .68rem;
+}
+
+#dw-s1 .side-item a:hover,
+#dw-s1 .ul-text:hover {
+    color: var(--adm-text) !important;
+    background: var(--adm-surface-2) !important;
+}
+
+#dw-s1 .side-item.selected > a,
+#dw-s1 .side-item.selected a {
+    font-weight: 700;
+    color: var(--adm-accent) !important;
+    background: var(--adm-accent-soft) !important;
+    box-shadow: inset 3px 0 0 var(--adm-accent);
+}
+
+#dw-s1 .side-item.selected a > .fas,
+#dw-s1 .side-item.selected a > .far {
+    opacity: 1;
+    color: var(--adm-accent);
+}
+
+/* تورفتگی زیرمنو */
+#dw-s1 .side-item-container {
+    padding-inline-start: 14px !important;
+    margin-inline-start: 8px;
+    border-inline-start: 1px solid var(--adm-border);
+}
+
+#dw-s1 .side-item-container .side-item a {
+    padding: 8px 10px !important;
+    font-size: .78rem;
+    color: var(--adm-muted) !important;
+}
+
+#dw-s1 .side-item-container .side-item a:hover {
+    color: var(--adm-text) !important;
+}
+
+/* برچسب گروه‌ها */
+#dw-s1 p.side-comment {
+    margin: 16px 12px 4px;
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .4px;
+    color: var(--adm-muted) !important;
+}
+
+/* منوی صفحه اصلی */
+#dw-s1 > .container-fluid > li.side {
+    padding: 0 !important;
+    margin: 4px 8px !important;
+}
+
+#dw-s1 li.side > a.side-item {
+    display: flex !important;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px !important;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--adm-text) !important;
+    border-radius: 10px;
+}
+
+#dw-s1 li.side > a.side-item.selected {
+    color: var(--adm-accent) !important;
+    background: var(--adm-accent-soft) !important;
+    box-shadow: inset 3px 0 0 var(--adm-accent);
+}
+/* =========================================================
+   مودال‌های پنل: ساختار و فرم مرتب
+   ========================================================= */
+.mk-adm-modal .modal-content {
+    overflow: hidden;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(16, 24, 40, .25);
+}
+
+.mk-adm-modal-head {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 18px 20px;
+    background: var(--adm-surface-2);
+    border-bottom: 1px solid var(--adm-border);
+}
+
+.mk-adm-modal-head h5 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--adm-text);
+}
+
+.mk-adm-modal-head p {
+    margin: 4px 0 0;
+    font-size: .74rem;
+    color: var(--adm-muted);
+}
+
+.mk-adm-modal-close {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    font-size: 1.15rem;
+    line-height: 1;
+    color: var(--adm-muted);
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.mk-adm-modal-close:hover {
+    color: #fff;
+    background: var(--adm-accent);
+    border-color: var(--adm-accent);
+}
+
+.mk-adm-modal-body {
+    max-height: min(64vh, 560px);
+    padding: 18px 20px;
+    overflow-y: auto;
+}
+
+.mk-adm-modal-foot {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding: 14px 20px;
+    background: var(--adm-surface-2);
+    border-top: 1px solid var(--adm-border);
+}
+
+.mk-adm-modal-foot .btn {
+    min-width: 110px;
+    border-radius: 10px;
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+/* گرید فرم */
+.mk-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.mk-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.mk-field-full {
+    grid-column: 1 / -1;
+}
+
+.mk-field > label {
+    font-size: .76rem;
+    font-weight: 700;
+    color: var(--adm-text);
+    text-align: right;
+}
+
+.mk-field > label em {
+    font-style: normal;
+    color: var(--adm-accent);
+}
+
+.mk-field > small {
+    font-size: .68rem;
+    color: var(--adm-muted);
+}
+
+.mk-field .form-control {
+    height: 40px;
+    font-size: .8rem;
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+}
+
+.mk-field .form-control:focus {
+    background: var(--adm-surface);
+    border-color: var(--adm-accent);
+    box-shadow: 0 0 0 .14rem rgba(221, 22, 59, .14);
+}
+
+.mk-input-group {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+}
+
+.mk-input-group:focus-within {
+    border-color: var(--adm-accent);
+    box-shadow: 0 0 0 .14rem rgba(221, 22, 59, .14);
+}
+
+.mk-input-group .form-control {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none !important;
+}
+
+.mk-input-prefix {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    height: 40px;
+    padding: 0 10px;
+    font-size: .74rem;
+    color: var(--adm-muted);
+    background: var(--adm-surface);
+    border-inline-end: 1px solid var(--adm-border);
+}
+
+@media (max-width: 575.98px) {
+    .mk-form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mk-adm-modal-head,
+    .mk-adm-modal-body,
+    .mk-adm-modal-foot {
+        padding: 14px;
+    }
+}

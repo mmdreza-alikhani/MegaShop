@@ -170,3 +170,27 @@
         closeAll(null);
     });
 })();
+/* ---------- بستن منوها هنگام باز شدن مودال ---------- */
+(function () {
+    var closeEveryDrop = function () {
+        document.querySelectorAll('[data-adm-drop].is-open').forEach(function (drop) {
+            drop.classList.remove('is-open');
+
+            var trigger = drop.querySelector('[data-adm-drop-trigger]');
+
+            if (trigger) {
+                trigger.setAttribute('aria-expanded', 'false');
+            }
+        });
+    };
+
+    document.addEventListener('click', function (event) {
+        if (event.target.closest('[data-toggle="modal"]')) {
+            closeEveryDrop();
+        }
+    }, true);
+
+    if (window.jQuery) {
+        window.jQuery(document).on('show.bs.modal', closeEveryDrop);
+    }
+})();

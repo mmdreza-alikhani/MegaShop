@@ -1,4 +1,4 @@
-<div class="modal w-lg fade light rtl" id="showUserModal-{{ $user->id }}" tabindex="-1" role="dialog">
+<div class="modal w-lg fade light rtl mk-adm-modal" id="showUserModal-{{ $user->id }}" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content card shade">
             <div class="modal-header">

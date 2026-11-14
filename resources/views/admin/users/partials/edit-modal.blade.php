@@ -1,107 +1,76 @@
-<div class="modal w-lg fade light rtl" id="editUserModal-{{ $user->id }}" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <form method="post" action="{{ route('admin.users.update', ['user' => $user->id]) }}">
-            @method('put')
+<div class="modal fade mk-adm-modal" id="editUserModal-{{ $user->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <form method="post" action="{{ route('admin.users.update', ['user' => $user->id]) }}" class="modal-content">
             @csrf
-            <div class="modal-content card shade">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                        ویرایش کاربر: {{ $user->username }}
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
-                    </button>
+            @method('PATCH')
+
+            <header class="mk-adm-modal-head">
+                <div>
+                    <h5>ویرایش کاربر</h5>
+                    <p>{{ '@'.$user->username }} — تغییر اطلاعات حساب</p>
                 </div>
-                <div class="modal-body">
-                    @include('admin.layout.errors', ['errors' => $errors->update])
-                    <div class="row">
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="username-{{ $user->id }}">نام کاربری:*</label>
-                            <input type="text" name="username" id="username-{{ $user->id }}" class="form-control"
-                                   value="{{ $user->username }}" required>
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="first_name-{{ $user->id }}">نام:</label>
-                            <input type="text" name="first_name" id="first_name-{{ $user->id }}" class="form-control"
-                                   value="{{ $user->first_name }}">
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="last_name-{{ $user->id }}">نام خانوادگی:</label>
-                            <input type="text" name="last_name" id="last_name-{{ $user->id }}" class="form-control"
-                                   value="{{ $user->last_name }}">
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="email-{{ $user->id }}">ایمیل:</label>
-                            <input type="text" name="email" id="email-{{ $user->id }}" class="form-control"
-                                   value="{{ $user->email }}" required>
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="phone_number-{{ $user->id }}">شماره تلفن:</label>
-                            <div class="input-group-prepend">
-                                <input type="tel" name="phone_number" id="phone_number-{{ $user->id }}" size="10" class="form-control" value="{{ $user->phone_number }}">
-                                <div class="input-group-text">98+</div>
-                            </div>
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="password-{{ $user->id }}">رمز عبور جدید (اختیاری):</label>
-                            <input type="password" name="password" id="password-{{ $user->id }}" class="form-control"
-                                   autocomplete="new-password" placeholder="در صورت خالی بودن تغییر نمی‌کند">
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="is_active-{{ $user->id }}">وضعیت:</label>
-                            <select class="form-control" id="is_active-{{ $user->id }}" name="is_active">
-                                <option value="1" {{ $user->getRawOriginal('is_active') ? 'selected' : '' }}>فعال</option>
-                                <option value="0" {{ $user->getRawOriginal('is_active') ? '' : 'selected' }}>غیرفعال</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="role">نقش کاربری:</label>
-                            <select class="form-control" id="role-{{ $user->id }}" name="role">
-                                <option></option>
-                                @foreach($roles as $role)
-                                    <option value="{{ $role->name }}" {{ in_array($role->id, $user->roles->pluck('id')->toArray()) ? 'selected' : '' }}>{{ $role->display_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group col-12 col-lg-12">
-                            <button class="btn btn-block text-right border border-info" type="button"
-                                    data-toggle="collapse" data-target="#permissionsCollapse">
-                                دسترسی به مجوز ها
-                            </button>
-                            <div id="permissionsCollapse" class="collapse">
-                                <div class="row">
-                                    @foreach($permissions as $permission)
-                                        <div class="col-lg-2 col-6 p-2 d-flex align-items-center">
-                                            <input type="checkbox"
-                                                   value="{{ $permission->name }}"
-                                                   name="{{ $permission->name }}"
-                                                   id="{{ $permission->name . '-' . $user->id . '-check' }}"
-                                                   class="mr-2"
-                                                {{ in_array($permission->id, $user->getAllPermissions()->pluck('id')->toArray()) ? 'checked' : '' }}>
-                                            <label for="{{ $permission->name . '-' . $user->id . '-check' }}">
-                                                {{ $permission->display_name }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
+                <button type="button" class="mk-adm-modal-close" data-dismiss="modal" aria-label="بستن">&times;</button>
+            </header>
+
+            <div class="mk-adm-modal-body">
+                @include('admin.layout.errors', ['errors' => $errors->update])
+
+                <div class="mk-form-grid">
+                    <div class="mk-field">
+                        <label for="edit-username-{{ $user->id }}">نام کاربری <em>*</em></label>
+                        <input type="text" name="username" id="edit-username-{{ $user->id }}" class="form-control"
+                               value="{{ old('username', $user->username) }}" required>
+                    </div>
+
+                    <div class="mk-field">
+                        <label for="edit-email-{{ $user->id }}">ایمیل <em>*</em></label>
+                        <input type="email" name="email" id="edit-email-{{ $user->id }}" class="form-control" dir="ltr"
+                               value="{{ old('email', $user->email) }}" required>
+                    </div>
+
+                    <div class="mk-field">
+                        <label for="edit-first-name-{{ $user->id }}">نام</label>
+                        <input type="text" name="first_name" id="edit-first-name-{{ $user->id }}" class="form-control"
+                               value="{{ old('first_name', $user->first_name) }}">
+                    </div>
+
+                    <div class="mk-field">
+                        <label for="edit-last-name-{{ $user->id }}">نام خانوادگی</label>
+                        <input type="text" name="last_name" id="edit-last-name-{{ $user->id }}" class="form-control"
+                               value="{{ old('last_name', $user->last_name) }}">
+                    </div>
+
+                    <div class="mk-field">
+                        <label for="edit-phone-{{ $user->id }}">شماره موبایل</label>
+                        <div class="mk-input-group">
+                            <span class="mk-input-prefix" dir="ltr">+98</span>
+                            <input type="tel" name="phone_number" id="edit-phone-{{ $user->id }}" class="form-control"
+                                   dir="ltr" minlength="10" maxlength="10" placeholder="9121234567"
+                                   value="{{ old('phone_number', $user->phone_number) }}">
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
-                    <button type="submit" class="btn main f-main">ویرایش</button>
+
+                    <div class="mk-field">
+                        <label for="edit-password-{{ $user->id }}">رمز عبور جدید</label>
+                        <input type="password" name="password" id="edit-password-{{ $user->id }}" class="form-control"
+                               autocomplete="new-password" placeholder="خالی بگذارید تا تغییر نکند">
+                        <small>در صورت خالی بودن، رمز فعلی حفظ می‌شود.</small>
+                    </div>
+
+                    <div class="mk-field mk-field-full">
+                        <label for="edit-status-{{ $user->id }}">وضعیت حساب</label>
+                        <select name="is_active" id="edit-status-{{ $user->id }}" class="form-control">
+                            <option value="1" @selected((string) old('is_active', $user->getRawOriginal('is_active')) === '1')>فعال</option>
+                            <option value="0" @selected((string) old('is_active', $user->getRawOriginal('is_active')) === '0')>غیرفعال</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+
+            <footer class="mk-adm-modal-foot">
+                <button type="button" class="btn btn-light" data-dismiss="modal">انصراف</button>
+                <button type="submit" class="btn btn-info">ذخیره تغییرات</button>
+            </footer>
         </form>
     </div>
 </div>
-@if($errors->update->any() && session('user_id'))
-    <script>
-        $(function() {
-            $('#editUserModal-{{ session('user_id') }}').modal({
-                show: true
-            });
-        });
-    </script>
-@endif
