@@ -11,9 +11,9 @@
                     <p>{{ number_format($platforms->total()) }} پلتفرم ثبت شده است</p>
                 </div>
                 <div class="mk-dash-actions">
-                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#createPlatformModal">
+                    <a href="{{ route('admin.platforms.create') }}" class="btn btn-info btn-sm">
                         <i class="fas fa-plus mr-1"></i> پلتفرم جدید
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -110,11 +110,7 @@
                                                 <i class="fas fa-ellipsis-v"></i>
                                             </button>
                                             <div class="mk-adm-dropdown" data-adm-drop-menu>
-                                                <button type="button" class="dropdown-item"
-                                                        data-target="#editPlatformModal-{{ $platform->id }}"
-                                                        data-toggle="modal" data-dismiss="modal">
-                                                    <i class="fas fa-pen"></i><span>ویرایش</span>
-                                                </button>
+                                                <a class="dropdown-item" href="{{ route('admin.platforms.edit', ['platform' => $platform->id]) }}"><i class="fas fa-pen"></i><span>ویرایش</span></a>
                                                 @if(Route::has('admin.platforms.destroy'))
                                                     <form action="{{ route('admin.platforms.destroy', ['platform' => $platform->id]) }}"
                                                           method="POST" class="m-0" onsubmit="return confirm('این پلتفرم حذف شود؟')">

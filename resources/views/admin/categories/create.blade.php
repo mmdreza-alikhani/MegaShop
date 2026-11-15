@@ -1,175 +1,102 @@
 @extends('admin.layout.master')
 
-@php
-    $title = 'ایجاد دسته بندی';
-@endphp
-
-@section('title', $title)
-
-@section('styles')
-    <style>
-        .disabled-option{
-            color: #999;
-            background-color: #f9f9f9;
-        }
-    </style>
-@endsection
+@section('title', 'دسته‌بندی جدید')
 
 @section('content')
     <main class="bmd-layout-content">
         <div class="container-fluid">
-            <div class="row m-1 pb-4 mb-3">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
-                    <div class="page-header breadcrumb-header">
-                        <div class="row align-items-end">
-                            <div class="col-lg-8">
-                                <div class="page-header-title text-left-rtl">
-                                    <div class="d-inline">
-                                        <h3 class="lite-text">پنل مدیریت</h3>
-                                        <span class="lite-text">{{ $title }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('admin.panel') }}"><i class="fas fa-home"></i></a>
-                                    </li>
-                                    <li class="breadcrumb-item active">{{ $title }}</li>
-                                </ol>
-                            </div>
+            <div class="mk-dash-head">
+                <div>
+                    <h3>دسته‌بندی جدید</h3>
+                    <p>ساخت دسته اصلی یا زیردسته</p>
+                </div>
+                <div class="mk-dash-actions">
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-arrow-right mr-1"></i> بازگشت
+                    </a>
+                </div>
+            </div>
+
+            <section class="mk-adm-panel">
+                <header class="mk-adm-panel-head">
+                    <div>
+                        <h4>اطلاعات دسته</h4>
+                        <p>فیلدهای ستاره‌دار الزامی هستند</p>
+                    </div>
+                </header>
+
+                <form method="POST" action="{{ route('admin.categories.store') }}">
+                    @csrf
+
+                    <div class="mk-form-grid">
+                        <div class="mk-field">
+                            <label for="title">عنوان <em>*</em></label>
+                            <input type="text" name="title" id="title" class="form-control"
+                                   value="{{ old('title') }}" required>
+                        </div>
+
+                        <div class="mk-field">
+                            <label for="parent_id">دسته والد <em>*</em></label>
+                            <select name="parent_id" id="parent_id" class="form-control" required>
+                                <option value="0" @selected(old('parent_id', 0) == 0)>بدون والد (دسته اصلی)</option>
+                                @foreach($parentCategories as $id => $title)
+                                    <option value="{{ $id }}" @selected(old('parent_id') == $id)>{{ $title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mk-field">
+                            <label for="is_active">وضعیت <em>*</em></label>
+                            <select name="is_active" id="is_active" class="form-control" required>
+                                <option value="1" @selected(old('is_active', '1') == '1')>فعال</option>
+                                <option value="0" @selected(old('is_active') === '0')>غیرفعال</option>
+                            </select>
+                        </div>
+
+                        <div class="mk-field">
+                            <label for="icon">آیکون</label>
+                            <input type="text" name="icon" id="icon" class="form-control"
+                                   value="{{ old('icon') }}" placeholder="fa fa-mobile">
+                            <small>کلاس Font Awesome (اختیاری).</small>
+                        </div>
+
+                        <div class="mk-field">
+                            <label for="variation_attribute_id">ویژگی تنوع <em>*</em></label>
+                            <select name="variation_attribute_id" id="variation_attribute_id" class="form-control"
+                                    data-live-search="true" required>
+                                @foreach($attributes as $id => $title)
+                                    <option value="{{ $id }}" @selected(old('variation_attribute_id') == $id)>{{ $title }}</option>
+                                @endforeach
+                            </select>
+                            <small>مشخصه‌ای که تنوع محصول را می‌سازد (مثل حافظه).</small>
+                        </div>
+
+                        <div class="mk-field">
+                            <label for="filter_attribute_ids">ویژگی‌های فیلتر <em>*</em></label>
+                            <select name="filter_attribute_ids[]" id="filter_attribute_ids" class="form-control"
+                                    data-live-search="true" multiple required>
+                                @foreach($attributes as $id => $title)
+                                    <option value="{{ $id }}"
+                                            @selected(collect(old('filter_attribute_ids', []))->contains($id))>
+                                        {{ $title }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small>با Ctrl چند مورد را انتخاب کنید.</small>
+                        </div>
+
+                        <div class="mk-field mk-field-full">
+                            <label for="description">توضیحات</label>
+                            <textarea name="description" id="description" rows="3" class="form-control">{{ old('description') }}</textarea>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="mx-1">
-                <div class="card shade c-grey w-100">
-                    <h5 class="card-header c-primary">{{ $title }}</h5>
-                    <div class="card-body">
-                        @include('admin.layout.errors', ['errors' => $errors->store])
-                        <form class="p-3" action="{{ route('admin.categories.store') }}" method="POST">
-                            @csrf
-                            <div class="row">
-                                <div class="form-group col-12 col-lg-4">
-                                    <label for="title">عنوان:*</label>
-                                    <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}" required>
-                                </div>
-                                <div class="form-group col-12 col-lg-4">
-                                    <label for="parent_id">والد: *</label>
-                                    <select class="form-control" id="parent_id" name="parent_id" required>
-                                        <option value="0">بدون والد</option>
-                                        @foreach($parentCategories as $key => $value)
-                                            <option value="{{ $key }}" {{ old('parent_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group col-12 col-lg-4">
-                                    <label for="is_active">وضعیت: *</label>
-                                    <select class="form-control" id="is_active" name="is_active" required>
-                                        <option value="1" {{ old('is_active') && old('is_active') == 1 ? 'selected' : '' }}>فعال</option>
-                                        <option value="0" {{ old('is_active') && old('is_active') == 0 ? 'selected' : '' }}>غیرفعال</option>
-                                    </select>
-                                </div>
-                                <div class="form-group col-12 col-lg-4">
-                                    <label for="attributeIsFilter">ویژگی های قابل فیلتر: *</label>
-                                    <select id="attributeIsFilter" class="form-control" name="filter_attribute_ids[]" data-live-search="true" required multiple>
-                                    </select>
-                                </div>
-                                <div class="form-group col-12 col-lg-4">
-                                    <label for="attributeIsVariation">ویژگی متغیر: *</label>
-                                    <select id="attributeIsVariation" class="form-control" name="variation_attribute_id" data-live-search="true" required>
-                                    </select>
-                                </div>
-                                <div class="form-group col-12 col-lg-4">
-                                    <label for="icon">آیکون:</label>
-                                    <input type="text" name="icon" id="icon" class="form-control" value="{{ old('icon') }}">
-                                </div>
-                                <div class="form-group col-12 col-lg-12">
-                                    <label for="description">توضیحات:</label>
-                                    <textarea type="text" name="description" id="description"
-                                              class="form-control">{{ old('description') }}</textarea>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
-                                <button type="submit" class="btn f-primary p-2">ایجاد</button>
-                            </div>
-                        </form>
+                    <div class="mk-form-actions">
+                        <button type="submit" class="btn btn-info">ایجاد دسته</button>
+                        <a href="{{ route('admin.categories.index') }}" class="btn btn-light">انصراف</a>
                     </div>
-                </div>
-            </div>
+                </form>
+            </section>
         </div>
     </main>
-@endsection
-
-@section('scripts')
-    <script>
-        const attributes = @json($attributes);
-
-        const attributeSelects = {
-            '#attributeIsFilter': 'ویژگی‌های قابل فیلتر',
-            '#attributeIsVariation': 'ویژگی متغیر'
-        };
-
-        Object.entries(attributeSelects).forEach(([selector, title]) => {
-            $(selector).selectpicker({ title });
-        });
-
-        $(document).ready(function () {
-            const attributes = @json($attributes); // Laravel-passed data
-
-            const $filterSelect = $('#attributeIsFilter');
-            const $variationSelect = $('#attributeIsVariation');
-
-            // Populate both selects
-            function populateSelects(data) {
-                $.each(data, function (key, value) {
-                    $filterSelect.append(new Option(value, key));
-                    $variationSelect.append(new Option(value, key));
-                });
-                $filterSelect.selectpicker('refresh');
-                $variationSelect.selectpicker('refresh');
-            }
-
-            function syncOptions() {
-                const selectedFilters = $filterSelect.val() || [];
-                const selectedVariation = $variationSelect.val();
-
-                // Filter → Variation
-                $variationSelect.find('option').each(function () {
-                    const val = $(this).val();
-                    if (selectedFilters.includes(val)) {
-                        $(this).prop('disabled', true).prop('selected', false).addClass('disabled-option');
-                    } else {
-                        $(this).prop('disabled', false).removeClass('disabled-option');
-                    }
-                });
-
-                // Variation → Filter
-                $filterSelect.find('option').each(function () {
-                    const val = $(this).val();
-                    if (val === selectedVariation) {
-                        $(this).prop('disabled', true).prop('selected', false).addClass('disabled-option');
-                    } else {
-                        $(this).prop('disabled', false).removeClass('disabled-option');
-                    }
-                });
-
-                // One refresh per field
-                $filterSelect.selectpicker('refresh');
-                $variationSelect.selectpicker('refresh');
-            }
-
-
-            // Initial populate
-            populateSelects(attributes);
-            syncOptions();
-
-            // Re-sync on change
-            $filterSelect.on('change', syncOptions);
-            $variationSelect.on('change', syncOptions);
-        });
-    </script>
 @endsection

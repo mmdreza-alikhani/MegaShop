@@ -45,6 +45,15 @@ class BrandController extends Controller
         return view('admin.brands.index', compact('brands', 'stats'));
     }
 
+    public function create(): View|Application|Factory
+    {
+        return view('admin.brands.create');
+    }
+
+    public function edit(Brand $brand): View|Application|Factory
+    {
+        return view('admin.brands.edit', compact('brand'));
+    }
     /**
      * Store a newly created resource in storage.
      */

@@ -49,6 +49,15 @@ class PlatformController extends Controller
         return view('admin.platforms.index', compact('platforms', 'stats'));
     }
 
+    public function create(): View|Application|Factory
+    {
+        return view('admin.platforms.create');
+    }
+
+    public function edit(Platform $platform): View|Application|Factory
+    {
+        return view('admin.platforms.edit', compact('platform'));
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -76,7 +85,7 @@ class PlatformController extends Controller
         }
 
         flash()->success(config('flasher.platform.created'));
-        return redirect()->back();
+        return redirect()->route('admin.platforms.index');
     }
 
     /**
@@ -105,7 +114,7 @@ class PlatformController extends Controller
         }
 
         flash()->success(config('flasher.platform.updated'));
-        return redirect()->back();
+        return redirect()->route('admin.platforms.index');
     }
 
     /**

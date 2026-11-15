@@ -39,10 +39,14 @@ Route::prefix('management')
 
         Route::middleware('permission:brands-index')->group(function () {
             Route::resource('brands', Admin\BrandController::class)->only(['index', 'store', 'update', 'destroy']);
+            Route::get('brands/create', [Admin\BrandController::class, 'create'])->name('brands.create');
+            Route::get('brands/{brand}/edit', [Admin\BrandController::class, 'edit'])->name('brands.edit');
         });
 
         Route::middleware('permission:platforms-index')->group(function () {
             Route::resource('platforms', Admin\PlatformController::class)->only(['index', 'store', 'update', 'destroy']);
+            Route::get('platforms/create', [Admin\PlatformController::class, 'create'])->name('platforms.create');
+            Route::get('platforms/{platform}/edit', [Admin\PlatformController::class, 'edit'])->name('platforms.edit');
         });
 
         Route::middleware('permission:attributes-index')->group(function () {

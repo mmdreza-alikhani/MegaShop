@@ -5575,3 +5575,41 @@ body.dark .mk-adm-modal .mk-adm-modal-foot {
     border: 1px solid var(--adm-border);
     border-radius: 9px;
 }
+/* ---------- آیتم‌های منو یکدست (لینک و دکمه) ---------- */
+.mk-adm-dropdown .dropdown-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    padding: 9px 10px;
+    font-size: .78rem;
+    font-weight: 500;
+    color: var(--adm-text) !important;
+    text-align: right;
+    text-decoration: none !important;
+    background: transparent !important;
+    border: 0;
+    border-radius: 8px;
+    box-shadow: none !important;
+    cursor: pointer;
+}
+
+.mk-adm-dropdown .dropdown-item:hover,
+.mk-adm-dropdown .dropdown-item:focus {
+    color: var(--adm-accent) !important;
+    background: var(--adm-accent-soft) !important;
+}
+
+.mk-adm-dropdown .dropdown-item.is-danger:hover {
+    color: #d64545 !important;
+    background: rgba(214, 69, 69, .12) !important;
+}
+
+.mk-adm-dropdown .dropdown-item > .fa,
+.mk-adm-dropdown .dropdown-item > .fas,
+.mk-adm-dropdown .dropdown-item > .far {
+    flex: 0 0 16px;
+    width: 16px;
+    text-align: center;
+    opacity: .85;
+}
