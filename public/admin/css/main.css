@@ -5472,3 +5472,16 @@ body.dark {
 #dw-s1 .side-bar-container > * {
     flex: 0 0 auto;
 }
+/* ---------- سایدبار همیشه کل ستون راست را پر کند ---------- */
+@media (min-width: 992px) {
+    #dw-s1.bmd-layout-drawer {
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        left: auto !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        z-index: 1035;
+    }
+}
