@@ -5254,3 +5254,66 @@ body.dark {
     inset-inline-start: auto;
     inset-inline-end: 0;
 }
+/* =========================================================
+   فاصله ثابت بالا و پایین برای محتوای هر صفحه
+   ========================================================= */
+.bmd-layout-content > .container-fluid {
+    margin-block: 16px;
+}
+
+.bmd-layout-content > .container-fluid > * {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.bmd-layout-content > .container-fluid > *:first-child {
+    margin-top: 0;
+}
+
+.bmd-layout-content > .container-fluid > *:last-child {
+    margin-bottom: 0;
+}
+
+/* بلوک‌های شناخته‌شده هم همان فاصله را بگیرند */
+.mk-dash-head,
+.mk-kpi-grid,
+.mk-adm-filters,
+.mk-dash-grid,
+.mk-adm-panel,
+.mk-admin-quick {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.mk-dash-grid > *:last-child,
+.mk-admin-quick:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 991.98px) {
+    .bmd-layout-content > .container-fluid {
+        margin-block: 12px;
+    }
+
+    .bmd-layout-content > .container-fluid > * {
+        margin-bottom: 12px;
+    }
+}
+/* ---------- تعادل ستون‌های کارت‌های آماری ---------- */
+@media (min-width: 1200px) {
+    .mk-kpi-grid:not(.mk-kpi-grid--4) {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .mk-kpi-grid:not(.mk-kpi-grid--4) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767.98px) {
+    .mk-kpi-grid:not(.mk-kpi-grid--4) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
