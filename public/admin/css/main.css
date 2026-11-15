@@ -8154,3 +8154,27 @@ body.dark .mk-pill.is-info {
         transform: none;
     }
 }
+
+
+/* ---------- لوگوی سایدبار به‌عنوان لینک ---------- */
+#dw-s1 .navbar-brand {
+    position: relative;
+    text-decoration: none !important;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: opacity .18s ease, transform .18s ease;
+}
+
+#dw-s1 .navbar-brand:hover {
+    opacity: .86;
+    text-decoration: none !important;
+}
+
+#dw-s1 .navbar-brand:active {
+    transform: scale(.98);
+}
+
+#dw-s1 .navbar-brand:focus-visible {
+    outline: 2px solid var(--adm-accent, #e11d48);
+    outline-offset: 4px;
+}

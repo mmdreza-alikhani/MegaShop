@@ -2,7 +2,8 @@
 <div id="dw-s1" class="bmd-layout-drawer bg-faded">
     <div class="container-fluid side-bar-container">
         <header class="pb-0">
-            <a class="navbar-brand">
+            <a class="navbar-brand" href="{{ route('home.index') }}"
+               title="مشاهده سایت" aria-label="مشاهده سایت مگاشاپ">
                 <img class="side-logo" src="{{ asset('/assets/images/logo.png') }}" alt="مگاشاپ"
                      onerror="this.onerror=null;this.src='{{ asset('assets/images/logo-light.png') }}'">
             </a>
