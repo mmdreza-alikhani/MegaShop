@@ -439,3 +439,15 @@
         initLoadingStates();
     }
 })();
+/* ---------- مودال‌ها را به بدنه منتقل کن تا زیر لایه‌های دیگر نروند ---------- */
+(function () {
+    if (!window.jQuery) {
+        return;
+    }
+
+    jQuery(document).on('show.bs.modal', '.modal', function () {
+        if (this.parentElement !== document.body) {
+            document.body.appendChild(this);
+        }
+    });
+})();

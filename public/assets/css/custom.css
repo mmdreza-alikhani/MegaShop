@@ -5856,3 +5856,427 @@ html[data-theme="dark"] .mk-alert-warning {
     padding: 0 16px 14px;
     margin: 0;
 }
+
+
+/* ==========================================================
+   مودال‌های فروشگاه (آدرس‌ها و فرم‌های پروفایل)
+   ========================================================== */
+.mk-modal {
+    z-index: 1500;
+}
+
+.mk-modal.modal {
+    background: rgba(10, 14, 20, .55);
+}
+
+.modal-backdrop {
+    z-index: 1490;
+}
+
+.mk-modal .modal-dialog {
+    max-width: 560px;
+    margin: 1.5rem auto;
+}
+
+.mk-modal .modal-dialog.mk-modal-sm {
+    max-width: 420px;
+}
+
+.mk-modal .modal-content {
+    overflow: hidden;
+    color: var(--mk-text);
+    background: var(--mk-surface);
+    border: 1px solid var(--mk-border);
+    border-radius: 16px;
+    box-shadow: var(--mk-shadow);
+}
+
+.mk-modal-head {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--mk-border);
+}
+
+.mk-modal-head h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--mk-heading);
+}
+
+.mk-modal-head p {
+    margin: 3px 0 0;
+    font-size: .74rem;
+    color: var(--mk-muted);
+}
+
+.mk-modal-close {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: .9rem;
+    color: var(--mk-muted);
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 9px;
+    cursor: pointer;
+    transition: color .15s ease, border-color .15s ease;
+}
+
+.mk-modal-close:hover {
+    color: var(--mk-accent);
+    border-color: var(--mk-accent);
+}
+
+.mk-modal-body {
+    padding: 16px 18px;
+}
+
+.mk-modal-text {
+    margin: 0;
+    font-size: .82rem;
+    line-height: 1.9;
+    color: var(--mk-muted);
+}
+
+.mk-modal-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 14px 18px;
+    background: var(--mk-bg-2);
+    border-top: 1px solid var(--mk-border);
+}
+
+.mk-modal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.mk-modal .mk-field {
+    display: grid;
+    gap: 6px;
+}
+
+.mk-field-full {
+    grid-column: 1 / -1;
+}
+
+.mk-modal .mk-field label {
+    font-size: .74rem;
+    font-weight: 600;
+    color: var(--mk-muted);
+}
+
+.mk-modal .mk-field label em {
+    font-style: normal;
+    color: var(--mk-accent);
+}
+
+.mk-modal .mk-field input,
+.mk-modal .mk-field select,
+.mk-modal .mk-field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: .8rem;
+    color: var(--mk-text);
+    background: var(--mk-input-bg);
+    border: 1px solid var(--mk-border);
+    border-radius: 10px;
+}
+
+.mk-modal .mk-field textarea {
+    min-height: 84px;
+    resize: vertical;
+}
+
+.mk-modal .mk-field input:focus,
+.mk-modal .mk-field select:focus,
+.mk-modal .mk-field textarea:focus {
+    outline: none;
+    border-color: var(--mk-accent);
+}
+
+.mk-phone {
+    display: flex;
+    align-items: stretch;
+}
+
+.mk-phone span {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: .74rem;
+    color: var(--mk-muted);
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-inline-end: 0;
+    border-start-start-radius: 10px;
+    border-end-start-radius: 10px;
+}
+
+.mk-phone input {
+    border-start-start-radius: 0 !important;
+    border-end-start-radius: 0 !important;
+}
+
+.mk-btn-danger {
+    color: #fff;
+    background: #d92d20;
+    border: 1px solid #d92d20;
+}
+
+.mk-btn-danger:hover {
+    background: #b42318;
+    border-color: #b42318;
+}
+
+/* کارت‌های آدرس */
+.mk-address-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+}
+
+.mk-address-card {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 14px;
+    transition: border-color .16s ease;
+}
+
+.mk-address-card:hover {
+    border-color: var(--mk-border-strong);
+}
+
+.mk-address-head {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.mk-address-icon {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    font-size: .8rem;
+    color: var(--mk-accent);
+    background: color-mix(in srgb, var(--mk-accent) 12%, transparent);
+    border-radius: 9px;
+}
+
+.mk-address-head strong {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: .84rem;
+    font-weight: 800;
+    color: var(--mk-heading);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mk-address-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.mk-address-action {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    font-size: .72rem;
+    color: var(--mk-muted);
+    background: transparent;
+    border: 1px solid var(--mk-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+
+.mk-address-action:hover {
+    color: var(--mk-accent);
+    border-color: var(--mk-accent);
+}
+
+.mk-address-action.is-danger:hover {
+    color: #f04438;
+    background: rgba(240, 68, 56, .1);
+    border-color: rgba(240, 68, 56, .4);
+}
+
+.mk-address-text {
+    margin: 0;
+    font-size: .78rem;
+    line-height: 1.9;
+    color: var(--mk-text);
+}
+
+.mk-address-meta {
+    display: grid;
+    gap: 6px;
+    padding: 8px 0 0;
+    margin: 0;
+    list-style: none;
+    border-top: 1px dashed var(--mk-border);
+}
+
+.mk-address-meta li {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    justify-content: space-between;
+    font-size: .72rem;
+}
+
+.mk-address-meta span {
+    color: var(--mk-muted);
+}
+
+.mk-address-meta strong {
+    font-weight: 700;
+    color: var(--mk-text);
+}
+
+@media (max-width: 575.98px) {
+    .mk-modal-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mk-modal .modal-dialog {
+        margin: .6rem;
+    }
+}
+
+
+/* ==========================================================
+   پیام‌های شناور فروشگاه — یکدست با پنل مدیریت
+   ========================================================== */
+html body .fl-wrapper {
+    --success-color: #17b26a;
+    --success-color-light: rgba(23, 178, 106, .16);
+    --info-color: #2e90fa;
+    --info-color-light: rgba(46, 144, 250, .16);
+    --warning-color: #f79009;
+    --warning-color-light: rgba(247, 144, 9, .16);
+    --error-color: #f04438;
+    --error-color-light: rgba(240, 68, 56, .16);
+
+    position: fixed !important;
+    top: 14px !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: 2147483647 !important;
+    width: min(420px, calc(100vw - 24px)) !important;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+html body .fl-wrapper[data-position^="bottom"] {
+    top: auto !important;
+    bottom: 18px !important;
+}
+
+html body .fl-flasher {
+    pointer-events: auto;
+    margin: 0 auto 10px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    direction: rtl;
+    text-align: right;
+    background: var(--mk-surface) !important;
+    border: 1px solid var(--mk-border) !important;
+    border-inline-start: 4px solid var(--fl-accent, var(--mk-accent)) !important;
+    border-radius: 14px !important;
+    box-shadow: var(--mk-shadow) !important;
+    animation: mk-store-toast-in .32s cubic-bezier(.22, .61, .36, 1) both;
+}
+
+html body .fl-flasher.fl-success { --fl-accent: var(--success-color); }
+html body .fl-flasher.fl-info { --fl-accent: var(--info-color); }
+html body .fl-flasher.fl-warning { --fl-accent: var(--warning-color); }
+html body .fl-flasher.fl-error { --fl-accent: var(--error-color); }
+
+html body .fl-flasher .fl-content {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px;
+    padding: 13px 14px 15px !important;
+}
+
+html body .fl-flasher .fl-icon {
+    flex: 0 0 auto;
+    margin-top: 1px;
+    font-size: 1.45em !important;
+}
+
+html body .fl-flasher .fl-title {
+    display: none !important;
+}
+
+html body .fl-flasher .fl-message {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: .8rem !important;
+    font-weight: 600;
+    line-height: 1.85 !important;
+    color: var(--mk-text) !important;
+}
+
+html body .fl-flasher .fl-close {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+    padding: 0 2px !important;
+    font-size: 1.2rem;
+    line-height: 1;
+    color: var(--mk-muted) !important;
+    background: transparent !important;
+    border: 0 !important;
+    cursor: pointer;
+    transition: color .15s ease, transform .15s ease;
+}
+
+html body .fl-flasher .fl-close:hover {
+    color: var(--mk-text) !important;
+    transform: scale(1.08);
+}
+
+html body .fl-flasher .fl-progress-bar {
+    height: 3px !important;
+    border-radius: 0 0 14px 14px;
+}
+
+@keyframes mk-store-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(.98);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (max-width: 575.98px) {
+    html body .fl-wrapper {
+        top: 10px !important;
+        width: calc(100vw - 16px) !important;
+    }
+}
