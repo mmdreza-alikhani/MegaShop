@@ -239,3 +239,99 @@
         document.querySelectorAll('[data-adm-drop].is-open').forEach(positionDrop);
     });
 })();
+/* ---------- آپلودر و select جستجوپذیر ---------- */
+(function () {
+    var initPickers = function () {
+        if (window.jQuery && window.jQuery.fn && window.jQuery.fn.selectpicker) {
+            window.jQuery('.selectpicker').selectpicker();
+        }
+    };
+
+    var initUploads = function () {
+        document.querySelectorAll('[data-mk-upload]').forEach(function (box) {
+            var input = box.querySelector('input[type="file"]');
+            var preview = box.querySelector('[data-mk-upload-preview]');
+            var title = box.querySelector('[data-mk-upload-title]');
+            var clear = box.querySelector('[data-mk-upload-clear]');
+            var placeholder = preview ? preview.getAttribute('src') : '';
+
+            if (!input) {
+                return;
+            }
+
+            var showFile = function (file) {
+                if (!file || !file.type || file.type.indexOf('image/') !== 0) {
+                    return;
+                }
+
+                var reader = new FileReader();
+
+                reader.onload = function (event) {
+                    if (preview) {
+                        preview.src = event.target.result;
+                    }
+
+                    if (title) {
+                        title.textContent = file.name;
+                    }
+                };
+
+                reader.readAsDataURL(file);
+            };
+
+            input.addEventListener('change', function () {
+                if (input.files && input.files[0]) {
+                    showFile(input.files[0]);
+                }
+            });
+
+            ['dragenter', 'dragover'].forEach(function (type) {
+                box.addEventListener(type, function (event) {
+                    event.preventDefault();
+                    box.classList.add('is-dragover');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(function (type) {
+                box.addEventListener(type, function (event) {
+                    event.preventDefault();
+                    box.classList.remove('is-dragover');
+                });
+            });
+
+            box.addEventListener('drop', function (event) {
+                var files = event.dataTransfer ? event.dataTransfer.files : null;
+
+                if (files && files[0]) {
+                    input.files = files;
+                    showFile(files[0]);
+                }
+            });
+
+            if (clear) {
+                clear.addEventListener('click', function () {
+                    input.value = '';
+
+                    if (preview) {
+                        preview.src = placeholder;
+                    }
+
+                    if (title) {
+                        title.textContent = 'انتخاب یا رها کردن تصویر';
+                    }
+                });
+            }
+        });
+    };
+
+    var boot = function () {
+        initPickers();
+        initUploads();
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        window.setTimeout(boot, 0);
+    }
+})();

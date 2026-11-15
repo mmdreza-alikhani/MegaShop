@@ -62,8 +62,9 @@
 
                         <div class="mk-field">
                             <label for="variation_attribute_id">ویژگی تنوع <em>*</em></label>
-                            <select name="variation_attribute_id" id="variation_attribute_id" class="form-control"
-                                    data-live-search="true" required>
+                            <select name="variation_attribute_id" id="variation_attribute_id"
+                                    class="form-control selectpicker" data-live-search="true"
+                                    data-none-selected-text="انتخاب ویژگی" required>
                                 @foreach($attributes as $id => $title)
                                     <option value="{{ $id }}" @selected(old('variation_attribute_id') == $id)>{{ $title }}</option>
                                 @endforeach
@@ -73,8 +74,10 @@
 
                         <div class="mk-field">
                             <label for="filter_attribute_ids">ویژگی‌های فیلتر <em>*</em></label>
-                            <select name="filter_attribute_ids[]" id="filter_attribute_ids" class="form-control"
-                                    data-live-search="true" multiple required>
+                            <select name="filter_attribute_ids[]" id="filter_attribute_ids"
+                                    class="form-control selectpicker" data-live-search="true" multiple
+                                    data-actions-box="true" data-selected-text-format="count > 1"
+                                    data-none-selected-text="انتخاب ویژگی‌ها" required>
                                 @foreach($attributes as $id => $title)
                                     <option value="{{ $id }}"
                                             @selected(collect(old('filter_attribute_ids', []))->contains($id))>

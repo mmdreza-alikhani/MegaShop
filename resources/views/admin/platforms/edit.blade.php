@@ -41,10 +41,23 @@
             <option value="0" @selected((string) old('is_active', $platform->getRawOriginal('is_active')) === '0')>غیرفعال</option>
         </select>
     </div><div class="mk-field mk-field-full">
-        <label for="image">لوگو</label>
-        <input type="file" name="image" id="image" class="form-control" accept="image/*">
-        <small>حداکثر ۲ مگابایت (JPG/PNG/SVG). خالی بگذارید تا لوگوی فعلی بماند.</small>
+    <label>لوگوی پلتفرم</label>
+
+    <div class="mk-upload" data-mk-upload>
+        <input type="file" name="image" id="image" accept="image/*" hidden>
+
+        <label for="image" class="mk-upload-box">
+            <img data-mk-upload-preview src="{{ $platform->image ? Storage::url(config('upload.platform_path', 'platforms/images') . '/' . $platform->image) : asset('assets/images/media-placeholder.svg') }}" alt="پیش‌نمایش لوگو">
+
+            <span class="mk-upload-text">
+                <strong data-mk-upload-title>انتخاب یا رها کردن تصویر</strong>
+                <small>JPG، PNG یا SVG — حداکثر ۲ مگابایت</small>
+            </span>
+        </label>
+
+        <button type="button" class="mk-upload-clear" data-mk-upload-clear>حذف انتخاب</button>
     </div>
+</div>
                     </div>
 
                     <div class="mk-form-actions">

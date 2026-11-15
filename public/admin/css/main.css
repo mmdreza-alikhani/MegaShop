@@ -5613,3 +5613,135 @@ body.dark .mk-adm-modal .mk-adm-modal-foot {
     text-align: center;
     opacity: .85;
 }
+/* =========================================================
+   آپلودر لوگو (درگ و دراپ + پیش‌نمایش)
+   ========================================================= */
+.mk-upload {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.mk-upload-box {
+    display: flex;
+    flex: 1 1 320px;
+    gap: 14px;
+    align-items: center;
+    padding: 14px;
+    cursor: pointer;
+    background: var(--adm-surface-2);
+    border: 1.5px dashed var(--adm-border);
+    border-radius: 12px;
+    transition: border-color .18s ease, background .18s ease;
+}
+
+.mk-upload-box:hover,
+.mk-upload.is-dragover .mk-upload-box {
+    background: var(--adm-surface);
+    border-color: var(--adm-accent);
+}
+
+.mk-upload-box img {
+    flex: 0 0 auto;
+    width: 76px;
+    height: 76px;
+    padding: 8px;
+    object-fit: contain;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+}
+
+.mk-upload-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.mk-upload-text strong {
+    font-size: .82rem;
+    color: var(--adm-text);
+}
+
+.mk-upload-text small {
+    font-size: .7rem;
+    color: var(--adm-muted);
+}
+
+.mk-upload-clear {
+    padding: 8px 14px;
+    font-size: .74rem;
+    font-weight: 600;
+    color: var(--adm-muted);
+    background: transparent;
+    border: 1px solid var(--adm-border);
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.mk-upload-clear:hover {
+    color: #d64545;
+    border-color: #d64545;
+}
+
+/* =========================================================
+   bootstrap-select هماهنگ با پنل
+   ========================================================= */
+.bootstrap-select > .dropdown-toggle {
+    height: 42px;
+    padding: 0 14px;
+    font-size: .8rem;
+    color: var(--adm-text) !important;
+    background: var(--adm-surface-2) !important;
+    border: 1px solid var(--adm-border) !important;
+    border-radius: 10px !important;
+}
+
+.bootstrap-select > .dropdown-toggle:focus,
+.bootstrap-select.show > .dropdown-toggle {
+    border-color: var(--adm-accent) !important;
+    box-shadow: 0 0 0 .14rem rgba(221, 22, 59, .14) !important;
+}
+
+.bootstrap-select .dropdown-menu {
+    padding: 6px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+    box-shadow: var(--adm-shadow);
+}
+
+.bootstrap-select .dropdown-menu .dropdown-item {
+    border-radius: 8px;
+}
+
+.bootstrap-select .dropdown-menu .dropdown-item:hover,
+.bootstrap-select .dropdown-menu .dropdown-item.active {
+    color: var(--adm-accent) !important;
+    background: var(--adm-accent-soft) !important;
+}
+
+.bootstrap-select .bs-searchbox input {
+    height: 36px;
+    font-size: .78rem;
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+}
+
+.bootstrap-select .no-results {
+    font-size: .76rem;
+    color: var(--adm-muted);
+    background: transparent;
+}
+
+body.dark .bootstrap-select .dropdown-menu {
+    background: #1c232b;
+}
+
+body.dark .bootstrap-select .dropdown-menu .dropdown-item {
+    color: var(--adm-text);
+}
