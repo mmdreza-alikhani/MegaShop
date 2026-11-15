@@ -5745,3 +5745,35 @@ body.dark .bootstrap-select .dropdown-menu {
 body.dark .bootstrap-select .dropdown-menu .dropdown-item {
     color: var(--adm-text);
 }
+/* ---------- لوگوی سایدبار: اندازه قبلی، فقط وسط‌چین ---------- */
+#dw-s1 .navbar-brand {
+    display: block !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+}
+
+#dw-s1 .navbar-brand .side-logo,
+#dw-s1 img.side-logo,
+.rtl #dw-s1 .navbar-brand .side-logo {
+    display: block !important;
+    width: auto !important;
+    max-width: calc(100% - 24px) !important;
+    height: auto !important;
+    max-height: 40px !important;
+    margin-inline: auto !important;
+    margin-block: 0 !important;
+    padding: 4px 0 0 !important;
+    object-fit: contain;
+}
+/* وسط‌چین قطعی لوگو */
+#dw-s1 .navbar-brand {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center;
+}
+
+#dw-s1 .navbar-brand .side-logo {
+    margin: 0 !important;
+}
