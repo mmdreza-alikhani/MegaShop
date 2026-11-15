@@ -423,3 +423,24 @@
         });
     });
 })();
+
+/* ---------- یکسان‌سازی تنظیمات توست‌ها ---------- */
+(function () {
+    if (!window.toastr) {
+        return;
+    }
+
+    window.toastr.options = Object.assign({}, window.toastr.options, {
+        positionClass: 'toast-top-center',
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: true,
+        preventDuplicates: true,
+        timeOut: 5000,
+        extendedTimeOut: 2000,
+        showDuration: 200,
+        hideDuration: 200,
+        showMethod: 'fadeIn',
+        hideMethod: 'fadeOut'
+    });
+})();

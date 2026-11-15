@@ -7915,3 +7915,135 @@ body.dark .mk-pill.is-info {
 .mk-field.d-none > * {
     display: none !important;
 }
+
+
+/* ==========================================================
+   توست‌های کلاسیک (toastr) — هم‌ظاهر با پیام‌های فلشر
+   ========================================================== */
+#toast-container {
+    position: fixed !important;
+    top: 14px !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translateX(-50%);
+    z-index: 2147483647 !important;
+    width: min(420px, calc(100vw - 24px)) !important;
+    pointer-events: none;
+}
+
+#toast-container > div {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto 10px !important;
+    padding: 14px 48px 16px 38px !important;
+    opacity: 1 !important;
+    direction: rtl;
+    text-align: right;
+    color: var(--adm-text) !important;
+    background-color: var(--adm-surface) !important;
+    background-position: right 14px top 14px !important;
+    background-size: 20px 20px !important;
+    background-repeat: no-repeat !important;
+    /* رفع اولویت پیام‌های قدیمی توست با استایل تازه */
+    background: var(--adm-surface) !important;
+    background-color: var(--adm-surface) !important;
+    background-image: none !important;
+    border: 1px solid var(--adm-border) !important;
+    border-inline-start: 4px solid var(--toast-accent, var(--adm-accent)) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 18px 40px rgba(16, 24, 40, .18), 0 2px 6px rgba(16, 24, 40, .06) !important;
+    color: var(--adm-text) !important;
+    opacity: 1 !important;
+    pointer-events: auto;
+    animation: mk-toast-in .32s cubic-bezier(.22, .61, .36, 1) both;
+}
+
+#toast-container > .toast-success { --toast-accent: #17b26a; }
+#toast-container > .toast-error,
+#toast-container > .toast-danger { --toast-accent: #f04438; }
+#toast-container > .toast-warning { --toast-accent: #f79009; }
+#toast-container > .toast-info { --toast-accent: #2e90fa; }
+
+/* بازنویسی قطعی استایل قدیمی توست‌ها */
+#toast-container > .toast,
+#toast-container > .toast-success,
+#toast-container > .toast-error,
+#toast-container > .toast-danger,
+#toast-container > .toast-warning,
+#toast-container > .toast-info {
+    background: var(--adm-surface) !important;
+    background-image: none !important;
+    color: var(--adm-text) !important;
+    border: 1px solid var(--adm-border) !important;
+    border-inline-start: 4px solid var(--toast-accent, var(--adm-accent)) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 18px 40px rgba(16, 24, 40, .18), 0 2px 6px rgba(16, 24, 40, .06) !important;
+    opacity: 1 !important;
+}
+
+#toast-container .toast-title {
+    display: none !important;
+}
+
+#toast-container .toast-message {
+    margin: 0 !important;
+    font-size: .8rem !important;
+    font-weight: 600;
+    line-height: 1.85;
+    color: var(--adm-text) !important;
+}
+
+#toast-container .toast-close-button {
+    position: absolute !important;
+    top: 9px !important;
+    left: 10px !important;
+    right: auto !important;
+    padding: 0 2px !important;
+    font-size: 1.2rem !important;
+    line-height: 1 !important;
+    color: var(--adm-muted) !important;
+    opacity: .85;
+    text-shadow: none !important;
+    transition: color .15s ease, transform .15s ease;
+}
+
+#toast-container .toast-close-button:hover {
+    color: var(--adm-text) !important;
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+#toast-container .toast-progress {
+    height: 3px !important;
+    opacity: 1 !important;
+    background-color: var(--toast-accent, var(--adm-accent)) !important;
+    border-radius: 0 0 14px 14px;
+}
+
+@media (max-width: 575.98px) {
+    #toast-container {
+        top: 10px !important;
+        width: calc(100vw - 16px) !important;
+    }
+}
+
+
+/* آیکن یکسان برای توست‌های کلاسیک */
+#toast-container > .toast::before {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--toast-accent, var(--adm-accent));
+}
+
+#toast-container > .toast-success::before { content: "\f058"; }
+#toast-container > .toast-error::before,
+#toast-container > .toast-danger::before { content: "\f057"; }
+#toast-container > .toast-warning::before { content: "\f071"; }
+#toast-container > .toast-info::before { content: "\f05a"; }

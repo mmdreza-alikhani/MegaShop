@@ -9,9 +9,9 @@
 <script src="{{ asset('/admin/js/jquery-ui.min.js') }}"></script>
 <script src="{{ asset('/admin/js/jalalidatepicker.min.js') }}"></script>
 <script src="{{ asset('/admin/js/jquery.czMore-latest.js') }}"></script>
-<script src="{{ asset('/admin/js/form-repeater.js') }}"></script>
+<script src="{{ asset('/admin/js/form-repeater.js') }}?v={{ filemtime(public_path('admin/js/form-repeater.js')) }}"></script>
 <script src="{{ asset('/admin/js/main.js') }}"></script>
-<script src="{{ asset('/admin/js/shell.js') }}"></script>
+<script src="{{ asset('/admin/js/shell.js') }}?v={{ filemtime(public_path('admin/js/shell.js')) }}"></script>
 <script>
     jQuery(function () {
         if (jQuery.fn.bootstrapMaterialDesign) {

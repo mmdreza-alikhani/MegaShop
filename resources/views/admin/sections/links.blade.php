@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="{{ asset('/admin/css/bootstrap.min.css') }}">
 <link href="{{ asset('/admin/css/toastr.min.css') }}" rel="stylesheet" />
 <link rel="stylesheet" href="{{ asset('/admin/css/animate.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('/admin/css/main.css') }}">
+<link rel="stylesheet" href="{{ asset('/admin/css/main.css') }}?v={{ filemtime(public_path('admin/css/main.css')) }}">
 <link rel="stylesheet" href="{{ asset('/admin/css/bootstrap-select.min.css') }}">
 <link rel="stylesheet" href="{{ asset('/admin/css/jalalidatepicker.min.css') }}">
 <script src="{{ asset('/admin/js/jquery-3.2.1.min.js') }}"></script>
