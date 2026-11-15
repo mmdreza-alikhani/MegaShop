@@ -30,7 +30,7 @@ class StorePostRequest extends FormRequest
             'is_active' => 'required',
             'tag_ids' => 'nullable|array|exists:tags,id',
             'text' => 'required|string',
-            'image' => 'required|max:2048|mimes:jpg,jpeg,png,svg,webp',
+            'image' => 'required|max:' . config('upload.max_file_kb') . '|mimes:jpg,jpeg,png,svg,webp',
             'short_link' => 'nullable|max:12|unique:short_links,code|string',
             'faqs' => 'nullable|array',
             'faqs.*.question' => 'required|string|max:1250',

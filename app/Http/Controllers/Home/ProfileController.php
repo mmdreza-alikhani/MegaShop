@@ -13,9 +13,11 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -123,14 +125,6 @@ class ProfileController extends Controller
 
             $user = Auth::user();
 
-            if ($request->avatar) {
-                $imageName = generateFileName($request->avatar->getClientOriginalName());
-                $request->avatar->storeAs(env('USER_AVATAR_UPLOAD_PATH'), $imageName, 'public');
-                $user->fill([
-                    'avatar' => $imageName,
-                ]);
-            }
-
             $user->fill([
                 'username'     => $request->input('username'),
                 'first_name'   => $request->input('first_name'),
@@ -155,5 +149,39 @@ class ProfileController extends Controller
 
         flash()->success('با موفقیت اطلاعات ویرایش شد.');
         return redirect()->back();
+    }
+
+    /**
+     * ذخیرهٔ آواتار انتخاب‌شده (خروجی برش تصویر).
+     */
+    public function updateAvatar(Request $request): JsonResponse
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpg,jpeg,png,webp|max:' . config('upload.max_file_kb'),
+        ], [
+            'avatar.max' => 'حجم تصویر نباید بیشتر از ' . config('upload.max_file_kb') . ' کیلوبایت باشد.',
+            'avatar.image' => 'فایل انتخاب‌شده باید تصویر باشد.',
+            'avatar.mimes' => 'فرمت تصویر باید jpg، png یا webp باشد.',
+        ]);
+
+        $user = Auth::user();
+        $file = $request->file('avatar');
+        $directory = config('upload.user_avatar_path');
+        $fileName = generateFileName($file->getClientOriginalName());
+
+        $file->storeAs($directory, $fileName, 'public');
+
+        $previous = $user->avatar;
+        $user->update(['avatar' => $fileName]);
+
+        if ($previous && $previous !== 'avatar.png' && Storage::disk('public')->exists($directory . '/' . $previous)) {
+            Storage::disk('public')->delete($directory . '/' . $previous);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تصویر پروفایل با موفقیت به‌روزرسانی شد.',
+            'url' => Storage::url($directory . '/' . $fileName),
+        ]);
     }
 }

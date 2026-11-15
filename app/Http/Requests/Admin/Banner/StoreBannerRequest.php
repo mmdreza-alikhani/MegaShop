@@ -28,7 +28,7 @@ class StoreBannerRequest extends FormRequest
             'title' => 'required|string|max:255|unique:banners,title',
             'is_active' => 'required|boolean',
             'text' => 'nullable|string|max:255',
-            'image' => 'required|image|max:2048|mimes:jpg,jpeg,png,webp,svg',
+            'image' => 'required|image|max:' . config('upload.max_file_kb') . '|mimes:jpg,jpeg,png,webp,svg',
             'type' => 'required|string|max:255',
             'button_text' => 'nullable|string|max:255',
             'button_link' => 'nullable|string|max:255',

@@ -24,7 +24,11 @@ class CKEditorController extends Controller
     {
         try {
             $request->validate([
-                'upload' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:5120', // 5MB
+                'upload' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:' . config('upload.max_file_kb'),
+            ], [
+                'upload.max' => 'حجم تصویر نباید بیشتر از ' . config('upload.max_file_kb') . ' کیلوبایت باشد.',
+                'upload.image' => 'فایل انتخاب‌شده باید تصویر باشد.',
+                'upload.mimes' => 'فرمت تصویر باید jpg، png، gif یا webp باشد.',
             ]);
 
             $fileName = $this->fileUpload->upload(

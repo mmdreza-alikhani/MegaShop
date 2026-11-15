@@ -33,7 +33,7 @@ class UpdatePostRequest extends FormRequest
             'tag_ids' => 'nullable|array|exists:tags,id',
             'short_link' => 'nullable|max:12|string|unique:short_links,code,'.($this->route('post')->shortLink?->id),
             'text' => 'required|string',
-            'image' => 'nullable|max:2048|mimes:jpg,jpeg,png,svg,webp',
+            'image' => 'nullable|max:' . config('upload.max_file_kb') . '|mimes:jpg,jpeg,png,svg,webp',
             'newFaqs' => 'nullable|array',
             'newFaqs.*.question' => 'required|string|max:1250',
             'newFaqs.*.answer' => 'required|string|max:1250',

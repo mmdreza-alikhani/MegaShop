@@ -31,7 +31,7 @@ class UpdateRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:255|regex:/^9\d{9}$/|unique:users,phone_number,' . $this->user()->id,
-            'avatar' => 'nullable|mimes:jpg,jpeg,png,svg|max:2048',
+            'avatar' => 'nullable|mimes:jpg,jpeg,png,svg|max:' . config('upload.max_file_kb'),
             'email' => 'required|email|max:255|unique:users,email,' . $this->user()->id,
         ];
     }

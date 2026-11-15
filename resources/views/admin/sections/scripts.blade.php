@@ -11,6 +11,10 @@
 <script src="{{ asset('/admin/js/jquery.czMore-latest.js') }}"></script>
 <script src="{{ asset('/admin/js/form-repeater.js') }}?v={{ filemtime(public_path('admin/js/form-repeater.js')) }}"></script>
 <script src="{{ asset('/admin/js/main.js') }}"></script>
+<script>
+    window.MK_UPLOAD_LIMIT_KB = {{ (int) config('upload.max_file_kb') }};
+</script>
+<script src="{{ asset('/admin/js/upload-guard.js') }}?v={{ filemtime(public_path('admin/js/upload-guard.js')) }}"></script>
 <script src="{{ asset('/admin/js/shell.js') }}?v={{ filemtime(public_path('admin/js/shell.js')) }}"></script>
 <script>
     jQuery(function () {

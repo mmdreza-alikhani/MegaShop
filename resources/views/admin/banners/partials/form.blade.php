@@ -113,7 +113,7 @@
                      alt="">
                 <div class="mk-upload-body">
                     <strong data-mk-upload-title>{{ $isEdit ? 'انتخاب تصویر جدید' : 'انتخاب یا رها کردن تصویر' }}</strong>
-                    <small>jpg، png، webp یا svg — حداکثر ۲ مگابایت</small>
+                    <small>jpg، png، webp یا svg — حداکثر ۵۰۰ کیلوبایت</small>
                 </div>
                 <label class="mk-upload-btn" for="image">
                     <i class="fas fa-folder-open"></i> انتخاب فایل

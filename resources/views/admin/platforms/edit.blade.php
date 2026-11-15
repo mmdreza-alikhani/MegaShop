@@ -52,7 +52,7 @@
 
             <span class="mk-upload-text">
                 <strong data-mk-upload-title>انتخاب یا رها کردن تصویر</strong>
-                <small>JPG، PNG یا SVG — حداکثر ۲ مگابایت</small>
+                <small>JPG، PNG یا SVG — حداکثر ۵۰۰ کیلوبایت</small>
             </span>
         </label>
 

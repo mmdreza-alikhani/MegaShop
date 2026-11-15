@@ -27,7 +27,7 @@ class StorePlatformRequest extends FormRequest
         return [
             'title' => 'required|max:255|unique:platforms,title',
             'is_active' => 'required|boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:' . config('upload.max_file_kb'),
         ];
     }
 }

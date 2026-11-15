@@ -156,6 +156,10 @@ Route::name('home.')->group(function () {
                 ->name('update')
                 ->middleware('throttle:10,1');
 
+            Route::post('avatar', [Home\ProfileController::class, 'updateAvatar'])
+                ->name('avatar')
+                ->middleware('throttle:10,1');
+
             Route::prefix('orders')->name('orders.')->group(function () {
                 Route::get('/', [Home\ProfileController::class, 'orders'])->name('index');
                 Route::get('{order}', [Home\ProfileController::class, 'showOrder'])->name('show');

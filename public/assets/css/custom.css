@@ -6280,3 +6280,435 @@ html body .fl-flasher .fl-progress-bar {
         width: calc(100vw - 16px) !important;
     }
 }
+
+
+/* ==========================================================
+   برش‌دهندهٔ آواتار
+   ========================================================== */
+.mkcrop-modal .modal-dialog {
+    max-width: 720px;
+}
+
+.mkcrop-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 210px;
+    gap: 16px;
+    align-items: start;
+}
+
+.mkcrop-stage {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 14px;
+    touch-action: none;
+}
+
+.mkcrop-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+}
+
+.mkcrop-canvas.is-dragging {
+    cursor: grabbing;
+}
+
+.mkcrop-mask {
+    position: absolute;
+    inset: 8px;
+    border: 1px dashed color-mix(in srgb, #fff 60%, transparent);
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.mkcrop-badge {
+    position: absolute;
+    inset-block-start: 14px;
+    inset-inline-start: 14px;
+    padding: 3px 8px;
+    font-size: .64rem;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(10, 14, 20, .55);
+    border-radius: 999px;
+    pointer-events: none;
+}
+
+.mkcrop-busy {
+    position: absolute;
+    inset: 0;
+    display: none;
+    place-items: center;
+    font-size: 1.4rem;
+    color: #fff;
+    background: rgba(8, 12, 18, .55);
+}
+
+.mkcrop-stage.is-busy .mkcrop-busy {
+    display: grid;
+}
+
+.mkcrop-side {
+    display: grid;
+    gap: 12px;
+    justify-items: center;
+    padding: 12px;
+    background: var(--mk-bg-2);
+    border: 1px solid var(--mk-border);
+    border-radius: 14px;
+}
+
+.mkcrop-side-label {
+    font-size: .7rem;
+    font-weight: 600;
+    color: var(--mk-muted);
+}
+
+.mkcrop-mini {
+    width: 88px;
+    height: 88px;
+    background: var(--mk-surface);
+    border: 1px solid var(--mk-border);
+    border-radius: 50%;
+}
+
+.mkcrop-zoom {
+    display: grid;
+    gap: 6px;
+    width: 100%;
+}
+
+.mkcrop-zoom-title {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: .7rem;
+    color: var(--mk-muted);
+}
+
+.mkcrop-zoom-title b {
+    margin-inline-start: auto;
+    font-weight: 700;
+    color: var(--mk-text);
+}
+
+.mkcrop-zoom input[type="range"] {
+    width: 100%;
+    accent-color: var(--mk-accent);
+    cursor: pointer;
+}
+
+.mkcrop-tools {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+}
+
+.mkcrop-tools .mk-btn {
+    flex: 1 1 0;
+    justify-content: center;
+    font-size: .7rem;
+    padding: 6px 8px;
+}
+
+.mkcrop-size {
+    display: grid;
+    gap: 6px;
+    width: 100%;
+}
+
+.mkcrop-size span {
+    font-size: .7rem;
+    color: var(--mk-muted);
+}
+
+.mkcrop-size select {
+    width: 100%;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: .76rem;
+    color: var(--mk-text);
+    background: var(--mk-input-bg);
+    border: 1px solid var(--mk-border);
+    border-radius: 9px;
+}
+
+.mkcrop-hint {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin: 14px 0 0;
+    font-size: .7rem;
+    color: var(--mk-muted);
+}
+
+/* وضعیت انتخاب آواتار */
+.mk-avatar-status {
+    display: block;
+    max-width: 360px;
+    margin-top: 8px;
+    font-size: .68rem;
+    color: var(--mk-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mk-upload-error {
+    display: block;
+    margin-top: 6px;
+    font-size: .68rem;
+    color: #f04438;
+}
+
+/* پیام شناور سبک فروشگاه */
+.mk-toast-float {
+    position: fixed;
+    inset-block-start: 14px;
+    inset-inline-start: 50%;
+    z-index: 2147483647;
+    display: grid;
+    gap: 10px;
+    width: min(420px, calc(100vw - 24px));
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.mk-toast-float-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    pointer-events: auto;
+    background: var(--mk-surface);
+    border: 1px solid var(--mk-border);
+    border-inline-start: 4px solid #2e90fa;
+    border-radius: 14px;
+    box-shadow: var(--mk-shadow);
+    animation: mk-store-toast-in .3s cubic-bezier(.22, .61, .36, 1) both;
+}
+
+.mk-toast-float-item.is-hiding {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity .2s ease, transform .2s ease;
+}
+
+.mk-toast-float-item.is-success {
+    border-inline-start-color: #17b26a;
+}
+
+.mk-toast-float-item.is-error {
+    border-inline-start-color: #f04438;
+}
+
+.mk-toast-float-icon {
+    margin-top: 2px;
+    font-size: 1rem;
+    color: #2e90fa;
+}
+
+.mk-toast-float-item.is-success .mk-toast-float-icon {
+    color: #17b26a;
+}
+
+.mk-toast-float-item.is-error .mk-toast-float-icon {
+    color: #f04438;
+}
+
+.mk-toast-float-text {
+    flex: 1 1 auto;
+    margin: 0;
+    font-size: .78rem;
+    font-weight: 600;
+    line-height: 1.85;
+    color: var(--mk-text);
+}
+
+.mk-toast-float-close {
+    flex: 0 0 auto;
+    padding: 0 2px;
+    font-size: .8rem;
+    color: var(--mk-muted);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.mk-toast-float-close:hover {
+    color: var(--mk-text);
+}
+
+@media (max-width: 767.98px) {
+    .mkcrop-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mkcrop-side {
+        grid-template-columns: auto 1fr;
+        justify-items: stretch;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mkcrop-side-label {
+        grid-column: 1 / -1;
+    }
+
+    .mkcrop-mini {
+        width: 64px;
+        height: 64px;
+    }
+}
+
+
+/* اندازهٔ کادر برش: کوچک‌تر و متعادل در مودال */
+.mkcrop-modal .modal-dialog {
+    max-width: 660px;
+}
+
+.mkcrop-stage {
+    width: 100%;
+    max-width: 336px;
+    margin-inline: auto;
+}
+
+.mkcrop-layout {
+    grid-template-columns: minmax(0, 1fr) 200px;
+    justify-content: center;
+}
+
+/* ردیف آواتار در صفحهٔ مشخصات: جمع‌وجور و بدون فضای خالی */
+.mk-avatar-row {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+html[dir="rtl"] .mk-avatar-row > div {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.mk-avatar-row img {
+    flex: 0 0 auto;
+    width: 64px;
+    height: 64px;
+    background: var(--mk-surface-2);
+    border: 1px solid var(--mk-border);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--mk-accent) 10%, transparent);
+}
+
+
+/* رفع مرکزیت پیام شناور در حالت راست‌به‌چپ */
+.mk-toast-float {
+    left: 50%;
+    right: auto;
+    inset-inline-start: auto;
+}
+
+.mk-avatar-row {
+    max-width: 560px;
+}
+
+.mk-avatar-status {
+    text-align: start;
+    white-space: normal;
+    line-height: 1.8;
+}
+
+.mk-avatar-status::before {
+    content: "\2713";
+    display: inline-block;
+    margin-inline-end: 4px;
+    font-weight: 700;
+    color: #17b26a;
+}
+
+
+/* ---------- اصلاح چیدمان برش‌دهنده در اندازه‌های کوچک ---------- */
+@media (max-width: 767.98px) {
+    .mkcrop-modal .modal-dialog {
+        max-width: calc(100vw - 16px);
+        margin: 8px auto;
+    }
+
+    .mkcrop-layout {
+        grid-template-columns: minmax(0, 1fr);
+        justify-content: stretch;
+        gap: 12px;
+    }
+
+    .mkcrop-stage {
+        max-width: 260px;
+    }
+
+    .mkcrop-side {
+        display: grid;
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 10px;
+        align-items: center;
+        justify-items: stretch;
+        padding: 10px;
+    }
+
+    .mkcrop-side-label {
+        grid-column: 1 / -1;
+    }
+
+    .mkcrop-mini {
+        width: 64px;
+        height: 64px;
+    }
+
+    .mkcrop-zoom,
+    .mkcrop-tools,
+    .mkcrop-size {
+        grid-column: 1 / -1;
+    }
+
+    .mk-modal-body {
+        max-height: 68vh;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .mk-modal .modal-dialog {
+        max-width: calc(100vw - 12px);
+    }
+
+    .mk-modal-foot {
+        justify-content: stretch;
+    }
+}
+
+
+/* ---------- تنظیم نهایی مودال برش در موبایل ---------- */
+@media (max-width: 767.98px) {
+    .mkcrop-modal .modal-body,
+    .mkcrop-modal .mk-modal-body {
+        max-height: calc(100vh - 210px);
+        overflow-y: auto;
+    }
+
+    .mkcrop-stage {
+        max-width: 224px;
+    }
+
+    .mkcrop-side {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 12px;
+    }
+
+    .mkcrop-mini {
+        display: none;
+    }
+
+    .mkcrop-side-label {
+        display: none;
+    }
+}

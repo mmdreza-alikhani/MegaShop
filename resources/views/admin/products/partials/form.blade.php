@@ -169,7 +169,7 @@
                         <i class="fas fa-upload"></i> افزودن تصویر
                     </button>
                 </div>
-                <small class="mk-field-hint">حداکثر ۱۰ فایل، هر فایل تا ۲ مگابایت.</small>
+                <small class="mk-field-hint">حداکثر ۱۰ فایل، هر فایل تا ۵۰۰ کیلوبایت.</small>
             @else
                 <div class="mk-field">
                     <label for="primary_image">تصویر اصلی <em>*</em></label>
@@ -177,7 +177,7 @@
                         <img data-mk-upload-preview src="{{ asset('assets/images/upload-placeholder.svg') }}" alt="">
                         <div class="mk-upload-body">
                             <strong data-mk-upload-title>انتخاب یا رها کردن تصویر</strong>
-                            <small>jpg، png یا webp — حداکثر ۲ مگابایت</small>
+                            <small>jpg، png یا webp — حداکثر ۵۰۰ کیلوبایت</small>
                         </div>
                         <label class="mk-upload-btn" for="primary_image">
                             <i class="fas fa-folder-open"></i> انتخاب فایل

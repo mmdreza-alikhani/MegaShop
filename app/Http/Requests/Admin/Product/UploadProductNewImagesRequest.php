@@ -26,7 +26,7 @@ class UploadProductNewImagesRequest extends FormRequest
     {
         return [
             'images' => 'required|array|min:1|max:10',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:' . config('upload.max_file_kb'),
         ];
     }
 
@@ -36,7 +36,7 @@ class UploadProductNewImagesRequest extends FormRequest
             'images.required' => 'لطفا حداقل یک تصویر انتخاب کنید',
             'images.*.image' => 'فایل باید تصویر باشد',
             'images.*.mimes' => 'فرمت تصویر باید jpeg, png, jpg, gif یا webp باشد',
-            'images.*.max' => 'حجم هر تصویر نباید بیشتر از 2 مگابایت باشد',
+            'images.*.max' => 'حجم هر تصویر نباید بیشتر از ' . config('upload.max_file_kb') . ' کیلوبایت باشد',
         ];
     }
 }

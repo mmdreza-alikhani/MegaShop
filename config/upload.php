@@ -1,6 +1,17 @@
 <?php
 
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | سقف حجم فایل‌های آپلودی (کیلوبایت)
+    |--------------------------------------------------------------------------
+    | این مقدار در همه‌ی فرم‌ها و ادیتورها اعمال می‌شود.
+    */
+    'max_file_kb' => (int) env('UPLOAD_MAX_FILE_KB', 500),
+
+    /* اندازه‌ی خروجی آواتار کاربر (پیکسل، مربع) */
+    'avatar_size' => (int) env('UPLOAD_AVATAR_SIZE', 512),
+
     'product_primary_path' => env('PRODUCT_PRIMARY_IMAGE_UPLOAD_PATH', 'products/images'),
     'product_others_path' => env('PRODUCT_OTHER_IMAGES_UPLOAD_PATH', 'products/images'),
 

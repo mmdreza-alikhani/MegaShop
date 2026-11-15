@@ -20,16 +20,19 @@
             @include('home.sections.errors', ['errors' => $errors->updateProfile])
 
             <div class="mk-avatar-row">
-                <img src="{{ Storage::url(config('upload.user_avatar_path') . '/' . ($user->avatar ?: 'avatar.png')) }}"
+                <img id="profileAvatarPreview"
+                     src="{{ Storage::url(config('upload.user_avatar_path') . '/' . ($user->avatar ?: 'avatar.png')) }}"
                      onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar-placeholder.svg') }}'"
                      alt="{{ $user->username }}">
                 <div>
                     <strong>تصویر پروفایل</strong>
-                    <small>در صورت انتخاب نکردن فایل، تصویر فعلی حفظ می‌شود.</small>
-                    <label class="mk-btn mk-btn-outline mk-btn-sm" for="avatar" style="margin-top:8px">
-                        انتخاب تصویر
-                    </label>
-                    <input id="avatar" type="file" name="avatar" accept="image/*" hidden>
+                    <small>تصویر را انتخاب کنید، خودتان برش و بزرگ‌نمایی می‌کنید. jpg، png یا webp — حداکثر ۵۰۰ کیلوبایت.</small>
+                    <button type="button" class="mk-btn mk-btn-outline mk-btn-sm" id="avatarPickBtn" style="margin-top:8px">
+                        <span class="fa fa-crop"></span> انتخاب و برش تصویر
+                    </button>
+                    <input id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp"
+                           data-skip-upload-limit hidden>
+                    <small id="avatarStatus" class="mk-avatar-status" hidden></small>
                 </div>
             </div>
 
@@ -95,5 +98,7 @@
                 </div>
             </div>
         </form>
+
+        @include('home.profile.partials.avatar-modal')
     </div>
 @endsection

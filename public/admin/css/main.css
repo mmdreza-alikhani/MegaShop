@@ -8047,3 +8047,110 @@ body.dark .mk-pill.is-info {
 #toast-container > .toast-danger::before { content: "\f057"; }
 #toast-container > .toast-warning::before { content: "\f071"; }
 #toast-container > .toast-info::before { content: "\f05a"; }
+
+
+/* ==========================================================
+   پیام شناور محافظ حجم فایل (هم‌سبک با توست‌های پنل)
+   ========================================================== */
+.mk-toast-float {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    z-index: 2147483647;
+    display: grid;
+    gap: 10px;
+    width: min(420px, calc(100vw - 24px));
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.mk-toast-float-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    pointer-events: auto;
+    direction: rtl;
+    text-align: right;
+    color: var(--adm-text, #1f2937);
+    background: var(--adm-surface, #fff);
+    border: 1px solid var(--adm-border, #e5e7eb);
+    border-inline-start: 4px solid #ef4444;
+    border-radius: 14px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, .18);
+    animation: adm-toast-in .3s cubic-bezier(.22, .61, .36, 1) both;
+}
+
+.dark .mk-toast-float-item {
+    color: #e6e9ef;
+    background: #171a21;
+    border-color: #2a3040;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .5);
+}
+
+.mk-toast-float-item.is-hiding {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity .2s ease, transform .2s ease;
+}
+
+.mk-toast-float-item.is-success {
+    border-inline-start-color: #10b981;
+}
+
+.mk-toast-float-item.is-info {
+    border-inline-start-color: #3b82f6;
+}
+
+.mk-toast-float-icon {
+    margin-top: 2px;
+    font-size: 1.05rem;
+    color: #ef4444;
+}
+
+.mk-toast-float-item.is-success .mk-toast-float-icon {
+    color: #10b981;
+}
+
+.mk-toast-float-item.is-info .mk-toast-float-icon {
+    color: #3b82f6;
+}
+
+.mk-toast-float-text {
+    flex: 1 1 auto;
+    margin: 0;
+    font-size: .82rem;
+    font-weight: 600;
+    line-height: 1.9;
+}
+
+.mk-toast-float-close {
+    padding: 0 2px;
+    font-size: .8rem;
+    color: #9aa4b2;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.mk-toast-float-close:hover {
+    color: #ef4444;
+}
+
+.mk-upload-error {
+    display: block;
+    margin-top: 6px;
+    font-size: .72rem;
+    color: #ef4444;
+}
+
+@keyframes adm-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(.98);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
