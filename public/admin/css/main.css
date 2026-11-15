@@ -5545,3 +5545,22 @@ body.dark {
     background: rgba(9, 12, 17, .6) !important;
     z-index: 2000 !important;
 }
+/* ---------- یکدست‌کردن پس‌زمینه کل مودال ---------- */
+.mk-adm-modal .modal-content,
+.mk-adm-modal .mk-adm-modal-head,
+.mk-adm-modal .mk-adm-modal-body,
+.mk-adm-modal .mk-adm-modal-foot {
+    background: var(--adm-surface-2) !important;
+}
+
+body.dark .mk-adm-modal .modal-content,
+body.dark .mk-adm-modal .mk-adm-modal-head,
+body.dark .mk-adm-modal .mk-adm-modal-body,
+body.dark .mk-adm-modal .mk-adm-modal-foot {
+    background: #1c232b !important;
+}
+
+.mk-adm-modal .mk-adm-modal-body {
+    border-top: 1px solid var(--adm-border);
+    border-bottom: 1px solid var(--adm-border);
+}
