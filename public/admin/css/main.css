@@ -5485,3 +5485,54 @@ body.dark {
         z-index: 1035;
     }
 }
+/* =========================================================
+   مودال‌ها: بک‌دراپ تمام‌صفحه و ترتیب لایه‌ها
+   ========================================================= */
+.modal {
+    z-index: 1080 !important;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.modal-backdrop {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(9, 12, 17, .58) !important;
+    opacity: 1 !important;
+    z-index: 1070 !important;
+}
+
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.modal-open .bmd-layout-container {
+    filter: none !important;
+}
+
+/* کارت مودال داخل صفحه */
+.mk-adm-modal .modal-dialog {
+    margin: 32px auto !important;
+}
+
+.mk-adm-modal .modal-content {
+    width: 100%;
+    max-width: 100%;
+}
+
+@media (max-width: 575.98px) {
+    .mk-adm-modal .modal-dialog {
+        margin: 14px auto !important;
+        padding: 0 10px;
+    }
+}
+/* بک‌دراپ باید روی سایدبار ثابت هم بنشیند */
+.modal {
+    z-index: 2000 !important;
+}
+
+.modal-backdrop {
+    z-index: 1990 !important;
+}
