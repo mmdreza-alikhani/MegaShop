@@ -5317,3 +5317,158 @@ body.dark {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
+/* =========================================================
+   اسکرول مستقل سایدبار و فاصله دکمه‌ها
+   ========================================================= */
+#dw-s1.bmd-layout-drawer {
+    display: flex !important;
+    flex-direction: column;
+    overflow: hidden !important;
+}
+
+#dw-s1 .side-bar-container {
+    display: flex !important;
+    flex: 1 1 auto;
+    flex-direction: column;
+    height: 100%;
+    padding: 12px 8px 18px !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--adm-border) transparent;
+    overscroll-behavior: contain;
+}
+
+#dw-s1 .side-bar-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#dw-s1 .side-bar-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#dw-s1 .side-bar-container::-webkit-scrollbar-thumb {
+    background: var(--adm-border);
+    border-radius: 20px;
+}
+
+#dw-s1 .side-bar-container::-webkit-scrollbar-thumb:hover {
+    background: var(--adm-accent);
+}
+
+/* فاصله عمودی بیشتر بین دکمه‌ها */
+#dw-s1 .side-item,
+#dw-s1 .side.a-collapse li.side-item,
+.rtl #dw-s1 .side.a-collapse li.side-item,
+#dw-s1 > .container-fluid > li.side {
+    margin: 6px 0 !important;
+}
+
+#dw-s1 .side-item-container .side-item {
+    margin: 3px 0 !important;
+}
+
+#dw-s1 .ul-text {
+    margin-top: 2px;
+}
+
+#dw-s1 p.side-comment {
+    margin: 18px 8px 8px;
+}
+
+/* =========================================================
+   مودال‌ها: دکمه‌ها و پس‌زمینه‌ها
+   ========================================================= */
+.mk-adm-modal .modal-content {
+    background: var(--adm-surface) !important;
+    border: 1px solid var(--adm-border) !important;
+    color: var(--adm-text);
+}
+
+.mk-adm-modal .mk-adm-modal-head,
+.mk-adm-modal .mk-adm-modal-foot {
+    background: var(--adm-surface-2) !important;
+    border-color: var(--adm-border) !important;
+}
+
+.mk-adm-modal .mk-adm-modal-body {
+    background: var(--adm-surface);
+}
+
+.mk-adm-modal-foot .btn,
+.mk-adm-modal .modal-footer .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 118px;
+    height: 40px;
+    padding: 0 16px;
+    font-size: .8rem;
+    font-weight: 700;
+    line-height: 1;
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+.mk-adm-modal-foot .btn-info,
+.mk-adm-modal .modal-footer .btn-info {
+    color: #fff !important;
+    background: var(--adm-accent) !important;
+    border: 1px solid var(--adm-accent) !important;
+}
+
+.mk-adm-modal-foot .btn-info:hover,
+.mk-adm-modal .modal-footer .btn-info:hover {
+    background: #c4122f !important;
+    border-color: #c4122f !important;
+}
+
+.mk-adm-modal-foot .btn-light,
+.mk-adm-modal .modal-footer .btn-light,
+.mk-adm-modal .modal-footer .btn.f-danger {
+    color: var(--adm-muted) !important;
+    background: var(--adm-surface) !important;
+    border: 1px solid var(--adm-border) !important;
+}
+
+.mk-adm-modal-foot .btn-light:hover,
+.mk-adm-modal .modal-footer .btn-light:hover,
+.mk-adm-modal .modal-footer .btn.f-danger:hover {
+    color: var(--adm-text) !important;
+    border-color: var(--adm-text) !important;
+}
+/* ---------- سایدبار هم‌اندازه ویوپورت با اسکرول داخلی ---------- */
+#dw-s1.bmd-layout-drawer {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    top: 0;
+    bottom: auto;
+}
+
+/* فاصله بیشتر بین دکمه‌ها */
+#dw-s1 .side-item,
+#dw-s1 .side.a-collapse li.side-item,
+.rtl #dw-s1 .side.a-collapse li.side-item,
+#dw-s1 > .container-fluid > li.side {
+    margin: 8px 0 !important;
+}
+
+@media (max-width: 991.98px) {
+    #dw-s1.bmd-layout-drawer {
+        height: 100vh !important;
+        max-height: 100vh !important;
+    }
+}
+/* ---------- اسکرول واقعی سایدبار (flexbox) ---------- */
+#dw-s1 .side-bar-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto !important;
+    max-height: 100%;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+/* آیتم‌های سایدبار نباید فشرده شوند */
+#dw-s1 .side-bar-container > * {
+    flex: 0 0 auto;
+}
