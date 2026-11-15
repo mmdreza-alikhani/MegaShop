@@ -5536,3 +5536,12 @@ body.dark {
 .modal-backdrop {
     z-index: 1990 !important;
 }
+/* ---------- پس‌زمینه مودال داخل همان لایه صفحه (بدون backdrop جدا) ---------- */
+.modal-backdrop {
+    display: none !important;
+}
+
+.modal {
+    background: rgba(9, 12, 17, .6) !important;
+    z-index: 2000 !important;
+}
