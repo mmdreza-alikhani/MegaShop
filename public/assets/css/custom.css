@@ -7246,3 +7246,85 @@ html[dir="rtl"] .mk-avatar-row > div {
         max-width: 38px;
     }
 }
+
+
+/* =========================================================
+   لایه‌بندی مودال‌ها و لایهٔ سبد خرید
+   ========================================================= */
+html body .modal {
+    z-index: 1500;
+}
+
+html body .modal-backdrop {
+    z-index: 1490;
+}
+
+/* لایهٔ تاریک وقتی سبد خرید باز است هم نمایش داده می‌شود */
+.mk-drawer-open .mk-overlay,
+.mk-cart-open .mk-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* سبد خرید بالاتر از همهٔ لایه‌ها */
+.mk-cart-panel {
+    z-index: 1600;
+}
+
+.mk-overlay {
+    z-index: 1550;
+}
+
+.mk-cart-panel,
+.mk-overlay {
+    cursor: default;
+}
+
+@media (max-width: 991.98px) {
+    /* در موبایل نوار پایین زیر لایهٔ سبد می‌ماند */
+    .mk-cart-open .mk-bottom-nav {
+        pointer-events: none;
+    }
+}
+
+
+/* مودال‌ها همیشه بالاتر از سبد و لایهٔ تاریک */
+html body .modal {
+    z-index: 1700;
+}
+
+html body .modal-backdrop {
+    z-index: 1650;
+}
+
+
+/* =========================================================
+   لایهٔ تاریک پشت سبد خرید (رنگ واقعی به‌جای متغیر سایه)
+   ========================================================= */
+.mk-overlay {
+    background: color-mix(in srgb, #05080c 52%, transparent);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    cursor: pointer;
+}
+
+@media (max-width: 991.98px) {
+    .mk-cart-panel {
+        width: min(380px, 88vw);
+    }
+}
+
+
+/* ---------- اصلاح: پنل سبد باید بالاتر از لایهٔ تاریک بماند ---------- */
+body.mk-cart-open .mk-cart-panel,
+body.mk-drawer-open .mk-drawer {
+    z-index: 1600;
+}
+
+.mk-overlay {
+    z-index: 1550;
+    background: color-mix(in srgb, #05080c 52%, transparent);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    cursor: pointer;
+}
