@@ -22,5 +22,5 @@
 <script src="{{ asset('assets/vendor/bootstrap-slider/dist/bootstrap-slider.min.js') }}"></script>
 <script src="{{ asset('assets/js/main.min.js') }}"></script>
 <script src="{{ asset('assets/js/main-init.js') }}"></script>
-<script src="{{ asset('assets/js/custom.js') }}"></script>
+<script src="{{ asset('assets/js/custom.js') }}?v={{ filemtime(public_path('assets/js/custom.js')) }}"></script>
 {{--<script src="/assets/vendor/summernote/dist/summernote-bs4.min.js"></script>--}}

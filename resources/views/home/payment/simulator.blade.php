@@ -1,104 +1,77 @@
-{{--
-    صفحه شبیه‌ساز درگاه پرداخت (نسخه دمو)
-    هیچ اتصال واقعی به درگاه بانکی انجام نمی‌شود؛ کاربر با دو دکمه،
-    نتیجه پرداخت (موفق/لغو) را شبیه‌سازی می‌کند.
---}}
 @extends('home.layout.master')
 
-@section('title')
-    درگاه پرداخت آزمایشی
-@endsection
+@section('title', 'درگاه پرداخت آزمایشی')
 
 @section('content')
+    <div class="container mk-checkout-page">
+        <nav class="mk-crumbs" aria-label="مسیر صفحه">
+            <a href="{{ route('home.index') }}">خانه</a>
+            <span class="fa fa-angle-left" aria-hidden="true"></span>
+            <a href="{{ route('home.cart.index') }}">سبد خرید</a>
+            <span class="fa fa-angle-left" aria-hidden="true"></span>
+            <span>درگاه آزمایشی</span>
+        </nav>
 
-<!-- START: Breadcrumbs -->
-<div class="nk-gap-1"></div>
-<div class="container my-3">
-    <ul class="nk-breadcrumbs text-right" style="direction: rtl">
-        <li><a href="{{ route('home.index') }}">خانه</a></li>
+        @include('home.sections.demo-notice')
 
-        <li><span class="fa fa-angle-left"></span></li>
+        <div class="mk-gateway">
+            <div class="mk-gateway-card">
+                <header class="mk-gateway-head">
+                    <span class="mk-gateway-logo"><span class="fa fa-credit-card"></span></span>
+                    <div>
+                        <strong>درگاه پرداخت آزمایشی</strong>
+                        <small>سفارش #{{ $order->id }} — {{ verta($order->created_at)->format('%d %B %Y - H:i') }}</small>
+                    </div>
+                    <span class="mk-gateway-badge">شبیه‌سازی</span>
+                </header>
 
-        <li><a href="{{ route('home.cart.index') }}">سبد خرید</a></li>
+                <div class="mk-gateway-amount">
+                    <span>مبلغ قابل پرداخت</span>
+                    <strong>{{ number_format($order->paying_amount) }} <small>تومان</small></strong>
+                </div>
 
-        <li><span class="fa fa-angle-left"></span></li>
+                <div class="mk-gateway-rows">
+                    <div class="mk-sum-row">
+                        <span>شناسه تراکنش</span>
+                        <strong dir="ltr">#{{ $transaction->id }}</strong>
+                    </div>
+                    <div class="mk-sum-row">
+                        <span>وضعیت</span>
+                        <strong>در انتظار پرداخت</strong>
+                    </div>
+                    <div class="mk-sum-row">
+                        <span>اقلام</span>
+                        <strong>{{ number_format($order->items->count()) }} قلم</strong>
+                    </div>
+                </div>
 
-        <li><span>درگاه پرداخت آزمایشی</span></li>
-    </ul>
-</div>
-<div class="nk-gap-1"></div>
-<!-- END: Breadcrumbs -->
+                <div class="mk-gateway-items">
+                    @foreach($order->items as $item)
+                        <div class="mk-gateway-item">
+                            <span>{{ $item->product->title ?? 'محصول حذف‌شده' }}</span>
+                            <small>× {{ $item->quantity }}</small>
+                            <strong>{{ number_format($item->subtotal) }}</strong>
+                        </div>
+                    @endforeach
+                </div>
 
-<div class="container" style="direction: rtl">
-    <div class="row justify-content-center">
-        <div class="col-lg-7 col-12">
-            <div class="nk-gap-2"></div>
+                <form method="POST" action="{{ route('home.payment.simulator.submit', ['order' => $order->id]) }}"
+                      class="mk-gateway-actions">
+                    @csrf
 
-            <div class="alert alert-warning text-right">
-                <strong><span class="fa fa-info-circle"></span> شبیه‌ساز درگاه پرداخت</strong>
-                <p class="mb-0 mt-2">
-                    این نسخهٔ نمایشی (دمو) است و هیچ تراکنش بانکی واقعی انجام نمی‌شود.
-                    با انتخاب هر یک از گزینه‌های زیر می‌توانید نتیجهٔ پرداخت را شبیه‌سازی کنید.
+                    <button type="submit" name="action" value="success" class="mk-btn mk-btn-success mk-btn-block">
+                        <span class="fa fa-check-circle"></span> پرداخت موفق (شبیه‌سازی)
+                    </button>
+                    <button type="submit" name="action" value="cancel" class="mk-btn mk-btn-ghost mk-btn-block">
+                        <span class="fa fa-times"></span> انصراف از پرداخت
+                    </button>
+                </form>
+
+                <p class="mk-cart-demo-note">
+                    <span class="fa fa-info-circle"></span>
+                    این درگاه به هیچ بانکی متصل نیست؛ نتیجه فقط برای نمایش ثبت می‌شود.
                 </p>
             </div>
-
-            <div class="card text-right">
-                <div class="card-header" style="background-color: #dd163b; color: #fff">
-                    پرداخت سفارش #{{ $order->id }}
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2">مبلغ قابل پرداخت: <strong>{{ number_format($order->paying_amount) }} تومان</strong></li>
-                        <li class="mb-2">تاریخ ثبت سفارش: {{ verta($order->created_at)->format('%d %B %Y - H:i') }}</li>
-                        <li class="mb-2">شناسهٔ تراکنش: {{ $transaction->id }}</li>
-                        <li class="mb-2">وضعیت فعلی: در انتظار پرداخت</li>
-                    </ul>
-
-                    <hr>
-
-                    <h5 class="mb-3">اقلام سفارش</h5>
-                    <div class="table-responsive">
-                        <table class="table table-sm text-right">
-                            <thead>
-                            <tr>
-                                <th>محصول</th>
-                                <th>تعداد</th>
-                                <th>جمع</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($order->items as $item)
-                                <tr>
-                                    <td>{{ $item->product->title ?? '—' }}</td>
-                                    <td>{{ $item->quantity }}</td>
-                                    <td>{{ number_format($item->subtotal) }} تومان</td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <hr>
-
-                    <form method="POST" action="{{ route('home.payment.simulator.submit', ['order' => $order->id]) }}"
-                          class="d-flex justify-content-between flex-wrap">
-                        @csrf
-                        <button type="submit" name="action" value="success"
-                                class="nk-btn nk-btn-rounded nk-btn-color-main-1 my-2">
-                            <span class="fa fa-check"></span> پرداخت موفق (شبیه‌سازی)
-                        </button>
-
-                        <button type="submit" name="action" value="cancel"
-                                class="nk-btn nk-btn-rounded nk-btn-color-dark-3 my-2">
-                            <span class="fa fa-times"></span> انصراف از پرداخت
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="nk-gap-3"></div>
         </div>
     </div>
-</div>
-
 @endsection

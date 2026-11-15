@@ -285,7 +285,7 @@
                         </a>
                         <div class="mk-cart-info">
                             <a href="{{ route('home.products.show', ['product' => $cartItem->itemable->slug]) }}">
-                                {{ Str::limit($cartItem->itemable->title, 42) }}
+                                {{ $cartItem->itemable->title }}
                             </a>
                             <small>
                                 {{ $cartItem->variation->attribute?->title }}:
@@ -309,6 +309,11 @@
                 <a href="{{ route('home.cart.index') }}" class="mk-btn mk-btn-outline">مشاهده سبد</a>
                 <a href="{{ route('home.cart.checkout') }}" class="mk-btn mk-btn-primary">تسویه حساب</a>
             </div>
+
+            <p class="mk-cart-demo-note">
+                <span class="fa fa-info-circle"></span>
+                این نسخه نمایشی است؛ پرداخت و سفارش واقعی انجام نمی‌شود.
+            </p>
         @endif
     </div>
 
