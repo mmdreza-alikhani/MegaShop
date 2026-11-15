@@ -5564,3 +5564,14 @@ body.dark .mk-adm-modal .mk-adm-modal-foot {
     border-top: 1px solid var(--adm-border);
     border-bottom: 1px solid var(--adm-border);
 }
+/* لوگوی پلتفرم در جدول */
+.mk-platform-logo {
+    display: block;
+    width: 42px;
+    height: 42px;
+    padding: 4px;
+    object-fit: contain;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 9px;
+}

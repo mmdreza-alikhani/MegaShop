@@ -31,13 +31,22 @@ class CategoryController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $query = Category::query();
+        $query = Category::query()->with('parent:id,title')->withCount(['products', 'children']);
+
         if ($request->input('q')) {
-            $query->search('title', trim(request()->input('q')));
+            $query->search('title', trim((string) request()->input('q')));
         }
+
         $categories = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.categories.index', compact('categories'));
+        $stats = [
+            'total' => Category::count(),
+            'parents' => Category::query()->parents()->count(),
+            'children' => Category::query()->where('parent_id', '!=', 0)->count(),
+            'active' => Category::query()->where('is_active', 1)->count(),
+        ];
+
+        return view('admin.categories.index', compact('categories', 'stats'));
     }
 
     public function create(): View|Application|Factory

@@ -27,13 +27,22 @@ class BrandController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $query = Brand::query();
+        $query = Brand::query()->withCount('products');
+
         if ($request->input('q')) {
-            $query->search('title', trim(request()->input('q')));
+            $query->search('title', trim((string) request()->input('q')));
         }
+
         $brands = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.brands.index', compact('brands'));
+        $stats = [
+            'total' => Brand::count(),
+            'active' => Brand::query()->where('is_active', 1)->count(),
+            'with_products' => Brand::has('products')->count(),
+            'empty' => Brand::has('products', '=', 0)->count(),
+        ];
+
+        return view('admin.brands.index', compact('brands', 'stats'));
     }
 
     /**

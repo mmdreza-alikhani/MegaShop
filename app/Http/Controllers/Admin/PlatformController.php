@@ -31,13 +31,22 @@ class PlatformController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $query = Platform::query();
+        $query = Platform::query()->withCount('products');
+
         if ($request->input('q')) {
-            $query->search('title', trim(request()->input('q')));
+            $query->search('title', trim((string) request()->input('q')));
         }
+
         $platforms = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.platforms.index', compact('platforms'));
+        $stats = [
+            'total' => Platform::count(),
+            'active' => Platform::query()->where('is_active', 1)->count(),
+            'with_products' => Platform::has('products')->count(),
+            'empty' => Platform::has('products', '=', 0)->count(),
+        ];
+
+        return view('admin.platforms.index', compact('platforms', 'stats'));
     }
 
     /**
