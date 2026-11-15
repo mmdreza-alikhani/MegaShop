@@ -1,146 +1,23 @@
 @extends('admin.layout.master')
 
-@php
-    $title = 'ایجاد بنر';
-@endphp
-
-@section('title', $title)
-
-@section('styles')
-    <style>
-        .d-flex.border.rounded.p-2 {
-            background-color: transparent !important;
-            border: none;
-            padding: 0;
-        }
-
-        .btn.f-primary {
-            background-color: transparent;
-            border: none;
-            box-shadow: none;
-            padding: 0;
-            color: inherit;
-        }
-    </style>
-@endsection
+@section('title', 'بنر جدید')
 
 @section('content')
     <main class="bmd-layout-content">
         <div class="container-fluid">
-            <div class="row m-1 pb-4 mb-3">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
-                    <div class="page-header breadcrumb-header">
-                        <div class="row align-items-end">
-                            <div class="col-lg-8">
-                                <div class="page-header-title text-left-rtl">
-                                    <div class="d-inline">
-                                        <h3 class="lite-text">پنل مدیریت</h3>
-                                        <span class="lite-text">{{ $title }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('admin.panel') }}"><i class="fas fa-home"></i></a>
-                                    </li>
-                                    <li class="breadcrumb-item active">{{ $title }}</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
+            <div class="mk-dash-head">
+                <div>
+                    <h3>بنر جدید</h3>
+                    <p>یک بنر تازه برای صفحه اصلی یا دسته‌بندی بسازید</p>
+                </div>
+                <div class="mk-dash-actions">
+                    <a href="{{ route('admin.banners.index') }}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-arrow-right mr-1"></i> بازگشت
+                    </a>
                 </div>
             </div>
 
-            <div class="mx-1">
-                <div class="card shade c-grey w-100">
-                    <h5 class="card-header c-primary">{{ $title }}</h5>
-                    <div class="card-body">
-                        @include('admin.layout.errors', ['errors' => $errors->store])
-                        <form class="p-3" action="{{ route('admin.banners.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="row">
-                                <div class="form-group col-12 col-lg-6">
-                                    <label for="title">عنوان:*</label>
-                                    <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}" required>
-                                </div>
-                                <div class="form-group col-12 col-lg-6">
-                                    <label for="is_active">وضعیت:*</label>
-                                    <select class="form-control" id="is_active" name="is_active" required>
-                                        <option value="1" {{ old('is_active') && old('is_active') == '1' ? 'selected' : '' }}>فعال</option>
-                                        <option value="0" {{ old('is_active') && old('is_active') == '0' ? 'selected' : '' }}>غیرفعال</option>
-                                    </select>
-                                </div>
-                                <div class="form-group col-12 col-lg-6">
-                                    <label for="type">نوع:*</label>
-                                    <input type="text" name="type" id="type" class="form-control" value="{{ old('type') }}" required>
-                                </div>
-                                <div class="form-group col-12 col-lg-6">
-                                    <label for="priority">اولویت:*</label>
-                                    <input type="number" min="0" max="100" name="priority" id="priority" class="form-control" value="{{ old('priority') }}" required>
-                                </div>
-                                <div class="form-group card shade c-grey col-12 col-lg-6">
-                                    <h5 class="card-header c-primary">افزودن تصویر</h5>
-                                    <div class="card-body row">
-                                        <div class="col-12 m-1">
-                                            <label class="d-block mb-2 text-right" for="image">تصویر اصلی:</label>
-                                            <div class="d-flex flex-row-reverse align-items-center border rounded p-2" style="background-color: #f8f9fa;">
-                                            <span class="btn f-primary ml-2 px-2" onclick="document.getElementById('image').click();">
-                                                انتخاب فایل
-                                            </span>
-                                                <span id="image-file-name" class="text-muted flex-grow-1 text-right">
-                                                هیچ فایلی انتخاب نشده
-                                            </span>
-                                                <input type="file" id="image" name="image" class="d-none" lang="fa" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group card shade c-grey col-12 col-lg-6">
-                                    <h5 class="card-header c-primary">دکمه</h5>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="form-group col-12 col-lg-4">
-                                                <label for="button_text">متن دکمه:*</label>
-                                                <input type="text" name="button_text" id="button_text" class="form-control"
-                                                       value="{{ old('button_text') }}" required>
-                                            </div>
-                                            <div class="form-group col-12 col-lg-4">
-                                                <label for="button_link">لینک دکمه:*</label>
-                                                <input type="text" name="button_link" id="button_link" class="form-control"
-                                                       value="{{ old('button_link') }}" required>
-                                            </div>
-                                            <div class="form-group col-12 col-lg-4">
-                                                <label for="button_icon">آیکون دکمه:*</label>
-                                                <input type="text" name="button_icon" id="button_icon" class="form-control"
-                                                       value="{{ old('button_icon') }}" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group col-12 col-lg-12">
-                                    <label for="text">متن:*</label>
-                                    <textarea id="text" type="text" name="text" class="form-control" required>{{ old('text') }}</textarea>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
-                                <button type="submit" class="btn f-primary p-2">ایجاد</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            @include('admin.banners.partials.form', ['banner' => null])
         </div>
     </main>
-@endsection
-@section('scripts')
-    <script>
-        $('#image').on('change', function () {
-            const fileName = this.files[0]?.name || 'هیچ فایلی انتخاب نشده';
-            $('#image-file-name').text(fileName);
-        });
-
-    </script>
 @endsection

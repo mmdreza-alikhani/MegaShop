@@ -28,8 +28,10 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255|unique:posts,title,'.$this->route('post')->id,
+            'type' => 'required|string|in:article,news',
             'is_active' => 'required|boolean',
-            'tag_ids' => 'required|array|exists:tags,id',
+            'tag_ids' => 'nullable|array|exists:tags,id',
+            'short_link' => 'nullable|max:12|string|unique:short_links,code,'.($this->route('post')->shortLink?->id),
             'text' => 'required|string',
             'image' => 'nullable|max:2048|mimes:jpg,jpeg,png,svg,webp',
             'newFaqs' => 'nullable|array',

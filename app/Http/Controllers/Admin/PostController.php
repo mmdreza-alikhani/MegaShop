@@ -35,13 +35,29 @@ class PostController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $query = Post::query();
+        $query = Post::query()->with('shortLink')->withCount('comments');
         if ($request->input('q')) {
-            $query->search('title', trim(request()->input('q')));
+            $query->search('title', trim((string) $request->input('q')));
         }
-        $posts = $query->latest()->with('shortLink')->paginate(15)->withQueryString();
 
-        return view('admin.posts.index', compact('posts'));
+        if ($request->filled('type')) {
+            $query->where('type', $request->input('type'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('is_active', (int) $request->input('status'));
+        }
+
+        $posts = $query->latest()->paginate(15)->withQueryString();
+
+        $stats = [
+            'total' => Post::count(),
+            'active' => Post::query()->where('is_active', 1)->count(),
+            'articles' => Post::query()->where('type', 'article')->count(),
+            'news' => Post::query()->where('type', 'news')->count(),
+        ];
+
+        return view('admin.posts.index', compact('posts', 'stats'));
     }
 
     /**
@@ -73,12 +89,16 @@ class PostController extends Controller
             ]);
 
             ShortLink::create([
-                'code' => $request->has('code') ? $request->string('code') : generateUniqueShortCode(),
+                'code' => $request->filled('short_link') ? $request->string('short_link') : generateUniqueShortCode(),
                 'type' => 'post',
                 'target_id' => $post->id,
             ]);
 
-            foreach ($request->faqs as $faqData) {
+            foreach ((array) $request->input('faqs', []) as $faqData) {
+                if (empty($faqData['question']) || empty($faqData['answer'])) {
+                    continue;
+                }
+
                 $post->faqs()->create([
                     'question' => $faqData['question'],
                     'answer' => $faqData['answer'],
@@ -96,7 +116,7 @@ class PostController extends Controller
         }
 
         flash()->success(config('flasher.post.created'));
-        return redirect()->back();
+        return redirect()->route('admin.posts.index');
     }
 
     /**
@@ -141,11 +161,17 @@ class PostController extends Controller
             ]);
 
             $existingFaqIds = $post->faqs()->pluck('id')->toArray();
-            $requestFaqIds = array_keys($request->faqs);
+            $requestFaqs = (array) $request->input('faqs', []);
+            $requestFaqIds = array_map('intval', array_keys($requestFaqs));
             $removedFaqs = array_diff($existingFaqIds, $requestFaqIds);
 
-            foreach ($request->faqs as $key => $faqData) {
+            foreach ($requestFaqs as $key => $faqData) {
                 $faq = $post->faqs()->find($key);
+
+                if (! $faq) {
+                    continue;
+                }
+
                 $faq->update([
                     'question' => $faqData['question'],
                     'answer' => $faqData['answer'],
@@ -157,6 +183,10 @@ class PostController extends Controller
 
             if ($request->has('newFaqs')) {
                 foreach ($request->newFaqs as $faqData) {
+                    if (empty($faqData['question']) || empty($faqData['answer'])) {
+                        continue;
+                    }
+
                     $post->faqs()->create([
                         'question' => $faqData['question'],
                         'answer' => $faqData['answer'],
@@ -165,6 +195,18 @@ class PostController extends Controller
             }
 
             $post->tags()->sync($request->array('tag_ids'));
+
+            if ($request->filled('short_link')) {
+                if ($post->shortLink) {
+                    $post->shortLink->update(['code' => $request->input('short_link')]);
+                } else {
+                    ShortLink::create([
+                        'code' => $request->input('short_link'),
+                        'type' => 'post',
+                        'target_id' => $post->id,
+                    ]);
+                }
+            }
 
             DB::commit();
         } catch (Exception $e) {
@@ -175,7 +217,7 @@ class PostController extends Controller
         }
 
         flash()->success(config('flasher.post.updated'));
-        return redirect()->back();
+        return redirect()->route('admin.posts.index');
     }
 
     /**

@@ -7573,3 +7573,345 @@ body.dark .mk-form-errors {
     font-size: .72rem;
     color: var(--adm-muted);
 }
+
+
+/* ==========================================================
+   پیام‌های شناور (toast) — یکدست، مدرن و بالاتر از همه لایه‌ها
+   ========================================================== */
+html body .fl-wrapper {
+    /* پالت اختصاصی پنل */
+    --success-color: #17b26a;
+    --success-color-light: rgba(23, 178, 106, .16);
+    --info-color: #2e90fa;
+    --info-color-light: rgba(46, 144, 250, .16);
+    --warning-color: #f79009;
+    --warning-color-light: rgba(247, 144, 9, .16);
+    --error-color: #f04438;
+    --error-color-light: rgba(240, 68, 56, .16);
+
+    position: fixed !important;
+    top: 14px !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: 2147483647 !important;
+    width: min(420px, calc(100vw - 24px)) !important;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+html body .fl-wrapper[data-position^="bottom"] {
+    top: auto !important;
+    bottom: 18px !important;
+}
+
+html body .fl-flasher {
+    pointer-events: auto;
+    margin: 0 auto 10px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    direction: rtl;
+    text-align: right;
+    background: var(--adm-surface) !important;
+    border: 1px solid var(--adm-border) !important;
+    border-inline-start: 4px solid var(--fl-accent, var(--adm-accent)) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 18px 40px rgba(16, 24, 40, .18), 0 2px 6px rgba(16, 24, 40, .06) !important;
+    animation: mk-toast-in .32s cubic-bezier(.22, .61, .36, 1) both;
+}
+
+html body .fl-flasher.fl-success { --fl-accent: var(--success-color); }
+html body .fl-flasher.fl-info { --fl-accent: var(--info-color); }
+html body .fl-flasher.fl-warning { --fl-accent: var(--warning-color); }
+html body .fl-flasher.fl-error { --fl-accent: var(--error-color); }
+
+html body .fl-flasher .fl-content {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px;
+    padding: 13px 14px 15px !important;
+}
+
+html body .fl-flasher .fl-icon {
+    flex: 0 0 auto;
+    margin-top: 1px;
+    font-size: 1.45em !important;
+}
+
+html body .fl-flasher .fl-title {
+    display: none !important;
+}
+
+html body .fl-flasher .fl-message {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: .8rem !important;
+    font-weight: 600;
+    line-height: 1.85 !important;
+    color: var(--adm-text) !important;
+}
+
+html body .fl-flasher .fl-close {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+    padding: 0 2px !important;
+    font-size: 1.2rem;
+    line-height: 1;
+    color: var(--adm-muted) !important;
+    background: transparent !important;
+    border: 0 !important;
+    cursor: pointer;
+    transition: color .15s ease, transform .15s ease;
+}
+
+html body .fl-flasher .fl-close:hover {
+    color: var(--adm-text) !important;
+    transform: scale(1.08);
+}
+
+html body .fl-flasher .fl-progress-bar {
+    height: 3px !important;
+    border-radius: 0 0 14px 14px;
+}
+
+@keyframes mk-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(.98);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (max-width: 575.98px) {
+    html body .fl-wrapper {
+        top: 10px !important;
+        width: calc(100vw - 16px) !important;
+    }
+}
+
+
+/* رنگ اطلاعاتی برای وضعیت‌های میانی */
+.mk-pill.is-info {
+    color: #175cd3;
+    background: rgba(46, 144, 250, .12);
+    border-color: rgba(46, 144, 250, .28);
+}
+
+body.dark .mk-pill.is-info {
+    color: #84caff;
+    background: rgba(46, 144, 250, .16);
+    border-color: rgba(46, 144, 250, .3);
+}
+
+
+/* ==========================================================
+   صفحه سفارش
+   ========================================================== */
+.mk-order-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px;
+    padding: 18px;
+    margin-bottom: 14px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+}
+
+.mk-order-hero-main {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: center;
+}
+
+.mk-order-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.mk-order-total {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--adm-accent);
+    line-height: 1.4;
+}
+
+.mk-order-total-unit {
+    font-size: .72rem;
+    color: var(--adm-muted);
+}
+
+.mk-order-hero-side {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(104px, 1fr));
+    gap: 8px;
+    align-content: center;
+}
+
+.mk-order-totals {
+    display: grid;
+    gap: 4px;
+    padding: 0;
+    margin: 14px 0 0;
+    list-style: none;
+}
+
+.mk-order-totals li {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: .78rem;
+    color: var(--adm-muted);
+    border-bottom: 1px dashed var(--adm-border);
+}
+
+.mk-order-totals li strong {
+    color: var(--adm-text);
+    font-weight: 700;
+}
+
+.mk-order-totals li.is-discount strong {
+    color: #17b26a;
+}
+
+.mk-order-totals li.is-total {
+    padding-top: 10px;
+    font-size: .84rem;
+    border-bottom: 0;
+}
+
+.mk-order-totals li.is-total strong {
+    color: var(--adm-accent);
+    font-size: 1rem;
+}
+
+.mk-timeline {
+    display: grid;
+    gap: 12px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.mk-timeline li {
+    display: flex;
+    gap: 10px;
+}
+
+.mk-timeline-dot {
+    flex: 0 0 auto;
+    width: 10px;
+    height: 10px;
+    margin-top: 6px;
+    background: var(--adm-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px var(--adm-accent-soft);
+}
+
+.mk-timeline strong {
+    display: block;
+    font-size: .8rem;
+    color: var(--adm-text);
+}
+
+.mk-timeline small {
+    display: block;
+    font-size: .68rem;
+    color: var(--adm-muted);
+}
+
+.mk-timeline p {
+    margin: 6px 0 0;
+    padding: 6px 10px;
+    font-size: .74rem;
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border-radius: 8px;
+}
+
+@media (max-width: 1199.98px) {
+    .mk-order-hero {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mk-order-hero-side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* ==========================================================
+   بنرها
+   ========================================================== */
+.mk-banner-thumb {
+    width: 74px;
+    height: 38px;
+    object-fit: cover;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+}
+
+.mk-banner-preview {
+    position: relative;
+    overflow: hidden;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 14px;
+}
+
+.mk-banner-preview img {
+    display: block;
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+}
+
+.mk-banner-caption {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 18px;
+    color: #fff;
+    background: linear-gradient(to top, rgba(10, 14, 20, .82), rgba(10, 14, 20, 0));
+}
+
+.mk-banner-caption strong {
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.mk-banner-caption span {
+    font-size: .78rem;
+    opacity: .9;
+}
+
+.mk-banner-caption em {
+    align-self: flex-start;
+    padding: 6px 14px;
+    margin-top: 6px;
+    font-size: .72rem;
+    font-style: normal;
+    font-weight: 700;
+    color: #fff;
+    background: var(--adm-accent);
+    border-radius: 20px;
+}
+
+
+/* دکمه/فیلد پنهان‌شده باید بر display:flex فیلدها اولویت داشته باشد */
+.mk-field.d-none,
+.mk-field.d-none > * {
+    display: none !important;
+}

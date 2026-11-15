@@ -26,13 +26,12 @@ class StoreBannerRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255|unique:banners,title',
-            'is_active' => 'required',
-            'text' => 'required|string',
-            'image' => 'required|max:2048|mimes:jpg,jpeg,png,svg',
+            'is_active' => 'required|boolean',
+            'text' => 'nullable|string|max:255',
+            'image' => 'required|image|max:2048|mimes:jpg,jpeg,png,webp,svg',
             'type' => 'required|string|max:255',
-            'button_text' => 'required|string|max:255',
-            'button_link' => 'required|string|max:255',
-            'button_icon' => 'required|string|max:255',
+            'button_text' => 'nullable|string|max:255',
+            'button_link' => 'nullable|string|max:255',
             'priority' => 'required|integer|between:1,100',
         ];
     }

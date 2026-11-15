@@ -32,13 +32,35 @@ class OrderController extends Controller
 
             $query->where(function ($sub) use ($keyword) {
                 $sub->where('id', $keyword)
-                    ->orWhereHas('user', fn ($user) => $user->where('username', 'like', "%{$keyword}%"));
+                    ->orWhereHas('user', fn ($user) => $user->where('username', 'like', "%{$keyword}%"))
+                    ->orWhereHas('coupon', fn ($coupon) => $coupon->where('code', 'like', "%{$keyword}%"));
             });
         }
 
-        $orders = $query->latest()->paginate(15)->withQueryString();
+        if ($request->filled('status')) {
+            $query->where('status', (int) $request->input('status'));
+        }
 
-        return view('admin.orders.index', compact('orders'));
+        if ($request->filled('payment')) {
+            $query->where('payment_status', (int) $request->input('payment'));
+        }
+
+        match ($request->input('sort')) {
+            'oldest' => $query->oldest(),
+            'amount' => $query->orderByDesc('paying_amount'),
+            default => $query->latest(),
+        };
+
+        $orders = $query->paginate(15)->withQueryString();
+
+        $stats = [
+            'total' => Order::count(),
+            'pending' => Order::query()->where('status', 0)->count(),
+            'processing' => Order::query()->where('status', 1)->count(),
+            'revenue' => (int) Order::query()->where('payment_status', 1)->sum('paying_amount'),
+        ];
+
+        return view('admin.orders.index', compact('orders', 'stats'));
     }
 
     /**

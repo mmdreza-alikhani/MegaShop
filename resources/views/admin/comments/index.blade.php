@@ -150,9 +150,9 @@
                                     <td>
                                         @if($target)
                                             <span class="mk-chip">{{ $isPost ? 'پست' : 'محصول' }}</span>
-                                            <a class="mk-adm-link"
+                                            <a class="mk-adm-link" title="{{ $target->title }}"
                                                href="{{ $isPost ? route('admin.posts.show', ['post' => $target->id]) : route('admin.products.show', ['product' => $target->slug]) }}">
-                                                {{ Str::limit($target->title, 32) }}
+                                                {{ Str::limit($target->title, 42) }}
                                             </a>
                                         @else
                                             <span class="mk-muted">حذف شده</span>

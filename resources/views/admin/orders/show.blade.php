@@ -1,212 +1,239 @@
 @extends('admin.layout.master')
 
-@php
-    $title = 'نمایش سفارش'
-@endphp
+@section('title', 'سفارش #' . $order->id)
 
-@section('title', $title)
+@php
+    $status = (int) $order->getRawOriginal('status');
+    $isPaid = (bool) $order->getRawOriginal('payment_status');
+    $statusClass = match ($status) {
+        -1 => 'is-bad',
+        0 => 'is-wait',
+        3 => 'is-ok',
+        default => 'is-info',
+    };
+@endphp
 
 @section('content')
     <main class="bmd-layout-content">
         <div class="container-fluid">
-            <div class="row m-1 pb-4 mb-3">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
-                    <div class="page-header breadcrumb-header">
-                        <div class="row align-items-end">
-                            <div class="col-lg-8">
-                                <div class="page-header-title text-left-rtl">
-                                    <div class="d-inline">
-                                        <h3 class="lite-text">پنل مدیریت</h3>
-                                        <span class="lite-text">{{ $title }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('admin.panel') }}"><i class="fas fa-home"></i></a>
-                                    </li>
-                                    <li class="breadcrumb-item active">{{ $title }}</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
+            <div class="mk-dash-head">
+                <div>
+                    <h3>سفارش #{{ $order->id }}</h3>
+                    <p>{{ verta($order->created_at)->format('%d %B %Y — H:i') }}</p>
+                </div>
+                <div class="mk-dash-actions">
+                    <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-arrow-right mr-1"></i> بازگشت
+                    </a>
                 </div>
             </div>
-            <div class="row mx-1">
-                <div class="card shade c-grey w-100">
-                    <h5 class="card-header c-primary">{{ $title }}</h5>
-                    <div class="card-body row">
-                        <div class="form-group col-12 col-lg-3">
-                            <label>کاربر:</label>
-                            <br>
-                            <a href="{{ route('admin.users.index') . '?q=' . $order->user->username }}">
-                                {{ $order->user->username }}
-                            </a>
-                        </div>
-                        <div class="form-group col-12 col-lg-3">
-                            <label>محل تحویل:(آدرس)</label>
-                            <p>
-                                {{ $order->address->title }}
-                            </p>
-                        </div>
-                        <div class="form-group col-12 col-lg-3">
-                            <label>کد تخفیف استفاده شده:</label>
-                            @if($order->coupon_id != null)
-                                <p>
-                                    {{ $order->coupon->code . ' ' }}
-                                    به مبلغ:
-                                    {{ number_format($order->coupon_amount) }}
-                                    تومان
-                                </p>
-                            @else
-                                <p>
-                                    کد تخفیفی در سفارش شما ثبت نشده است!
-                                </p>
-                            @endif
-                        </div>
-                        <div class="form-group col-12 col-lg-3">
-                            <label>توکن سفارش:</label>
-                            <p>
-                                {{ $transaction?->token ?? '—' }}
-                            </p>
-                        </div>
-                        <div class="form-group col-12 col-lg-3">
-                            <label>تاریخ ثبت سفارش:</label>
-                            <p>
-                                {{ verta($order->created_at)->format('%d %B, %Y') }}
-                            </p>
-                        </div>
-                        <div class="form-group col-12 col-lg-3">
-                            <label>مبلغ کل:</label>
-                            <p>
-                                {{ number_format($order->total_amount) }}
-                                تومان
-                            </p>
-                        </div>
-                        <div class="form-group col-12 col-lg-3">
-                            <label>هزینه ارسال:</label>
-                            <p>
-                                {{ number_format($order->delivery_amount) }}
-                                تومان
-                            </p>
-                        </div>
-                        <div class="form-group col-12 col-lg-3">
-                            <label>مبلغ قابل پرداخت:</label>
-                            <p>
-                                {{ number_format($order->paying_amount) }}
-                                تومان
-                            </p>
-                        </div>
-                        <div class="form-group col-12 col-lg-3">
-                            <label>نحوه پرداخت:</label>
-                            <p>
-                                {{ $order->payment_type }}
-                            </p>
-                        </div>
-                        <div class="form-group col-12 col-lg-3">
-                            <label>وضعیت پرداخت:</label>
-                            <span class="badge {{ $order->getRawOriginal('payment_status') ?  'badge-success' : 'badge-danger' }}">
-                                {{ $order->payment_status_label }}
-                            </span>
-                            @if($order->getRawOriginal('payment_status') == 1)
-                                <p>
-                                    {{ $transaction?->ref_id }}
-                                </p>
-                            @endif
-                        </div>
-                        <div class="form-group col-12 col-lg-3">
-                            <label>درگاه پرداخت:</label>
-                            <span class="badge badge-success">
-                                {{ $transaction?->gateway_name ?? '—' }}
-                            </span>
-                        </div>
-                        <div class="form-group col-12 col-lg-12">
-                            <label>توضیحات:</label>
-                            @if($order->description == null)
-                                <p>
-                                    توضیحاتی ثبت نشده است!
-                                </p>
-                            @else
-                                <textarea>
-                                    {{ $order->description }}
-                                </textarea>
-                            @endif
-                        </div>
-                        <div class="form-group col-12 col-lg-12">
-                            <h5 class="card-header c-primary">تغییر وضعیت سفارش</h5>
-                            <form action="{{ route('admin.orders.status', ['order' => $order]) }}" method="POST"
-                                  class="row mt-2">
-                                @csrf
-                                @method('PATCH')
-                                <div class="col-lg-4">
-                                    <label for="status">وضعیت جدید:</label>
-                                    <select name="status" id="status" class="form-control">
-                                        @foreach($statuses as $value => $label)
-                                            <option value="{{ $value }}" @selected((int) $order->getRawOriginal('status') === $value)>{{ $label }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-lg-6">
-                                    <label for="note">توضیح (اختیاری):</label>
-                                    <input type="text" name="note" id="note" class="form-control" maxlength="255">
-                                </div>
-                                <div class="col-lg-2 d-flex align-items-end">
-                                    <button type="submit" class="btn f-main w-100">ثبت</button>
-                                </div>
-                            </form>
 
-                            @if($order->histories->isNotEmpty())
-                                <table class="table table-sm mt-3">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>از وضعیت</th>
-                                        <th>به وضعیت</th>
-                                        <th>کاربر</th>
-                                        <th>توضیح</th>
-                                        <th>تاریخ</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($order->histories as $history)
-                                        <tr>
-                                            <th>{{ $loop->iteration }}</th>
-                                            <td>{{ \App\Models\Order::statusLabel($history->from_status) }}</td>
-                                            <td>{{ $history->status_label }}</td>
-                                            <td>{{ $history->user?->username ?? '—' }}</td>
-                                            <td>{{ $history->note ?? '—' }}</td>
-                                            <td>{{ verta($history->created_at)->format('%d %B, %Y - H:i') }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            @endif
-                        </div>
+            <section class="mk-order-hero">
+                <div class="mk-order-hero-main">
+                    <div class="mk-order-badges">
+                        <span class="mk-pill {{ $statusClass }}">{{ \App\Models\Order::statusLabel($status) }}</span>
+                        <span class="mk-pill {{ $isPaid ? 'is-ok' : 'is-wait' }}">
+                            {{ $isPaid ? 'پرداخت شده' : 'پرداخت نشده' }}
+                        </span>
+                        @if($order->payment_type)
+                            <span class="mk-chip">{{ $order->payment_type }}</span>
+                        @endif
+                        @if($order->coupon)
+                            <span class="mk-chip" dir="ltr">{{ $order->coupon->code }}</span>
+                        @endif
+                    </div>
 
-                        <div class="form-group card shade c-grey col-12 col-lg-12">
-                            <h5 class="card-header c-primary">دکمه</h5>
-                            <div class="card-body">
-                                <div class="col-12 text-right" style="direction: rtl">
-                                    <ul class="row text-main-1 pl-20">
-                                        @foreach($order->items as $item)
-                                            <li class="col-6 col-lg-3">
-                                                <a href="{{ route('home.products.show', ['product' => $item->product->slug]) }}">
-                                                    {{ $item->product->title }}
-                                                </a>
-                                                <br>
-                                                <strong>{{ $item->productVariation->value . ' - ' . $item->quantity . ' عدد' }}</strong>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
-                        </div>
+                    <strong class="mk-order-total">{{ number_format((int) $order->paying_amount) }}</strong>
+                    <span class="mk-order-total-unit">تومان — مبلغ پرداختی</span>
+                </div>
+
+                <div class="mk-order-hero-side">
+                    <div class="mk-stat">
+                        <span>کاربر</span>
+                        <strong>
+                            @if($order->user)
+                                <a class="mk-adm-link" href="{{ route('admin.users.edit', ['user' => $order->user->id]) }}">
+                                    {{ '@' . $order->user->username }}
+                                </a>
+                            @else
+                                —
+                            @endif
+                        </strong>
+                    </div>
+                    <div class="mk-stat">
+                        <span>اقلام</span>
+                        <strong>{{ number_format($order->items->count()) }}</strong>
+                    </div>
+                    <div class="mk-stat">
+                        <span>هزینه ارسال</span>
+                        <strong>{{ number_format((int) $order->delivery_amount) }}</strong>
+                    </div>
+                    <div class="mk-stat">
+                        <span>تخفیف</span>
+                        <strong>{{ number_format((int) $order->coupon_amount) }}</strong>
                     </div>
                 </div>
+            </section>
+
+            <div class="mk-product-grid">
+                <section class="mk-adm-panel mk-product-span-2">
+                    <header class="mk-adm-panel-head">
+                        <div>
+                            <h4>اقلام سفارش</h4>
+                            <p>{{ number_format($order->items->count()) }} قلم کالا</p>
+                        </div>
+                    </header>
+
+                    <div class="mk-var-table">
+                        <table class="table mb-0">
+                            <thead>
+                            <tr>
+                                <th>محصول</th>
+                                <th>تنوع</th>
+                                <th>قیمت واحد</th>
+                                <th>تعداد</th>
+                                <th>جمع</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($order->items as $item)
+                                <tr>
+                                    <td>
+                                        @if($item->product)
+                                            <a class="mk-adm-link" href="{{ route('admin.products.show', ['product' => $item->product->slug]) }}">
+                                                {{ Str::limit($item->product->title, 48) }}
+                                            </a>
+                                        @else
+                                            <span class="mk-muted">محصول حذف شده</span>
+                                        @endif
+                                    </td>
+                                    <td class="mk-muted">{{ $item->productVariation?->value ?? '—' }}</td>
+                                    <td>{{ number_format((int) $item->price) }}</td>
+                                    <td>{{ number_format((int) $item->quantity) }}</td>
+                                    <td><strong>{{ number_format((int) $item->subtotal) }}</strong></td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <ul class="mk-order-totals">
+                        <li><span>جمع کالاها</span><strong>{{ number_format((int) $order->total_amount) }} تومان</strong></li>
+                        <li><span>هزینه ارسال</span><strong>{{ number_format((int) $order->delivery_amount) }} تومان</strong></li>
+                        @if((int) $order->coupon_amount > 0)
+                            <li class="is-discount"><span>تخفیف</span><strong>− {{ number_format((int) $order->coupon_amount) }} تومان</strong></li>
+                        @endif
+                        <li class="is-total"><span>مبلغ پرداختی</span><strong>{{ number_format((int) $order->paying_amount) }} تومان</strong></li>
+                    </ul>
+                </section>
+
+                <section class="mk-adm-panel">
+                    <header class="mk-adm-panel-head">
+                        <div>
+                            <h4>تغییر وضعیت</h4>
+                            <p>وضعیت جدید در تاریخچه سفارش ثبت می‌شود</p>
+                        </div>
+                    </header>
+
+                    <form action="{{ route('admin.orders.status', ['order' => $order->id]) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+
+                        <div class="mk-field">
+                            <label for="status">وضعیت جدید</label>
+                            <select name="status" id="status" class="form-control" required>
+                                @foreach($statuses as $value => $label)
+                                    <option value="{{ $value }}" @selected($status === (int) $value)>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mk-field">
+                            <label for="note">یادداشت (اختیاری)</label>
+                            <input type="text" name="note" id="note" class="form-control" maxlength="255"
+                                   placeholder="مثلاً: ارسال با پست پیشتاز">
+                        </div>
+
+                        <button type="submit" class="btn btn-info btn-block mt-2">
+                            <i class="fas fa-sync-alt"></i> ثبت تغییر وضعیت
+                        </button>
+                    </form>
+                </section>
+
+                <section class="mk-adm-panel">
+                    <header class="mk-adm-panel-head">
+                        <div>
+                            <h4>اطلاعات پرداخت</h4>
+                            <p>تراکنش و وضعیت مالی سفارش</p>
+                        </div>
+                    </header>
+
+                    @if($transaction)
+                        <div class="mk-filter-row"><span>درگاه</span><strong>{{ strtoupper($transaction->gateway_name) }}</strong></div>
+                        <div class="mk-filter-row"><span>مبلغ</span><strong>{{ number_format((int) $transaction->amount) }} تومان</strong></div>
+                        <div class="mk-filter-row"><span>کد پیگیری</span><strong dir="ltr">{{ $transaction->ref_id ?: '—' }}</strong></div>
+                        <div class="mk-filter-row"><span>شماره کارت</span><strong dir="ltr">{{ $transaction->card_pan ?: '—' }}</strong></div>
+                        <div class="mk-filter-row">
+                            <span>وضعیت</span>
+                            <strong>{{ $transaction->status ? 'موفق' : 'ناموفق' }}</strong>
+                        </div>
+                    @else
+                        <p class="mk-adm-empty">تراکنشی برای این سفارش ثبت نشده است.</p>
+                    @endif
+                </section>
+
+                <section class="mk-adm-panel">
+                    <header class="mk-adm-panel-head">
+                        <div>
+                            <h4>آدرس تحویل</h4>
+                            <p>اطلاعات گیرنده سفارش</p>
+                        </div>
+                    </header>
+
+                    @if($order->address)
+                        <div class="mk-filter-row"><span>عنوان</span><strong>{{ $order->address->title }}</strong></div>
+                        <div class="mk-filter-row"><span>استان / شهر</span>
+                            <strong>{{ $order->address->province?->name ?? '—' }} — {{ $order->address->city?->name ?? '—' }}</strong>
+                        </div>
+                        <div class="mk-filter-row"><span>نشانی</span><strong>{{ $order->address->address }}</strong></div>
+                        <div class="mk-filter-row"><span>کد پستی</span><strong dir="ltr">{{ $order->address->postal_code }}</strong></div>
+                        <div class="mk-filter-row"><span>تلفن</span><strong dir="ltr">{{ $order->address->phone_number }}</strong></div>
+                    @else
+                        <p class="mk-adm-empty">آدرسی برای این سفارش ثبت نشده است.</p>
+                    @endif
+                </section>
+
+                <section class="mk-adm-panel mk-product-span-2">
+                    <header class="mk-adm-panel-head">
+                        <div>
+                            <h4>تاریخچه وضعیت</h4>
+                            <p>{{ number_format($order->histories->count()) }} تغییر ثبت شده است</p>
+                        </div>
+                    </header>
+
+                    @if($order->histories->isEmpty())
+                        <p class="mk-adm-empty">تاریخچه‌ای برای این سفارش ثبت نشده است.</p>
+                    @else
+                        <ol class="mk-timeline">
+                            @foreach($order->histories->sortByDesc('created_at') as $history)
+                                <li>
+                                    <span class="mk-timeline-dot"></span>
+                                    <div>
+                                        <strong>{{ \App\Models\Order::statusLabel((int) $history->to_status) }}</strong>
+                                        <small>
+                                            از {{ \App\Models\Order::statusLabel($history->from_status) }}
+                                            — {{ verta($history->created_at)->format('%d %B %Y H:i') }}
+                                            @if($history->user) توسط {{ '@' . $history->user->username }} @endif
+                                        </small>
+                                        @if($history->note)
+                                            <p>{{ $history->note }}</p>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ol>
+                    @endif
+                </section>
             </div>
         </div>
     </main>

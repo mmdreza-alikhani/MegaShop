@@ -99,6 +99,7 @@
     </div>
 </form>
 
+@section('scripts')
 <script>
     (function () {
         var type = document.getElementById('type');
@@ -132,3 +133,4 @@
         }
     })();
 </script>
+@endsection

@@ -32,6 +32,7 @@ class Post extends Model
         'image',
         'text',
         'status',
+        'type',
         'is_active',
     ];
     protected $casts = [
@@ -41,11 +42,13 @@ class Post extends Model
         'image' => 'string',
         'text' => 'string',
         'status' => 'integer',
+        'type' => 'string',
         'is_active' => 'boolean',
     ];
     protected $attributes = [
         'is_active' => 1,
         'status' => '1',
+        'type' => 'article',
     ];
 
     protected static function boot(): void

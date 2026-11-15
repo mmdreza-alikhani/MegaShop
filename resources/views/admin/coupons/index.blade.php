@@ -144,7 +144,7 @@
                                     <td class="mk-muted">{{ $coupons->firstItem() + $key }}</td>
                                     <td>
                                         <strong class="mk-attr-title">{{ $coupon->title }}</strong>
-                                        <span class="mk-code" dir="ltr">{{ $coupon->code }}</span>
+                                        <div class="mt-1"><span class="mk-code" dir="ltr">{{ $coupon->code }}</span></div>
                                     </td>
                                     <td>
                                         <span class="mk-chip">{{ $coupon->getRawOriginal('type') === 'amount' ? 'مبلغی' : 'درصدی' }}</span>

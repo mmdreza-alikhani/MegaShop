@@ -1,125 +1,112 @@
 @extends('admin.layout.master')
 
-@php
-    $title = 'نمایش پست'
-@endphp
-
-@section('title', $title)
+@section('title', 'نمایش پست')
 
 @section('content')
     <main class="bmd-layout-content">
         <div class="container-fluid">
-            <div class="row m-1 pb-4 mb-3">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
-                    <div class="page-header breadcrumb-header">
-                        <div class="row align-items-end">
-                            <div class="col-lg-8">
-                                <div class="page-header-title text-left-rtl">
-                                    <div class="d-inline">
-                                        <h3 class="lite-text">پنل مدیریت</h3>
-                                        <span class="lite-text">{{ $title }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('admin.panel') }}"><i class="fas fa-home"></i></a>
-                                    </li>
-                                    <li class="breadcrumb-item active">{{ $title }}</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
+            <div class="mk-dash-head">
+                <div>
+                    <h3>نمایش پست</h3>
+                    <p>{{ Str::limit($post->title, 80) }}</p>
+                </div>
+                <div class="mk-dash-actions">
+                    <a href="{{ route('home.posts.show', ['post' => $post->slug]) }}" target="_blank" rel="noopener"
+                       class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-external-link-alt mr-1"></i> در سایت
+                    </a>
+                    @can('posts-edit')
+                        <a href="{{ route('admin.posts.edit', ['post' => $post->id]) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-pen mr-1"></i> ویرایش
+                        </a>
+                    @endcan
+                    <a href="{{ route('admin.posts.index') }}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-arrow-right mr-1"></i> بازگشت
+                    </a>
                 </div>
             </div>
 
-            <div class="row mx-1">
-                <div class="card shade c-grey w-100">
-                    <h5 class="card-header c-primary">{{ $title }}</h5>
-                    <div class="card-body row">
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="title">عنوان:</label>
-                            <input type="text" id="title" class="form-control" value="{{ $post->title }}" disabled>
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="is_active">وضعیت:</label>
-                            <select class="form-control" id="is_active" disabled>
-                                <option value="1" {{ $post->is_active == '1' ? 'selected' : '' }}>فعال</option>
-                                <option value="0" {{ $post->is_active == '0' ? 'selected' : '' }}>غیرفعال</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label for="type">نوع:</label>
-                            <select class="form-control" id="type" disabled>
-                                <option {{ $post->type == 'article' ? 'selected' : '' }}>مقاله</option>
-                                <option {{ $post->type == 'news' ? 'selected' : '' }}>خبر</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-12 col-lg-6">
-                            <label>برچسب ها</label>
-                            <div class="form-control">
-                                @foreach($post->tags as $tag)
-                                    {{ $tag->title }}{{ $loop->last ? '' : ',' }}
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label>نویسنده:</label>
-                            <input type="text" value="{{ $post->author->username }}" class="form-control" disabled>
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label>لینک کوتاه:</label>
-                            <input type="text" value="{{ $post->shortLink?->code }}" class="form-control" disabled>
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label>تاریخ ایجاد:</label>
-                            <input type="text" value="{{ verta($post->created_at) }}" class="form-control" disabled>
-                        </div>
-                        <div class="form-group col-12 col-lg-4">
-                            <label>تاریخ آخرین تغییرات:</label>
-                            <input type="text" value="{{ verta($post->updated_at) }}" class="form-control" disabled>
-                        </div>
-                        <div class="card shade c-grey ">
-                            <div class="card-body">
-                                <div class="row">
-                                    <img class="card-img"
-                                         src="{{ Storage::url(config('upload.post_path') . '/') . $post->image }}"
-                                         alt="{{ $post->title }}-image">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group col-12">
-                            <label for="text">متن:</label>
-                            <div class="mk-rich-text">{!! $post->text !!}</div>
-                        </div>
-                        <div class="form-group col-12">
-                            <label for="text">سوالات متداول:</label>
-                            <div class="accordion" id="faqsAccordion">
-                                @foreach($post->faqs as $faq)
-                                    <div id="accordion" class="accordion card shade full-outlined o-primary">
-                                        <div class="card-header" id="heading-{{ $faq->id }}">
-                                            <h2 class="mb-0">
-                                                <button class="btn btn-link btn-block" type="button" data-toggle="collapse" data-target="#collapse-{{ $faq->id }}">
-                                                    {{ $faq->question }}
-                                                </button>
-                                            </h2>
-                                        </div>
-
-                                        <div id="collapse-{{ $faq->id }}" class="collapse" aria-labelledby="heading-{{ $faq->id }}" data-parent="#faqsAccordion">
-                                            <div class="card-body">
-                                                {{ $faq->answer }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ url()->previous() }}" class="btn f-secondary">بازگشت</a>
-                        </div>
+            <section class="mk-product-hero">
+                <div class="mk-product-media">
+                    <div class="mk-product-cover">
+                        <img src="{{ Storage::url(config('upload.post_path') . '/' . $post->image) }}"
+                             onerror="this.onerror=null;this.src='{{ asset('assets/images/upload-placeholder.svg') }}'"
+                             alt="{{ $post->title }}">
+                        <span class="mk-chip {{ $post->getRawOriginal('is_active') ? 'is-ok' : 'is-bad' }} mk-product-cover-badge">
+                            {{ $post->is_active_label }}
+                        </span>
                     </div>
                 </div>
+
+                <div class="mk-product-info">
+                    <div class="mk-product-badges">
+                        <span class="mk-chip">{{ $post->type === 'news' ? 'خبر' : 'مقاله' }}</span>
+                        <span class="mk-chip">{{ $post->author?->username ? '@' . $post->author->username : 'بدون نویسنده' }}</span>
+                        <span class="mk-chip">{{ number_format($post->comments->count()) }} نظر</span>
+                    </div>
+
+                    <h2 class="mk-product-title">{{ $post->title }}</h2>
+
+                    <ul class="mk-product-meta">
+                        <li>
+                            <span>لینک کوتاه</span>
+                            <strong dir="ltr">{{ $post->shortLink?->code ? url('/q/' . $post->shortLink->code) : '—' }}</strong>
+                        </li>
+                        <li>
+                            <span>تاریخ ایجاد</span>
+                            <strong>{{ verta($post->created_at)->format('%d %B %Y') }}</strong>
+                        </li>
+                        <li>
+                            <span>آخرین ویرایش</span>
+                            <strong>{{ verta($post->updated_at)->format('%d %B %Y') }}</strong>
+                        </li>
+                    </ul>
+
+                    <div class="mk-tags mt-2">
+                        @forelse($post->tags as $tag)
+                            <span class="mk-chip">{{ $tag->title }}</span>
+                        @empty
+                            <span class="mk-muted">برچسبی ثبت نشده است.</span>
+                        @endforelse
+                    </div>
+                </div>
+            </section>
+
+            <div class="mk-product-grid">
+                <section class="mk-adm-panel mk-product-span-2">
+                    <header class="mk-adm-panel-head">
+                        <div>
+                            <h4>متن پست</h4>
+                            <p>همان‌طور که در سایت نمایش داده می‌شود</p>
+                        </div>
+                    </header>
+
+                    <div class="mk-rich-text">
+                        {!! $post->text !!}
+                    </div>
+                </section>
+
+                <section class="mk-adm-panel mk-product-span-2">
+                    <header class="mk-adm-panel-head">
+                        <div>
+                            <h4>سوالات متداول</h4>
+                            <p>{{ number_format($post->faqs->count()) }} سوال ثبت شده است</p>
+                        </div>
+                    </header>
+
+                    @forelse($post->faqs as $faq)
+                        <details class="mk-faq-acc" @if($loop->first) open @endif>
+                            <summary>
+                                <span class="mk-faq-num">{{ $loop->iteration }}</span>
+                                <span>{{ $faq->question }}</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </summary>
+                            <p>{{ $faq->answer }}</p>
+                        </details>
+                    @empty
+                        <p class="mk-adm-empty">سوال متداولی ثبت نشده است.</p>
+                    @endforelse
+                </section>
             </div>
         </div>
     </main>

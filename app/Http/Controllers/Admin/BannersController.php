@@ -33,11 +33,29 @@ class BannersController extends Controller
     {
         $query = Banner::query();
         if ($request->input('q')) {
-            $query->search('title', trim(request()->input('q')));
+            $query->search('title', trim($request->input('q')));
         }
+
+        if ($request->filled('status')) {
+            $query->where('is_active', (int) $request->input('status'));
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->input('type'));
+        }
+
         $banners = $query->orderBy('priority')->latest()->paginate(15)->withQueryString();
 
-        return view('admin.banners.index', compact('banners'));
+        $stats = [
+            'total' => Banner::count(),
+            'active' => Banner::query()->where('is_active', 1)->count(),
+            'inactive' => Banner::query()->where('is_active', 0)->count(),
+            'types' => Banner::query()->distinct()->count('type'),
+        ];
+
+        $types = Banner::query()->distinct()->orderBy('type')->pluck('type');
+
+        return view('admin.banners.index', compact('banners', 'stats', 'types'));
     }
 
     /**
@@ -65,7 +83,7 @@ class BannersController extends Controller
 
             DB::commit();
             flash()->success(config('flasher.banner.created'));
-            return redirect()->back();
+            return redirect()->route('admin.banners.index');
         } catch (Exception $e) {
             DB::rollBack();
             report($e);
@@ -103,12 +121,12 @@ class BannersController extends Controller
                 $imageName = $this->fileUpload->replace($request->file('image'), $banner->image, $this->uploadPath);
                 $data['image'] = $imageName;
             }
-            $data['is_active'] = $request->has('is_active');
+            $data['is_active'] = $request->boolean('is_active');
             $banner->update($data);
 
             DB::commit();
             flash()->success(config('flasher.banner.updated'));
-            return redirect()->back();
+            return redirect()->route('admin.banners.index');
         } catch (Exception $ex) {
             DB::rollBack();
             report($ex);
