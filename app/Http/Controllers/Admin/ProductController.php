@@ -45,15 +45,45 @@ class ProductController extends Controller
 
     public function index(Request $request): View|Application|Factory
     {
-        $query = Product::query()->with(['category:id,title', 'brand:id,title', 'shortLink']);
+        $query = Product::query()->with([
+            'category:id,title',
+            'brand:id,title',
+            'variations' => fn ($q) => $q->orderBy('price'),
+        ]);
 
         if ($request->filled('q')) {
             $query->search('title', trim((string) $request->input('q')));
         }
 
-        $products = $query->latest()->paginate(15)->withQueryString();
+        if ($category = $request->input('category')) {
+            $query->where('category_id', $category);
+        }
 
-        return view('admin.products.index', compact('products'));
+        if ($request->input('status') === 'active') {
+            $query->where('is_active', 1);
+        } elseif ($request->input('status') === 'inactive') {
+            $query->where('is_active', 0);
+        }
+
+        match ($request->input('sort')) {
+            'oldest' => $query->oldest(),
+            'cheap' => $query->orderBy('price'),
+            'expensive' => $query->orderByDesc('price'),
+            default => $query->latest(),
+        };
+
+        $products = $query->paginate(15)->withQueryString();
+
+        $stats = [
+            'total' => Product::count(),
+            'active' => Product::where('is_active', 1)->count(),
+            'out_of_stock' => Product::whereDoesntHave('variations', fn ($q) => $q->where('quantity', '>', 0))->count(),
+            'discounted' => Product::whereHas('variations', fn ($q) => $q->where('sale_price', '>', 0)->whereColumn('sale_price', '<', 'price'))->count(),
+        ];
+
+        $categories = \App\Models\Category::query()->orderBy('title')->get(['id', 'title']);
+
+        return view('admin.products.index', compact('products', 'stats', 'categories'));
     }
 
     public function create(): View|Application|Factory

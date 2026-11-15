@@ -8,7 +8,19 @@
 
 @section('content')
     <main class="bmd-layout-content">
-        <div class="container-fluid">
+        <style>.page-header.breadcrumb-header{display:none !important}</style>
+            <div class="mk-dash-head">
+                <div>
+                    <h3>نمایش محصول</h3>
+                    <p>{{ $product->title }}</p>
+                </div>
+                <div class="mk-dash-actions">
+                    <a href="{{ route('admin.products.index') }}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-arrow-right mr-1"></i> بازگشت
+                    </a>
+                </div>
+            </div>
+            <div class="container-fluid">
             <div class="row m-1 pb-4 mb-3">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
                     <div class="page-header breadcrumb-header">
