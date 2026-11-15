@@ -50,6 +50,7 @@ class BannersController extends Controller
             'total' => Banner::count(),
             'active' => Banner::query()->where('is_active', 1)->count(),
             'inactive' => Banner::query()->where('is_active', 0)->count(),
+            'slider' => Banner::query()->where('type', 'main/top-slider')->count(),
             'types' => Banner::query()->distinct()->count('type'),
         ];
 

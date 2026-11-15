@@ -8178,3 +8178,149 @@ body.dark .mk-pill.is-info {
     outline: 2px solid var(--adm-accent, #e11d48);
     outline-offset: 4px;
 }
+
+/* =========================================================
+   بنرها: شبکه کارتی
+   ========================================================= */
+.mk-banner-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+.mk-banner-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+    transition: border-color .18s ease, transform .18s ease;
+}
+
+.mk-banner-card:hover {
+    border-color: color-mix(in srgb, var(--adm-accent) 40%, var(--adm-border));
+    transform: translateY(-2px);
+}
+
+.mk-banner-card.is-off {
+    opacity: .78;
+}
+
+.mk-banner-media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--adm-surface-2);
+}
+
+.mk-banner-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mk-banner-type {
+    position: absolute;
+    top: 10px;
+    inset-inline-start: 10px;
+    padding: 3px 10px;
+    font-size: .66rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--adm-accent);
+    border-radius: 20px;
+}
+
+.mk-banner-priority {
+    position: absolute;
+    bottom: 10px;
+    inset-inline-end: 10px;
+    padding: 2px 8px;
+    font-size: .64rem;
+    color: #fff;
+    background: rgba(10, 14, 20, .62);
+    border-radius: 8px;
+}
+
+.mk-banner-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px 16px;
+}
+
+.mk-banner-body h4 {
+    margin: 0;
+    font-size: .92rem;
+    font-weight: 800;
+    color: var(--adm-text);
+}
+
+.mk-banner-body p {
+    margin: 0;
+    font-size: .76rem;
+    line-height: 1.8;
+    color: var(--adm-muted);
+}
+
+.mk-banner-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: auto;
+}
+
+.mk-banner-link {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    overflow: hidden;
+    max-width: 190px;
+    font-size: .7rem;
+    color: var(--adm-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mk-banner-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding-top: 12px;
+    margin-top: 6px;
+    border-top: 1px solid var(--adm-border);
+}
+
+.mk-banner-actions .btn {
+    height: 34px;
+    padding: 0 12px;
+    font-size: .74rem;
+    font-weight: 600;
+    border-radius: 9px;
+}
+
+.mk-banner-actions form {
+    display: flex;
+    margin: 0;
+}
+
+.mk-banner-delete {
+    color: #d64545 !important;
+}
+
+.mk-banner-delete:hover {
+    color: #fff !important;
+    background: #d64545 !important;
+    border-color: #d64545 !important;
+}
+
+@media (max-width: 575.98px) {
+    .mk-banner-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
