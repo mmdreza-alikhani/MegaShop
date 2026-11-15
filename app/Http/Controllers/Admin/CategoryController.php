@@ -101,7 +101,7 @@ class CategoryController extends Controller
         }
 
         flash()->success(config('flasher.category.created'));
-        return redirect()->back();
+        return redirect()->route('admin.categories.index');
     }
 
     /**
@@ -112,7 +112,7 @@ class CategoryController extends Controller
         $category->load(['variation', 'filters']);
         $parentCategories = Cache::remember('parent_categories', now()->addHour(), function () {
             return Category::query()->parents()->pluck('title', 'id');
-        });
+        })->except([$category->id]);
 
         $attributes = Cache::remember('attributes', now()->addHour(), function () {
             return Attribute::pluck('title', 'id');
@@ -172,7 +172,7 @@ class CategoryController extends Controller
         }
 
         flash()->success(config('flasher.category.updated'));
-        return redirect()->back();
+        return redirect()->route('admin.categories.index');
     }
 
     /**

@@ -91,7 +91,7 @@
                         </div>
                         <div class="form-group col-12">
                             <label for="text">متن:</label>
-                            <textarea id="text" type="text" class="form-control" disabled>{!! $post->text !!}</textarea>
+                            <div class="mk-rich-text">{!! $post->text !!}</div>
                         </div>
                         <div class="form-group col-12">
                             <label for="text">سوالات متداول:</label>
@@ -123,28 +123,4 @@
             </div>
         </div>
     </main>
-@endsection
-@section('scripts')
-    <script>
-        CKEDITOR.replace('text', {
-            language: 'en',
-            // filebrowserImageUploadUrl: '/ckeditor/upload?_token=' + document.querySelector('meta[name="csrf-token"]').content,
-            filebrowserBrowseUrl: '/storage/ckeditor/images',
-            filebrowserImageBrowseUrl: '/storage/ckeditor/images',
-
-            extraPlugins: 'uploadimage,filebrowser',
-            removePlugins: 'image2,easyimage,cloudservices',
-            toolbar: [
-                { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo'] },
-                { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
-                { name: 'tools', items: ['Maximize'] },
-                '/',
-                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
-                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
-                { name: 'links', items: ['Link', 'Unlink'] },
-                { name: 'styles', items: ['Format', 'Font', 'FontSize'] },
-                { name: 'colors', items: ['TextColor', 'BGColor'] }
-            ]
-        });
-    </script>
 @endsection

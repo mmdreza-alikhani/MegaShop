@@ -3,8 +3,12 @@ function rtl() {
     body.classList.toggle("rtl");
 }
 
-window.addEventListener("load", function() {
-    document.getElementById("preloader").classList.add("fade-out");
+window.addEventListener("load", function () {
+    const preloader = document.getElementById("preloader");
+
+    if (preloader) {
+        preloader.classList.add("fade-out");
+    }
 });
 
 function dark() {
@@ -27,101 +31,105 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 $(document).ready(function () {
-  $("ul.a-collapse").click(function () {
-    // console.log($(this).hasClass("short"));
-    if ($(this).hasClass("short")) {
-      $(".a-collapse").addClass("short");
-      $(this).toggleClass("short");
-      $(".side-item-container").addClass("hide animated");
-      $("div.side-item-container", this).toggleClass("hide animated");
-    } else {
-      $(this).toggleClass("short");
-      $("div.side-item-container", this).toggleClass("hide animated");
+    $("ul.a-collapse").click(function () {
+        if ($(this).hasClass("short")) {
+            $(".a-collapse").addClass("short");
+            $(this).toggleClass("short");
+            $(".side-item-container").addClass("hide animated");
+            $("div.side-item-container", this).toggleClass("hide animated");
+        } else {
+            $(this).toggleClass("short");
+            $("div.side-item-container", this).toggleClass("hide animated");
+        }
+    });
+});
+
+/**
+ * نمودارهای داشبورد فقط در صفحه‌ای که canvas آن‌ها وجود دارد و کتابخانه Chart.js
+ * بارگذاری شده باشد رسم می‌شوند؛ در بقیه صفحات نباید خطای جاوااسکریپت بدهند.
+ */
+function renderDashboardCharts() {
+    if (typeof Chart === "undefined") {
+        return;
     }
 
+    const polarCanvas = document.getElementById("myChart2");
 
-  });
+    if (polarCanvas) {
+        new Chart(polarCanvas, {
+            type: "polarArea",
+            data: {
+                labels: ["Red", "Green", "Yellow", "Grey", "Blue"],
+                datasets: [{
+                    label: "# of Votes",
+                    data: [6, 8, 5, 2, 3],
+                    backgroundColor: [
+                        "#ff6384",
+                        "#4bc0c0",
+                        "#ffcd56",
+                        "#c9cbcf",
+                        "#36a2eb",
+                    ]
+                }]
+            },
+            options: {}
+        });
+    }
 
-});
+    const doughnutCanvas = document.getElementById("myChart4");
 
+    if (doughnutCanvas) {
+        new Chart(doughnutCanvas, {
+            type: "doughnut",
+            data: {
+                labels: ["Red", "Green", "Yellow", "Grey", "Blue"],
+                datasets: [{
+                    label: "# of Votes",
+                    data: [6, 8, 5, 2, 3],
+                    backgroundColor: [
+                        "#ff6384",
+                        "#4bc0c0",
+                        "#ffcd56",
+                        "#c9cbcf",
+                        "#36a2eb",
+                    ]
+                }]
+            },
+            options: {}
+        });
+    }
 
-var ctx = document.getElementById('myChart2');
-var ctx = new Chart(ctx, {
-  type: 'polarArea',
-  data: {
-    labels: ['Red', 'Green', 'Yellow', 'Grey', 'Blue'],
-    datasets: [{
-        label: '# of Votes',
-        data: [6, 8,  5, 2, 3],
-        backgroundColor: [
-            '#ff6384',
-            '#4bc0c0',
-            '#ffcd56',
-            '#c9cbcf',
-            '#36a2eb',
-        ]
-    }]
-},
-  options: {
+    const mixedCanvas = document.getElementById("myChart5");
 
-  }
-});
+    if (mixedCanvas) {
+        new Chart(mixedCanvas, {
+            type: "bar",
+            data: {
+                labels: ["Red", "Green", "Yellow", "Grey", "Blue", "Red", "Green", "Yellow", "Grey", "Blue"],
+                datasets: [{
+                    label: "Bar Dataset",
+                    data: [6, 8, 5, 2, 3, 10, 20, 30, 40, 50],
+                    backgroundColor: [
+                        "#ff6384",
+                        "#4bc0c0",
+                        "#ffcd56",
+                        "#c9cbcf",
+                        "#36a2eb",
+                        "#ff6384",
+                        "#4bc0c0",
+                        "#ffcd56",
+                        "#c9cbcf",
+                        "#36a2eb",
+                    ]
+                }, {
+                    label: "Line Dataset",
+                    data: [8, 12, 6, 3, 5, 12, 20, 30, 44, 60],
+                    type: "line"
+                }],
+            },
+            options: {}
+        });
+    }
+}
 
-
-
-
-var myChart4 = document.getElementById('myChart4');
-var myChart4 = new Chart(myChart4, {
-  type: 'doughnut',
-  data: {
-    labels: ['Red', 'Green', 'Yellow', 'Grey', 'Blue'],
-    datasets: [{
-        label: '# of Votes',
-        data: [6, 8,  5, 2, 3],
-        backgroundColor: [
-            '#ff6384',
-            '#4bc0c0',
-            '#ffcd56',
-            '#c9cbcf',
-            '#36a2eb',
-        ]
-    }]
-},
-  options: {
-
-  }
-});
-
-
-
-var mixChart = document.getElementById('myChart5');
-var mixedChart = new Chart(mixChart, {
-  type: 'bar',
-
-  data: {
-    labels: ['Red', 'Green', 'Yellow', 'Grey', 'Blue','Red', 'Green', 'Yellow', 'Grey', 'Blue'],
-      datasets: [{
-          label: 'Bar Dataset',
-          data: [6,8,5,2,3,10,20,30,40,50],
-          backgroundColor: [
-            '#ff6384',
-            '#4bc0c0',
-            '#ffcd56',
-            '#c9cbcf',
-            '#36a2eb',
-            '#ff6384',
-            '#4bc0c0',
-            '#ffcd56',
-            '#c9cbcf',
-            '#36a2eb',
-        ]
-      }, {
-          label: 'Line Dataset',
-          data: [8,12,6,3,5,12,20,30,44,60],
-
-          // Changes this dataset to become a line
-          type: 'line'
-      }],
-  },
-  options: {}
-});
+document.addEventListener("DOMContentLoaded", renderDashboardCharts);

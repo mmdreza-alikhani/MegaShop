@@ -92,6 +92,8 @@ Route::prefix('management')
 
         Route::middleware('permission:coupons-index')->group(function () {
             Route::resource('coupons', Admin\CouponController::class)->only(['index', 'store', 'update', 'destroy']);
+            Route::get('coupons/create', [Admin\CouponController::class, 'create'])->name('coupons.create');
+            Route::get('coupons/{coupon}/edit', [Admin\CouponController::class, 'edit'])->name('coupons.edit');
         });
 
         Route::middleware('permission:orders-index')->group(function () {

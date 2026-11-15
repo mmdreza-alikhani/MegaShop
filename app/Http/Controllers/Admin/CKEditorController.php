@@ -7,7 +7,6 @@ use App\Services\FileUploadService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class CKEditorController extends Controller
 {
@@ -16,34 +15,28 @@ class CKEditorController extends Controller
     ) {}
 
     /**
-     * آپلود تصویر CKEditor
+     * آپلود تصویر ادیتور متن (TinyMCE).
+     *
+     * نام مسیر از دوره CKEditor باقی مانده و برای سازگاری تغییر نکرده است.
+     * خروجی: { uploaded: true, url, fileName }
      */
     public function upload(Request $request): JsonResponse
     {
         try {
-            // ✅ Validation
             $request->validate([
                 'upload' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:5120', // 5MB
             ]);
 
-            // ✅ آپلود تصویر
             $fileName = $this->fileUpload->upload(
                 $request->file('upload'),
                 config('upload.ckeditor_path', 'ckeditor')
             );
 
-            // ✅ URL کامل تصویر
             $url = $this->fileUpload->url(
                 config('upload.ckeditor_path', 'ckeditor'),
                 $fileName
             );
 
-            // ✅ فرمت response برای CKEditor
-            Log::info(response()->json([
-                'uploaded' => true,
-                'url' => $url,
-                'fileName' => $fileName,
-            ]));
             return response()->json([
                 'uploaded' => true,
                 'url' => $url,
@@ -53,8 +46,8 @@ class CKEditorController extends Controller
             return response()->json([
                 'uploaded' => false,
                 'error' => [
-                    'message' => 'خطا در آپلود تصویر: ' . $e->getMessage()
-                ]
+                    'message' => 'خطا در آپلود تصویر: '.$e->getMessage(),
+                ],
             ], 400);
         }
     }

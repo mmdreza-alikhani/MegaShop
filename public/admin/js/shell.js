@@ -335,3 +335,91 @@
         window.setTimeout(boot, 0);
     }
 })();
+/* =========================================================
+   باز کردن قطعی منوی انتخابگرها (bootstrap-select)
+   دو نسخه dropdown.js در صفحه بارگذاری شده و هر کلیک را
+   دو بار toggle می‌کند؛ نتیجه این بود که منو باز نمی‌شد.
+   ========================================================= */
+(function () {
+    if (!window.jQuery) {
+        return;
+    }
+
+    var $ = window.jQuery;
+
+    // متن‌های فارسی انتخابگرها
+    if ($.fn.selectpicker && $.fn.selectpicker.Constructor && $.fn.selectpicker.Constructor.DEFAULTS) {
+        var pickerDefaults = $.fn.selectpicker.Constructor.DEFAULTS;
+
+        pickerDefaults.selectAllText = 'انتخاب همه';
+        pickerDefaults.deselectAllText = 'لغو انتخاب';
+        pickerDefaults.noneSelectedText = 'انتخابی نشده';
+        pickerDefaults.noneResultsText = 'نتیجه‌ای پیدا نشد';
+        pickerDefaults.liveSearchPlaceholder = 'جستجو…';
+    }
+
+    // دو نسخه از dropdown.js در صفحه بارگذاری شده و هر کلیک را دو بار toggle می‌کند.
+    // هندلرهای تکراری را کنار می‌گذاریم و یک هندلر واحد می‌گذاریم.
+    $(document).off('click.bs.dropdown.data-api');
+
+    $(document).on('click.bs.dropdown.data-api', '[data-toggle="dropdown"]', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var button = $(this);
+
+        // بقیه منوهای باز بسته شوند.
+        $('.bootstrap-select.show > .dropdown-toggle').not(button).each(function () {
+            $(this).dropdown('toggle');
+        });
+
+        button.dropdown('toggle');
+    });
+
+    // در انتخابگر تک‌گزینه‌ای، بعد از انتخاب یک مورد منو بسته شود.
+    $(document).on('click.bs.picker-close', '.bootstrap-select .dropdown-menu .dropdown-item', function () {
+        var wrap = $(this).closest('.bootstrap-select');
+
+        if (wrap.find('select').prop('multiple')) {
+            return;
+        }
+
+        window.setTimeout(function () {
+            var toggle = wrap.children('.dropdown-toggle');
+
+            if (wrap.hasClass('show')) {
+                toggle.dropdown('toggle');
+            }
+        }, 0);
+    });
+
+    // اگر پایین صفحه جا نبود، منو به سمت بالا باز شود.
+    $(document).on('shown.bs.dropdown', '.bootstrap-select', function () {
+        var wrap = this;
+        var menu = wrap.querySelector('.dropdown-menu');
+
+        if (!menu) {
+            return;
+        }
+
+        wrap.classList.remove('dropup');
+
+        var rect = menu.getBoundingClientRect();
+        var spaceBelow = window.innerHeight - rect.top;
+
+        if (rect.height > spaceBelow && rect.top > rect.height) {
+            wrap.classList.add('dropup');
+        }
+    });
+
+    // بستن منو با کلیک بیرون از انتخابگر
+    $(document).on('click.bs.picker-close', function (event) {
+        if ($(event.target).closest('.bootstrap-select').length) {
+            return;
+        }
+
+        $('.bootstrap-select.show > .dropdown-toggle').each(function () {
+            $(this).dropdown('toggle');
+        });
+    });
+})();

@@ -25,10 +25,28 @@
     ];
 
     $searchAction = route('admin.products.index');
+    $searchLabel = 'محصولات';
+    $sectionLabels = [
+        'admin.users' => 'کاربران',
+        'admin.roles' => 'گروه‌های کاربری',
+        'admin.permissions' => 'دسترسی‌ها',
+        'admin.attributes' => 'ویژگی‌ها',
+        'admin.categories' => 'دسته‌بندی‌ها',
+        'admin.brands' => 'برندها',
+        'admin.platforms' => 'پلتفرم‌ها',
+        'admin.products' => 'محصولات',
+        'admin.coupons' => 'کدهای تخفیف',
+        'admin.orders' => 'سفارش‌ها',
+        'admin.posts' => 'پست‌ها',
+        'admin.tags' => 'برچسب‌ها',
+        'admin.banners' => 'بنرها',
+        'admin.comments' => 'نظرات',
+    ];
 
     foreach ($sectionAliases as $prefix => $routeName) {
         if (str_starts_with($currentRoute, $prefix)) {
             $searchAction = route($routeName);
+            $searchLabel = $sectionLabels[$prefix] ?? 'این بخش';
             break;
         }
     }
@@ -54,8 +72,8 @@
 
         <form class="mk-adm-search" action="{{ $searchAction }}" method="GET" role="search">
             <i class="fas fa-search" aria-hidden="true"></i>
-            <input type="search" name="q" value="{{ request('q') }}" placeholder="جستجوی محصول…"
-                   aria-label="جستجوی محصول">
+            <input type="search" name="q" value="{{ request('q') }}" placeholder="جستجو در {{ $searchLabel }}…"
+                   aria-label="جستجو در {{ $searchLabel }}">
             <button type="submit" class="mk-adm-search-btn">جستجو</button>
         </form>
 

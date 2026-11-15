@@ -1,203 +1,210 @@
 @extends('admin.layout.master')
 
-@php
-    $title = 'نظرات';
-@endphp
-
-@section('title', $title)
+@section('title', 'نظرات')
 
 @section('content')
+    @php
+        $query = array_filter([
+            'q' => request('q'),
+            'status' => request('status'),
+            'type' => request('type'),
+        ], fn ($value) => $value !== null && $value !== '');
+
+        $statusLabels = [1 => ['در انتظار', 'is-wait'], 2 => ['رد شده', 'is-bad'], 3 => ['منتشر شده', 'is-ok']];
+    @endphp
+
     <main class="bmd-layout-content">
         <div class="container-fluid">
-            <div class="row m-1 pb-4 mb-3">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
-                    <div class="page-header breadcrumb-header">
-                        <div class="row align-items-end">
-                            <div class="col-lg-8">
-                                <div class="page-header-title text-left-rtl">
-                                    <div class="d-inline">
-                                        <h3 class="lite-text">پنل مدیریت</h3>
-                                        <span class="lite-text">{{ $title }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('admin.panel') }}"><i class="fas fa-home"></i></a>
-                                    </li>
-                                    <li class="breadcrumb-item active">{{ $title }}</li>
-                                </ol>
-                            </div>
-                        </div>
+            <div class="mk-dash-head">
+                <div>
+                    <h3>نظرات</h3>
+                    <p>{{ number_format($comments->total()) }} نظر در مجموع</p>
+                </div>
+                <div class="mk-dash-actions">
+                    <a href="{{ route('admin.comments.index', ['status' => 1]) }}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-clock mr-1"></i> در انتظار بررسی
+                    </a>
+                    <a href="{{ route('admin.products.index') }}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-box mr-1"></i> محصولات
+                    </a>
+                </div>
+            </div>
+
+            <div class="mk-kpi-grid mk-kpi-grid--4">
+                <div class="mk-kpi">
+                    <span class="mk-kpi-icon"><i class="fas fa-comments"></i></span>
+                    <div class="mk-kpi-body">
+                        <span class="mk-kpi-label">کل نظرات</span>
+                        <strong class="mk-kpi-value">{{ number_format($stats['total']) }}</strong>
+                        <span class="mk-kpi-hint">محصولات و پست‌ها</span>
+                    </div>
+                </div>
+                <div class="mk-kpi {{ $stats['pending'] > 0 ? 'is-alert' : '' }}">
+                    <span class="mk-kpi-icon"><i class="fas fa-hourglass-half"></i></span>
+                    <div class="mk-kpi-body">
+                        <span class="mk-kpi-label">در انتظار</span>
+                        <strong class="mk-kpi-value">{{ number_format($stats['pending']) }}</strong>
+                        <span class="mk-kpi-hint">نیازمند بررسی</span>
+                    </div>
+                </div>
+                <div class="mk-kpi">
+                    <span class="mk-kpi-icon"><i class="fas fa-check-circle"></i></span>
+                    <div class="mk-kpi-body">
+                        <span class="mk-kpi-label">منتشر شده</span>
+                        <strong class="mk-kpi-value">{{ number_format($stats['approved']) }}</strong>
+                        <span class="mk-kpi-hint">قابل نمایش در سایت</span>
+                    </div>
+                </div>
+                <div class="mk-kpi">
+                    <span class="mk-kpi-icon"><i class="fas fa-ban"></i></span>
+                    <div class="mk-kpi-body">
+                        <span class="mk-kpi-label">رد شده</span>
+                        <strong class="mk-kpi-value">{{ number_format($stats['rejected']) }}</strong>
+                        <span class="mk-kpi-hint">تایید نشده</span>
                     </div>
                 </div>
             </div>
-            <div class="d-flex m-1 align-items-center justify-content-between">
-                <form action="{{ route('admin.comments.index') }}" method="GET" class="m-0 p-0">
-                    <div class="input-group">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary c-primary" type="submit">
-                                <i class="fab fas fa-search"></i>
-                            </button>
-                        </div>
-                        <input type="text" class="form-control" placeholder="جستجو"
-                               style="width: 300px"
-                               value="{{ request()->has('keyword') ? request()->keyword : '' }}" name="keyword" required>
+
+            <form method="GET" action="{{ route('admin.comments.index') }}" class="mk-adm-filters">
+                <label class="mk-adm-field">
+                    <span>وضعیت</span>
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="">همه</option>
+                        <option value="1" @selected(request('status') === '1')>در انتظار</option>
+                        <option value="3" @selected(request('status') === '3')>منتشر شده</option>
+                        <option value="2" @selected(request('status') === '2')>رد شده</option>
+                    </select>
+                </label>
+
+                <label class="mk-adm-field">
+                    <span>بخش</span>
+                    <select name="type" onchange="this.form.submit()">
+                        <option value="">همه</option>
+                        <option value="product" @selected(request('type') === 'product')>محصولات</option>
+                        <option value="post" @selected(request('type') === 'post')>پست‌ها</option>
+                    </select>
+                </label>
+
+                @if(request()->filled('q'))
+                    <span class="mk-adm-filter-chip">
+                        جستجو: {{ request('q') }}
+                        <a href="{{ route('admin.comments.index', array_diff_key($query, ['q' => ''])) }}">&times;</a>
+                    </span>
+                @endif
+
+                @if(count($query) > 0)
+                    <a href="{{ route('admin.comments.index') }}" class="mk-adm-filter-clear">پاک کردن فیلترها</a>
+                @endif
+            </form>
+
+            <section class="mk-adm-panel">
+                <header class="mk-adm-panel-head">
+                    <div>
+                        <h4>لیست نظرات</h4>
+                        <p>صفحه {{ $comments->currentPage() }} از {{ $comments->lastPage() }}</p>
                     </div>
-                </form>
-            </div>
-            <div class="row m-1">
-                <div class="col-12 p-2">
-                    <div class="card shade h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $title }}</h5>
-                            <hr/>
-                            @if($comments->isEmpty())
-                                <div class="alert text-dir-rtl text-right alert-third alert-shade alert-dismissible fade show" role="alert">
-                                    هیج نظری وجود ندارد!
-                                </div>
-                            @else
-                                <table class="table table-striped table-responsive-lg">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">کاربر</th>
-                                        <th scope="col">نوع محتوا</th>
-                                        <th scope="col">عنوان محتوا</th>
-                                        <th scope="col">وضعیت نظر</th>
-                                        <th scope="col">تنظیمات</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($comments as $key => $comment)
-                                        <tr>
-                                            <th>
-                                                {{ $comments->firstItem() + $key }}
-                                            </th>
-                                            <td>
-                                                {{ $comment->user->username }}
-                                            </td>
-                                            <td>
-                                                {{ $comment->getCommentableLabel() }}
-                                            </td>
-                                            <td>
-                                                {{ $comment->commentable->title }}
-                                            </td>
-                                            <td>
-                                                <span class="badge {{ $comment->getRawOriginal('is_active') ?  'badge-success' : 'badge-secondary' }}">
-                                                    {{ $comment->statusCondition($comment->status) }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="dropdown base show">
-                                                    <a class="btn o-grey dropdown-toggle text-center" role="button" id="dropdownMenuLink" data-toggle="dropdown">
-                                                        <i class="fa fa-cog"></i>
-                                                    </a>
-                                                    <div class="dropdown-menu">
-                                                        <button data-target="#reviewCommentModal-{{ $comment->id }}" data-toggle="modal" type="button" class="dropdown-item">بررسی</button>
-                                                        <form method="POST" action="{{ route('admin.comments.approve', ['comment' => $comment->id]) }}">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="submit" class="dropdown-item">تایید</button>
-                                                        </form>
-                                                        <form method="POST" action="{{ route('admin.comments.reject', ['comment' => $comment->id]) }}">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="submit" class="dropdown-item">رد</button>
-                                                        </form>
-                                                        <button data-target="#deleteCommentModal-{{ $comment->id }}" data-toggle="modal" type="button" class="dropdown-item">حذف</button>
-                                                    </div>
-                                                    <div class="modal w-lg fade light rtl" id="reviewCommentModal-{{ $comment->id }}" tabindex="-1" role="dialog">
-                                                        <div class="modal-dialog" role="document">
-                                                            <form method="post" action="{{ route('admin.comments.toggle', ['comment' => $comment->id]) }}">
-                                                                @method('PATCH')
-                                                                @csrf
-                                                                <div class="modal-content card shade">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="exampleModalLabel">
-                                                                            بررسی نظر: {{ $comment->user?->username }}
-                                                                        </h5>
-                                                                        <button type="button" class="close" data-dismiss="modal">
-                                                                            <span>&times;</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        @include('admin.layout.errors', ['errors' => $errors->update])
-                                                                        <div class="row">
-                                                                            <div class="form-group col-12 col-lg-6">
-                                                                                <label>کاربر:*</label>
-                                                                                <input type="text" class="form-control" value="{{ $comment->user->username }}" disabled>
-                                                                            </div>
-                                                                            <div class="form-group col-12 col-lg-6">
-                                                                                <label>وضعیت:*</label>
-                                                                                <input type="text" class="form-control" value="{{ $comment->statusCondition($comment->status) }}" disabled>
-                                                                            </div>
-                                                                            @if($comment->reply_of != '0')
-                                                                                <div class="form-group col-12">
-                                                                                    <label>متن نظر والد:*</label>
-                                                                                    <textarea class="form-control" disabled>{{ $comment->parent->text }}</textarea>
-                                                                                </div>
-                                                                            @endif
-                                                                            <div class="form-group col-12">
-                                                                                <label>متن:*</label>
-                                                                                <textarea class="form-control" disabled>{{ $comment->text }}</textarea>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn f-danger main" data-dismiss="modal">بازگشت</button>
-                                                                        <button type="submit" class="btn main f-main">ویرایش</button>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                    @if(count($errors->update) > 0)
-                                                        <script>
-                                                            $(function() {
-                                                                $('#editCommentModal-{{ session()->get('comment_id') }}').modal({
-                                                                    show: true
-                                                                });
-                                                            });
-                                                        </script>
-                                                    @endif
-                                                    <div class="modal w-lg fade justify rtl" id="deleteCommentModal-{{ $comment->id }}" tabindex="-1" role="dialog">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">حذف نظر: {{ $comment->user?->username }}</h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    آیا از این عملیات مطمئن هستید؟
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn outlined o-danger c-danger"
-                                                                            data-dismiss="modal">بازگشت</button>
-                                                                    <form action="{{ route('admin.comments.destroy', $comment->id) }}" method="POST" style="display: inline;">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn f-main">حذف</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            @endif
-                            {{ $comments->links('vendor.pagination.bootstrap-4') }}
-                        </div>
+                </header>
+
+                @if($comments->isEmpty())
+                    <p class="mk-adm-empty">نظری با این فیلترها پیدا نشد.</p>
+                @else
+                    <div class="mk-adm-table-wrap">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                            <tr>
+                                <th>نویسنده</th>
+                                <th>متن نظر</th>
+                                <th>مورد نظر</th>
+                                <th>وضعیت</th>
+                                <th>تاریخ</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($comments as $comment)
+                                @php
+                                    $status = (int) $comment->getRawOriginal('status');
+                                    [$statusLabel, $statusClass] = $statusLabels[$status] ?? ['نامشخص', 'is-wait'];
+                                    $user = $comment->user;
+                                    $target = $comment->commentable;
+                                    $isPost = $comment->commentable_type === \App\Models\Post::class;
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <div class="mk-user-cell">
+                                            <img src="{{ $user?->avatar ? Storage::url(config('upload.user_avatar_path') . '/' . $user->avatar) : asset('assets/images/avatar-placeholder.svg') }}"
+                                                 onerror="this.onerror=null;this.src='{{ asset('assets/images/avatar-placeholder.svg') }}'"
+                                                 alt="{{ $user?->username ?? 'کاربر' }}">
+                                            <span>
+                                                <strong>{{ $user?->username ? '@' . $user->username : 'کاربر حذف‌شده' }}</strong>
+                                                <small>{{ trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')) ?: '—' }}</small>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="mk-comment-text">
+                                        {{ Str::limit($comment->text, 90) }}
+                                        @if($comment->reply_of)
+                                            <small class="mk-muted">در پاسخ به نظر #{{ $comment->reply_of }}</small>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($target)
+                                            <span class="mk-chip">{{ $isPost ? 'پست' : 'محصول' }}</span>
+                                            <a class="mk-adm-link"
+                                               href="{{ $isPost ? route('admin.posts.show', ['post' => $target->id]) : route('admin.products.show', ['product' => $target->slug]) }}">
+                                                {{ Str::limit($target->title, 32) }}
+                                            </a>
+                                        @else
+                                            <span class="mk-muted">حذف شده</span>
+                                        @endif
+                                    </td>
+                                    <td><span class="mk-pill {{ $statusClass }}">{{ $statusLabel }}</span></td>
+                                    <td class="mk-muted">{{ verta($comment->created_at)->format('%d %B %Y') }}</td>
+                                    <td>
+                                        <div class="mk-adm-drop" data-adm-drop>
+                                            <button type="button" class="mk-adm-icon-link" data-adm-drop-trigger
+                                                    aria-haspopup="true" aria-expanded="false" aria-label="تنظیمات نظر">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="mk-adm-dropdown" data-adm-drop-menu>
+                                                @if($status !== 3)
+                                                    <form action="{{ route('admin.comments.approve', ['comment' => $comment->id]) }}"
+                                                          method="POST" class="m-0">
+                                                        @csrf @method('PATCH')
+                                                        <button type="submit" class="dropdown-item">
+                                                            <i class="fas fa-check"></i><span>تایید و انتشار</span>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                @if($status !== 2)
+                                                    <form action="{{ route('admin.comments.reject', ['comment' => $comment->id]) }}"
+                                                          method="POST" class="m-0">
+                                                        @csrf @method('PATCH')
+                                                        <button type="submit" class="dropdown-item">
+                                                            <i class="fas fa-ban"></i><span>رد کردن</span>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                <form action="{{ route('admin.comments.destroy', ['comment' => $comment->id]) }}"
+                                                      method="POST" class="m-0"
+                                                      onsubmit="return confirm('این نظر و پاسخ‌هایش حذف شود؟')">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="dropdown-item is-danger">
+                                                        <i class="fas fa-trash"></i><span>حذف</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-            </div>
+
+                    <div class="mk-adm-pagination">{{ $comments->links('vendor.pagination.bootstrap-4') }}</div>
+                @endif
+            </section>
         </div>
     </main>
 @endsection

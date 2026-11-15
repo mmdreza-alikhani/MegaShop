@@ -59,7 +59,7 @@
                 @endif
             </label>
             <input type="password" name="password" id="password" class="form-control"
-                   autocomplete="new-password" @required(! $isEdit)
+                   autocomplete="new-password" @required(! $isEdit)>
             <small>حداقل ۶ کاراکتر.</small>
         </div>
 
@@ -76,11 +76,40 @@
         </div>
 
         <div class="mk-field">
+            <label for="role">نقش کاربر</label>
+            <select name="role" id="role" class="form-control">
+                <option value="" @selected(old('role', $isEdit ? $user->roles->first()?->name : '') === '')>بدون نقش</option>
+                @foreach($roles as $role)
+                    <option value="{{ $role->name }}"
+                        @selected(old('role', $isEdit ? $user->roles->first()?->name : '') === $role->name)>
+                        {{ $role->display_name ?: $role->name }}
+                    </option>
+                @endforeach
+            </select>
+            <small>دسترسی‌های این نقش به‌صورت خودکار اعمال می‌شود.</small>
+        </div>
+
+        <div class="mk-field">
             <label for="created_at">تاریخ عضویت</label>
             <input type="text" id="created_at" class="form-control" disabled
                    value="{{ $isEdit ? verta($user->created_at)->format('%d %B %Y') : 'پس از ساخت ثبت می‌شود' }}">
         </div>
     </div>
+
+    @php($userPermissions = $isEdit ? $user->permissions->pluck('name')->all() : [])
+    <details class="mk-perm-box">
+        <summary>دسترسی‌های اختصاصی ({{ count($userPermissions) }} مورد)</summary>
+        <p class="mk-muted">این دسترسی‌ها علاوه بر نقش کاربر اعمال می‌شوند.</p>
+        <div class="mk-perm-grid">
+            @foreach($permissions as $permission)
+                <label class="mk-perm-item">
+                    <input type="checkbox" name="permissions[]" value="{{ $permission->name }}"
+                        @checked(in_array($permission->name, old('permissions', $userPermissions), true))>
+                    <span>{{ $permission->display_name ?: $permission->name }}</span>
+                </label>
+            @endforeach
+        </div>
+    </details>
 
     <div class="mk-form-actions">
         <button type="submit" class="btn btn-info">

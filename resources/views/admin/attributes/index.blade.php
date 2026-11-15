@@ -230,4 +230,21 @@
             @endcan
         </div>
     </main>
+
+    {{-- بعد از خطای اعتبارسنجی، همان مودال دوباره باز شود. --}}
+    @if($errors->store->any())
+        <script>
+            jQuery(function () {
+                jQuery('#createAttributeModal').modal('show');
+            });
+        </script>
+    @endif
+
+    @if($errors->update->any() && session('attribute_id'))
+        <script>
+            jQuery(function () {
+                jQuery('#editAttributeModal-{{ (int) session('attribute_id') }}').modal('show');
+            });
+        </script>
+    @endif
 @endsection

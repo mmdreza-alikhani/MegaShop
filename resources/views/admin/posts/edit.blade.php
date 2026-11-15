@@ -163,27 +163,9 @@
     </main>
 @endsection
 @section('scripts')
+    @include('admin.sections.editor')
     <script>
-        CKEDITOR.replace('text', {
-            language: 'en',
-            filebrowserImageUploadUrl: '/ckeditor/upload?_token=' + document.querySelector('meta[name="csrf-token"]').content,
-            filebrowserBrowseUrl: '/storage/ckeditor/images',
-            filebrowserImageBrowseUrl: '/storage/ckeditor/images',
-
-            extraPlugins: 'uploadimage,filebrowser',
-            removePlugins: 'image2,easyimage,cloudservices',
-            toolbar: [
-                { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo'] },
-                { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
-                { name: 'tools', items: ['Maximize'] },
-                '/',
-                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
-                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
-                { name: 'links', items: ['Link', 'Unlink'] },
-                { name: 'styles', items: ['Format', 'Font', 'FontSize'] },
-                { name: 'colors', items: ['TextColor', 'BGColor'] }
-            ]
-        });
+        AdminEditor.create('#text');
         $('#tagSelect').selectpicker({
             'title': 'انتخاب برچسب'
         });

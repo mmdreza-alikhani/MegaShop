@@ -8,7 +8,7 @@
             <div class="mk-dash-head">
                 <div>
                     <h3>دسته‌بندی‌ها</h3>
-                    <p>{{ number_format($categories->total()) }} دسته‌بندی در این صفحه</p>
+                    <p>{{ number_format($categories->total()) }} دسته‌بندی در مجموع</p>
                 </div>
                 <div class="mk-dash-actions">
                     <a href="{{ route('admin.categories.create') }}" class="btn btn-info btn-sm">
@@ -91,7 +91,6 @@
                                     <td class="mk-muted">{{ $categories->firstItem() + $key }}</td>
                                     <td>
                                         <strong class="mk-attr-title">{{ $category->title }}</strong>
-                                        <span class="mk-role-name">{{ $category->slug }}</span>
                                     </td>
                                     <td class="mk-muted">{{ $category->parent?->title ?? '—' }}</td>
                                     <td>
@@ -106,7 +105,7 @@
                                     </td>
                                     <td>
                                         <span class="mk-pill {{ $category->getRawOriginal('is_active') ? 'is-ok' : 'is-bad' }}">
-                                            {{ $category->is_active }}
+                                            {{ $category->is_active_label }}
                                         </span>
                                     </td>
                                     <td class="mk-muted">{{ verta($category->created_at)->format('%d %B %Y') }}</td>
@@ -128,6 +127,16 @@
                                                 <a class="dropdown-item" href="{{ url('/categories/' . $category->slug) }}" target="_blank" rel="noopener">
                                                     <i class="fas fa-external-link-alt"></i><span>در فروشگاه</span>
                                                 </a>
+                                                @can('categories-delete')
+                                                    <form action="{{ route('admin.categories.destroy', ['category' => $category->id]) }}"
+                                                          method="POST" class="m-0"
+                                                          onsubmit="return confirm('دسته «{{ $category->title }}» حذف شود؟')">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="dropdown-item is-danger">
+                                                            <i class="fas fa-trash"></i><span>حذف دسته</span>
+                                                        </button>
+                                                    </form>
+                                                @endcan
                                             </div>
                                         </div>
                                     </td>

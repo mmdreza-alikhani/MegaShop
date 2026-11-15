@@ -31,14 +31,28 @@ function generateFileName($name): string
 
 function convertToGregorianDate($date): ?string
 {
-    if ($date == null) {
+    if ($date === null || trim((string) $date) === '') {
         return null;
     }
-    $pattern = "#[/\s]#";
-    $splitedSolarDate = preg_split($pattern, $date);
-    $gregorianFormat = Verta::jalaliToGregorian($splitedSolarDate[0], $splitedSolarDate[1], $splitedSolarDate[2]);
 
-    return implode('/', $gregorianFormat).' '.$splitedSolarDate[3];
+    // ورودی می‌تواند «1403/01/01» یا «1403/01/01 10:30» باشد.
+    $parts = preg_split('#[/\s]+#', trim((string) $date), -1, PREG_SPLIT_NO_EMPTY);
+
+    if (count($parts) < 3) {
+        return null;
+    }
+
+    [$year, $month, $day] = $parts;
+    $time = $parts[3] ?? '00:00:00';
+
+    // ثانیه را در صورت نبود اضافه می‌کنیم تا مقدار برای ستون‌های timestamp معتبر باشد.
+    if (substr_count($time, ':') === 1) {
+        $time .= ':00';
+    }
+
+    $gregorian = Verta::jalaliToGregorian((int) $year, (int) $month, (int) $day);
+
+    return sprintf('%04d-%02d-%02d %s', $gregorian[0], $gregorian[1], $gregorian[2], $time);
 }
 
 function removeTimeFromDate($date)

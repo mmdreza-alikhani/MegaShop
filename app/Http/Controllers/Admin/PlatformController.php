@@ -123,7 +123,7 @@ class PlatformController extends Controller
     public function destroy(Platform $platform): RedirectResponse
     {
         if ($platform->products()->count() > 0) {
-            flash()->success('پلتفرم قابل حذف نیسش');
+            flash()->warning('پلتفرم قابل حذف نیست؛ ابتدا محصولات آن را جابه‌جا کنید.');
             return redirect()->back();
         }else{
             try {

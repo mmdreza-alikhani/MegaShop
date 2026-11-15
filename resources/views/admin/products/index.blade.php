@@ -135,9 +135,11 @@
                             <tbody>
                             @foreach($products as $product)
                                 @php
-                                    $variation = $product->variations->first();
                                     $stock = (int) $product->variations->sum('quantity');
                                     $isActive = (bool) $product->getRawOriginal('is_active');
+                                    $prices = $product->variations->pluck('price')->filter(fn ($price) => $price !== null)->sort()->values();
+                                    $minPrice = $prices->first();
+                                    $hasPriceRange = $prices->unique()->count() > 1;
                                 @endphp
                                 <tr>
                                     <td>
@@ -153,8 +155,11 @@
                                     </td>
                                     <td class="mk-muted">{{ $product->category?->title ?? '—' }}</td>
                                     <td>
-                                        @if($variation)
-                                            {{ number_format($variation->price) }}
+                                        @if($prices->isNotEmpty())
+                                            @if($hasPriceRange)
+                                                <small class="mk-muted">از</small>
+                                            @endif
+                                            {{ number_format($minPrice) }}
                                             <small class="mk-muted">تومان</small>
                                         @else
                                             —
@@ -188,6 +193,17 @@
                                                    target="_blank" rel="noopener">
                                                     <i class="fas fa-external-link-alt"></i><span>در فروشگاه</span>
                                                 </a>
+                                                @can('products-delete')
+                                                    <form action="{{ route('admin.products.destroy', ['product' => $product->slug]) }}"
+                                                          method="POST" class="m-0"
+                                                          onsubmit="return confirm('محصول «{{ $product->title }}» حذف شود؟ این کار قابل بازگشت نیست.')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item is-danger">
+                                                            <i class="fas fa-trash"></i><span>حذف محصول</span>
+                                                        </button>
+                                                    </form>
+                                                @endcan
                                             </div>
                                         </div>
                                     </td>

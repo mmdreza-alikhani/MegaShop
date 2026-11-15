@@ -63,8 +63,12 @@ class FileUploadService
     /**
      * حذف یک فایل
      */
-    public function delete(string $path, string $fileName, ?string $disk = 'public'): bool
+    public function delete(string $path, ?string $fileName, ?string $disk = 'public'): bool
     {
+        if ($fileName === null || $fileName === '') {
+            return false;
+        }
+
         $fullPath = $path . '/' . $fileName;
 
         if (Storage::disk($disk)->exists($fullPath)) {

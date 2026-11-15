@@ -12,6 +12,7 @@ use App\Models\OrderItem;
 use App\Models\Platform;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductVariation;
 use App\Models\ShortLink;
 use App\Models\Tag;
 use App\Services\AttributeService;
@@ -22,7 +23,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -65,10 +65,16 @@ class ProductController extends Controller
             $query->where('is_active', 0);
         }
 
+        // قیمت روی جدول products وجود ندارد؛ مرتب‌سازی بر اساس ارزان‌ترین/گران‌ترین تنوع است.
+        $variationPrice = ProductVariation::select('price')
+            ->whereColumn('product_variations.product_id', 'products.id')
+            ->orderBy('price')
+            ->limit(1);
+
         match ($request->input('sort')) {
             'oldest' => $query->oldest(),
-            'cheap' => $query->orderBy('price'),
-            'expensive' => $query->orderByDesc('price'),
+            'cheap' => $query->orderBy($variationPrice),
+            'expensive' => $query->orderByDesc($variationPrice),
             default => $query->latest(),
         };
 
@@ -104,7 +110,17 @@ class ProductController extends Controller
             );
 
             $data = $request->validated();
-            unset($data['faqs'], $data['code'], $data['short_link'], $data['primary_image'], $data['other_images']);
+            $data['delivery_amount_per_product'] = $data['delivery_amount_per_product'] ?? 0;
+            unset(
+                $data['faqs'],
+                $data['code'],
+                $data['short_link'],
+                $data['primary_image'],
+                $data['other_images'],
+                $data['tag_ids'],
+                $data['filters_value'],
+                $data['variation_values'],
+            );
 
             $product = Product::create([
                 ...$data,
@@ -206,11 +222,18 @@ class ProductController extends Controller
 
     public function edit(Product $product): Factory|View
     {
+        $product->load([
+            'tags:id,title',
+            'faqs',
+            'images',
+            'category:id,title',
+        ]);
+
         $filters = $product->filters()
             ->with('attribute:id,title')
             ->get()
             ->map(fn ($attribute) => [
-                'id' => $attribute->id,
+                'id' => $attribute->attribute_id,
                 'value' => $attribute->value,
                 'title' => $attribute->attribute?->title,
             ])
@@ -235,6 +258,7 @@ class ProductController extends Controller
         return view('admin.products.edit', [
             ...$this->formData(),
             'product' => $product,
+            'tagIds' => $product->tags->pluck('id')->all(),
             'filters' => $filters,
             'variations' => $variations,
         ]);
@@ -246,7 +270,17 @@ class ProductController extends Controller
             DB::beginTransaction();
 
             $data = $request->validated();
-            unset($data['faqs'], $data['newFaqs'], $data['code'], $data['short_link']);
+            $data['delivery_amount_per_product'] = $data['delivery_amount_per_product'] ?? 0;
+            unset(
+                $data['faqs'],
+                $data['newFaqs'],
+                $data['code'],
+                $data['short_link'],
+                $data['tag_ids'],
+                $data['filters_value'],
+                $data['variation_values'],
+                $data['new_variation_values'],
+            );
 
             $product->update($data);
 
@@ -451,14 +485,17 @@ class ProductController extends Controller
 
     /**
      * داده‌های مشترک فرم ایجاد و ویرایش محصول.
+     *
+     * این لیست‌ها باید همیشه تازه باشند؛ کش ساعتی باعث می‌شد برند/دسته/برچسب تازه‌ساخته
+     * در فرم دیده نشود و مقدار فعلی محصول هم در لیست نباشد.
      */
     private function formData(): array
     {
         return [
-            'brands' => Cache::remember('product_brands', now()->addHour(), fn () => Brand::active()->pluck('title', 'id')),
-            'platforms' => Cache::remember('product_platforms', now()->addHour(), fn () => Platform::active()->pluck('title', 'id')),
-            'tags' => Cache::remember('product_tags', now()->addHour(), fn () => Tag::pluck('title', 'id')),
-            'categories' => Cache::remember('product_categories', now()->addHour(), fn () => Category::active()->pluck('title', 'id')),
+            'brands' => Brand::active()->orderBy('title')->pluck('title', 'id'),
+            'platforms' => Platform::active()->orderBy('title')->pluck('title', 'id'),
+            'tags' => Tag::orderBy('title')->pluck('title', 'id'),
+            'categories' => Category::active()->orderBy('title')->pluck('title', 'id'),
         ];
     }
 

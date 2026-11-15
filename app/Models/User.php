@@ -79,7 +79,7 @@ class User extends Authenticatable
     public function getFormattedPhoneAttribute()
     {
         if (empty($this->phone_number)) {
-            return 'شماره تلفنی یافت نشد!';
+            return null;
         }
 
         if (str_starts_with($this->phone_number, '09')) {

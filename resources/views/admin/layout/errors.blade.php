@@ -1,11 +1,13 @@
-@if(count($errors) > 0)
-    @foreach($errors->all() as $error)
-        <div class="alert text-dir-rtl text-right alert-third alert-shade alert-dismissible fade show"
-             role="alert">
-            {{ $error }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+@if($errors instanceof \Illuminate\Support\MessageBag ? $errors->any() : count($errors) > 0)
+    <div class="mk-form-errors" role="alert">
+        <div class="mk-form-errors-head">
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+            <strong>ذخیره نشد؛ موارد زیر را اصلاح کنید:</strong>
         </div>
-    @endforeach
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
 @endif

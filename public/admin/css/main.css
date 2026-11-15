@@ -2978,6 +2978,12 @@ label {
     background: var(--adm-surface);
 }
 
+/* پس‌زمینه یکدست سطح محتوا (رفع نوار رنگی لبه سایدبار) */
+.bmd-layout-canvas,
+.bmd-layout-content {
+    background: var(--adm-bg);
+}
+
 .modal-content {
     background: var(--adm-surface);
     border: 1px solid var(--adm-border);
@@ -3962,6 +3968,14 @@ body.dark .mk-adm-theme-light {
 .mk-adm-dropdown .dropdown-item.is-danger:hover {
     color: #d64545;
     background: rgba(214, 69, 69, .12);
+}
+
+.mk-adm-dropdown button.dropdown-item {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: start;
+    cursor: pointer;
 }
 
 /* ---------- جستجوی منو در سایدبار ---------- */
@@ -5776,4 +5790,1786 @@ body.dark .bootstrap-select .dropdown-menu .dropdown-item {
 
 #dw-s1 .navbar-brand .side-logo {
     margin: 0 !important;
+}
+
+/* =========================================================
+   فرم محصول و صفحات پنل: فایل، ردیف‌های تکرارشونده، متن غنی
+   ========================================================= */
+.mk-muted {
+    color: var(--adm-muted) !important;
+}
+
+/* ---------- انتخاب فایل ---------- */
+.mk-file-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px dashed var(--adm-border);
+    border-radius: 10px;
+    background: var(--adm-surface-2);
+}
+
+.mk-file-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 7px 12px;
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+    background: var(--adm-surface);
+    color: var(--adm-text);
+    font-size: .76rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color .15s ease, color .15s ease;
+}
+
+.mk-file-btn:hover,
+.mk-file-btn:focus {
+    border-color: var(--adm-accent);
+    color: var(--adm-accent);
+    text-decoration: none;
+}
+
+.mk-file-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .74rem;
+    color: var(--adm-muted);
+}
+
+/* ---------- دکمه‌های افزودن/حذف ردیف (czMore) ---------- */
+.btnPlus,
+.btnMinus {
+    float: none !important;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    width: auto !important;
+    height: 34px !important;
+    margin: 2px 0 10px;
+    padding: 0 12px !important;
+    border: 1px solid var(--adm-border) !important;
+    border-radius: 10px !important;
+    background-color: var(--adm-surface-2) !important;
+    background-image: none !important;
+    color: var(--adm-text) !important;
+    font-size: .74rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color .15s ease, color .15s ease;
+}
+
+.btnPlus:hover,
+.btnMinus:hover,
+.btnPlus:focus,
+.btnMinus:focus {
+    border-color: var(--adm-accent) !important;
+    color: var(--adm-accent) !important;
+    outline: none;
+}
+
+.mk-repeater-remove {
+    color: #d92d20 !important;
+}
+
+/* ---------- نمایش فقط‌خواندنی متن غنی ---------- */
+.mk-rich-text {
+    padding: 14px 16px;
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+    background: var(--adm-surface-2);
+    color: var(--adm-text);
+    font-size: .82rem;
+    line-height: 1.9;
+    word-break: break-word;
+}
+
+.mk-rich-text > :first-child {
+    margin-top: 0;
+}
+
+.mk-rich-text > :last-child {
+    margin-bottom: 0;
+}
+
+.mk-rich-text h1,
+.mk-rich-text h2,
+.mk-rich-text h3,
+.mk-rich-text h4 {
+    margin: 1em 0 .5em;
+    font-weight: 800;
+    line-height: 1.6;
+}
+
+.mk-rich-text img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.mk-rich-text table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mk-rich-text th,
+.mk-rich-text td {
+    padding: 8px 10px;
+    border: 1px solid var(--adm-border);
+    text-align: start;
+}
+
+.mk-rich-text blockquote {
+    margin: 1em 0;
+    padding: .6em 1em;
+    border-inline-start: 3px solid var(--adm-accent);
+    background: var(--adm-surface);
+    color: var(--adm-muted);
+}
+
+.mk-rich-text pre {
+    padding: 12px 14px;
+    overflow: auto;
+    border-radius: 10px;
+    background: #0f1419;
+    color: #e7edf4;
+    direction: ltr;
+    text-align: left;
+}
+
+/* ---------- توضیح زیر فیلدها ---------- */
+.mk-field-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: .7rem;
+    color: var(--adm-muted);
+}
+
+/* =========================================================
+   لایه نهایی ظاهر پنل: پالت یکدست، فرم‌ها و انتخابگرها
+   ========================================================= */
+
+/* ---------- پالت رنگی ---------- */
+.c-primary {
+    color: var(--adm-accent) !important;
+}
+
+.c-secondary {
+    color: var(--adm-muted) !important;
+}
+
+.c-success {
+    color: #16a34a !important;
+}
+
+.c-danger {
+    color: #d92d20 !important;
+}
+
+.c-warning {
+    color: #d97706 !important;
+}
+
+.c-info {
+    color: #0284c7 !important;
+}
+
+.c-grey {
+    color: var(--adm-muted) !important;
+}
+
+/* ---------- کارت و سرصفحه ---------- */
+.card,
+.card.shade,
+.card.flat {
+    background: var(--adm-surface);
+    background-image: none;
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+    color: var(--adm-text);
+}
+
+/* گرادیان خاکستری کارت‌ها در حالت تاریک (قانون قدیمی) */
+body.dark .card.shade,
+.dark .card.shade {
+    background: var(--adm-surface) !important;
+    background-image: none !important;
+    color: var(--adm-text) !important;
+}
+
+.card.c-grey {
+    color: var(--adm-text) !important;
+}
+
+.card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 13px 18px;
+    font-size: .92rem;
+    font-weight: 800;
+    color: var(--adm-text) !important;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--adm-border);
+    border-radius: 0;
+}
+
+.card > .card-header::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 4px;
+    height: 16px;
+    border-radius: 99px;
+    background: var(--adm-accent);
+}
+
+.card-body {
+    padding: 18px 20px;
+}
+
+.card .card .card-header {
+    padding: 11px 14px;
+    font-size: .84rem;
+}
+
+/* ---------- فرم: لیبل و فاصله‌ها ---------- */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group > label:not(.bmd-label-floating):not(.mk-file-btn):not(.custom-file-label),
+label:not(.bmd-label-floating):not(.mk-file-btn):not(.custom-file-label) {
+    position: static !important;
+    display: block;
+    width: auto;
+    margin: 0 0 6px;
+    padding: 0;
+    font-size: .74rem;
+    font-weight: 700;
+    color: var(--adm-muted);
+    transform: none !important;
+}
+
+.form-group:focus-within > label,
+body.dark .form-group:focus-within > label {
+    color: var(--adm-accent);
+}
+
+/* ---------- فیلدها ---------- */
+.form-control,
+.custom-select,
+.custom-file-label,
+input.form-control,
+select.form-control,
+textarea.form-control {
+    height: 42px;
+    padding: .45rem .8rem;
+    font-size: .82rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--adm-text);
+    background-color: var(--adm-surface-2);
+    background-image: none !important;
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+    box-shadow: none !important;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+/* قانون قدیمی حالت تاریک، پس‌زمینه فیلدها را خاکستری می‌کرد */
+body.dark .form-control,
+.dark .form-control {
+    background-color: var(--adm-surface-2) !important;
+    background-image: none !important;
+    color: var(--adm-text);
+    border-color: var(--adm-border);
+}
+
+body.dark .form-control:focus,
+.dark .form-control:focus {
+    background-color: var(--adm-surface) !important;
+    border-color: var(--adm-accent) !important;
+}
+
+textarea.form-control {
+    height: auto;
+    min-height: 96px;
+}
+
+input[type="file"].form-control,
+.form-control-file {
+    height: auto;
+    padding: .4rem .6rem;
+    font-size: .76rem;
+    color: var(--adm-muted);
+    background: var(--adm-surface-2);
+    border: 1px dashed var(--adm-border);
+    border-radius: 10px;
+}
+
+.form-control:focus,
+.custom-select:focus {
+    color: var(--adm-text);
+    background-color: var(--adm-surface);
+    border-color: var(--adm-accent);
+    box-shadow: 0 0 0 3px var(--adm-accent-soft) !important;
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: var(--adm-muted);
+    opacity: .75;
+}
+
+.form-control:disabled,
+.form-control[readonly],
+.form-control:read-only {
+    color: var(--adm-muted);
+    background-color: var(--adm-surface-2);
+    border-color: var(--adm-border);
+    opacity: 1;
+}
+
+/* ---------- انتخابگر بوت‌استرپ (bootstrap-select) ---------- */
+.bootstrap-select.form-control {
+    border: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* ارتفاع یکسان فیلدها (سلکت بومی و انتخابگر) */
+select.form-control:not([size]):not([multiple]) {
+    height: 42px !important;
+    padding-inline-end: 1.6rem;
+}
+
+.bootstrap-select.form-control,
+.bootstrap-select > .dropdown-toggle {
+    margin: 0 !important;
+}
+
+.bootstrap-select > .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 42px;
+    padding: 0 .8rem !important;
+    font-size: .82rem;
+    font-weight: 500;
+    color: var(--adm-text) !important;
+    background: var(--adm-surface-2) !important;
+    border: 1px solid var(--adm-border) !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+body.dark .bootstrap-select > .dropdown-toggle {
+    background: var(--adm-surface-2) !important;
+}
+
+body.dark .form-group > label:not(.bmd-label-floating):not(.mk-file-btn),
+body.dark label:not(.bmd-label-floating):not(.mk-file-btn) {
+    color: var(--adm-muted);
+}
+
+.bootstrap-select.show > .dropdown-toggle,
+.bootstrap-select > .dropdown-toggle:focus,
+.bootstrap-select > .dropdown-toggle:active {
+    border-color: var(--adm-accent) !important;
+    box-shadow: 0 0 0 3px var(--adm-accent-soft) !important;
+    background: var(--adm-surface) !important;
+    outline: none !important;
+}
+
+.bootstrap-select > .dropdown-toggle .filter-option {
+    color: var(--adm-text) !important;
+    text-align: start;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bootstrap-select > .dropdown-toggle::after {
+    margin-inline-start: 8px;
+    color: var(--adm-muted);
+    border-top-color: var(--adm-muted);
+}
+
+.bootstrap-select .dropdown-menu {
+    min-width: 100%;
+    margin-top: 6px;
+    padding: 6px;
+    color: var(--adm-text);
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+    box-shadow: 0 14px 34px rgba(16, 24, 40, .18);
+    z-index: 1055;
+}
+
+body.dark .bootstrap-select .dropdown-menu {
+    box-shadow: 0 18px 42px rgba(0, 0, 0, .55);
+}
+
+.bootstrap-select .dropdown-menu .inner {
+    border-radius: 8px;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--adm-border) transparent;
+}
+
+.bootstrap-select .dropdown-menu .inner::-webkit-scrollbar {
+    width: 8px;
+}
+
+.bootstrap-select .dropdown-menu .inner::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.bootstrap-select .dropdown-menu .inner::-webkit-scrollbar-thumb {
+    background: var(--adm-border);
+    border-radius: 99px;
+}
+
+.bootstrap-select .dropdown-menu .inner::-webkit-scrollbar-thumb:hover {
+    background: var(--adm-muted);
+}
+
+.bootstrap-select .dropdown-menu li a {
+    display: block;
+    padding: 7px 10px;
+    font-size: .8rem;
+    border-radius: 8px;
+    color: var(--adm-text) !important;
+    white-space: normal;
+}
+
+.bootstrap-select .dropdown-menu li a:hover,
+.bootstrap-select .dropdown-menu li a:focus {
+    color: var(--adm-accent) !important;
+    background: var(--adm-surface-2) !important;
+    outline: none;
+}
+
+.bootstrap-select .dropdown-menu li.selected a,
+.bootstrap-select .dropdown-menu li.active a {
+    color: var(--adm-accent) !important;
+    background: var(--adm-accent-soft) !important;
+    font-weight: 700;
+}
+
+.bootstrap-select .dropdown-menu li.disabled a {
+    color: var(--adm-muted) !important;
+    opacity: .7;
+}
+
+.bootstrap-select .bs-searchbox {
+    padding: 2px 2px 8px;
+}
+
+.bootstrap-select .bs-searchbox input {
+    height: 34px;
+    padding: .3rem .7rem;
+    font-size: .8rem;
+    color: var(--adm-text) !important;
+    background: var(--adm-surface-2) !important;
+    border: 1px solid var(--adm-border) !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+}
+
+.bootstrap-select .bs-searchbox input::placeholder {
+    color: var(--adm-muted);
+    opacity: .8;
+}
+
+.bootstrap-select .dropdown-menu .text {
+    color: inherit;
+}
+
+/* ---------- دکمه‌ها ---------- */
+.btn.f-primary,
+.f-primary {
+    color: #fff !important;
+    background: var(--adm-accent) !important;
+    border: 1px solid var(--adm-accent) !important;
+    border-radius: 10px;
+    font-weight: 700;
+    box-shadow: none !important;
+}
+
+.btn.f-primary:hover,
+.f-primary:hover {
+    background: #c4122f !important;
+    border-color: #c4122f !important;
+    color: #fff !important;
+}
+
+.btn.f-secondary,
+.f-secondary {
+    color: var(--adm-text) !important;
+    background: var(--adm-surface) !important;
+    border: 1px solid var(--adm-border) !important;
+    border-radius: 10px;
+    font-weight: 700;
+    box-shadow: none !important;
+}
+
+.btn.f-secondary:hover,
+.f-secondary:hover {
+    color: var(--adm-accent) !important;
+    border-color: var(--adm-accent) !important;
+    background: var(--adm-surface) !important;
+}
+
+.btn.f-danger {
+    color: #fff !important;
+    background: #d92d20 !important;
+    border: 1px solid #d92d20 !important;
+}
+
+.btn.f-success {
+    color: #fff !important;
+    background: #16a34a !important;
+    border: 1px solid #16a34a !important;
+}
+
+/* دکمه‌های خطی (قوانین BMD با اولویت .btn.btn-outline-* ) */
+.btn.btn-outline-info {
+    color: var(--adm-accent) !important;
+    background: transparent !important;
+    border: 1px solid var(--adm-accent) !important;
+    box-shadow: none !important;
+}
+
+.btn.btn-outline-info:hover,
+.btn.btn-outline-info:focus,
+.btn.btn-outline-info:active {
+    color: #fff !important;
+    background: var(--adm-accent) !important;
+    border-color: var(--adm-accent) !important;
+    box-shadow: 0 0 0 3px var(--adm-accent-soft) !important;
+}
+
+/* ---------- کادر ادیتور ---------- */
+.tox-tinymce {
+    border: 1px solid var(--adm-border) !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+}
+
+.tox-tinymce:focus-within {
+    border-color: var(--adm-accent) !important;
+    box-shadow: 0 0 0 3px var(--adm-accent-soft);
+}
+
+/* هم‌رنگ کردن نوارهای ادیتور با پالت پنل */
+body.dark .tox .tox-menubar,
+body.dark .tox .tox-toolbar-overlord,
+body.dark .tox .tox-toolbar__primary,
+body.dark .tox .tox-toolbar,
+body.dark .tox .tox-statusbar,
+body.dark .tox .tox-promotion {
+    background: var(--adm-surface-2) !important;
+    background-image: none !important;
+}
+
+body.dark .tox .tox-statusbar {
+    color: var(--adm-muted) !important;
+    border-top: 1px solid var(--adm-border) !important;
+}
+
+body.dark .tox .tox-menubar {
+    border-bottom: 1px solid var(--adm-border) !important;
+}
+
+body.dark .tox .tox-menubar + .tox-toolbar-overlord,
+body.dark .tox .tox-toolbar-overlord + .tox-toolbar-overlord {
+    border-top-color: var(--adm-border) !important;
+}
+
+body.dark .tox .tox-tbtn {
+    color: var(--adm-text);
+}
+
+body.dark .tox .tox-tbtn:hover,
+body.dark .tox .tox-tbtn:focus {
+    background: var(--adm-surface) !important;
+    color: var(--adm-text) !important;
+}
+
+body.dark .tox .tox-tbtn--enabled,
+body.dark .tox .tox-tbtn--enabled:hover {
+    background: var(--adm-accent-soft) !important;
+    color: var(--adm-accent) !important;
+}
+
+body.dark .tox .tox-edit-area::before {
+    border: 0;
+}
+
+body.dark .tox .tox-statusbar a,
+body.dark .tox .tox-statusbar__path-item {
+    color: var(--adm-muted) !important;
+}
+/* ==========================================================
+   اصلاحات بازبینی پنل: هم‌ترازی هدر با ستون محتوا
+   ========================================================== */
+@media (min-width: 992px) {
+    /* عرض هدر باید دقیقاً تا لبه‌ی کشوی سایدبار باشد، نه زیر آن. */
+    .bmd-layout-header,
+    .bmd-layout-container > .bmd-layout-header,
+    .bmd-layout-container.bmd-drawer-in > .bmd-layout-header,
+    html[dir="rtl"] .bmd-layout-container.bmd-drawer-in.bmd-drawer-f-l > .bmd-layout-header,
+    html[dir="rtl"] :not(.bmd-drawer-out).bmd-drawer-in.bmd-drawer-f-l > .bmd-layout-header {
+        width: auto;
+        margin-left: 0;
+        margin-right: 240px;
+    }
+
+    /* نوار فیلتر نباید تا انتهای صفحه کشیده شود و خالی به نظر برسد. */
+    .mk-adm-filters {
+        width: fit-content;
+        max-width: 100%;
+    }
+}
+
+.mk-adm-filter-clear {
+    margin-inline-start: 0;
+    margin-inline-end: auto;
+    align-self: center;
+}
+
+
+/* ==========================================================
+   جعبه خطاهای اعتبارسنجی فرم‌ها
+   ========================================================== */
+.mk-form-errors {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    color: #8a1024;
+    background: rgba(221, 22, 59, .06);
+    border: 1px solid rgba(221, 22, 59, .28);
+    border-radius: 12px;
+}
+
+.mk-form-errors-head {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: .8rem;
+}
+
+.mk-form-errors ul {
+    margin: 0;
+    padding-inline-start: 18px;
+    font-size: .76rem;
+    line-height: 1.9;
+}
+
+body.dark .mk-form-errors {
+    color: #ffb3c1;
+    background: rgba(255, 61, 99, .1);
+    border-color: rgba(255, 61, 99, .35);
+}
+
+
+/* ==========================================================
+   جعبه دسترسی‌های اختصاصی کاربر
+   ========================================================== */
+.mk-perm-box {
+    margin: 6px 0 18px;
+    padding: 12px 14px;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+}
+
+.mk-perm-box > summary {
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--adm-text);
+    cursor: pointer;
+}
+
+.mk-perm-box > p {
+    margin: 6px 0 10px;
+    font-size: .72rem;
+}
+
+.mk-perm-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 6px 14px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-top: 4px;
+}
+
+.mk-perm-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: 0;
+    font-size: .74rem;
+    color: var(--adm-text);
+    cursor: pointer;
+}
+
+.mk-perm-item input {
+    margin: 0;
+    accent-color: var(--adm-accent);
+}
+
+
+/* ==========================================================
+   کارت خلاصه کاربر در صفحه ویرایش
+   ========================================================== */
+.mk-user-summary {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding-bottom: 14px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--adm-border);
+}
+
+.mk-user-summary img {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 16px;
+    background: var(--adm-surface-2);
+}
+
+.mk-user-summary strong {
+    display: block;
+    font-size: .86rem;
+    color: var(--adm-text);
+}
+
+.mk-user-summary small {
+    font-size: .72rem;
+    color: var(--adm-muted);
+    word-break: break-all;
+}
+
+
+/* ==========================================================
+   چیدمان تبلت: عنوان هدر و کارت‌های آماری
+   ========================================================== */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .mk-adm-header {
+        grid-template-columns: minmax(110px, auto) minmax(150px, 1fr) auto;
+        gap: 8px;
+    }
+
+    .mk-adm-page-title span {
+        display: none;
+    }
+
+    .mk-kpi-grid--4 {
+        grid-template-columns: repeat(auto-fit, minmax(166px, 1fr));
+    }
+}
+
+
+/* ==========================================================
+   صفحه‌بندی هماهنگ با پوسته
+   ========================================================== */
+.mk-adm-pagination {
+    display: flex;
+    justify-content: center;
+    padding: 16px 0 6px;
+}
+
+.mk-adm-pagination .pagination {
+    gap: 6px;
+    margin: 0;
+}
+
+.mk-adm-pagination .page-link {
+    min-width: 34px;
+    padding: 6px 8px;
+    font-size: .76rem;
+    color: var(--adm-text);
+    text-align: center;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+}
+
+.mk-adm-pagination .page-link:hover {
+    color: var(--adm-accent);
+    border-color: var(--adm-accent);
+    background: var(--adm-surface);
+}
+
+.mk-adm-pagination .page-item.active .page-link {
+    color: #fff;
+    background: var(--adm-accent);
+    border-color: var(--adm-accent);
+}
+
+.mk-adm-pagination .page-item.disabled .page-link {
+    color: var(--adm-muted);
+    opacity: .5;
+}
+
+
+/* ==========================================================
+   منوی انتخابگرها (bootstrap-select): عرض کامل، تراز راست،
+   فاصله بین گزینه‌ها و رنگ‌بندی یکسان در حالت روشن و تاریک
+   ========================================================== */
+.bootstrap-select .dropdown-menu {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    padding: 6px !important;
+}
+
+.bootstrap-select .dropdown-menu .inner {
+    padding: 0 !important;
+}
+
+.bootstrap-select .dropdown-menu ul.inner > li {
+    margin: 0 0 3px !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.bootstrap-select .dropdown-menu ul.inner > li:last-child {
+    margin-bottom: 0 !important;
+}
+
+.bootstrap-select .dropdown-menu .dropdown-item {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 9px 12px !important;
+    font-size: .8rem;
+    font-weight: 500;
+    line-height: 1.7;
+    color: var(--adm-text) !important;
+    text-align: start;
+    background: transparent !important;
+    border-radius: 9px;
+    white-space: normal;
+}
+
+.bootstrap-select .dropdown-menu .dropdown-item .text {
+    flex: 1 1 auto;
+    text-align: start;
+}
+
+.bootstrap-select .dropdown-menu .dropdown-item:hover,
+.bootstrap-select .dropdown-menu .dropdown-item:focus {
+    color: var(--adm-text) !important;
+    background: var(--adm-surface-2) !important;
+}
+
+.bootstrap-select .dropdown-menu .dropdown-item.active,
+.bootstrap-select .dropdown-menu .dropdown-item.selected {
+    color: var(--adm-accent) !important;
+    background: var(--adm-accent-soft) !important;
+    font-weight: 700;
+}
+
+.bootstrap-select .dropdown-menu .dropdown-item.disabled,
+.bootstrap-select .dropdown-menu .dropdown-item.disabled:hover {
+    color: var(--adm-muted) !important;
+    background: transparent !important;
+    opacity: .9;
+}
+
+/* ابزار «انتخاب همه / لغو انتخاب» در انتخابگرهای چندگانه */
+.bootstrap-select .bs-actionsbox {
+    padding: 0 2px 8px;
+}
+
+.bootstrap-select .bs-actionsbox .btn-group {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+}
+
+.bootstrap-select .bs-actionsbox .btn {
+    flex: 1 1 0;
+    padding: 6px 8px;
+    font-size: .72rem;
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+}
+
+.bootstrap-select .bs-actionsbox .btn:hover {
+    color: var(--adm-accent);
+    border-color: var(--adm-accent);
+}
+
+
+/* منوی انتخابگر وقتی پایین صفحه جا ندارد، به سمت بالا باز می‌شود */
+.bootstrap-select.dropup .dropdown-menu {
+    top: auto !important;
+    bottom: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 6px !important;
+}
+
+
+/* جستجوی داخل منوی انتخابگر: کمی واضح‌تر از پس‌زمینه منو */
+.bootstrap-select .bs-searchbox {
+    padding: 2px 2px 10px !important;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--adm-border);
+}
+
+.bootstrap-select .bs-searchbox input {
+    background: var(--adm-bg) !important;
+    border-color: var(--adm-border) !important;
+}
+
+
+/* ==========================================================
+   فرم محصول (ایجاد و ویرایش): پنل‌های یکسان و بخش‌های تازه
+   ========================================================== */
+.mk-product-form {
+    display: grid;
+    gap: 14px;
+}
+
+.mk-form-2col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    align-items: start;
+}
+
+.mk-form-grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.mk-panel-chip {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    padding: 5px 12px;
+    font-size: .7rem;
+    font-weight: 700;
+    color: var(--adm-accent);
+    background: var(--adm-accent-soft);
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.mk-panel-chip.is-empty {
+    color: var(--adm-muted);
+    background: var(--adm-surface-2);
+}
+
+/* انتخاب دسته‌بندی */
+.mk-category-picker {
+    display: grid;
+    grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+    gap: 14px;
+    align-items: end;
+}
+
+.mk-category-note {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    font-size: .74rem;
+    color: var(--adm-muted);
+    background: var(--adm-surface-2);
+    border: 1px dashed var(--adm-border);
+    border-radius: 10px;
+}
+
+.mk-category-note i {
+    color: var(--adm-accent);
+}
+
+/* ناحیه ویژگی‌ها و تنوع‌ها */
+.mk-attr-area {
+    display: grid;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.mk-attr-block {
+    padding: 14px;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+}
+
+.mk-attr-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.mk-attr-head h6 {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: 0;
+    font-size: .82rem;
+    font-weight: 800;
+    color: var(--adm-text);
+}
+
+.mk-attr-head h6 i {
+    color: var(--adm-accent);
+}
+
+.mk-attr-name {
+    font-size: .74rem;
+    font-weight: 700;
+    color: var(--adm-accent);
+}
+
+.mk-hint {
+    font-size: .68rem;
+    color: var(--adm-muted);
+}
+
+/* ردیف‌های تنوع */
+.mk-var-list {
+    display: grid;
+    gap: 10px;
+}
+
+.mk-var-row {
+    position: relative;
+    padding: 14px 14px 4px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+}
+
+.mk-var-row-head {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.mk-var-index {
+    padding: 3px 10px;
+    font-size: .7rem;
+    font-weight: 800;
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border-radius: 20px;
+}
+
+.mk-var-id {
+    font-size: .68rem;
+    color: var(--adm-muted);
+}
+
+/* سوالات متداول */
+.mk-faq-list {
+    display: grid;
+    gap: 10px;
+}
+
+.mk-faq-item {
+    position: relative;
+    padding: 14px 14px 2px;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+}
+
+.mk-faq-head {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.mk-faq-num {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    font-size: .7rem;
+    font-weight: 800;
+    color: var(--adm-accent);
+    background: var(--adm-accent-soft);
+    border-radius: 8px;
+}
+
+.mk-faq-title {
+    font-size: .76rem;
+    font-weight: 700;
+    color: var(--adm-muted);
+}
+
+/* دکمه‌های ردیف در فرم محصول */
+.mk-product-form .btnPlus {
+    display: flex !important;
+    justify-content: center;
+    width: 100% !important;
+    height: 40px !important;
+    margin: 10px 0 0 !important;
+    border-style: dashed !important;
+    border-radius: 10px !important;
+    background: transparent !important;
+}
+
+.mk-product-form .btnPlus:hover {
+    background: var(--adm-accent-soft) !important;
+}
+
+.mk-product-form .btnMinus {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    width: 28px !important;
+    height: 28px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    justify-content: center;
+    border-radius: 8px !important;
+}
+
+.mk-product-form .btnMinus span {
+    display: none;
+}
+
+.mk-product-form .mk-var-row-head,
+.mk-product-form .mk-faq-head {
+    padding-left: 34px;
+}
+
+/* آپلود تصویر */
+.mk-upload {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    background: var(--adm-surface-2);
+    border: 1px dashed var(--adm-border);
+    border-radius: 12px;
+    transition: border-color .15s ease, background .15s ease;
+}
+
+.mk-upload.is-dragover {
+    border-color: var(--adm-accent);
+    background: var(--adm-accent-soft);
+}
+
+.mk-upload img {
+    width: 54px;
+    height: 54px;
+    object-fit: cover;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+}
+
+.mk-upload-body {
+    flex: 1 1 140px;
+    min-width: 0;
+}
+
+.mk-upload-body strong {
+    display: block;
+    font-size: .76rem;
+    color: var(--adm-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mk-upload-body small {
+    font-size: .68rem;
+    color: var(--adm-muted);
+}
+
+.mk-upload-btn {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    margin: 0;
+    padding: 8px 12px;
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--adm-text);
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.mk-upload-btn:hover {
+    color: var(--adm-accent);
+    border-color: var(--adm-accent);
+}
+
+/* گالری تصاویر در حالت ویرایش */
+.mk-media-primary {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+}
+
+.mk-media-primary img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    background: var(--adm-surface);
+    border-radius: 10px;
+}
+
+.mk-media-primary strong {
+    display: block;
+    font-size: .76rem;
+    color: var(--adm-text);
+}
+
+.mk-media-primary small {
+    font-size: .68rem;
+    color: var(--adm-muted);
+    word-break: break-all;
+}
+
+.mk-media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.mk-media-item {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+    background: var(--adm-surface-2);
+}
+
+.mk-media-item img {
+    display: block;
+    width: 100%;
+    height: 78px;
+    object-fit: cover;
+}
+
+.mk-media-item-actions {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity .15s ease;
+}
+
+.mk-media-item:hover .mk-media-item-actions {
+    opacity: 1;
+}
+
+.mk-media-action {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    font-size: .68rem;
+    color: #fff;
+    background: rgba(15, 20, 25, .72);
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.mk-media-action.is-danger:hover {
+    background: #d92d20;
+}
+
+.mk-media-action:hover {
+    background: var(--adm-accent);
+}
+
+.mk-upload-slim {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.mk-upload-slim input[type="file"] {
+    max-width: 100%;
+    font-size: .72rem;
+    color: var(--adm-muted);
+}
+
+/* ورودی با پسوند واحد */
+.mk-input-suffix {
+    display: flex;
+    align-items: stretch;
+}
+
+.mk-input-suffix .form-control {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+
+.mk-input-suffix span {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: .72rem;
+    color: var(--adm-muted);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-inline-start: 0;
+    border-start-end-radius: 10px;
+    border-end-end-radius: 10px;
+}
+
+/* نوار ارسال فرم */
+.mk-product-submit {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 16px;
+    margin-top: 2px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+}
+
+@media (max-width: 1199.98px) {
+    .mk-form-grid--4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 991.98px) {
+    .mk-form-2col,
+    .mk-category-picker {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mk-form-grid--4 {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+
+/* انتخابگر بوت‌استرپ: سلکت اصلی همیشه پنهان باشد (حتی وقتی bmd آن را در span گذاشته) */
+.bootstrap-select select:not(.mobile-device) {
+    display: none !important;
+}
+
+
+/* فیلد ادیتور: ارتفاع پوشش bmd نباید ثابت بماند */
+.mk-field--editor .bmd-form-group {
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+.mk-field--editor .bmd-form-group > .tox-tinymce {
+    width: 100% !important;
+}
+
+
+/* ==========================================================
+   صفحه نمایش محصول
+   ========================================================== */
+.mk-product-hero {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+    gap: 18px;
+    padding: 18px;
+    margin-bottom: 14px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+}
+
+.mk-product-cover {
+    position: relative;
+    overflow: hidden;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 14px;
+}
+
+.mk-product-cover img {
+    display: block;
+    width: 100%;
+    height: 260px;
+    object-fit: contain;
+    background: var(--adm-surface-2);
+}
+
+.mk-product-cover-badge {
+    position: absolute;
+    top: 10px;
+    inset-inline-start: 10px;
+}
+
+.mk-product-thumbs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.mk-product-thumbs img {
+    width: 100%;
+    height: 54px;
+    object-fit: cover;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+}
+
+.mk-product-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.mk-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    font-size: .7rem;
+    font-weight: 700;
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 20px;
+}
+
+.mk-chip.is-ok {
+    color: #067647;
+    background: rgba(23, 178, 106, .12);
+    border-color: rgba(23, 178, 106, .35);
+}
+
+.mk-chip.is-bad {
+    color: #b42318;
+    background: rgba(217, 45, 32, .1);
+    border-color: rgba(217, 45, 32, .3);
+}
+
+.mk-chip.is-accent {
+    color: var(--adm-accent);
+    background: var(--adm-accent-soft);
+    border-color: transparent;
+}
+
+.mk-product-title {
+    margin: 0 0 10px;
+    font-size: 1.12rem;
+    font-weight: 800;
+    line-height: 1.7;
+    color: var(--adm-text);
+}
+
+.mk-product-price {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: baseline;
+    padding: 10px 0 14px;
+    border-bottom: 1px dashed var(--adm-border);
+}
+
+.mk-product-price strong {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--adm-accent);
+}
+
+.mk-price-label,
+.mk-price-unit {
+    font-size: .76rem;
+    color: var(--adm-muted);
+}
+
+.mk-product-price small {
+    font-size: .7rem;
+    color: var(--adm-muted);
+}
+
+.mk-product-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    padding: 14px 0;
+}
+
+.mk-stat {
+    padding: 10px 12px;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+}
+
+.mk-stat span {
+    display: block;
+    font-size: .68rem;
+    color: var(--adm-muted);
+}
+
+.mk-stat strong {
+    display: block;
+    margin-top: 2px;
+    font-size: .94rem;
+    color: var(--adm-text);
+}
+
+.mk-stat strong.is-danger {
+    color: #d92d20;
+}
+
+.mk-product-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mk-product-meta li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mk-product-meta span {
+    font-size: .66rem;
+    color: var(--adm-muted);
+}
+
+.mk-product-meta strong {
+    font-size: .74rem;
+    font-weight: 700;
+    color: var(--adm-text);
+    word-break: break-all;
+}
+
+.mk-product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.mk-product-span-2 {
+    grid-column: 1 / -1;
+}
+
+.mk-var-table {
+    overflow-x: auto;
+}
+
+.mk-var-table table {
+    width: 100%;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.mk-var-table th {
+    padding: 8px 10px;
+    font-size: .68rem;
+    font-weight: 700;
+    color: var(--adm-muted);
+    text-align: start;
+    border-bottom: 1px solid var(--adm-border);
+}
+
+.mk-var-table td {
+    padding: 10px;
+    font-size: .78rem;
+    color: var(--adm-text);
+    vertical-align: middle;
+    border-bottom: 1px solid var(--adm-border);
+}
+
+.mk-var-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.mk-var-table td small {
+    display: block;
+    font-size: .66rem;
+}
+
+.mk-price-sale {
+    font-weight: 700;
+    color: #067647;
+}
+
+.mk-code {
+    padding: 2px 6px;
+    font-size: .7rem;
+    color: var(--adm-muted);
+    background: var(--adm-surface-2);
+    border-radius: 6px;
+}
+
+.mk-filter-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0;
+    font-size: .78rem;
+    border-bottom: 1px dashed var(--adm-border);
+}
+
+.mk-filter-row:last-child {
+    border-bottom: 0;
+}
+
+.mk-filter-row span {
+    color: var(--adm-muted);
+}
+
+.mk-filter-row strong {
+    color: var(--adm-text);
+    font-weight: 700;
+}
+
+.mk-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.mk-faq-acc {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+}
+
+.mk-faq-acc summary {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--adm-text);
+    cursor: pointer;
+    list-style: none;
+}
+
+.mk-faq-acc summary::-webkit-details-marker {
+    display: none;
+}
+
+.mk-faq-acc summary i {
+    margin-inline-start: auto;
+    font-size: .68rem;
+    color: var(--adm-muted);
+    transition: transform .18s ease;
+}
+
+.mk-faq-acc[open] summary i {
+    transform: rotate(180deg);
+}
+
+.mk-faq-acc p {
+    margin: 8px 0 2px;
+    font-size: .76rem;
+    line-height: 1.9;
+    color: var(--adm-muted);
+}
+
+@media (max-width: 1199.98px) {
+    .mk-product-hero {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mk-product-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 991.98px) {
+    .mk-product-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+
+/* حالت خالی ناحیه دسته‌بندی */
+.mk-attr-empty {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+    padding: 26px 16px;
+    text-align: center;
+    background: var(--adm-surface-2);
+    border: 1px dashed var(--adm-border);
+    border-radius: 12px;
+}
+
+.mk-attr-empty i {
+    font-size: 1.1rem;
+    color: var(--adm-accent);
+}
+
+.mk-attr-empty strong {
+    font-size: .8rem;
+    color: var(--adm-text);
+}
+
+.mk-attr-empty span {
+    font-size: .72rem;
+    color: var(--adm-muted);
 }

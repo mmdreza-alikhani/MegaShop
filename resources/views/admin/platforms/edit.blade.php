@@ -28,6 +28,7 @@
                 <form method="POST" action="{{ route('admin.platforms.update', ['platform' => $platform->id]) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
+                    @include('admin.layout.errors', ['errors' => $errors->update])
 
                     <div class="mk-form-grid">
                         <div class="mk-field">

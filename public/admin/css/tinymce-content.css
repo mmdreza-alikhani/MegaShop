@@ -1,0 +1,185 @@
+/* =========================================================
+   استایل محتوای ادیتور (TinyMCE) و نمایش فقط‌خواندنی
+   داخل iframe ادیتور و همچنین بلوک .mk-rich-text استفاده می‌شود.
+   ========================================================= */
+
+@font-face {
+    font-family: 'yekan';
+    src: url('../font/iranyekanwebregular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'yekan';
+    src: url('../font/iranyekanwebbold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+html,
+body {
+    direction: rtl;
+}
+
+body {
+    margin: 12px 16px;
+    font-family: yekan, Tahoma, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.9;
+    color: #1f2733;
+    background: #fff;
+}
+
+body.mce-content-body[data-mce-placeholder]::before {
+    color: #98a2b3;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 1.1em 0 .6em;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+h1 { font-size: 1.7em; }
+h2 { font-size: 1.45em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1.1em; }
+h5 { font-size: 1em; }
+h6 { font-size: .95em; }
+
+p {
+    margin: 0 0 .9em;
+}
+
+a {
+    color: #dd163b;
+    text-decoration: underline;
+}
+
+ul, ol {
+    margin: 0 0 .9em;
+    padding-inline-start: 1.6em;
+}
+
+li {
+    margin-bottom: .35em;
+}
+
+blockquote {
+    margin: 1em 0;
+    padding: .6em 1em;
+    border-inline-start: 3px solid #dd163b;
+    background: #f8fafc;
+    color: #475467;
+}
+
+code {
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: #f1f3f7;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .9em;
+    direction: ltr;
+    display: inline-block;
+}
+
+pre {
+    margin: 1em 0;
+    padding: 12px 14px;
+    overflow: auto;
+    border-radius: 10px;
+    background: #0f1419;
+    color: #e7edf4;
+    direction: ltr;
+    text-align: left;
+}
+
+pre code {
+    padding: 0;
+    background: transparent;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+figure {
+    margin: 1em 0;
+}
+
+figure.image {
+    display: table;
+    margin-inline: auto;
+    text-align: center;
+}
+
+figcaption,
+figure.image figcaption {
+    margin-top: 6px;
+    font-size: .82em;
+    color: #6b7785;
+}
+
+hr {
+    margin: 1.4em 0;
+    border: 0;
+    border-top: 1px solid #e3e9f1;
+}
+
+table {
+    width: 100%;
+    margin: 1em 0;
+    border-collapse: collapse;
+    font-size: .94em;
+}
+
+table th,
+table td {
+    padding: 8px 10px;
+    border: 1px solid #e3e9f1;
+    text-align: start;
+    vertical-align: top;
+}
+
+table th {
+    background: #f8fafc;
+    font-weight: 700;
+}
+
+/* حالت تاریک محتوای ادیتور */
+.mk-editor-dark {
+    color: #e7edf4;
+    background: #171d24;
+}
+
+.mk-editor-dark a {
+    color: #ff7a94;
+}
+
+.mk-editor-dark blockquote {
+    background: #1c232b;
+    color: #b9c4d0;
+}
+
+.mk-editor-dark code {
+    background: #242c36;
+}
+
+.mk-editor-dark hr {
+    border-top-color: #2b3541;
+}
+
+.mk-editor-dark table th,
+.mk-editor-dark table td {
+    border-color: #2b3541;
+}
+
+.mk-editor-dark table th {
+    background: #1c232b;
+}

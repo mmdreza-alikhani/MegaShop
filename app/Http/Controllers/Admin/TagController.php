@@ -27,13 +27,20 @@ class TagController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $query = Tag::query();
+        $query = Tag::query()->withCount(['products', 'posts']);
         if ($request->input('q')) {
-            $query->search('title', trim(request()->input('q')));
+            $query->search('title', trim($request->input('q')));
         }
         $tags = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.tags.index', compact('tags'));
+        $stats = [
+            'total' => Tag::count(),
+            'used' => Tag::has('products')->orHas('posts')->count(),
+            'products' => Tag::has('products')->count(),
+            'posts' => Tag::has('posts')->count(),
+        ];
+
+        return view('admin.tags.index', compact('tags', 'stats'));
     }
 
     /**
@@ -78,8 +85,8 @@ class TagController extends Controller
     public function destroy(Tag $tag): RedirectResponse
     {
         try {
-            if ($tag->categories()->exists()) {
-                flash()->warning('این ویژگی در دسته بندی ها استفاده شده و قابل حذف نیست');
+            if ($tag->products()->exists() || $tag->posts()->exists()) {
+                flash()->warning('این برچسب در محصول یا پست استفاده شده و قابل حذف نیست');
                 return redirect()->back();
             }
 

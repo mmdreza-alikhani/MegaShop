@@ -17,15 +17,30 @@ class CommentController extends Controller
      */
     public function index(Request $request): View|Application|Factory
     {
-        $query = Comment::query()->with(['user:id,username', 'parent:id,text'])->latest();
+        $query = Comment::query()->with(['user:id,username,first_name,last_name', 'commentable'])->latest();
 
         if ($request->filled('q')) {
             $query->search('text', trim((string) $request->input('q')));
         }
 
-        $comments = $query->paginate(10)->withQueryString();
+        if ($status = $request->input('status')) {
+            $query->where('status', (int) $status);
+        }
 
-        return view('admin.comments.index', compact('comments'));
+        if ($type = $request->input('type')) {
+            $query->where('commentable_type', $type === 'post' ? \App\Models\Post::class : \App\Models\Product::class);
+        }
+
+        $comments = $query->paginate(15)->withQueryString();
+
+        $stats = [
+            'total' => Comment::count(),
+            'pending' => Comment::query()->where('status', 1)->count(),
+            'approved' => Comment::query()->where('status', 3)->count(),
+            'rejected' => Comment::query()->where('status', 2)->count(),
+        ];
+
+        return view('admin.comments.index', compact('comments', 'stats'));
     }
 
     /**

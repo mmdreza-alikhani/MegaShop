@@ -75,7 +75,6 @@
                                 <th>#</th>
                                 <th>لوگو</th>
                                 <th>عنوان</th>
-                                <th>شناسه</th>
                                 <th>محصولات</th>
                                 <th>وضعیت</th>
                                 <th></th>
@@ -92,7 +91,6 @@
                                              alt="{{ $platform->title }}">
                                     </td>
                                     <td><strong class="mk-attr-title">{{ $platform->title }}</strong></td>
-                                    <td><span class="mk-role-name">{{ $platform->slug }}</span></td>
                                     <td>
                                         <span class="mk-pill {{ $platform->products_count > 0 ? 'is-ok' : 'is-wait' }}">
                                             {{ number_format($platform->products_count) }}
@@ -100,7 +98,7 @@
                                     </td>
                                     <td>
                                         <span class="mk-pill {{ $platform->getRawOriginal('is_active') ? 'is-ok' : 'is-bad' }}">
-                                            {{ $platform->is_active }}
+                                            {{ $platform->is_active_label }}
                                         </span>
                                     </td>
                                     <td>
@@ -131,88 +129,6 @@
                     <div class="mk-adm-pagination">{{ $platforms->links('vendor.pagination.bootstrap-4') }}</div>
                 @endif
             </section>
-
-            {{-- مودال ساخت --}}
-            <div class="modal fade mk-adm-modal" id="createPlatformModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <form method="post" action="{{ route('admin.platforms.store') }}" class="modal-content" enctype="multipart/form-data">
-                        @csrf
-                        <header class="mk-adm-modal-head">
-                            <div><h5>پلتفرم جدید</h5><p>عنوان و لوگو را وارد کنید.</p></div>
-                            <button type="button" class="mk-adm-modal-close" data-dismiss="modal" aria-label="بستن">&times;</button>
-                        </header>
-                        <div class="mk-adm-modal-body">
-                            @include('admin.layout.errors', ['errors' => $errors->store])
-                            <div class="mk-form-grid">
-                                <div class="mk-field">
-                                    <label for="platform-title">عنوان <em>*</em></label>
-                                    <input type="text" name="title" id="platform-title" class="form-control"
-                                           value="{{ old('title') }}" required>
-                                </div>
-                                <div class="mk-field">
-                                    <label for="platform-active">وضعیت</label>
-                                    <select name="is_active" id="platform-active" class="form-control">
-                                        <option value="1" @selected(old('is_active', '1') === '1')>فعال</option>
-                                        <option value="0" @selected(old('is_active') === '0')>غیرفعال</option>
-                                    </select>
-                                </div>
-                                <div class="mk-field mk-field-full">
-                                    <label for="platform-image">لوگو</label>
-                                    <input type="file" name="image" id="platform-image" class="form-control" accept="image/*">
-                                    <small>حداکثر ۲ مگابایت، فرمت JPG/PNG/SVG.</small>
-                                </div>
-                            </div>
-                        </div>
-                        <footer class="mk-adm-modal-foot">
-                            <button type="button" class="btn btn-light" data-dismiss="modal">انصراف</button>
-                            <button type="submit" class="btn btn-info">ایجاد پلتفرم</button>
-                        </footer>
-                    </form>
-                </div>
-            </div>
-
-            {{-- مودال‌های ویرایش --}}
-            @foreach($platforms as $platform)
-                <div class="modal fade mk-adm-modal" id="editPlatformModal-{{ $platform->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <form method="post" action="{{ route('admin.platforms.update', ['platform' => $platform->id]) }}"
-                              class="modal-content" enctype="multipart/form-data">
-                            @csrf @method('PATCH')
-                            <header class="mk-adm-modal-head">
-                                <div><h5>ویرایش پلتفرم</h5><p>{{ $platform->title }}</p></div>
-                                <button type="button" class="mk-adm-modal-close" data-dismiss="modal" aria-label="بستن">&times;</button>
-                            </header>
-                            <div class="mk-adm-modal-body">
-                                @include('admin.layout.errors', ['errors' => $errors->update])
-                                <div class="mk-form-grid">
-                                    <div class="mk-field">
-                                        <label for="edit-platform-title-{{ $platform->id }}">عنوان <em>*</em></label>
-                                        <input type="text" name="title" id="edit-platform-title-{{ $platform->id }}"
-                                               class="form-control" value="{{ old('title', $platform->title) }}" required>
-                                    </div>
-                                    <div class="mk-field">
-                                        <label for="edit-platform-active-{{ $platform->id }}">وضعیت</label>
-                                        <select name="is_active" id="edit-platform-active-{{ $platform->id }}" class="form-control">
-                                            <option value="1" @selected((string) old('is_active', $platform->getRawOriginal('is_active')) === '1')>فعال</option>
-                                            <option value="0" @selected((string) old('is_active', $platform->getRawOriginal('is_active')) === '0')>غیرفعال</option>
-                                        </select>
-                                    </div>
-                                    <div class="mk-field mk-field-full">
-                                        <label for="edit-platform-image-{{ $platform->id }}">لوگو جدید</label>
-                                        <input type="file" name="image" id="edit-platform-image-{{ $platform->id }}"
-                                               class="form-control" accept="image/*">
-                                        <small>خالی بگذارید تا لوگوی فعلی بماند.</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <footer class="mk-adm-modal-foot">
-                                <button type="button" class="btn btn-light" data-dismiss="modal">انصراف</button>
-                                <button type="submit" class="btn btn-info">ذخیره تغییرات</button>
-                            </footer>
-                        </form>
-                    </div>
-                </div>
-            @endforeach
         </div>
     </main>
 @endsection

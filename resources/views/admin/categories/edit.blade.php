@@ -33,6 +33,7 @@
                 <form method="POST" action="{{ route('admin.categories.update', ['category' => $category->id]) }}">
                     @csrf
                     @method('PATCH')
+                    @include('admin.layout.errors', ['errors' => $errors->update])
 
                     <div class="mk-form-grid">
                         <div class="mk-field">
@@ -70,6 +71,7 @@
                             <select name="variation_attribute_id" id="variation_attribute_id"
                                     class="form-control selectpicker" data-live-search="true"
                                     data-none-selected-text="انتخاب ویژگی" required>
+                                <option data-hidden="true" value=""></option>
                                 @foreach($attributes as $id => $title)
                                     <option value="{{ $id }}" @selected((int) old('variation_attribute_id', $selectedVariation) === (int) $id)>{{ $title }}</option>
                                 @endforeach
@@ -78,11 +80,11 @@
                         </div>
 
                         <div class="mk-field">
-                            <label for="filter_attribute_ids">ویژگی‌های فیلتر <em>*</em></label>
+                            <label for="filter_attribute_ids">ویژگی‌های فیلتر</label>
                             <select name="filter_attribute_ids[]" id="filter_attribute_ids"
                                     class="form-control selectpicker" data-live-search="true" multiple
                                     data-actions-box="true" data-selected-text-format="count > 1"
-                                    data-none-selected-text="انتخاب ویژگی‌ها" required>
+                                    data-none-selected-text="انتخاب ویژگی‌ها">
                                 @foreach($attributes as $id => $title)
                                     <option value="{{ $id }}" @selected(in_array((int) $id, old('filter_attribute_ids', $selectedFilters), true))>{{ $title }}</option>
                                 @endforeach

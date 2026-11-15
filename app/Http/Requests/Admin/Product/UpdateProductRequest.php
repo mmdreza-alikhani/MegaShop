@@ -31,12 +31,16 @@ class UpdateProductRequest extends FormRequest
     private function convertDates(array $values): array
     {
         return collect($values)->map(function ($variation) {
-            if (isset($variation['date_on_sale_from'])) {
-                $variation['date_on_sale_from'] = str_replace('/', '-', convertToGregorianDate($variation['date_on_sale_from']));
+            foreach (['date_on_sale_from', 'date_on_sale_to'] as $field) {
+                if (! is_array($variation) || ! array_key_exists($field, $variation)) {
+                    continue;
+                }
+
+                $variation[$field] = empty($variation[$field])
+                    ? null
+                    : convertToGregorianDate($variation[$field]);
             }
-            if (isset($variation['date_on_sale_to'])) {
-                $variation['date_on_sale_to'] = str_replace('/', '-', convertToGregorianDate($variation['date_on_sale_to']));
-            }
+
             return $variation;
         })->toArray();
     }
@@ -60,30 +64,33 @@ class UpdateProductRequest extends FormRequest
             'delivery_amount' => 'required|numeric|min:0',
             'delivery_amount_per_product' => 'nullable|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'filters_value' => 'required|array',
+            'filters_value' => 'nullable|array',
             'filters_value.*' => 'required|string',
             'variation_values' => 'required_without:new_variation_values|array',
             'variation_values.*.value' => 'required_without:new_variation_values|string|max:255',
             'variation_values.*.price' => 'required_without:new_variation_values|numeric|min:0',
             'variation_values.*.quantity' => 'required_without:new_variation_values|integer|min:0',
             'variation_values.*.sale_price' => 'nullable|numeric|min:0',
-            'variation_values.*.date_on_sale_from' => 'nullable|date|after_or_equal:today',
-            'variation_values.*.date_on_sale_to' => 'nullable|date|after_or_equal:today',
+            'variation_values.*.date_on_sale_from' => 'nullable|date',
+            'variation_values.*.date_on_sale_to' => 'nullable|date',
             'new_variation_values' => 'required_without:variation_values|array',
             'new_variation_values.*.value' => 'required_without:variation_values|string|max:255',
             'new_variation_values.*.price' => 'required_without:variation_values|numeric|min:0',
             'new_variation_values.*.quantity' => 'required_without:variation_values|integer|min:0',
             'new_variation_values.*.sku' => 'required_without:variation_values|string|max:255|unique:product_variations,sku',
             'new_variation_values.*.sale_price' => 'nullable|numeric|min:0',
-            'new_variation_values.*.date_on_sale_from' => 'nullable|date|after_or_equal:today',
-            'new_variation_values.*.date_on_sale_to' => 'nullable|date|after_or_equal:today',
+            'new_variation_values.*.date_on_sale_from' => 'nullable|date',
+            'new_variation_values.*.date_on_sale_to' => 'nullable|date',
             'newFaqs' => 'nullable|array',
             'newFaqs.*.question' => 'required|string|max:1250',
             'newFaqs.*.answer' => 'required|string|max:1250',
             'faqs' => 'nullable|array',
             'faqs.*.question' => 'required|string|max:1250',
             'faqs.*.answer' => 'required|string|max:1250',
-            'short_link' => 'nullable|max:12|unique:short_links,code|string',
+            'short_link' => [
+                'nullable', 'string', 'max:12',
+                Rule::unique('short_links', 'code')->ignore($this->route('product')->shortLink?->id),
+            ],
         ];
 
         // Add unique rules for each existing variation SKU

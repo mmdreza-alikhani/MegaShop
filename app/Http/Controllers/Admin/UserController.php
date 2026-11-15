@@ -114,6 +114,10 @@ class UserController extends Controller
                 'is_active' => $request->boolean('is_active', true),
             ]);
 
+            if ($request->filled('role')) {
+                $user->syncRoles([$request->input('role')]);
+            }
+
             flash()->success(config('flasher.user.created'));
         } catch (Exception $e) {
             report($e);
@@ -156,18 +160,21 @@ class UserController extends Controller
 
             $user->update($data);
 
-            if ($request->filled('role')) {
-                $user->syncRoles([$request->input('role')]);
+            if ($request->has('role')) {
+                $user->syncRoles($request->filled('role') ? [$request->input('role')] : []);
             }
 
-            // فقط چک‌باکس‌های مجوز (نام‌های معتبر Permission) ذخیره می‌شوند.
-            $permissionNames = Permission::pluck('name')->all();
-            $selectedPermissions = array_values(array_intersect(
-                array_keys($request->except(['_token', '_method', 'username', 'email', 'first_name', 'last_name', 'phone_number', 'role', 'password', 'is_active'])),
-                $permissionNames
-            ));
+            // فقط وقتی فرم فهرست دسترسی‌ها را ارسال کرده باشد، همگام‌سازی می‌کنیم؛
+            // در غیر این صورت نباید دسترسی‌های فعلی کاربر پاک شوند.
+            if ($request->has('permissions')) {
+                $permissionNames = Permission::pluck('name')->all();
+                $selectedPermissions = array_values(array_intersect(
+                    (array) $request->input('permissions', []),
+                    $permissionNames
+                ));
 
-            $user->syncPermissions($selectedPermissions);
+                $user->syncPermissions($selectedPermissions);
+            }
 
             DB::commit();
         } catch (Exception $e) {

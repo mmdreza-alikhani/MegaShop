@@ -27,6 +27,7 @@
 
                 <form method="POST" action="{{ route('admin.brands.store') }}" enctype="multipart/form-data">
                     @csrf
+                    @include('admin.layout.errors', ['errors' => $errors->store])
                     
 
                     <div class="mk-form-grid">

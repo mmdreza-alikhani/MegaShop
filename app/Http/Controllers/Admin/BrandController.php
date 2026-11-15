@@ -63,7 +63,7 @@ class BrandController extends Controller
             Brand::create($request->validated());
 
             flash()->success(config('flasher.brand.created'));
-            return redirect()->back();
+            return redirect()->route('admin.brands.index');
         } catch (Exception $e) {
             report($e);
             flash()->error(config('flasher.brand.create_failed'));
@@ -80,7 +80,7 @@ class BrandController extends Controller
             $brand->update($request->validated());
 
             flash()->success(config('flasher.brand.updated'));
-            return redirect()->back();
+            return redirect()->route('admin.brands.index');
         } catch (Exception $e) {
             report($e);
             flash()->error(config('flasher.brand.update_failed'));

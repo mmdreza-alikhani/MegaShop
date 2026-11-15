@@ -15,7 +15,8 @@ return [
     |
     */
 
-    'default' => env('CACHE_DRIVER', 'file'),
+    // Laravel 11+ از CACHE_STORE استفاده می‌کند؛ CACHE_DRIVER برای سازگاری با .env فعلی نگه داشته شده است.
+    'default' => env('CACHE_STORE', env('CACHE_DRIVER', 'file')),
 
     /*
     |--------------------------------------------------------------------------

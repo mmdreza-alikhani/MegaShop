@@ -77,7 +77,6 @@
                             <tr>
                                 <th>#</th>
                                 <th>عنوان برند</th>
-                                <th>شناسه</th>
                                 <th>محصولات</th>
                                 <th>وضعیت</th>
                                 <th>تاریخ ایجاد</th>
@@ -89,7 +88,6 @@
                                 <tr>
                                     <td class="mk-muted">{{ $brands->firstItem() + $key }}</td>
                                     <td><strong class="mk-attr-title">{{ $brand->title }}</strong></td>
-                                    <td><span class="mk-role-name">{{ $brand->slug }}</span></td>
                                     <td>
                                         <span class="mk-pill {{ $brand->products_count > 0 ? 'is-ok' : 'is-wait' }}">
                                             {{ number_format($brand->products_count) }}
@@ -97,7 +95,7 @@
                                     </td>
                                     <td>
                                         <span class="mk-pill {{ $brand->getRawOriginal('is_active') ? 'is-ok' : 'is-bad' }}">
-                                            {{ $brand->is_active }}
+                                            {{ $brand->is_active_label }}
                                         </span>
                                     </td>
                                     <td class="mk-muted">{{ verta($brand->created_at)->format('%d %B %Y') }}</td>
@@ -131,76 +129,6 @@
                     <div class="mk-adm-pagination">{{ $brands->links('vendor.pagination.bootstrap-4') }}</div>
                 @endif
             </section>
-
-            {{-- مودال ساخت --}}
-            <div class="modal fade mk-adm-modal" id="createBrandModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <form method="post" action="{{ route('admin.brands.store') }}" class="modal-content">
-                        @csrf
-                        <header class="mk-adm-modal-head">
-                            <div><h5>برند جدید</h5><p>عنوان برند را وارد کنید.</p></div>
-                            <button type="button" class="mk-adm-modal-close" data-dismiss="modal" aria-label="بستن">&times;</button>
-                        </header>
-                        <div class="mk-adm-modal-body">
-                            @include('admin.layout.errors', ['errors' => $errors->store])
-                            <div class="mk-form-grid">
-                                <div class="mk-field">
-                                    <label for="brand-title">عنوان <em>*</em></label>
-                                    <input type="text" name="title" id="brand-title" class="form-control"
-                                           value="{{ old('title') }}" required>
-                                </div>
-                                <div class="mk-field">
-                                    <label for="brand-active">وضعیت</label>
-                                    <select name="is_active" id="brand-active" class="form-control">
-                                        <option value="1" @selected(old('is_active', '1') === '1')>فعال</option>
-                                        <option value="0" @selected(old('is_active') === '0')>غیرفعال</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <footer class="mk-adm-modal-foot">
-                            <button type="button" class="btn btn-light" data-dismiss="modal">انصراف</button>
-                            <button type="submit" class="btn btn-info">ایجاد برند</button>
-                        </footer>
-                    </form>
-                </div>
-            </div>
-
-            {{-- مودال‌های ویرایش --}}
-            @foreach($brands as $brand)
-                <div class="modal fade mk-adm-modal" id="editBrandModal-{{ $brand->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <form method="post" action="{{ route('admin.brands.update', ['brand' => $brand->id]) }}" class="modal-content">
-                            @csrf @method('PATCH')
-                            <header class="mk-adm-modal-head">
-                                <div><h5>ویرایش برند</h5><p>{{ $brand->title }}</p></div>
-                                <button type="button" class="mk-adm-modal-close" data-dismiss="modal" aria-label="بستن">&times;</button>
-                            </header>
-                            <div class="mk-adm-modal-body">
-                                @include('admin.layout.errors', ['errors' => $errors->update])
-                                <div class="mk-form-grid">
-                                    <div class="mk-field">
-                                        <label for="edit-brand-title-{{ $brand->id }}">عنوان <em>*</em></label>
-                                        <input type="text" name="title" id="edit-brand-title-{{ $brand->id }}"
-                                               class="form-control" value="{{ old('title', $brand->title) }}" required>
-                                    </div>
-                                    <div class="mk-field">
-                                        <label for="edit-brand-active-{{ $brand->id }}">وضعیت</label>
-                                        <select name="is_active" id="edit-brand-active-{{ $brand->id }}" class="form-control">
-                                            <option value="1" @selected((string) old('is_active', $brand->getRawOriginal('is_active')) === '1')>فعال</option>
-                                            <option value="0" @selected((string) old('is_active', $brand->getRawOriginal('is_active')) === '0')>غیرفعال</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <footer class="mk-adm-modal-foot">
-                                <button type="button" class="btn btn-light" data-dismiss="modal">انصراف</button>
-                                <button type="submit" class="btn btn-info">ذخیره تغییرات</button>
-                            </footer>
-                        </form>
-                    </div>
-                </div>
-            @endforeach
         </div>
     </main>
 @endsection

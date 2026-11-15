@@ -1,119 +1,225 @@
 @extends('admin.layout.master')
 
-@php
-    $title = 'برچسب ها';
-@endphp
-
-@section('title', $title)
+@section('title', 'برچسب‌ها')
 
 @section('content')
     <main class="bmd-layout-content">
         <div class="container-fluid">
-            <div class="row m-1 pb-4 mb-3">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-2">
-                    <div class="page-header breadcrumb-header">
-                        <div class="row align-items-end">
-                            <div class="col-lg-8">
-                                <div class="page-header-title text-left-rtl">
-                                    <div class="d-inline">
-                                        <h3 class="lite-text">پنل مدیریت</h3>
-                                        <span class="lite-text">{{ $title }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('admin.panel') }}"><i class="fas fa-home"></i></a>
-                                    </li>
-                                    <li class="breadcrumb-item active">{{ $title }}</li>
-                                </ol>
-                            </div>
-                        </div>
+            <div class="mk-dash-head">
+                <div>
+                    <h3>برچسب‌ها</h3>
+                    <p>{{ number_format($tags->total()) }} برچسب ثبت شده است</p>
+                </div>
+                <div class="mk-dash-actions">
+                    @can('tags-create')
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
+                                data-target="#createTagModal">
+                            <i class="fas fa-plus mr-1"></i> برچسب جدید
+                        </button>
+                    @endcan
+                    <a href="{{ route('admin.products.index') }}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-box mr-1"></i> محصولات
+                    </a>
+                </div>
+            </div>
+
+            <div class="mk-kpi-grid mk-kpi-grid--4">
+                <div class="mk-kpi">
+                    <span class="mk-kpi-icon"><i class="fas fa-tags"></i></span>
+                    <div class="mk-kpi-body">
+                        <span class="mk-kpi-label">کل برچسب‌ها</span>
+                        <strong class="mk-kpi-value">{{ number_format($stats['total']) }}</strong>
+                        <span class="mk-kpi-hint">ثبت‌شده در فروشگاه</span>
+                    </div>
+                </div>
+                <div class="mk-kpi">
+                    <span class="mk-kpi-icon"><i class="fas fa-link"></i></span>
+                    <div class="mk-kpi-body">
+                        <span class="mk-kpi-label">استفاده‌شده</span>
+                        <strong class="mk-kpi-value">{{ number_format($stats['used']) }}</strong>
+                        <span class="mk-kpi-hint">در محصول یا پست</span>
+                    </div>
+                </div>
+                <div class="mk-kpi">
+                    <span class="mk-kpi-icon"><i class="fas fa-box"></i></span>
+                    <div class="mk-kpi-body">
+                        <span class="mk-kpi-label">در محصولات</span>
+                        <strong class="mk-kpi-value">{{ number_format($stats['products']) }}</strong>
+                        <span class="mk-kpi-hint">حداقل یک محصول</span>
+                    </div>
+                </div>
+                <div class="mk-kpi">
+                    <span class="mk-kpi-icon"><i class="fas fa-newspaper"></i></span>
+                    <div class="mk-kpi-body">
+                        <span class="mk-kpi-label">در پست‌ها</span>
+                        <strong class="mk-kpi-value">{{ number_format($stats['posts']) }}</strong>
+                        <span class="mk-kpi-hint">حداقل یک پست</span>
                     </div>
                 </div>
             </div>
-            <div class="d-flex m-1 align-items-center justify-content-between">
-                @can('tags-create')
-                    <div class="c-grey text-center">
-                        <button data-target="#createTagModal" data-toggle="modal" type="button" class="btn f-primary fnt-xxs text-center">
-                            ایجاد برچسب
-                        </button>
+
+            <section class="mk-adm-panel">
+                <header class="mk-adm-panel-head">
+                    <div>
+                        <h4>لیست برچسب‌ها</h4>
+                        <p>صفحه {{ $tags->currentPage() }} از {{ $tags->lastPage() }}</p>
                     </div>
-                    @include('admin.tags.partials.create-modal')
-                @endcan
-                
-            </div>
-            <div class="row m-1">
-                <div class="col-12 p-2">
-                    <div class="card shade h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $title }}</h5>
-                            <hr/>
-                            @if($tags->isEmpty())
-                                <div class="alert text-dir-rtl text-right alert-third alert-shade alert-dismissible fade show" role="alert">
-                                    هیج برچسب وجود ندارد!
-                                </div>
-                            @else
-                                <table class="table table-striped table-responsive-lg">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">عنوان</th>
-                                        <th scope="col">تنظیمات</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($tags as $key => $tag)
-                                        <tr>
-                                            <th>
-                                                {{ $tags->firstItem() + $key }}
-                                            </th>
-                                            <td>
-                                                {{ $tag->title }}
-                                            </td>
-                                            <td>
-                                                <div class="dropdown base show">
-                                                    <a class="btn o-grey dropdown-toggle text-center" role="button" id="dropdownMenuLink" data-toggle="dropdown">
-                                                        <i class="fa fa-cog"></i>
-                                                    </a>
-                                                    <div class="dropdown-menu">
-                                                        @can('tags-edit')
-                                                            <button data-target="#editTagModal-{{ $tag->id }}" data-toggle="modal" type="button" class="dropdown-item">ویرایش</button>
-                                                        @endcan
-                                                        @can('tags-delete')
-                                                            <button data-target="#deleteTagModal-{{ $tag->id }}" data-toggle="modal" type="button" class="dropdown-item">حذف</button>
-                                                        @endcan
-                                                    </div>
-                                                </div>
+                    @if(request()->filled('q'))
+                        <span class="mk-adm-filter-chip">جستجو: {{ request('q') }}
+                            <a href="{{ route('admin.tags.index') }}">&times;</a>
+                        </span>
+                    @endif
+                </header>
+
+                @if($tags->isEmpty())
+                    <p class="mk-adm-empty">برچسبی با این شرایط پیدا نشد.</p>
+                @else
+                    <div class="mk-adm-table-wrap">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>عنوان</th>
+                                <th>محصولات</th>
+                                <th>پست‌ها</th>
+                                <th>تاریخ ایجاد</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($tags as $key => $tag)
+                                <tr>
+                                    <td class="mk-muted">{{ $tags->firstItem() + $key }}</td>
+                                    <td><strong class="mk-attr-title">{{ $tag->title }}</strong></td>
+                                    <td>
+                                        <span class="mk-pill {{ $tag->products_count > 0 ? 'is-ok' : 'is-wait' }}">
+                                            {{ number_format($tag->products_count) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="mk-pill {{ $tag->posts_count > 0 ? 'is-ok' : 'is-wait' }}">
+                                            {{ number_format($tag->posts_count) }}
+                                        </span>
+                                    </td>
+                                    <td class="mk-muted">{{ verta($tag->created_at)->format('%d %B %Y') }}</td>
+                                    <td>
+                                        <div class="mk-adm-drop" data-adm-drop>
+                                            <button type="button" class="mk-adm-icon-link" data-adm-drop-trigger
+                                                    aria-haspopup="true" aria-expanded="false" aria-label="تنظیمات برچسب">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="mk-adm-dropdown" data-adm-drop-menu>
                                                 @can('tags-edit')
-                                                    @include('admin.tags.partials.edit-modal')
+                                                    <button type="button" class="dropdown-item"
+                                                            data-target="#editTagModal-{{ $tag->id }}"
+                                                            data-toggle="modal" data-dismiss="modal">
+                                                        <i class="fas fa-pen"></i><span>ویرایش</span>
+                                                    </button>
                                                 @endcan
                                                 @can('tags-delete')
-                                                    @include('admin.tags.partials.delete-modal')
+                                                    <form action="{{ route('admin.tags.destroy', ['tag' => $tag->id]) }}"
+                                                          method="POST" class="m-0"
+                                                          onsubmit="return confirm('این برچسب حذف شود؟')">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="dropdown-item is-danger">
+                                                            <i class="fas fa-trash"></i><span>حذف</span>
+                                                        </button>
+                                                    </form>
                                                 @endcan
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            @endif
-                            {{ $tags->links('vendor.pagination.bootstrap-4') }}
-                        </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mk-adm-pagination">{{ $tags->links('vendor.pagination.bootstrap-4') }}</div>
+                @endif
+            </section>
+
+            @can('tags-create')
+                <div class="modal fade mk-adm-modal" id="createTagModal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <form method="post" action="{{ route('admin.tags.store') }}" class="modal-content">
+                            @csrf
+                            <header class="mk-adm-modal-head">
+                                <div>
+                                    <h5>برچسب جدید</h5>
+                                    <p>عنوان برچسب را وارد کنید؛ مثل «پرفروش» یا «اورجینال».</p>
+                                </div>
+                                <button type="button" class="mk-adm-modal-close" data-dismiss="modal" aria-label="بستن">&times;</button>
+                            </header>
+                            <div class="mk-adm-modal-body">
+                                @include('admin.layout.errors', ['errors' => $errors->store])
+                                <div class="mk-field">
+                                    <label for="tag-title">عنوان <em>*</em></label>
+                                    <input type="text" name="title" id="tag-title" class="form-control"
+                                           value="{{ old('title') }}" required maxlength="255" autocomplete="off">
+                                </div>
+                            </div>
+                            <footer class="mk-adm-modal-foot">
+                                <button type="button" class="btn btn-light" data-dismiss="modal">انصراف</button>
+                                <button type="submit" class="btn btn-info">ایجاد برچسب</button>
+                            </footer>
+                        </form>
                     </div>
                 </div>
-            </div>
+            @endcan
+
+            @can('tags-edit')
+                @foreach($tags as $tag)
+                    <div class="modal fade mk-adm-modal" id="editTagModal-{{ $tag->id }}" tabindex="-1"
+                         role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <form method="post" action="{{ route('admin.tags.update', ['tag' => $tag->id]) }}"
+                                  class="modal-content">
+                                @csrf
+                                @method('PATCH')
+                                <header class="mk-adm-modal-head">
+                                    <div>
+                                        <h5>ویرایش برچسب</h5>
+                                        <p>{{ $tag->title }}</p>
+                                    </div>
+                                    <button type="button" class="mk-adm-modal-close" data-dismiss="modal" aria-label="بستن">&times;</button>
+                                </header>
+                                <div class="mk-adm-modal-body">
+                                    @include('admin.layout.errors', ['errors' => $errors->update])
+                                    <div class="mk-field">
+                                        <label for="edit-tag-title-{{ $tag->id }}">عنوان <em>*</em></label>
+                                        <input type="text" name="title" id="edit-tag-title-{{ $tag->id }}"
+                                               class="form-control" value="{{ old('title', $tag->title) }}"
+                                               required maxlength="255">
+                                    </div>
+                                </div>
+                                <footer class="mk-adm-modal-foot">
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">انصراف</button>
+                                    <button type="submit" class="btn btn-info">ذخیره تغییرات</button>
+                                </footer>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
+            @endcan
         </div>
     </main>
 @endsection
+
 @section('scripts')
-    <script>
-        @if(count($errors->store) > 0)
-        $(function() {
-            $('#createTagModal').modal({
-                show: true
+    @if($errors->store->any())
+        <script>
+            jQuery(function () {
+                jQuery('#createTagModal').modal('show');
             });
-        });
-        @endif
-    </script>
+        </script>
+    @endif
+
+    @if($errors->update->any() && session('tag_id'))
+        <script>
+            jQuery(function () {
+                jQuery('#editTagModal-{{ (int) session('tag_id') }}').modal('show');
+            });
+        </script>
+    @endif
 @endsection

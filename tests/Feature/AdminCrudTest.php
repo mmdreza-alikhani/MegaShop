@@ -9,6 +9,7 @@ use App\Models\Platform;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -180,7 +181,152 @@ class AdminCrudTest extends ShopTestCase
         $this->actingAs($admin)->get('/management')->assertOk();
         $this->actingAs($admin)->get('/management/products')->assertOk();
         $this->actingAs($admin)->get('/management/products/create')->assertOk();
+        $this->actingAs($admin)->get('/management/products/'.$product->slug)->assertOk();
         $this->actingAs($admin)->get('/management/products/'.$product->slug.'/edit')->assertOk();
         $this->actingAs($admin)->get('/management/users')->assertOk();
+    }
+
+    public function test_product_forms_use_the_local_rich_text_editor(): void
+    {
+        $admin = $this->admin();
+        $product = $this->makeProduct();
+
+        foreach (['/management/products/create', '/management/products/'.$product->slug.'/edit'] as $url) {
+            $this->actingAs($admin)->get($url)
+                ->assertOk()
+                ->assertSee('admin/vendor/tinymce/tinymce.min.js', false)
+                ->assertSee('AdminEditor.create', false)
+                ->assertDontSee('cdn.ckeditor.com', false)
+                ->assertDontSee('CKEDITOR.replace', false);
+        }
+
+        // صفحه نمایش باید متن را به‌صورت فقط‌خواندنی رندر کند، نه داخل ادیتور.
+        $this->actingAs($admin)->get('/management/products/'.$product->slug)
+            ->assertOk()
+            ->assertSee('mk-rich-text', false)
+            ->assertDontSee('AdminEditor.create', false);
+    }
+
+    public function test_product_forms_ignore_stale_cached_option_lists(): void
+    {
+        $admin = $this->admin();
+        $brand = Brand::create(['title' => 'برند تازه‌ساخته', 'is_active' => 1]);
+        $category = Category::create(['title' => 'دسته تازه‌ساخته', 'is_active' => 1]);
+        $platform = Platform::create(['title' => 'پلتفرم تازه‌ساخته', 'is_active' => 1]);
+
+        // شبیه‌سازی کش کهنه‌ای که قبلاً باعث خالی/ناقص شدن لیست انتخاب‌ها می‌شد.
+        Cache::put('product_brands', ['999' => 'برند کهنه'], now()->addHour());
+        Cache::put('product_categories', ['999' => 'دسته کهنه'], now()->addHour());
+        Cache::put('product_platforms', ['999' => 'پلتفرم کهنه'], now()->addHour());
+
+        $this->actingAs($admin)->get('/management/products/create')
+            ->assertOk()
+            ->assertSee($brand->title)
+            ->assertSee($category->title)
+            ->assertSee($platform->title)
+            ->assertDontSee('برند کهنه')
+            ->assertDontSee('دسته کهنه');
+    }
+
+    public function test_admin_can_update_a_product_with_a_past_discount_window(): void
+    {
+        Storage::fake('public');
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->post('/management/products', $this->productPayload('محصول با تخفیف گذشته'));
+        $product = Product::where('title', 'محصول با تخفیف گذشته')->firstOrFail();
+        $variation = $product->variations()->firstOrFail();
+
+        $update = $this->productPayload('محصول با تخفیف گذشته');
+        $update['variation_values'] = [
+            $variation->id => [
+                'value' => 'قرمز',
+                'price' => 100000,
+                'quantity' => 3,
+                'sku' => $variation->sku,
+                'sale_price' => 90000,
+                'date_on_sale_from' => verta(now()->subMonth())->format('Y/m/d'),
+                'date_on_sale_to' => verta(now()->addMonth())->format('Y/m/d'),
+            ],
+        ];
+
+        $this->actingAs($admin)
+            ->put('/management/products/'.$product->slug, $update)
+            ->assertRedirect(route('admin.products.edit', $product->fresh()->slug));
+
+        $variation->refresh();
+
+        $this->assertSame(90000, (int) $variation->sale_price);
+        $this->assertNotNull($variation->date_on_sale_from, 'تاریخ شروع تخفیف باید ذخیره شود');
+        $this->assertNotNull($variation->date_on_sale_to, 'تاریخ پایان تخفیف باید ذخیره شود');
+    }
+
+    public function test_admin_can_add_a_new_faq_while_updating_a_product(): void
+    {
+        Storage::fake('public');
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->post('/management/products', $this->productPayload('محصول با سوال جدید'));
+        $product = Product::where('title', 'محصول با سوال جدید')->firstOrFail();
+
+        $update = $this->productPayload('محصول با سوال جدید');
+        $update['newFaqs'] = [
+            ['question' => 'سوال تازه', 'answer' => 'پاسخ تازه'],
+        ];
+
+        $this->actingAs($admin)
+            ->put('/management/products/'.$product->slug, $update)
+            ->assertRedirect(route('admin.products.edit', $product->fresh()->slug));
+
+        $this->assertDatabaseHas('faqs', [
+            'question' => 'سوال تازه',
+            'answer' => 'پاسخ تازه',
+        ]);
+    }
+
+    public function test_admin_can_create_a_product_in_a_category_without_filter_attributes(): void
+    {
+        Storage::fake('public');
+        $admin = $this->admin();
+
+        $brand = Brand::create(['title' => 'برند بدون فیلتر', 'is_active' => 1]);
+        $platform = Platform::create(['title' => 'پلتفرم بدون فیلتر', 'is_active' => 1]);
+        $category = Category::create(['title' => 'دسته بدون فیلتر', 'is_active' => 1]);
+        $variationAttribute = Attribute::create(['title' => 'مدل بدون فیلتر']);
+        $category->attributes()->attach($variationAttribute->id, ['type' => 'variation']);
+
+        $payload = [
+            'title' => 'محصول بدون ویژگی فیلتر',
+            'is_active' => 1,
+            'brand_id' => $brand->id,
+            'platform_id' => $platform->id,
+            'category_id' => $category->id,
+            'description' => 'توضیحات',
+            'delivery_amount' => 0,
+            'filters_value' => [],
+            'variation_values' => [
+                ['value' => 'تک', 'price' => 1000, 'quantity' => 1, 'sku' => 'SKU-'.uniqid()],
+            ],
+            'tag_ids' => [],
+            'primary_image' => UploadedFile::fake()->image('primary.jpg'),
+        ];
+
+        $this->actingAs($admin)
+            ->post('/management/products', $payload)
+            ->assertRedirect(route('admin.products.index'));
+
+        $this->assertDatabaseHas('products', ['title' => 'محصول بدون ویژگی فیلتر']);
+    }
+
+    public function test_products_index_supports_every_sort_option(): void
+    {
+        $admin = $this->admin();
+        $this->makeProduct();
+
+        foreach (['', 'oldest', 'cheap', 'expensive'] as $sort) {
+            $url = '/management/products'.($sort === '' ? '' : '?sort='.$sort);
+
+            $this->actingAs($admin)->get($url)->assertOk();
+        }
     }
 }

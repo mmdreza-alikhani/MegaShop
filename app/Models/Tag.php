@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\SearchableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @method static latest()
@@ -31,5 +32,15 @@ class Tag extends Model
         foreach (['created', 'updated', 'deleted'] as $event) {
             static::$event(fn () => cache()->forget('tags'));
         }
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_tag');
+    }
+
+    public function posts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'post_tag');
     }
 }

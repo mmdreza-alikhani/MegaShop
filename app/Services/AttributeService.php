@@ -157,9 +157,9 @@ class AttributeService
                         'price' => $variation['price'],
                         'quantity' => $variation['quantity'],
                         'sku' => $variation['sku'],
-                        'sale_price' => $variation['sale_price'],
-                        'date_on_sale_from' => $variation['date_on_sale_from'],
-                        'date_on_sale_to' => $variation['date_on_sale_to'],
+                        'sale_price' => $variation['sale_price'] ?? null,
+                        'date_on_sale_from' => $variation['date_on_sale_from'] ?? null,
+                        'date_on_sale_to' => $variation['date_on_sale_to'] ?? null,
                     ];
                 })->toArray();
 

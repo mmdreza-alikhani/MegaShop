@@ -38,14 +38,14 @@ MIT License, https://github.com/cozeit/czMore/blob/master/LICENSE.md
         return this.each(function () {
             var obj = $(this);
             var i = recordsetCount();
-            var divPlus = '<div id="btnPlus" class="btnPlus"/>';
+            var divPlus = '<div class="btnPlus"></div>';
             var count = '<input id="' + this.id + options.countFieldPrefix + '" name="' + this.id + options.countFieldPrefix + '" type="hidden" value="0" size="5" />';
 
             obj.before(count);
             var recordset = obj.children("#first");
             obj.after(divPlus);
             var set = recordset.children(".recordset").children().first();
-            var btnPlus = obj.siblings("#btnPlus");
+            var btnPlus = obj.siblings(".btnPlus");
 
             if(!options.styleOverride) {
               btnPlus.css({
@@ -61,7 +61,7 @@ MIT License, https://github.com/cozeit/czMore/blob/master/LICENSE.md
             }
 
             if (recordset.length) {
-                obj.siblings("#btnPlus").click(function () {
+                obj.siblings(".btnPlus").click(function () {
                     if (isMaxRecordset()){
                         return false;
                     }
@@ -115,9 +115,9 @@ MIT License, https://github.com/cozeit/czMore/blob/master/LICENSE.md
             }
 
             function loadMinus(recordset) {
-                var divMinus = '<div id="btnMinus" class="btnMinus" />';
+                var divMinus = '<div class="btnMinus"></div>';
                 $(recordset).children().first().before(divMinus);
-                var btnMinus = $(recordset).children("#btnMinus");
+                var btnMinus = $(recordset).children(".btnMinus");
                 if(!options.styleOverride) {
                   btnMinus.css({
                       'float': 'right',
@@ -133,7 +133,7 @@ MIT License, https://github.com/cozeit/czMore/blob/master/LICENSE.md
             }
 
             function minusClick(recordset) {
-                $(recordset).children("#btnMinus").click(function () {
+                $(recordset).children(".btnMinus").click(function () {
                     var i = recordsetCount();
                     var id = $(recordset).attr("data-id")
                     $(recordset).remove();

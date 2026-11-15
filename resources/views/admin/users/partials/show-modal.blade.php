@@ -35,7 +35,7 @@
                     </div>
                     <div class="form-group col-12 col-lg-4">
                         <label for="phone_number-{{ $user->id }}-show">شماره تلفن:</label>
-                        <input id="phone_number-{{ $user->id }}-show" type="text" class="form-control" value="{{ $user->formatted_phone }}" disabled>
+                        <input id="phone_number-{{ $user->id }}-show" type="text" class="form-control" value="{{ $user->formatted_phone ?: '—' }}" disabled>
                     </div>
                     <div class="form-group col-12 col-lg-4">
                         <label for="provider_name-{{ $user->id }}-show">ارائه دهنده:</label>

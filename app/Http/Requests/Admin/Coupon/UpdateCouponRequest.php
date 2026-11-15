@@ -40,7 +40,8 @@ class UpdateCouponRequest extends FormRequest
             'amount' => 'required_if:type,=,amount|numeric|min:0',
             'percentage' => 'required_if:type,=,percentage|numeric|min:0|max:100',
             'max_percentage_amount' => 'required_if:type,=,percentage|numeric',
-            'expired_at' => 'required|date|after_or_equal:today',
+            'expired_at' => 'required|date',
+            'description' => 'nullable|string|max:255',
         ];
     }
 
