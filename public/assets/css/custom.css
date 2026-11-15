@@ -6712,3 +6712,537 @@ html[dir="rtl"] .mk-avatar-row > div {
         display: none;
     }
 }
+
+
+/* =========================================================
+   نوار پایین (جزیره) — نسخهٔ مینیمال و مدرن
+   ========================================================= */
+.mk-bottom-nav {
+    display: none;
+    position: fixed;
+    right: auto;
+    bottom: max(12px, env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    z-index: 950;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: auto;
+    max-width: calc(100vw - 16px);
+    padding: 6px 7px;
+    transform: translateX(-50%);
+    background: color-mix(in srgb, var(--mk-bg-2) 74%, transparent);
+    border: 1px solid color-mix(in srgb, var(--mk-border) 80%, transparent);
+    border-radius: 999px;
+    box-shadow: 0 16px 34px -16px rgba(6, 10, 16, .6), 0 2px 10px rgba(6, 10, 16, .12);
+    backdrop-filter: blur(18px) saturate(165%);
+    -webkit-backdrop-filter: blur(18px) saturate(165%);
+    overflow: visible;
+    transition: transform .34s cubic-bezier(.22, .61, .36, 1), opacity .24s ease;
+}
+
+.mk-bottom-nav.is-hidden {
+    transform: translate(-50%, 160%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.mk-bottom-nav .mk-bottom-item {
+    position: relative;
+    display: grid;
+    flex: 1 1 0;
+    place-items: center;
+    gap: 0;
+    min-width: 0;
+    max-width: 50px;
+    height: 46px;
+    padding: 0;
+    overflow: visible;
+    font-size: .62rem;
+    color: var(--mk-muted);
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translateY(0);
+    transition: transform .32s cubic-bezier(.22, .61, .36, 1), color .2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mk-bottom-nav .mk-bottom-item::before {
+    content: none;
+}
+
+.mk-bottom-nav .mk-bottom-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    max-width: 42px;
+    aspect-ratio: 1;
+    color: inherit;
+    background: transparent;
+    border-radius: 50%;
+    transition: color .2s ease, background .22s ease, box-shadow .24s ease;
+}
+
+.mk-bottom-nav .mk-bottom-icon > .fa {
+    font-size: 1.12rem;
+    line-height: 1;
+    transition: transform .26s cubic-bezier(.2, .9, .3, 1.2);
+}
+
+.mk-bottom-nav .mk-bottom-item:active .mk-bottom-icon {
+    transform: scale(.92);
+}
+
+.mk-bottom-nav .mk-bottom-item:not(.is-active):hover {
+    color: var(--mk-heading);
+}
+
+.mk-bottom-nav .mk-bottom-item:not(.is-active):hover .mk-bottom-icon {
+    background: color-mix(in srgb, var(--mk-border) 40%, transparent);
+}
+
+/* آیتم فعال: بالاتر می‌آید و هالهٔ رنگی از مرکز باز می‌شود */
+.mk-bottom-nav .mk-bottom-item.is-active {
+    color: var(--mk-accent);
+    transform: translateY(-15px);
+}
+
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-icon {
+    color: var(--mk-on-accent, #fff);
+    background: linear-gradient(155deg,
+        color-mix(in srgb, var(--mk-accent) 92%, #fff 8%),
+        var(--mk-accent) 55%,
+        var(--mk-accent-2, var(--mk-accent)));
+    box-shadow:
+        0 10px 20px -8px color-mix(in srgb, var(--mk-accent) 78%, transparent),
+        0 2px 6px -1px color-mix(in srgb, var(--mk-accent) 55%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, .3);
+}
+
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-icon > .fa {
+    animation: mk-dock-lift .5s cubic-bezier(.2, .9, .3, 1.3) both;
+}
+
+/* حلقه‌های هاله */
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-icon::before,
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-icon::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    pointer-events: none;
+    border: 1.5px solid color-mix(in srgb, var(--mk-accent) 70%, transparent);
+    border-radius: 50%;
+    opacity: 0;
+    animation: mk-dock-halo 2.8s cubic-bezier(.16, .84, .28, 1) infinite;
+}
+
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-icon::after {
+    border-width: 1px;
+    animation-delay: 1.4s;
+}
+
+.mk-bottom-nav .mk-bottom-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    pointer-events: none;
+    background: radial-gradient(circle,
+        color-mix(in srgb, var(--mk-accent) 60%, transparent) 0%,
+        color-mix(in srgb, var(--mk-accent) 22%, transparent) 45%,
+        transparent 70%);
+    border-radius: 50%;
+    filter: blur(7px);
+    opacity: 0;
+    transform: scale(.55);
+    transition: opacity .3s ease, transform .36s ease;
+    z-index: -1;
+}
+
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-glow {
+    opacity: .95;
+    transform: scale(1);
+    animation: mk-dock-breathe 2.8s ease-in-out infinite;
+}
+
+/* برچسب‌ها فقط برای صفحه‌خوان‌ها */
+.mk-bottom-nav .mk-bottom-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    white-space: nowrap;
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+}
+
+.mk-bottom-nav .mk-bottom-item.is-utility {
+    flex: 0 1 40px;
+    max-width: 40px;
+    height: 40px;
+    color: color-mix(in srgb, var(--mk-muted) 88%, transparent);
+}
+
+.mk-bottom-nav .mk-bottom-item.is-utility .mk-bottom-icon {
+    max-width: 34px;
+}
+
+.mk-bottom-nav .mk-bottom-item.is-utility .mk-bottom-icon > .fa {
+    font-size: .95rem;
+}
+
+.mk-dock-sep {
+    flex: 0 0 auto;
+    width: 1px;
+    height: 18px;
+    margin: 0 5px;
+    background: color-mix(in srgb, var(--mk-border) 85%, transparent);
+    border-radius: 1px;
+}
+
+.mk-dock-form {
+    display: contents;
+    margin: 0;
+}
+
+.mk-bottom-nav .mk-bottom-badge {
+    position: absolute;
+    inset-block-start: -2px;
+    inset-inline-start: 62%;
+    min-width: 15px;
+    padding: 0 3px;
+    margin: 0;
+    font-size: .56rem;
+    font-weight: 700;
+    line-height: 15px;
+    color: var(--mk-on-accent, #fff);
+    text-align: center;
+    background: var(--mk-accent);
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px var(--mk-bg-2);
+}
+
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-badge {
+    box-shadow: 0 0 0 2px var(--mk-accent);
+    color: var(--mk-accent);
+    background: #fff;
+}
+
+@keyframes mk-dock-halo {
+    0% {
+        opacity: .7;
+        transform: scale(.94);
+    }
+
+    55% {
+        opacity: .2;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2.15);
+    }
+}
+
+@keyframes mk-dock-breathe {
+    0%,
+    100% {
+        opacity: .7;
+        transform: scale(.94);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.14);
+    }
+}
+
+@keyframes mk-dock-lift {
+    0% {
+        transform: translateY(2px) scale(.86);
+    }
+
+    60% {
+        transform: translateY(-1px) scale(1.06);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 991.98px) {
+    .mk-bottom-nav {
+        display: flex;
+    }
+
+    /* دکمه‌های هدر داخل جزیره آمده‌اند */
+    .mk-topbar-actions .mk-theme-toggle {
+        display: none !important;
+    }
+
+    .mk-main {
+        padding-bottom: 92px;
+    }
+
+    .mk-footer {
+        padding-bottom: 104px;
+    }
+}
+
+@media (max-width: 420px) {
+    .mk-bottom-nav {
+        bottom: max(10px, env(safe-area-inset-bottom, 0px));
+        padding: 5px 6px;
+        max-width: calc(100vw - 12px);
+    }
+
+    .mk-bottom-nav .mk-bottom-item {
+        height: 44px;
+    }
+
+    .mk-bottom-nav .mk-bottom-icon > .fa {
+        font-size: 1.02rem;
+    }
+
+    .mk-bottom-nav .mk-bottom-item.is-utility {
+        flex-basis: 36px;
+        max-width: 36px;
+        height: 38px;
+    }
+
+    .mk-bottom-nav .mk-bottom-item.is-utility .mk-bottom-icon {
+        max-width: 30px;
+    }
+
+    .mk-bottom-nav .mk-bottom-item.is-utility .mk-bottom-icon > .fa {
+        font-size: .88rem;
+    }
+
+    .mk-dock-sep {
+        margin: 0 3px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mk-bottom-nav .mk-bottom-item {
+        height: 42px;
+    }
+
+    .mk-bottom-nav .mk-bottom-icon > .fa {
+        font-size: .96rem;
+    }
+
+    .mk-bottom-nav .mk-bottom-item.is-utility {
+        flex-basis: 32px;
+        max-width: 32px;
+    }
+
+    .mk-bottom-nav .mk-bottom-item.is-utility .mk-bottom-icon {
+        max-width: 27px;
+    }
+
+    .mk-bottom-nav .mk-bottom-item.is-utility .mk-bottom-icon > .fa {
+        font-size: .82rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-icon::before,
+    .mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-icon::after,
+    .mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-glow,
+    .mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-icon > .fa {
+        animation: none !important;
+    }
+}
+
+
+/* ---------- اصلاح اندازهٔ اجزای جزیره ---------- */
+.mk-bottom-nav .mk-bottom-item {
+    flex: 0 1 46px;
+    width: 46px;
+    min-width: 38px;
+    max-width: 46px;
+}
+
+.mk-bottom-nav .mk-bottom-item.is-utility {
+    flex: 0 1 40px;
+    width: 40px;
+    min-width: 34px;
+    max-width: 40px;
+}
+
+@media (max-width: 420px) {
+    .mk-bottom-nav .mk-bottom-item {
+        flex-basis: 42px;
+        width: 42px;
+        max-width: 42px;
+        min-width: 34px;
+    }
+
+    .mk-bottom-nav .mk-bottom-item.is-utility {
+        flex-basis: 36px;
+        width: 36px;
+        max-width: 36px;
+        min-width: 30px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mk-bottom-nav .mk-bottom-item {
+        flex-basis: 40px;
+        width: 40px;
+        max-width: 40px;
+        min-width: 32px;
+    }
+
+    .mk-bottom-nav .mk-bottom-item.is-utility {
+        flex-basis: 32px;
+        width: 32px;
+        max-width: 32px;
+        min-width: 28px;
+    }
+}
+
+
+/* ---------- پس‌زمینهٔ مات‌تر و شیشه‌ای‌تر برای جزیره ---------- */
+.mk-bottom-nav {
+    background:
+        linear-gradient(180deg,
+            color-mix(in srgb, var(--mk-bg-2) 94%, transparent),
+            color-mix(in srgb, var(--mk-bg-2) 88%, transparent));
+    border-color: color-mix(in srgb, var(--mk-border) 72%, transparent);
+    box-shadow:
+        0 18px 36px -18px rgba(6, 10, 16, .55),
+        0 2px 8px rgba(6, 10, 16, .1),
+        inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+}
+
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-glow {
+    width: 58px;
+    height: 58px;
+    margin: -29px 0 0 -29px;
+    filter: blur(9px);
+    background: radial-gradient(circle,
+        color-mix(in srgb, var(--mk-accent) 52%, transparent) 0%,
+        color-mix(in srgb, var(--mk-accent) 16%, transparent) 48%,
+        transparent 72%);
+}
+
+
+/* ---------- سطح جزیره: تقریباً مات تا رنگ محتوا نشت نکند ---------- */
+.mk-bottom-nav {
+    background:
+        linear-gradient(180deg,
+            color-mix(in srgb, var(--mk-bg-2) 97%, transparent),
+            color-mix(in srgb, var(--mk-bg-2) 94%, transparent));
+}
+
+
+/* ---------- جزئیات پایانی جزیره ---------- */
+@media print {
+    .mk-bottom-nav {
+        display: none !important;
+    }
+}
+
+/* فقط همین‌جا دکمهٔ تم پنهان می‌شود؛ نسخهٔ دسکتاپ دست‌نخورده است */
+@media (min-width: 992px) {
+    .mk-bottom-nav {
+        display: none;
+    }
+}
+
+
+/* ---------- فاصله و نشان تعداد در جزیره ---------- */
+.mk-bottom-nav {
+    column-gap: 3px;
+}
+
+.mk-bottom-nav .mk-bottom-badge {
+    inset-block-start: -3px;
+    inset-inline-start: 57%;
+    min-width: 14px;
+    line-height: 14px;
+    font-size: .54rem;
+}
+
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-badge {
+    inset-block-start: -1px;
+}
+
+@media (max-width: 380px) {
+    .mk-bottom-nav .mk-bottom-item.is-admin {
+        display: none;
+    }
+
+    .mk-bottom-nav .mk-bottom-badge {
+        inset-inline-start: 53%;
+    }
+}
+
+
+/* ---------- تنظیم نهایی اندازهٔ هاله ---------- */
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-icon::before,
+.mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-icon::after {
+    animation-name: mk-dock-halo-tight;
+}
+
+@keyframes mk-dock-halo-tight {
+    0% {
+        opacity: .65;
+        transform: scale(.96);
+    }
+
+    55% {
+        opacity: .18;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.8);
+    }
+}
+
+@media (max-width: 420px) {
+    .mk-bottom-nav .mk-bottom-item.is-active .mk-bottom-glow {
+        width: 52px;
+        height: 52px;
+        margin: -26px 0 0 -26px;
+    }
+
+    .mk-bottom-nav .mk-bottom-item.is-active {
+        transform: translateY(-13px);
+    }
+}
+
+
+/* ---------- خنثی‌کردن قواعد قدیمی شش‌ستونه برای کاربر مدیر ---------- */
+.mk-bottom-nav.has-admin {
+    grid-template-columns: none;
+}
+
+.mk-bottom-nav.has-admin .mk-bottom-item {
+    font-size: .62rem;
+}
+
+.mk-bottom-nav.has-admin .mk-bottom-icon {
+    width: 100%;
+    max-width: 42px;
+}
+
+@media (max-width: 420px) {
+    .mk-bottom-nav.has-admin .mk-bottom-icon {
+        max-width: 38px;
+    }
+}

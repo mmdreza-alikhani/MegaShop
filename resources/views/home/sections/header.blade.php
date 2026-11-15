@@ -321,10 +321,14 @@
 
 <div class="mk-overlay" id="mkOverlay"></div>
 
-<nav class="mk-bottom-nav {{ auth()->check() && auth()->user()->getAllPermissions()->isNotEmpty() ? 'has-admin' : '' }}" aria-label="دسترسی سریع" data-bottom-nav>
+@php
+    $isAdminUser = auth()->check() && auth()->user()->getAllPermissions()->isNotEmpty();
+@endphp
+
+<nav class="mk-bottom-nav {{ $isAdminUser ? 'has-admin' : '' }}" aria-label="دسترسی سریع" data-bottom-nav>
     <a href="{{ route('home.index') }}"
        class="mk-bottom-item {{ $navActive === 'home' ? 'is-active' : '' }}"
-       data-bottom-item>
+       aria-label="خانه" data-bottom-item>
         <span class="mk-bottom-glow" aria-hidden="true"></span>
         <span class="mk-bottom-icon"><span class="fa fa-home"></span></span>
         <span class="mk-bottom-label">خانه</span>
@@ -332,7 +336,7 @@
 
     <a href="{{ route('home.products.index') }}"
        class="mk-bottom-item {{ $navActive === 'products' ? 'is-active' : '' }}"
-       data-bottom-item>
+       aria-label="محصولات" data-bottom-item>
         <span class="mk-bottom-glow" aria-hidden="true"></span>
         <span class="mk-bottom-icon"><span class="fa fa-th-large"></span></span>
         <span class="mk-bottom-label">محصولات</span>
@@ -340,7 +344,7 @@
 
     <button type="button"
             class="mk-bottom-item {{ $navActive === 'search' ? 'is-active' : '' }}"
-            data-bottom-item data-toggle="modal" data-target="#modalSearch">
+            aria-label="جستجو" data-bottom-item data-toggle="modal" data-target="#modalSearch">
         <span class="mk-bottom-glow" aria-hidden="true"></span>
         <span class="mk-bottom-icon"><span class="fa fa-search"></span></span>
         <span class="mk-bottom-label">جستجو</span>
@@ -349,10 +353,10 @@
     @auth
         <button type="button"
                 class="mk-bottom-item mk-cart-toggle {{ $navActive === 'cart' ? 'is-active' : '' }}"
-                data-bottom-item>
+                aria-label="سبد خرید" data-bottom-item>
             <span class="mk-bottom-glow" aria-hidden="true"></span>
             <span class="mk-bottom-icon">
-                <span class="fa fa-shopping-cart"></span>
+                <span class="fa fa-shopping-bag"></span>
                 @if($headerCartCount > 0)
                     <span class="mk-bottom-badge">{{ $headerCartCount > 9 ? '۹+' : $headerCartCount }}</span>
                 @endif
@@ -362,33 +366,59 @@
 
         <a href="{{ route('home.profile.info') }}"
            class="mk-bottom-item {{ $navActive === 'account' ? 'is-active' : '' }}"
-           data-bottom-item>
+           aria-label="حساب من" data-bottom-item>
             <span class="mk-bottom-glow" aria-hidden="true"></span>
-            <span class="mk-bottom-icon"><span class="fa fa-user"></span></span>
+            <span class="mk-bottom-icon"><span class="fa fa-user-o"></span></span>
             <span class="mk-bottom-label">حساب من</span>
         </a>
-        @if(auth()->user()->getAllPermissions()->isNotEmpty())
-            <a href="{{ route('admin.panel') }}"
-               class="mk-bottom-item"
-               data-bottom-item>
-                <span class="mk-bottom-glow" aria-hidden="true"></span>
-                <span class="mk-bottom-icon"><span class="fa fa-dashboard"></span></span>
-                <span class="mk-bottom-label">مدیریت</span>
-            </a>
-        @endif
     @else
-        <button type="button" class="mk-bottom-item" data-bottom-item
+        <button type="button"
+                class="mk-bottom-item {{ $navActive === 'cart' ? 'is-active' : '' }}"
+                aria-label="سبد خرید" data-bottom-item
                 data-toggle="modal" data-target="#modalLogin">
             <span class="mk-bottom-glow" aria-hidden="true"></span>
-            <span class="mk-bottom-icon"><span class="fa fa-shopping-cart"></span></span>
+            <span class="mk-bottom-icon"><span class="fa fa-shopping-bag"></span></span>
             <span class="mk-bottom-label">سبد</span>
         </button>
 
-        <button type="button" class="mk-bottom-item" data-bottom-item
+        <button type="button"
+                class="mk-bottom-item {{ $navActive === 'account' ? 'is-active' : '' }}"
+                aria-label="ورود و ثبت‌نام" data-bottom-item
                 data-toggle="modal" data-target="#modalLogin">
             <span class="mk-bottom-glow" aria-hidden="true"></span>
-            <span class="mk-bottom-icon"><span class="fa fa-user"></span></span>
+            <span class="mk-bottom-icon"><span class="fa fa-user-o"></span></span>
             <span class="mk-bottom-label">ورود</span>
         </button>
+    @endauth
+
+    <span class="mk-dock-sep" aria-hidden="true"></span>
+
+    @if($isAdminUser)
+        <a href="{{ route('admin.panel') }}"
+           class="mk-bottom-item is-utility is-admin"
+           aria-label="پنل مدیریت" title="پنل مدیریت" data-bottom-item>
+            <span class="mk-bottom-icon"><span class="fa fa-dashboard"></span></span>
+            <span class="mk-bottom-label">مدیریت</span>
+        </a>
+    @endif
+
+    <button type="button" class="mk-bottom-item is-utility" data-theme-toggle
+            aria-label="تغییر حالت روشن و تاریک" title="حالت روشن / تاریک">
+        <span class="mk-bottom-icon">
+            <span class="mk-theme-ico mk-theme-ico-moon"><span class="fa fa-moon-o"></span></span>
+            <span class="mk-theme-ico mk-theme-ico-sun"><span class="fa fa-sun-o"></span></span>
+        </span>
+        <span class="mk-bottom-label">تم</span>
+    </button>
+
+    @auth
+        <form action="{{ route('home.profile.logout') }}" method="POST" class="mk-dock-form">
+            @csrf
+            <button type="submit" class="mk-bottom-item is-utility"
+                    aria-label="خروج از حساب" title="خروج از حساب">
+                <span class="mk-bottom-icon"><span class="fa fa-sign-out"></span></span>
+                <span class="mk-bottom-label">خروج</span>
+            </button>
+        </form>
     @endauth
 </nav>
