@@ -5225,3 +5225,7 @@ body.dark {
         transform: none;
     }
 }
+/* فوتر فعلاً غیرفعال است */
+.mk-adm-footer {
+    display: none !important;
+}

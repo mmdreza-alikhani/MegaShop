@@ -31,7 +31,6 @@
     @yield('content')
 </div>
 
-@include('admin.sections.footer')
 @include('admin.sections.scripts')
 @yield('scripts')
 
