@@ -1,22 +1,34 @@
-<div class="nk-image-slider" data-autoplay="6000">
+<div class="nk-image-slider mk-hero" data-autoplay="7000">
     @foreach($banners as $banner)
         <div class="nk-image-slider-item">
-            <img src="{{ Storage::url(config('upload.banner_path') . '/') . $banner->image }}" alt="" class="nk-image-slider-img" data-thumb="{{ Storage::url(config('upload.banner_path') . '/') . $banner->image }}">
-            <div class="nk-image-slider-content">
-                <h3 class="h4 text-right">{{ $banner->title }}</h3>
-                <span class="text-right">
-                    <p class="text-white">{{ $banner->text }}</p>
+            <img src="{{ Storage::url(config('upload.banner_path') . '/') . $banner->image }}"
+                 alt="{{ $banner->title }}" class="nk-image-slider-img"
+                 data-thumb="{{ Storage::url(config('upload.banner_path') . '/') . $banner->image }}">
+
+            <div class="nk-image-slider-content mk-hero-content">
+                <span class="mk-hero-chip">
+                    <span class="fa fa-bolt"></span>
+                    پیشنهاد ویژه
                 </span>
-                <a href="{{ $banner->button_link }}" class="nk-btn nk-btn-rounded nk-btn-color-white nk-btn-hover-color-main-1" style="display: flex;align-items: center;justify-content: center">{{ $banner->button_text }}</a>
+
+                <h3 class="mk-hero-title">{{ $banner->title }}</h3>
+
+                <p class="mk-hero-text">{{ $banner->text }}</p>
+
+                <a href="{{ $banner->button_link }}" class="mk-hero-cta">
+                    {{ $banner->button_text ?: 'مشاهده محصولات' }}
+                    <span class="fa fa-angle-left"></span>
+                </a>
             </div>
         </div>
     @endforeach
 </div>
+
 @can('manage-general')
-    <div class="text-right mt-2">
-        <a href="{{ route('admin.banners.index') }}" class="nk-btn nk-btn-rounded nk-btn-color-dark-3 nk-btn-hover-color-info">
-        <span class="fa fa-edit"></span>
-        ویرایش بنر ها
+    <div class="mk-hero-admin">
+        <a href="{{ route('admin.banners.index') }}" class="mk-btn mk-btn-outline mk-btn-sm">
+            <span class="fa fa-pencil"></span>
+            ویرایش بنرها
         </a>
     </div>
 @endcan

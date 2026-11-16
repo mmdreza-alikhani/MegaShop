@@ -7328,3 +7328,202 @@ body.mk-drawer-open .mk-drawer {
     backdrop-filter: none;
     cursor: pointer;
 }
+
+/* =========================================================
+   اسلایدر اصلی (هیرو) — طراحی مدرن
+   ========================================================= */
+.mk-hero.nk-image-slider {
+    position: relative;
+    width: 100%;
+    height: auto !important;
+    aspect-ratio: 3 / 1;
+    overflow: hidden;
+    border: 1px solid var(--mk-border);
+    border-radius: 20px;
+    background: var(--mk-bg-2);
+}
+
+.mk-hero .nk-image-slider-bg {
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+/* پرده گرادیان برای خوانایی */
+.mk-hero .nk-image-slider-bg-transition {
+    background: linear-gradient(to top,
+        rgba(8, 10, 14, .92) 0%,
+        rgba(8, 10, 14, .55) 38%,
+        rgba(8, 10, 14, .05) 70%,
+        transparent 100%);
+}
+
+/* محتوا: پایین-راست */
+.mk-hero .nk-image-slider-content {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 3;
+    display: flex;
+    justify-content: flex-end;
+    height: auto;
+    padding: 0;
+    background: none;
+    pointer-events: none;
+}
+
+.mk-hero .nk-image-slider-content .nano,
+.mk-hero .nk-image-slider-content .nano-content {
+    position: static;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.mk-hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    max-width: 620px;
+    padding: 0 40px 38px;
+    pointer-events: auto;
+}
+
+.mk-hero-chip {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    padding: 5px 12px;
+    font-size: .72rem;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(221, 22, 59, .9);
+    border-radius: 20px;
+    backdrop-filter: blur(6px);
+}
+
+.mk-hero-title {
+    margin: 0;
+    font-size: clamp(1.35rem, 2.6vw, 2.1rem);
+    font-weight: 800;
+    line-height: 1.45;
+    color: #fff;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, .45);
+}
+
+.mk-hero-text {
+    margin: 0;
+    font-size: clamp(.8rem, 1.1vw, .95rem);
+    line-height: 2;
+    color: rgba(255, 255, 255, .82);
+}
+
+.mk-hero-cta {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 11px 22px;
+    margin-top: 4px;
+    font-size: .85rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--mk-accent);
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(221, 22, 59, .35);
+    transition: transform .18s ease, background .18s ease;
+}
+
+.mk-hero-cta:hover {
+    color: #fff;
+    background: var(--mk-accent-2);
+    transform: translateY(-2px);
+}
+
+/* ناوبری: نقطه‌ها به‌جای نوار قرمز */
+.mk-hero .nk-image-slider-thumbs {
+    position: absolute;
+    right: 0;
+    bottom: 18px;
+    left: auto;
+    z-index: 4;
+    display: flex;
+    gap: 6px;
+    width: auto;
+    height: auto;
+    padding: 0 40px;
+    background: transparent;
+}
+
+.mk-hero .nk-image-slider-thumbs > ul {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mk-hero .nk-image-slider-thumbs > ul > li {
+    width: 26px;
+    height: 4px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, .3);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: width .25s ease, background .25s ease;
+}
+
+.mk-hero .nk-image-slider-thumbs > ul > li.nk-image-slider-thumbs-active {
+    width: 46px;
+    background: var(--mk-accent);
+}
+
+.mk-hero .nk-image-slider-thumbs-overlay {
+    display: none;
+}
+
+.mk-hero-admin {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+@media (max-width: 767.98px) {
+    .mk-hero.nk-image-slider {
+        aspect-ratio: 4 / 3;
+        border-radius: 16px;
+    }
+
+    .mk-hero-content {
+        padding: 0 18px 22px;
+    }
+
+    .mk-hero .nk-image-slider-thumbs {
+        padding: 0 18px;
+        bottom: 12px;
+    }
+
+    .mk-hero-title {
+        font-size: 1.1rem;
+    }
+
+    .mk-hero-text {
+        font-size: .76rem;
+        -webkit-line-clamp: 2;
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+    }
+}
+/* نقطه‌های اسلایدر: بدون تصویر بندانگشتی */
+.mk-hero .nk-image-slider-thumbs > ul > li,
+.mk-hero .nk-image-slider-thumbs > ul > li.nk-image-slider-thumbs-active {
+    background-image: none !important;
+}
+
+.mk-hero .nk-image-slider-thumbs > ul > li {
+    background-color: rgba(255, 255, 255, .32) !important;
+}
+
+.mk-hero .nk-image-slider-thumbs > ul > li.nk-image-slider-thumbs-active {
+    background-color: var(--mk-accent) !important;
+}
