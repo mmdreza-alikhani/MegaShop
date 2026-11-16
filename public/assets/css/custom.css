@@ -7527,3 +7527,33 @@ body.mk-drawer-open .mk-drawer {
 .mk-hero .nk-image-slider-thumbs > ul > li.nk-image-slider-thumbs-active {
     background-color: var(--mk-accent) !important;
 }
+/* لایه‌ها: محتوا و دکمه بالای پرده تصویر */
+.mk-hero .nk-image-slider-bg,
+.mk-hero .nk-image-slider-bg-transition {
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+.mk-hero .nk-image-slider-content {
+    z-index: 6 !important;
+    pointer-events: none;
+}
+
+.mk-hero-content,
+.mk-hero-cta,
+.mk-hero-title,
+.mk-hero-text,
+.mk-hero-chip {
+    position: relative;
+    z-index: 7;
+    pointer-events: auto !important;
+}
+
+.mk-hero .nk-image-slider-thumbs {
+    z-index: 8 !important;
+    pointer-events: none;
+}
+
+.mk-hero .nk-image-slider-thumbs li {
+    pointer-events: auto;
+}
