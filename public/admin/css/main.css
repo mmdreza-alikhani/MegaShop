@@ -8324,3 +8324,78 @@ body.dark .mk-pill.is-info {
         grid-template-columns: minmax(0, 1fr);
     }
 }
+/* ---------- کارت بنر: تصویر با نسبت درست، متن راست‌چین، دکمه‌های هماهنگ ---------- */
+.mk-banner-media {
+    aspect-ratio: 3 / 1;
+    background: var(--adm-surface-2);
+}
+
+.mk-banner-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.mk-banner-body {
+    text-align: right;
+    direction: rtl;
+}
+
+.mk-banner-body h4,
+.mk-banner-body p {
+    text-align: right;
+}
+
+.mk-banner-meta,
+.mk-banner-actions {
+    justify-content: flex-start;
+}
+
+.mk-banner-actions .btn {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    min-width: 96px;
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+}
+
+.mk-banner-actions .btn-outline-info {
+    color: var(--adm-accent) !important;
+    background: transparent !important;
+    border-color: color-mix(in srgb, var(--adm-accent) 55%, transparent) !important;
+}
+
+.mk-banner-actions .btn-outline-info:hover {
+    color: #fff !important;
+    background: var(--adm-accent) !important;
+    border-color: var(--adm-accent) !important;
+}
+
+body.dark .mk-banner-actions .btn-outline-info {
+    color: #ff7a93 !important;
+    background: rgba(255, 61, 99, .12) !important;
+    border-color: rgba(255, 122, 147, .45) !important;
+}
+
+body.dark .mk-banner-actions .btn-light {
+    color: var(--adm-text);
+    background: var(--adm-surface-2);
+    border-color: var(--adm-border);
+}
+
+.mk-banner-actions .mk-banner-delete {
+    min-width: 84px;
+    color: #d64545 !important;
+    background: transparent !important;
+    border-color: rgba(214, 69, 69, .4) !important;
+}
+
+.mk-banner-actions .mk-banner-delete:hover {
+    color: #fff !important;
+    background: #d64545 !important;
+    border-color: #d64545 !important;
+}
