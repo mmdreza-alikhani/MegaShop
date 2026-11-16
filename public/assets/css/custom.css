@@ -7557,3 +7557,61 @@ body.mk-drawer-open .mk-drawer {
 .mk-hero .nk-image-slider-thumbs li {
     pointer-events: auto;
 }
+/* هاله نرم مشکی پشت متن هیرو */
+.mk-hero-content {
+    padding: 16px 20px 18px;
+    border-radius: 18px;
+    isolation: isolate;
+}
+
+.mk-hero-content::before {
+    content: "";
+    position: absolute;
+    inset: -6px -14px -10px;
+    z-index: -1;
+    background: radial-gradient(120% 130% at 88% 78%,
+        rgba(5, 7, 11, .72) 0%,
+        rgba(5, 7, 11, .48) 45%,
+        rgba(5, 7, 11, .12) 72%,
+        transparent 100%);
+    border-radius: 26px;
+    filter: blur(14px);
+}
+
+.mk-hero-title {
+    text-shadow: 0 2px 16px rgba(0, 0, 0, .55), 0 1px 2px rgba(0, 0, 0, .5);
+}
+
+.mk-hero-text {
+    color: rgba(255, 255, 255, .9);
+    text-shadow: 0 1px 10px rgba(0, 0, 0, .55);
+}
+
+@media (max-width: 767.98px) {
+    .mk-hero-content {
+        padding: 12px 14px 14px;
+    }
+
+    .mk-hero-content::before {
+        inset: -4px -8px -6px;
+        filter: blur(10px);
+    }
+}
+/* هاله ملایم‌تر (نسخه نهایی) */
+.mk-hero-content::before {
+    inset: -4px -10px -6px !important;
+    background: radial-gradient(110% 115% at 82% 72%,
+        rgba(5, 7, 11, .42) 0%,
+        rgba(5, 7, 11, .22) 46%,
+        rgba(5, 7, 11, .06) 68%,
+        transparent 84%) !important;
+    filter: blur(12px) !important;
+}
+/* پرده گرادیان ملایم‌تر تا هاله فقط دور متن بماند */
+.mk-hero .nk-image-slider-bg-transition {
+    background: linear-gradient(to top,
+        rgba(8, 10, 14, .72) 0%,
+        rgba(8, 10, 14, .34) 30%,
+        rgba(8, 10, 14, .05) 55%,
+        transparent 72%) !important;
+}
